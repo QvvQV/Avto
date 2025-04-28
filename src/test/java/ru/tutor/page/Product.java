@@ -60,7 +60,7 @@ public class Product extends Driver {
     }
 
     public static void Clear(){
-        inputSearch.sendKeys(Keys.CLEAR);
+        inputSearch.clear();
     }
 
     public static void diet() {
