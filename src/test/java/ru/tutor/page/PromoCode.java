@@ -23,7 +23,7 @@ public class PromoCode extends Driver {
     @FindBy(css = "._message_16ynf_52")
     private static WebElement error;
 
-        public static void doubleClick(WebDriver driver) {
+    public static void doubleClick(WebDriver driver) {
         WebElement clickable = driver.findElement(By.cssSelector(".sc-cwHptR"));
         new Actions(driver)
                 .doubleClick(clickable)
@@ -31,72 +31,72 @@ public class PromoCode extends Driver {
         Product.Clear();
     }
 
-
     //промокоды отсутствующие в системе
-private String[] promoNoActive =new String[0];
-private int defaultCountPromocode;
+    private String[] promoNoActive = new String[0];
+//private int defaultCountPromocode;
 
-public static String PromoNoActive(WebDriver driver){
+    public static String PromoNoActive(WebDriver driver) {
 //    String[] tmp = new String[promoNoActive.length + 1];
-    String[] promoNoActive = {"опытБудНеакт",
-            "опытБудущАкт",
-            "промопосрокуНеакт",
-            "промоСрокБесНеАкт",
-            "ПромоАктСрокБудущ",
-            "ПромоАктСрокБудущ",
-            "ПромоБесНеактиБуд",
-            "подпискаДо24",
-            "алмазыБезСрокНеакт",
-            "алмазыСрокНеакт",
-            "алмазыБудНеакт",
-            "алмазыПрошлоеНеакт",
-            "алмазыДо24Неакт",
-            "АлмазыСрокБудАкт",
-            "алмазыПрошлоеАкт",
-            "алмазыДо",
-            "алмазыОт",
-            "опытПрошлоеНеакт",
-            "опытДо25Неакт",
-            "опытДейстНеакт",
-            "опытБудНеакт",
-            "опытОт25Акт",
-            "опытОт24Акт",
-            "опытБудущАкт",
-            "опытПрошлоеАкт"};
+        String[] promoNoActive = {
+                "опытБудНеакт",
+                "опытБудущАкт",
+                "промопосрокуНеакт",
+                "промоСрокБесНеАкт",
+                "ПромоАктСрокБудущ",
+                "ПромоАктСрокБудущ",
+                "ПромоБесНеактиБуд",
+                "подпискаДо24",
+                "алмазыБезСрокНеакт",
+                "алмазыСрокНеакт",
+                "алмазыБудНеакт",
+                "алмазыПрошлоеНеакт",
+                "алмазыДо24Неакт",
+                "АлмазыСрокБудАкт",
+                "алмазыПрошлоеАкт",
+                "алмазыДо",
+                "алмазыОт",
+                "опытПрошлоеНеакт",
+                "опытДо25Неакт",
+                "опытДейстНеакт",
+                "опытБудНеакт",
+                "опытОт25Акт",
+                "опытОт24Акт",
+                "опытБудущАкт",
+                "опытПрошлоеАкт"};
 
-    for (int i = 0; i < promoNoActive.length; i++){
-        if (inputPromo.isDisplayed() && inputPromo.isEnabled()){
-        inputPromo.sendKeys(promoNoActive[i]);
-        btnPromo.click();
-        System.out.println(error.getText().trim());
-        doubleClick(driver);
+        for (int i = 0; i < promoNoActive.length; i++) {
+            if (inputPromo.isDisplayed() && inputPromo.isEnabled()) {
+                inputPromo.sendKeys(promoNoActive[i]);
+                btnPromo.click();
+                System.out.println(error.getText().trim());
+                doubleClick(driver);
+            }
+        }
+        return "Пустое поле";
     }
-    }
-    return "Пустое поле";
-}
 
 
     //успешные
 
-    public static String PromoActive(WebDriver driver){
-    String[] promoActive = {"ОпытБессрочный",
-            "опытДейстАкт",
-            "алмазыБес",
-            "АлмазыСрокАкт",
-            "ПромоПодпискаБес",
-            "промоподпискаПоСроку",
-            "123промо"
-            };
+    public static String PromoActive(WebDriver driver) {
+        String[] promoActive = {"ОпытБессрочный",
+                "опытДейстАкт",
+                "алмазыБес",
+                "АлмазыСрокАкт",
+                "ПромоПодпискаБес",
+                "промоподпискаПоСроку",
+                "123промо"
+        };
 
-    for (int i = 0; i < promoActive.length; i++){
-        if (inputPromo.isDisplayed() && inputPromo.isEnabled()){
-        inputPromo.sendKeys(promoActive[i]);
-        btnPromo.click();
-        System.out.println(error.getText().trim());
-        doubleClick(driver);
+        for (int i = 0; i < promoActive.length; i++) {
+            if (inputPromo.isDisplayed() && inputPromo.isEnabled()) {
+                inputPromo.sendKeys(promoActive[i]);
+                btnPromo.click();
+                System.out.println(error.getText().trim());
+                doubleClick(driver);
+            }
+        }
+        return "Пустое поле";
     }
-    }
-    return "Пустое поле";
-}
     //"123промо" нет в БД
 }

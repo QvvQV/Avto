@@ -30,7 +30,7 @@ public class LoginAndPass extends Driver {
 
     public static void inputEmail() {
         email.isDisplayed();
-        email.sendKeys("TP_383074@emaily1.pro");
+        email.sendKeys("TP_4657@emaily3.pro");
     }
 
     // Регистрация с клиента
@@ -39,7 +39,7 @@ public class LoginAndPass extends Driver {
     private static WebElement emailReg;
 
     public static void getEmail() {
-        emailReg.sendKeys("TP_383074@emaily1.pro");
+        emailReg.sendKeys("TP_4657_1@emaily2.pro");
     }
 
     @FindBy(name = "password")

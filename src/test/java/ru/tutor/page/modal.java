@@ -126,6 +126,7 @@ public class modal extends Driver {
     public static boolean setKursSuccesfullAdd() {
         try {
             kursSuccessfullAdd.isDisplayed();
+            System.out.println(kursSuccessfullAdd.getText());
             return kursSuccessfullAdd.equals("Курс успешно добавлен");
         } catch (NoSuchElementException e) {
             return false;
@@ -156,14 +157,11 @@ public class modal extends Driver {
     @FindBy(css = "._Button_kio3a_1")
     private static WebElement premiumFor99;
 
-    public static String textForPremium99() {
-        return premiumFor99.getText().trim();
-    }
-
     public static boolean getPremiumFor99() {
         try {
             premiumFor99.isDisplayed();
             premiumFor99.isEnabled();
+            System.out.println(premiumFor99.getText().trim());
             premiumFor99.click();
             return true;
         } catch (NoSuchElementException e){

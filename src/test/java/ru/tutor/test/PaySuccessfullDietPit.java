@@ -29,26 +29,7 @@ public class PaySuccessfullDietPit {
         PayMain.clickBtnStart();
         PayMain.getDostup();
         wait.until(elementToBeClickable(By.tagName("iframe")));
-        iframe.getIframe(driver);
-//        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
-//        PayMain.clickBankBtn();
-//        PayMain.getPay();
-//        wait.until(elementToBeClickable(By.tagName("iframe")));
-//        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
-//        PayMain.btnSuccess();
-        driver.switchTo().defaultContent();
-        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
-        wait.until(elementToBeClickable(By.cssSelector("payment-module-frontend-payment-module-entry > pm-success > div > button > div"))).click();
-        Object[] windowHandles = driver.getWindowHandles().toArray();
-        driver.getWindowHandles();
-        driver.switchTo().window((String) windowHandles[0]);
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("a"),33));
-        System.out.println(driver.findElements(By.tagName("a")).get(3).getText());
-
-        driver.findElements(By.tagName("a")).get(3).click();
-        Object[] windowHandles1 = driver.getWindowHandles().toArray();
-        driver.getWindowHandles();
-        driver.switchTo().window((String) windowHandles1[0]);
+        iframe.getIframeForLand(driver);
     }
 
     @Before
