@@ -39,7 +39,7 @@ public class LoginAndPass extends Driver {
     private static WebElement emailReg;
 
     public static void getEmail() {
-        emailReg.sendKeys("TP_4657_1@emaily2.pro");
+        emailReg.sendKeys("tp4118_3@test.ru");
     }
 
     @FindBy(name = "password")

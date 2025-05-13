@@ -14,7 +14,7 @@ public class ClientPrime extends Driver {
         PageFactory.initElements(driver, this);
     }
 
-    @FindBy(xpath = "//*[@id=\"root\"]/div[2]/div/div/div[2]/div/button")
+    @FindBy(css = ".sc-gFqAkR.jUODFL")
     private static WebElement enterBtn;
 
     @FindBy(xpath = "//*[@id=\"root\"]/div[2]/div/div/form/div/div[2]/button")

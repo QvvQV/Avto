@@ -72,4 +72,17 @@ public class PaySuccessfullLite {
         wait.until(elementToBeClickable(By.tagName("button")));
         Assert.assertEquals("Полный доступ", ClientPrime.setTextPremium());
     }
+
+    @Test
+    @DisplayName("delete kurs")
+    public void DeleteKurs() throws Exception {
+        iframe.BeforeRegistration(driver);
+        driver.get("https://client.dev.tutorplace.ru/user/catalog");
+        Product.AllProductSearch(driver);
+        driver.get("https://client.dev.tutorplace.ru/user/my-courses");
+        Product.setDeleteAllProduct(driver);
+        Assert.assertEquals("продуктов больше нет", Product.setDeleteAllProduct(driver));
+//        Product.setDeleteProduct(driver);
+
+    }
 }

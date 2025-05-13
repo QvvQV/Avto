@@ -133,7 +133,7 @@ public class modal extends Driver {
         }
     }
 
-    @FindBy(css = "button._Button_kio3a_1._lightGrey_kio3a_74._fullWidth_kio3a_195")
+    @FindBy(css = "._Button_kio3a_1._lightGrey_kio3a_74._fullWidth_kio3a_195")
     private static WebElement stay;
 
     public static boolean clickStay() {
