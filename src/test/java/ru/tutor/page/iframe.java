@@ -45,6 +45,7 @@ public class iframe extends Driver {
         wait.until(elementToBeClickable(By.tagName("iframe")));
         driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
         Assert.assertEquals("Банковской картой", PayMain.textButton());
+        wait.until(numberOfElementsToBeMoreThan(By.tagName("button"),2));;
         PayMain.clickBankBtn();
         Assert.assertEquals("Номер карты", Card.textCard());
         PayMain.getPay();
@@ -89,5 +90,24 @@ public class iframe extends Driver {
         driver.switchTo().frame(0);
         Card.getSuccess();
         driver.switchTo().window((String) windowHandles[0]);
+    }
+
+//    Sber
+    public static void getHandlesFromPageExcelCardSber(WebDriver driver){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+        wait.until(visibilityOfElementLocated(By.id("cardNumber")));
+        Object[] windowHandles = driver.getWindowHandles().toArray();
+        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"),55));
+        Card.setCardSber();
+        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"),14));
+        driver.switchTo().window((String) windowHandles[0]);
+//        driver.switchTo().window((String) windowHandles[0]);
+        wait.until(numberOfElementsToBeMoreThan(By.tagName("a"),33));
+        System.out.println(driver.findElements(By.tagName("a")).get(3).getText());
+
+        driver.findElements(By.tagName("a")).get(3).click();
+        Object[] windowHandles1 = driver.getWindowHandles().toArray();
+        driver.getWindowHandles();
+        driver.switchTo().window((String) windowHandles1[0]);
     }
 }

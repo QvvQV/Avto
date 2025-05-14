@@ -15,7 +15,7 @@ public class Card extends Driver {
         PageFactory.initElements(driver, this);
     }
 
-    // Оплата с баннера Excel
+    // Оплата с баннера Excel с помощью Тинькофф карты
 
     @FindBy(css = "tui-input-card-group > div:nth-child(1) > label")
     private static WebElement text;
@@ -37,7 +37,7 @@ public class Card extends Driver {
         return text.getText().trim();
     }
 
-    // Оплата с баннера в личном кабинете
+    // Оплата с баннера в личном кабинете Тинькофф карта
 
     @FindBy(id = "card")
     private static WebElement card;
@@ -69,7 +69,7 @@ public class Card extends Driver {
         }
     }
 
-    // ввод данных банковской карточки на др вкладке
+    // ввод данных банковской карточки на др вкладке Тинькофф
     public static boolean setCard() {
         try {
             numberCardFromBanner();
@@ -89,4 +89,52 @@ public class Card extends Driver {
         successBtn.isDisplayed();
         successBtn.click();
     }
+
+
+    // Оплата с баннера Excel с помощью Сбер карты
+
+    @FindBy(id = "cardNumber")
+    private static WebElement cardSber;
+
+    public static void numberCardSber() {
+        cardSber.sendKeys("2202205000012424");
+    }
+
+    @FindBy(id = "expiryDate")
+    private static WebElement expireData;
+
+    private static void getExpireData() {
+        expireData.sendKeys("0535");
+    }
+
+    @FindBy(id = "cvc")
+    private static WebElement cvc;
+
+    private static void getCvc() {
+        cvc.sendKeys("669");
+    }
+
+    @FindBy(css = "._14KXZFF2qamrgjaDJQf2-k._2LEfKwbPi7lA1km6XdQKz0")
+    private static WebElement btnPaySber;
+
+    private static void getPaySber() {
+        if (btnPaySber.isDisplayed() && btnPaySber.isEnabled()) {
+            btnPaySber.click();
+        }
+    }
+
+
+    // ввод данных банковской карточки на др вкладке Sber
+    public static boolean setCardSber() {
+        try {
+            numberCardSber();
+            getExpireData();
+            getCvc();
+            getPaySber();
+            return cardSber.isEnabled();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
 }

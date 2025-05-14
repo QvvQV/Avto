@@ -14,7 +14,7 @@ import ru.tutor.page.*;
 
 import java.time.Duration;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
 public class PaySuccessfull {
 
@@ -43,9 +43,11 @@ public class PaySuccessfull {
         driver = null;
     }
 
+//    T-Bank
+
     @Test
     @DisplayName("Registration on website New User + Success Pay")
-    public void RegistrationOnWebsite(){
+    public void RegistrationOnWebsite() {
 //        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.get("https://client.dev.tutorplace.ru/register");
         LoginAndPass.registrationNewUser();
@@ -56,12 +58,32 @@ public class PaySuccessfull {
 
     @Test
     @DisplayName("Success Pay from Excel page")
-    public void SuccessPayFromExcelPage(){
+    public void SuccessPayFromExcelPage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.get("https://dev.tutorplace.ru/catalog/product/excel");
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q");
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
         iframe.getIframeForLand(driver);
+    }
+
+//    https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q - RevShare
+//https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S - Гибрид
+//https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U - CPA
+
+//
+//    Sber
+        @Test
+    @DisplayName("Success Pay from Excel page from Sber")
+    public void SuccessPayFromExcelPageFromSber(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+        driver.get("https://dev.tutorplace.ru/catalog/product/excel");
+        wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
+        PayMain.clickBtnStart();
+        PayMain.getDostup();
+        iframe.getHandlesFromPageExcelCardSber(driver);
     }
 }

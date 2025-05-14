@@ -4,10 +4,7 @@ import com.github.dockerjava.api.model.Driver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
@@ -76,33 +73,25 @@ public class Product extends Driver {
     public static String setDeleteAllProduct(WebDriver driver) throws Exception {
         List<WebElement> defaultCountProduct = driver.findElements(By.cssSelector("._control_uynht_17"));
         System.out.println(defaultCountProduct.size());
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         for (int i = 0; i < defaultCountProduct.toArray(new WebElement[0]).length; i++) {
 
             try {
+//                defaultCountProduct.toArray(new WebElement[0])[0].click();
                 driver.findElements(By.cssSelector("._control_uynht_17")).toArray(new WebElement[0])[0].click();
-//            ellipses.click();
-//                ellipses.isSelected();
-//                garbageKurs.isDisplayed();
                 garbageKurs.click();
-//                System.out.println(driver.findElements(By.tagName("frame")));
-//                deleteKurs.isDisplayed();
                 deleteKurs.click();
-                wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".sc-iLfJqh.cyUhRW")));
                 System.out.println(i + ".Продукт: " + ProductName() + " удалён");
-
-//                wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".sc-iLfJqh.cyUhRW")));
                 System.out.println(driver.findElements(By.tagName("frame")));
             } catch (Exception exception) {
                 throw new Exception(exception);
             }
 
         }
-//        System.out.println("продуктов больше нет");
+        System.out.println("продуктов больше нет");
         return "продуктов больше нет";
     }
-
 
     public static String AllProductSearch(WebDriver driver) {
         String[] Product = {
@@ -170,7 +159,7 @@ public class Product extends Driver {
     }
 
 
-    public static String ProductSearch(WebDriver driver) {
+    public static void ProductSearch(WebDriver driver) {
         String[] Product = {
                 "крав",
                 "Figma"
@@ -188,7 +177,6 @@ public class Product extends Driver {
 //        doubleClick(driver);
             }
         }
-        return "Пустое поле";
     }
 
     public static void Clear() {

@@ -30,8 +30,13 @@ public class LoginAndPass extends Driver {
 
     public static void inputEmail() {
         email.isDisplayed();
-        email.sendKeys("TP_4657@emaily3.pro");
+        email.sendKeys("TP4516/12@emaily3.pro");
+//        email.sendKeys("TP4516/5@emaily3.pro");
+//        email.sendKeys("TP4516/4@emaily3.pro");
+//        email.sendKeys("TP4516/3@emaily3.pro");
     }
+
+//    TP_4657@emaily3.pro
 
     // Регистрация с клиента
 
@@ -39,7 +44,7 @@ public class LoginAndPass extends Driver {
     private static WebElement emailReg;
 
     public static void getEmail() {
-        emailReg.sendKeys("tp4118_3@test.ru");
+        emailReg.sendKeys("TP4516_2@emaily3.pro");
     }
 
     @FindBy(name = "password")
