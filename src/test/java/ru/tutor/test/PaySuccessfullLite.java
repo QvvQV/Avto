@@ -7,16 +7,14 @@ import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.tutor.page.*;
 
 import java.time.Duration;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBeMoreThan;
 
 public class PaySuccessfullLite {
 
@@ -51,6 +49,8 @@ public class PaySuccessfullLite {
         driver.get("https://client.dev.tutorplace.ru/user/settings/subscription");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(elementToBeClickable(By.tagName("button")));
+        modal.modalDailyCall();
+        modal.modalTelephone();
         System.out.println("Подписка " + ClientLite.text());
         ClientLite.getChangeLite();
         Assert.assertEquals("Тарифный план “Полный доступ” отключен", ClientLite.getTextLite());
@@ -62,6 +62,8 @@ public class PaySuccessfullLite {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         iframe.BeforeRegistration(driver);
         driver.get("https://client.dev.tutorplace.ru/user/catalog");
+        modal.modalDailyCall();
+        modal.modalTelephone();
         Product.ProductSearch(driver);
         Product.diet();
         modal.setYes();
@@ -85,4 +87,23 @@ public class PaySuccessfullLite {
 //        Product.setDeleteProduct(driver);
 
     }
+
+    @Test
+    @DisplayName("Open New Week From Kurs")
+    public void OpenNewWeekFromKurs() throws Exception {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        iframe.BeforeRegistration(driver);
+        Product.clickBtnFromStartLesson();
+        wait.until(numberOfElementsToBeMoreThan(By.tagName("a"),13));
+        Product.clickBtnWeek();
+        modal.getModalOpenWeek();
+        iframe.getIframeFromOpenWeek(driver);
+        modal.getBtnContinue7Day();
+        Product.clickBtnWeek();
+
+        //для курса "Как написать хит"
+//        Assert.assertEquals("/user/product/483/03444dcaec/lesson/8",Product.getArtHref());
+
+    }
+
 }

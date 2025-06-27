@@ -1,19 +1,12 @@
 package ru.tutor.page;
 
 import com.github.dockerjava.api.model.Driver;
-import com.github.javafaker.Faker;
-import com.github.javafaker.PhoneNumber;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
-import org.openqa.selenium.support.ui.ExpectedCondition;
-
-import java.util.Locale;
-import java.util.Objects;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
 
@@ -23,9 +16,9 @@ public class modal extends Driver {
         PageFactory.initElements(driver, this);
     }
 
-    // первая модалка приветствие и смена пароля
+    // первая модалка приветствия и смена пароля
 
-    @FindBy(xpath = "//*[@id=\"root\"]/div[2]/div/div/div[2]/button")
+    @FindBy(css = ".sc-jXbUNg")
     private static WebElement nextStep;
 
     public static String modalWelcomeForNewUser() {
@@ -37,6 +30,7 @@ public class modal extends Driver {
 //            return true;
 //        }
 //        return false;
+
         try {
             nextStep.isDisplayed();
             nextStep.click();
@@ -51,16 +45,38 @@ public class modal extends Driver {
         }
     }
 
+    public static String modalWelcomeForExel() {
+        try {
+            yourMale.click();
+            inputMale.sendKeys(Keys.ENTER);
+            nextStepTwo.click();
+            return "Модальное окно приветствия заполнено";
+        } catch (NoSuchElementException e) {
+            return "Модального окна приветствия не было";
+        }
+    }
+
     @FindBy(id = "react-select-2-placeholder")
     private static WebElement yourMale;
 
     @FindBy(id = "react-select-2-input")
     private static WebElement inputMale;
 
-    @FindBy(xpath = "//*[@id=\"root\"]/div[2]/div/div/form/div/div[2]/button")
+    @FindBy(tagName = "button")
     private static WebElement nextStepTwo;
 
-    // модальное окно для пользователя пришедшего через регистрацию
+    @FindBy(css = ".sc-dtInlm.gdsUZl")
+    private static WebElement btnCrossModal;
+
+    public static void modalCross() {
+        try {
+            btnCrossModal.click();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+// модальное окно для пользователя пришедшего через регистрацию
 
 //    public static boolean modalWelcomeForNewUser() {
 //        clickNextStep();
@@ -70,7 +86,7 @@ public class modal extends Driver {
 //        return headerModal.isDisplayed();
 //    }
 
-    // модальное окно для пользователя пришедшего с ленда
+// модальное окно для пользователя пришедшего с ленда
 
     //окно ежедневного захода
     @FindBy(css = "._Overlay_cd7ce_1")
@@ -89,7 +105,7 @@ public class modal extends Driver {
         }
     }
 
-    // модалка для ввода телефона
+// модалка для ввода телефона
 
     @FindBy(css = "src")
     private static WebElement search;
@@ -97,21 +113,37 @@ public class modal extends Driver {
     @FindBy(css = "body > div:nth-child(6) > div > div > div > div > div > form > div:nth-child(1) > div > div > label")
     private static WebElement textTelephone;
 
-    @FindBy(css = "body > div:nth-child(6) > div > div > div > div > div > form > div:nth-child(1) > div > div > input")
+    @FindBy(css = ".sc-lgjHQU")
     private static WebElement inputTelephone;
 
     @FindBy(css = "body > div:nth-child(6) > div > div > div > div > div > form > div:nth-child(3) > button")
     private static WebElement tie;
 
-    @FindBy(css = ".sc-dtInlm")
+
+    @FindBy(css = ".sc-feUZmu")
     private static WebElement buttonCrossTie;
 
 
     public static String modalTelephone() {
+        String[] Number = {
+                "9",
+                "5",
+                "4",
+                "8",
+                "5",
+                "6",
+                "2",
+                "5",
+                "4",
+                "6"
+        };
         try {
             inputTelephone.isDisplayed();
 //            inputTelephone.sendKeys((CharSequence) getNumberTelephone());
-            inputTelephone.sendKeys("9548562546");
+            for (int i = 0; i < Number.length; i++) {
+                inputTelephone.sendKeys(Number[i]);
+            }
+//        inputTelephone.sendKeys("9548562546");
             buttonCrossTie.click();
             return "Телефон не привязан";
         } catch (NoSuchElementException e) {
@@ -164,8 +196,31 @@ public class modal extends Driver {
             System.out.println(premiumFor99.getText().trim());
             premiumFor99.click();
             return true;
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return false;
         }
     }
+
+    //открытие новой недели
+    @FindBy(css = "._content_1l2kq_17._modalContent_1emea_7")
+    private static WebElement modalOpenWeek;
+
+    @FindBy(css = "._Button_kio3a_1._UpSale_1q18s_1._fullWidth_kio3a_195")
+    private static WebElement btnOpenFrom49Rub;
+
+    public static void getModalOpenWeek() {
+        if (modalOpenWeek.isDisplayed()) {
+            btnOpenFrom49Rub.click();
+        }
+    }
+
+    @FindBy(css = "._Button_kio3a_1")
+    private static WebElement btnContinue7Day;
+
+    public static void getBtnContinue7Day() {
+        if (btnContinue7Day.isDisplayed()) {
+            btnContinue7Day.click();
+        }
+    }
+
 }

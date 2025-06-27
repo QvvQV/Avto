@@ -1,23 +1,12 @@
 package ru.tutor.page;
 
 import com.github.dockerjava.api.model.Driver;
-import org.junit.Assert;
 import org.openqa.selenium.*;
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.v131.dom.DOM;
-import org.openqa.selenium.devtools.v131.dom.model.NodeId;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.WebDriver;
-
-import java.awt.*;
-import java.util.Objects;
-
-import static com.browserup.bup.mitmproxy.MitmProxyProcessManager.MitmProxyLoggingLevel.alert;
-import static ru.tutor.test.PaySuccessfull.driver;
 
 public class PayMain extends Driver {
     public PayMain(WebDriver driver) {
@@ -58,17 +47,13 @@ public class PayMain extends Driver {
 
     }
 
-    @FindBy(css = "[data-test=\"cardpay-page-button\"]")
+    @FindBy(css = "[data-test='cardpay-page-button']")
     private static WebElement BankBtn;
 
     public static void clickBankBtn() {
-        if(BankBtn.isDisplayed() && BankBtn.isEnabled())
-        try {
-//            BankBtn.isDisplayed();
-            BankBtn.click();
-        } catch (NoSuchElementException e) {
-        }
-
+        if(BankBtn.isDisplayed()){
+                BankBtn.click();
+    }
     }
 
     public static String textButton() {

@@ -4,7 +4,9 @@ import com.github.dockerjava.api.model.Driver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
@@ -16,7 +18,7 @@ public class Product extends Driver {
     }
 
 
-    @FindBy(css = ".sc-cwHptR.igXsWb.sc-cPiKLX.gMcsNn")
+    @FindBy(css = ".sc-eqUAAy.ehxRBN.sc-dcJsrY.cdYTVT.tutorial-catalog")
     private static WebElement inputSearch;
 
     //https://client.dev.tutorplace.ru/user/main?globalSearch=крав
@@ -73,7 +75,7 @@ public class Product extends Driver {
     public static String setDeleteAllProduct(WebDriver driver) throws Exception {
         List<WebElement> defaultCountProduct = driver.findElements(By.cssSelector("._control_uynht_17"));
         System.out.println(defaultCountProduct.size());
-//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         for (int i = 0; i < defaultCountProduct.toArray(new WebElement[0]).length; i++) {
 
@@ -83,6 +85,8 @@ public class Product extends Driver {
                 garbageKurs.click();
                 deleteKurs.click();
                 System.out.println(i + ".Продукт: " + ProductName() + " удалён");
+
+//                wait.until(numberOfElementsToBeMoreThan(By.cssSelector("._control_uynht_17"), i--));
                 System.out.println(driver.findElements(By.tagName("frame")));
             } catch (Exception exception) {
                 throw new Exception(exception);
@@ -189,6 +193,42 @@ public class Product extends Driver {
         product.isDisplayed();
         product.click();
     }
+
+    @FindBy(css = ".sc-kuVLHQ.hSxfpw")
+    private static WebElement btnOpenWeek;
+
+    public static void clickBtnWeek() {
+        if (btnOpenWeek.isDisplayed()) {
+            btnOpenWeek.click();
+        }
+    }
+
+    @FindBy(css = "._PurschasedProductCard_8eydn_1")
+    private static WebElement firstProduct;
+
+    public static void clickFirstProduct(){
+        firstProduct.click();
+    }
+
+    @FindBy(css = ".sc-ksCcjW.kpvfmj.my_courses_step8")
+    private static WebElement startLesson;
+
+    public static void getStartLesson(){
+        startLesson.click();
+    }
+
+    public static void clickBtnFromStartLesson(){
+        clickFirstProduct();
+        getStartLesson();
+    }
+
+    @FindBy(css = ".sc-bXWnss.iqwUOp")
+    private static WebElement atrHrefFromLesson;
+
+    public static String getArtHref(){
+        return atrHrefFromLesson.getDomAttribute("href");
+    }
+
 
 }
 

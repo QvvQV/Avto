@@ -60,27 +60,31 @@ public class PaySuccessfull {
     @DisplayName("Success Pay from Excel page")
     public void SuccessPayFromExcelPage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        driver.get("https://dev.tutorplace.ru/catalog/product/excel");
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q");
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
+        driver.get("https://ttplace.ru/catalog/product/excel");
 //        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q");
+
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
         iframe.getIframeForLand(driver);
     }
 
+    //https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U - CPA
+    //https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S - Гибрид
 //    https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q - RevShare
-//https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S - Гибрид
-//https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U - CPA
 
-//
 //    Sber
-        @Test
+    @Test
     @DisplayName("Success Pay from Excel page from Sber")
-    public void SuccessPayFromExcelPageFromSber(){
+    public void SuccessPayFromExcelPageFromSber() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
         driver.get("https://dev.tutorplace.ru/catalog/product/excel");
+
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
+//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q");
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();

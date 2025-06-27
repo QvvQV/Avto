@@ -24,7 +24,7 @@ public class PromoCode extends Driver {
     private static WebElement error;
 
     public static void doubleClick(WebDriver driver) {
-        WebElement clickable = driver.findElement(By.cssSelector(".sc-cwHptR"));
+        WebElement clickable = driver.findElement(By.cssSelector(".sc-eqUAAy"));
         new Actions(driver)
                 .doubleClick(clickable)
                 .perform();
