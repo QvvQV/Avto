@@ -18,7 +18,7 @@ public class ClientLite extends Driver {
         PageFactory.initElements(driver, this);
     }
 
-    @FindBy(css = ".sc-gFqAkR")
+    @FindBy(css = ".sc-jXbUNg.erLqJb")
     private static WebElement change_control;
 
 //    private static final SelenideElement change_control = (SelenideElement) $$("div.sc-knbyxe.eHmTwv > div > button");
@@ -32,7 +32,7 @@ public class ClientLite extends Driver {
         change_control.click();
     }
 
-    @FindBy(css = ".sc-iIcZPp")
+    @FindBy(css = ".sc-edcLgS.fGCbex")
     private static WebElement textLite;
 
         public static String getTextLite() {

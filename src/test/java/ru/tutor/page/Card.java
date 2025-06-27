@@ -23,6 +23,9 @@ public class Card extends Driver {
     @FindBy(css = "[automation-id=\"tui-input-card-group__card\"]")
     private static WebElement numberCard;
 
+
+    //тинькофф карта
+
     public static void numberCardFromExcel() {
         if (numberCard.isDisplayed()) {
             try {
@@ -97,7 +100,19 @@ public class Card extends Driver {
     private static WebElement cardSber;
 
     public static void numberCardSber() {
-        cardSber.sendKeys("2202205000012424");
+        cardSber.sendKeys("2202205000012424"); //успешная карта
+    }
+
+    public static void numberCardSber116() {
+        cardSber.sendKeys("2202205000060910"); //недостаточно средств ошибка 116
+    }
+
+    public static void numberCardSber101() {
+        cardSber.sendKeys("2202202107593166"); //Карта просрочена ошибка 101
+    }
+
+    public static void numberCardSberWith100Rub() {
+        cardSber.sendKeys("2202205300068092"); //Остаток на балансе 100 рублей
     }
 
     @FindBy(id = "expiryDate")
@@ -105,14 +120,38 @@ public class Card extends Driver {
 
     private static void getExpireData() {
         expireData.sendKeys("0535");
-    }
+    } //успешная карта
+
+    private static void getExpireData116() {
+        expireData.sendKeys("0628");
+    } //недостаточно средств ошибка 116
+
+    private static void getExpireData101() {
+        expireData.sendKeys("0622");
+    } //Карта просрочена ошибка 101
+
+    private static void getExpireDataWith100Rub() {
+        expireData.sendKeys("0526");
+    } //Остаток на балансе 100 рублей
 
     @FindBy(id = "cvc")
     private static WebElement cvc;
 
     private static void getCvc() {
         cvc.sendKeys("669");
-    }
+    } //успешная карта
+
+    private static void getCvc116() {
+        cvc.sendKeys("810");
+    } //недостаточно средств ошибка 116
+
+    private static void getCvc101() {
+        cvc.sendKeys("123");
+    } //Карта просрочена ошибка 101
+
+    private static void getCvcWith100Rub() {
+        cvc.sendKeys("583");
+    } //Остаток на балансе 100 рублей
 
     @FindBy(css = "._14KXZFF2qamrgjaDJQf2-k._2LEfKwbPi7lA1km6XdQKz0")
     private static WebElement btnPaySber;
@@ -124,7 +163,7 @@ public class Card extends Driver {
     }
 
 
-    // ввод данных банковской карточки на др вкладке Sber
+    // ввод данных банковской карточки на др вкладке Sber (успешная)
     public static boolean setCardSber() {
         try {
             numberCardSber();
@@ -134,6 +173,76 @@ public class Card extends Driver {
             return cardSber.isEnabled();
         } catch (NoSuchElementException e) {
             return false;
+        }
+    }
+
+    // на балансе 100 рублей Sber (успешная)
+    public static boolean setCardSberWith100Rub() {
+        try {
+            numberCardSberWith100Rub();
+            getExpireDataWith100Rub();
+            getCvcWith100Rub();
+            getPaySber();
+            return cardSber.isEnabled();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    // ввод данных банковской карточки на др вкладке Sber (недостаточно средств 116)
+    public static boolean setCardSber116() {
+        try {
+            numberCardSber116();
+            getExpireData116();
+            getCvc116();
+            getPaySber();
+            return cardSber.isEnabled();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    // ввод данных банковской карточки на др вкладке Sber (просрочена 101)
+    public static boolean setCardSber101() {
+        try {
+            numberCardSber101();
+            getExpireData101();
+            getCvc101();
+            getPaySber();
+            return cardSber.isEnabled();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    @FindBy(id = "details-button")
+    private static WebElement secondaryBtn;
+
+    private static void clickSecondaryBtn() {
+        secondaryBtn.click();
+    }
+
+    @FindBy(id = "proceed-link")
+    private static WebElement smallLink;
+
+    private static void clickSmallLink() {
+        smallLink.isDisplayed();
+        smallLink.click();
+    }
+
+    public static void transitionLink() {
+        clickSecondaryBtn();
+        clickSmallLink();
+    }
+
+    @FindBy(id = "passwordEdit")
+    private static WebElement passwordEdit;
+
+    public static void setPasswordEdit() {
+        try {
+            passwordEdit.isDisplayed();
+            passwordEdit.sendKeys("111111");
+        } catch (NoSuchElementException e) {
         }
     }
 
