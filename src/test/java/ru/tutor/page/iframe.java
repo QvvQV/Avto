@@ -56,8 +56,9 @@ public class iframe extends Driver {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(elementToBeClickable(By.tagName("iframe")));
         driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        wait.until(visibilityOfElementLocated(By.cssSelector("[data-test=\"cardpay-page-button\"]")));
         Assert.assertEquals("Банковской картой", PayMain.textButton());
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("button"), 2));
+//        wait.until(numberOfElementsToBeMoreThan(By.tagName("button"), 2));
         PayMain.clickBankBtn();
         Assert.assertEquals("Номер карты", Card.textCard());
         PayMain.getPay();

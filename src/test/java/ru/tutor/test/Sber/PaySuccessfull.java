@@ -1,4 +1,4 @@
-package ru.tutor.test;
+package ru.tutor.test.Sber;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -15,6 +15,7 @@ import ru.tutor.page.*;
 import java.time.Duration;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 public class PaySuccessfull {
 
@@ -60,7 +61,7 @@ public class PaySuccessfull {
     @DisplayName("Success Pay from Excel page")
     public void SuccessPayFromExcelPage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        driver.get("https://ttplace.ru/catalog/product/excel");
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel");
 //        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
 //        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
 //        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q");
@@ -68,6 +69,7 @@ public class PaySuccessfull {
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
+//        Card.visibleTextError();
         iframe.getIframeForLand(driver);
     }
 
@@ -90,4 +92,27 @@ public class PaySuccessfull {
         PayMain.getDostup();
         iframe.getHandlesFromPageExcelCardSber(driver);
     }
+
+    @Test
+    @DisplayName("email")
+    public void email(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        driver.get("https://www.fakemail.net/");
+        wait.until(visibilityOf(LoginAndPass.mail));
+
+
+        String nameEmails = LoginAndPass.mail();
+//        System.out.println(nameEmail.getCssValue("//div[@data-email]"));
+        System.out.println(nameEmails);
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel");
+         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
+        PayMain.clickBtnStart();
+        PayMain.getMailDostup();
+
+//        List<> nameEmails = new ArrayList<>();
+
+    }
+
+
+
 }

@@ -1,11 +1,18 @@
 package ru.tutor.page;
 
 import com.github.dockerjava.api.model.Driver;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+import static ru.tutor.test.Sber.PaySuccessfull.driver;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
 
@@ -23,17 +30,39 @@ public class Card extends Driver {
     @FindBy(css = "[automation-id=\"tui-input-card-group__card\"]")
     private static WebElement numberCard;
 
+    @FindBy(css = ".text-red-500.text-center")
+    private static WebElement textError;
+
 
     //тинькофф карта
 
     public static void numberCardFromExcel() {
-        if (numberCard.isDisplayed()) {
-            try {
-                numberCard.sendKeys("42424242424242420455555");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(numberCard));
+        numberCard.sendKeys("42424242424242420455555");
+//        if (numberCard.isDisplayed()) {
+//            try {
+//                numberCard.sendKeys("42424242424242420455555");
+//
+//            } catch (NoSuchElementException e) {
+//            }
+//        }
+    }
 
-            } catch (NoSuchElementException e) {
-            }
+    public static void visibleTextError() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+
+//        boolean b = textError.isDisplayed();
+//        if(b==false){
+//            System.out.println("двигаемся дальше");
+//        } else if (b==true) {
+//            System.out.println("Что-то пошло не так");
+//        }
+        if (wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".text-red-500.text-center")))) {
+
+            System.out.println("двигаемся дальше");
         }
+        System.out.println("Что-то пошло не так");
     }
 
     public static String textCard() {
@@ -245,5 +274,4 @@ public class Card extends Driver {
         } catch (NoSuchElementException e) {
         }
     }
-
 }

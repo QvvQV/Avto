@@ -25,7 +25,8 @@ public class LoginAndPass extends Driver {
 
     public static void inputEmail() {
         email.isDisplayed();
-        email.sendKeys("tp4712@test.ru");
+        email.sendKeys(emails());
+//        email.sendKeys("tp4712@test.ru");
 //        email.sendKeys("Tin_Empty4@emaily3.pro");
 
 //        email.sendKeys("tp5053_1HybridTinAdmin@emaily3.pro");
@@ -39,6 +40,22 @@ public class LoginAndPass extends Driver {
 //        email.sendKeys("revshareSber@emaily3.pro");
     }
 
+    @FindBy(id = "email")
+    public static WebElement mail;
+
+    public static String mail() {
+        return mail.getText().trim();
+    }
+
+    public static void inputMail() {
+        String[] mails = {mail()};
+        email.sendKeys(mails);
+    }
+
+    private static String emails() {
+        return faker.internet().emailAddress();
+    }
+
     // Регистрация с клиента
 
     @FindBy(name = "email")
@@ -46,9 +63,16 @@ public class LoginAndPass extends Driver {
 
     public static void getEmail() {
 //        emailReg.sendKeys("OrderDelete6@test.ru");
-        emailReg.sendKeys("lognewpay_20@emaily.pro");
+//        emailReg.sendKeys("tp5052_2@test.ru");
+        emailReg.sendKeys(emails());
     }
-//    avotoi@tets.ru
+
+        @FindBy(css = ".buy-modal_formInput__3OfQ8")
+    private static WebElement emailFromLite;
+
+        public static void getEmailFromLite() {
+        emailFromLite.sendKeys(emails());
+    }
 
     public static void getEmailFromAdminDev() {
         emailReg.sendKeys("admin");
@@ -86,7 +110,7 @@ public class LoginAndPass extends Driver {
         name.sendKeys("dfn");
     }
 
-    @FindBy(css = "#root > div.sc-bmzYkS.oRjkM > div > div > div.sc-hYmls.guJPqE > form > div.sc-bOhtcR.kseIqm > label:nth-child(1) > input")
+    @FindBy(css = ".sc-bmzYkS.oRjkM > div > div > div.sc-hYmls.guJPqE > form > div.sc-bOhtcR.kseIqm > label:nth-child(1) > input")
     private static WebElement selector;
 
     public static String setSelector() {
@@ -145,5 +169,4 @@ public class LoginAndPass extends Driver {
         getRepeat();
         System.out.println(modal.modalWelcomeForExel());
     }
-
 }

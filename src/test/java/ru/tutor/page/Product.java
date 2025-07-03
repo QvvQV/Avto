@@ -4,10 +4,13 @@ import com.github.dockerjava.api.model.Driver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+
+import static ru.tutor.test.Sber.PaySuccessfull.driver;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
 
@@ -41,6 +44,20 @@ public class Product extends Driver {
         }
 
 //        ellipses.isDisplayed();
+    }
+
+    public static void clickGo(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("._Button_kio3a_1._fullWidth_kio3a_195")));
+        clickAdd.click();
+    }
+
+    @FindBy(css = "._button_12fnc_39")
+    private static WebElement startLesson;
+
+    public static String btnStartLesson(){
+        startLesson.isDisplayed();
+        return startLesson.getText().trim();
     }
 
     @FindBy(css = "._bin_uynht_54")
@@ -153,7 +170,9 @@ public class Product extends Driver {
 //            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 //            wait.until(numberOfElementsToBeMoreThan(By.tagName("button"),2));
 //            driver.findElements(By.tagName("button")).get(3).isDisplayed();
-            clickAdd.isDisplayed();
+
+            System.out.println(clickAdd.isDisplayed());
+//            clickAdd.isDisplayed();
             clickAdd.click();
 //            driver.findElements(By.tagName("button")).get(3).click();
             return true;
@@ -211,10 +230,10 @@ public class Product extends Driver {
     }
 
     @FindBy(css = ".sc-ksCcjW.kpvfmj.my_courses_step8")
-    private static WebElement startLesson;
+    private static WebElement startLessons;
 
     public static void getStartLesson(){
-        startLesson.click();
+        startLessons.click();
     }
 
     public static void clickBtnFromStartLesson(){
