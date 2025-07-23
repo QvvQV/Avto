@@ -1,12 +1,15 @@
 package ru.tutor.page;
 
 import com.github.dockerjava.api.model.Driver;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
 
@@ -142,17 +145,20 @@ public class modal extends Driver {
 //            inputTelephone.sendKeys((CharSequence) getNumberTelephone());
             for (int i = 0; i < Number.length; i++) {
                 inputTelephone.sendKeys(Number[i]);
+                Thread.sleep(150);
             }
 //        inputTelephone.sendKeys("9548562546");
             buttonCrossTie.click();
             return "Телефон не привязан";
         } catch (NoSuchElementException e) {
             return "Модальное окно для телефона не появилось";
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
     // Добавление курса
-    @FindBy(css = "._Overlay_cd7ce_1._isPopup_cd7ce_11")
+    @FindBy(css = "._Overlay_cd7ce_1._isPopup_cd7ce_11 > div > div > div:nth-child(1) > h4")
     private static WebElement kursSuccessfullAdd;
 
     public static boolean setKursSuccesfullAdd() {
@@ -178,11 +184,16 @@ public class modal extends Driver {
         }
     }
 
-    @FindBy(css = "button._Button_kio3a_1._fullWidth_kio3a_195")
+    @FindBy(css = "._Button_kio3a_1._fullWidth_kio3a_195")
     private static WebElement yes;
 
-    public static void setYes() {
-        yes.isDisplayed();
+    public static void setYes(WebDriver driver) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+//        yes.isDisplayed();
+        Thread.sleep(1500);
+        wait.until(visibilityOfElementLocated(By.cssSelector("._content_1l2kq_17")));
+        Thread.sleep(2000);
+//        wait.until(elementToBeClickable(By.cssSelector("._Button_kio3a_1._fullWidth_kio3a_195")));
         yes.click();
     }
 

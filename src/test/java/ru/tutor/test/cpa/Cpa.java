@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.tutor.page.*;
 
@@ -49,12 +50,14 @@ public class Cpa {
     @DisplayName("CPA successful")
     public void CPA_successful() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel?aff_rid=1012_ENpc");
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
+        System.out.println("Оплата с продукта Excel за 1 руб CPA RECURRING: " + LoginAndPass.textEmail());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".order_offer__vyM7e > form > p")));
         iframe.getIframeForLand(driver);
-        driver.get("https://admin.dev.tutorplace.ru/");
+        driver.get("https://admin.ttplace.ru/");
         devAdmin.workWithOrder(driver);
         Assert.assertEquals("290,00 ₽", driver.findElements(By.cssSelector(".tableRow__item")).get(35).getText());
         Assert.assertEquals("Успешный", driver.findElements(By.cssSelector(".tableRow__item.tableRow__item--m")).get(2).getText());
@@ -65,12 +68,14 @@ public class Cpa {
     @DisplayName("CPA successful Refund Admin")
     public void CPA_successful_refund_admin() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel?aff_rid=1012_ENpc");
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
+        System.out.println("Оплата с продукта Excel за 1 руб CPA REFUND: " + LoginAndPass.textEmail());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".order_offer__vyM7e > form > p")));
         iframe.getIframeForLand(driver);
-        driver.get("https://admin.dev.tutorplace.ru/");
+        driver.get("https://admin.ttplace.ru/");
         devAdmin.workWithOrder(driver);
         devAdmin.changePaymentFromAdmin(driver);
         Assert.assertEquals("-290,00 ₽", driver.findElements(By.cssSelector(".tableRow__item")).get(65).getText());

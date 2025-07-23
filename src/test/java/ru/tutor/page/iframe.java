@@ -17,10 +17,11 @@ public class iframe extends Driver {
         PageFactory.initElements(driver, this);
     }
 
-    public static void getIframe(WebDriver driver) {
+    public static void getIframe(WebDriver driver) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(elementToBeClickable(By.tagName("iframe")));
         driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        wait.until(visibilityOfElementLocated(By.cssSelector("[data-test=\"cardpay-page-button\"]")));
         Assert.assertEquals("Банковской картой", PayMain.textButton());
         PayMain.clickBankBtn();
         Assert.assertEquals("Номер карты", Card.textCard());
@@ -28,6 +29,7 @@ public class iframe extends Driver {
         wait.until(elementToBeClickable(By.tagName("iframe")));
         driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
         PayMain.btnSuccess();
+        Thread.sleep(1500);
     }
 
     public static void getIframeFromOpenWeek(WebDriver driver) {
@@ -46,8 +48,15 @@ public class iframe extends Driver {
     }
 
     public static void BeforeRegistration(WebDriver driver) {
-        driver.get("https://client.dev.tutorplace.ru/login");
+        driver.get("https://client.ttplace.ru/login");
         LoginAndPass.registrationUser();
+        System.out.println(modal.modalDailyCall());
+        System.out.println(modal.modalTelephone());
+    }
+
+        public static void BeforeRegistrationStatic(WebDriver driver) {
+        driver.get("https://client.ttplace.ru/login");
+        LoginAndPass.registrationUserStatic();
         System.out.println(modal.modalDailyCall());
         System.out.println(modal.modalTelephone());
     }
@@ -58,7 +67,6 @@ public class iframe extends Driver {
         driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
         wait.until(visibilityOfElementLocated(By.cssSelector("[data-test=\"cardpay-page-button\"]")));
         Assert.assertEquals("Банковской картой", PayMain.textButton());
-//        wait.until(numberOfElementsToBeMoreThan(By.tagName("button"), 2));
         PayMain.clickBankBtn();
         Assert.assertEquals("Номер карты", Card.textCard());
         PayMain.getPay();
@@ -88,11 +96,11 @@ public class iframe extends Driver {
 
     public static void getIframeForUserRegistration(WebDriver driver) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("button"), 240));
+        wait.until(numberOfElementsToBeMoreThan(By.tagName("button"), 230));
         System.out.println(modal.modalWelcomeForNewUser());
         System.out.println(modal.modalTelephone());
         System.out.println(modal.modalDailyCall());
-        driver.get("https://client.dev.tutorplace.ru/user/subscribe");
+        driver.get("https://client.ttplace.ru/user/subscribe");
         System.out.println(modal.modalTelephone());
         System.out.println(modal.modalDailyCall());
         PayMain.getAccess();

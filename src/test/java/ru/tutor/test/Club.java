@@ -20,6 +20,7 @@ public class Club {
 
     public static WebDriver driver;
 
+    public static String url = "https://client.ttplace.ru/user/member-club/requisite";
 
     @Before
     public void setupAll() {
@@ -35,7 +36,6 @@ public class Club {
         ClubPage clubPage = new ClubPage(driver);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(7));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-//        driver.get(url);
     }
 
     @After
@@ -48,10 +48,10 @@ public class Club {
     @DisplayName("Club Success From Self Employd")
     public void ClubSuccessFromSelfEmployd() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        iframe.BeforeRegistration(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/member-club/requisite");
+        iframe.BeforeRegistrationStatic(driver);
+        driver.get(url);
         wait.until(elementToBeClickable(By.cssSelector("._Radio_1o11b_1")));
-        Assert.assertEquals("Все поля обязательны для заполнения!", ClubPage.getAllFields());
+        Assert.assertEquals("Выберите тип налогообложения", ClubPage.getAllFields());
         ClubPage.inpullAllFields(driver);
         Assert.assertEquals("ОГРНИП", ClubPage.atrOgrip());
     }
@@ -60,10 +60,10 @@ public class Club {
     @DisplayName("Club Success From Individ Entrep")
     public void ClubSuccessFromIndividEntrep() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        iframe.BeforeRegistration(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/member-club/requisite");
+        iframe.BeforeRegistrationStatic(driver);
+        driver.get(url);
         wait.until(elementToBeClickable(By.cssSelector("._Radio_1o11b_1")));
-        Assert.assertEquals("Все поля обязательны для заполнения!", ClubPage.getAllFields());
+        Assert.assertEquals("Выберите тип налогообложения", ClubPage.getAllFields());
         ClubPage.inpullAllFields1(driver);
         Assert.assertEquals("ИНН", ClubPage.atrInputInn());
     }
@@ -73,10 +73,10 @@ public class Club {
     public void ClubErrorSz() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.manage().window().setSize(new Dimension(1920, 1080));
-        iframe.BeforeRegistration(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/member-club/requisite");
+        iframe.BeforeRegistrationStatic(driver);
+        driver.get(url);
         wait.until(elementToBeClickable(By.cssSelector("._Radio_1o11b_1")));
-        ClubPage.errorSz(driver);
+        ClubPage.errorSz();
     }
 
     @Test
@@ -84,9 +84,9 @@ public class Club {
     public void ClubErrorIP() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.manage().window().setSize(new Dimension(1920, 1080));
-        iframe.BeforeRegistration(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/member-club/requisite");
+        iframe.BeforeRegistrationStatic(driver);
+        driver.get(url);
         wait.until(elementToBeClickable(By.cssSelector("._Radio_1o11b_1")));
-        ClubPage.errorIP(driver);
+        ClubPage.errorIP();
     }
 }

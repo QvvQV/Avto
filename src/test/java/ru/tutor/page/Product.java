@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static ru.tutor.test.Sber.PaySuccessfull.driver;
 //import static com.codeborne.selenide.Selenide.*;
 //import static com.codeborne.selenide.Selenide.closeWebDriver;
@@ -46,7 +47,7 @@ public class Product extends Driver {
 //        ellipses.isDisplayed();
     }
 
-    public static void clickGo(){
+    public static void clickGo() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("._Button_kio3a_1._fullWidth_kio3a_195")));
         clickAdd.click();
@@ -55,7 +56,7 @@ public class Product extends Driver {
     @FindBy(css = "._button_12fnc_39")
     private static WebElement startLesson;
 
-    public static String btnStartLesson(){
+    public static String btnStartLesson() {
         startLesson.isDisplayed();
         return startLesson.getText().trim();
     }
@@ -82,7 +83,7 @@ public class Product extends Driver {
 //        }
 //    }
 
-    @FindBy(css = "._info_8eydn_20")
+    @FindBy(css = "._info_8eydn_20 > h4")
     private static WebElement name;
 
     public static String ProductName() {
@@ -91,7 +92,7 @@ public class Product extends Driver {
 
     public static String setDeleteAllProduct(WebDriver driver) throws Exception {
         List<WebElement> defaultCountProduct = driver.findElements(By.cssSelector("._control_uynht_17"));
-        System.out.println(defaultCountProduct.size());
+        System.out.println("Кол-во добавленных продуктов: " + defaultCountProduct.size() + " шт");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         for (int i = 0; i < defaultCountProduct.toArray(new WebElement[0]).length; i++) {
@@ -102,42 +103,81 @@ public class Product extends Driver {
                 garbageKurs.click();
                 deleteKurs.click();
                 System.out.println(i + ".Продукт: " + ProductName() + " удалён");
+                Thread.sleep(500);
 
 //                wait.until(numberOfElementsToBeMoreThan(By.cssSelector("._control_uynht_17"), i--));
-                System.out.println(driver.findElements(By.tagName("frame")));
+//                System.out.println(driver.findElements(By.tagName("frame")));
             } catch (Exception exception) {
                 throw new Exception(exception);
             }
 
         }
-        System.out.println("продуктов больше нет");
         return "продуктов больше нет";
     }
 
-    public static String AllProductSearch(WebDriver driver) {
+    public static String AllProductSearch(WebDriver driver) throws InterruptedException {
         String[] Product = {
+                "японский маникюр",
                 "крав",
                 "Figma",
-                "бровист",
-//                "дневник",
+//                  "дневник",
 //                "круговые",
+
+//// прод
+//                "бровист",
+//                "python",
+//                "Пдд",
+//                "комфортное пищеварение",
+//                "домашнее кардио",
+//                "основы трейдинга",
 //                "таргетолог",
-//                "сценарное",
-//                "тест",
-//                "хит",
-//                "коуч",
-//                "рационы",
+//                "видеограф",
+//                "сценарное мастерство",
+//                "рыбалка",
+//                "баня",
+//                "нейрогимнастика",
+//                "свечеварения",
+//                "флористика",
+//                "вальс",
+//                "цигун",
+//                "саундхилинг",
+//                "рпп",
+//                "самообразование",
+//                "аюрведа",
+//                "ферментация",
+//                "спидкубинг",
+//                "скальпинг",
+//                "леттеринг",
+//                "конфликтология",
+//                "как стать коучем",
+//                "основы правильного питания",
 //                "лепка",
-//                "математике",
-//                "русский",
-//                "химия",
+//                "геометрия",
+//                "подготовка к егэ по русскому языку",
+//                "подготовка к егэ по химии",
+//                "подготовка к егэ по английскому",
+//                "подготовка к егэ по информатике",
+//                "подготовка к ЕГЭ по географии",
+//                "подготовка к ЕГЭ по истории",
+//                "подготовка к ЕГЭ по испанскому",
+//                "подготовка к ЕГЭ по французскому",
+//                "подготовка к ЕГЭ по немецкому",
+//                "подготовка к ЕГЭ по обществ",
+//                "подготовка к ЕГЭ по базовой",
+//                "scrum-мастер",
+//                "Project",
+//                "яндекс директ",
+//                "яндекс метрика",
+//                "роуп скиппинг",
+//                "бросаем курить",
+//                "госуслуги",
 //                "agile",
-//                "пресс",
+//                "рельефный пресс",
 //                "шахматы",
-//                "ремонт",
-//                "развод",
+//                "ремонт телефонов",
+//                "развод без",
 //                "ведущим",
-//                "волос"
+//                "секрет красивых волос"
         };
 
         for (int i = 0; i < Product.length; i++) {
@@ -147,8 +187,11 @@ public class Product extends Driver {
                 setClickAdd();
                 modal.setKursSuccesfullAdd();
                 modal.clickStay();
-                PromoCode.doubleClick(driver);
+//                PromoCode.doubleClick(driver);
                 System.out.println(Product[i]);
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                Thread.sleep(220);
+                js.executeScript("arguments[0].value='';", inputSearch);
 //        System.out.println(error.getText().trim());
 //        doubleClick(driver);
             }
@@ -207,10 +250,13 @@ public class Product extends Driver {
         inputSearch.sendKeys(Keys.CLEAR);
     }
 
-    public static void diet() {
+    public static void diet(WebDriver driver) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         inputSearch.sendKeys("рацион");
         product.isDisplayed();
         product.click();
+        setClickAdd();
+        wait.until(visibilityOfElementLocated(By.cssSelector("._content_1l2kq_17")));
     }
 
     @FindBy(css = ".sc-kuVLHQ.hSxfpw")
@@ -225,18 +271,18 @@ public class Product extends Driver {
     @FindBy(css = "._PurschasedProductCard_8eydn_1")
     private static WebElement firstProduct;
 
-    public static void clickFirstProduct(){
+    public static void clickFirstProduct() {
         firstProduct.click();
     }
 
     @FindBy(css = ".sc-ksCcjW.kpvfmj.my_courses_step8")
     private static WebElement startLessons;
 
-    public static void getStartLesson(){
+    public static void getStartLesson() {
         startLessons.click();
     }
 
-    public static void clickBtnFromStartLesson(){
+    public static void clickBtnFromStartLesson() {
         clickFirstProduct();
         getStartLesson();
     }
@@ -244,7 +290,7 @@ public class Product extends Driver {
     @FindBy(css = ".sc-bXWnss.iqwUOp")
     private static WebElement atrHrefFromLesson;
 
-    public static String getArtHref(){
+    public static String getArtHref() {
         return atrHrefFromLesson.getDomAttribute("href");
     }
 

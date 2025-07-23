@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.tutor.page.*;
 
@@ -48,12 +49,14 @@ public class Hybrid {
     @DisplayName("Hybrid successful")
     public void Hybrid_successful() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");                     //переход по гибридной ссылке
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel?aff_rid=1012_EHNq");                     //переход по гибридной ссылке
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));                                     //ожидание появления кнопки начать обучение
         PayMain.clickBtnStart();                                                                             //кликнуть по кнопке
         PayMain.getDostup();                                                                                // ожидание на появления поля для ввода почты
+        System.out.println("Оплата с продукта Excel за 1 руб Hybrid RECURRING: " + LoginAndPass.textEmail());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".order_offer__vyM7e > form > p")));
         iframe.getIframeForLand(driver); //заполнение iframe валидными данными тестовой карты clouda + заход в ЛК с заменой пароля
-        driver.get("https://admin.dev.tutorplace.ru/");                                                      //переход в админку deva
+        driver.get("https://admin.ttplace.ru/");                                                      //переход в админку deva
         devAdmin.workWithOrderHybrid(driver);                                                                //работа в админке с созданным заказом
         Assert.assertEquals("290,00 ₽", driver.findElements(By.cssSelector(".tableRow__item")).get(50).getText());
         Assert.assertEquals("Успешный", driver.findElements(By.cssSelector(".tableRow__item.tableRow__item--m")).get(3).getText());
@@ -65,12 +68,14 @@ public class Hybrid {
     @DisplayName("Hybrid successful Refund Admin")
     public void Hybrid_successful_refund_admin() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel?aff_rid=1012_EHNq");
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
+        System.out.println("Оплата с продукта Excel за 1 руб Hybrid PREPAID_UNSUBSCRIBE: " + LoginAndPass.textEmail());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".order_offer__vyM7e > form > p")));
         iframe.getIframeForLand(driver);
-        driver.get("https://admin.dev.tutorplace.ru/");
+        driver.get("https://admin.ttplace.ru/");
         devAdmin.workWithOrderHybrid(driver);
         devAdmin.change_subscription(driver);
         Assert.assertEquals("327,00 ₽", driver.findElements(By.cssSelector(".tableRow__item")).get(65).getText());

@@ -157,7 +157,7 @@ public class PayMain extends Driver {
         Pay.click();
     }
 
-    @FindBy(css = "div.repeat-action > button > div")
+    @FindBy(css = ".repeat-action > button > div")
     private static WebElement success;
 
     public static void btnSuccess() {

@@ -81,7 +81,7 @@ public class ClientPrime extends Driver {
         return nameSearch.getText();
     }
 
-    @FindBy(css = "div.sc-hPbuba.kcUBru > h4")
+    @FindBy(css = ".sc-fcLdOd.hZFCCf")
     private static WebElement textPremium;
 
     public static String setTextPremium() {

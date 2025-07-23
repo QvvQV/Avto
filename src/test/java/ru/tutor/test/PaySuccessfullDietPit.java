@@ -60,7 +60,7 @@ public class PaySuccessfullDietPit {
     @DisplayName("Success Pay from Diet page")
     public void SuccessPayFromDietPage(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        driver.get("https://dev.tutorplace.ru/catalog/product/pitanie");
+        driver.get("https://ttplace.ru/catalog/product/pitanie");
         PayFromIframe();
         wait.until(numberOfElementsToBeMoreThan(By.tagName("input"),5));
         LoginAndPass.registrationFromBild();

@@ -9,12 +9,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.tutor.page.*;
 
 import java.time.Duration;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class PaySuccessfullTinkoff {
 
@@ -43,8 +45,6 @@ public class PaySuccessfullTinkoff {
         driver = null;
     }
 
-//    T-Bank
-
     @Test
     @DisplayName("Registration on website New User + Success Pay")
     public void RegistrationOnWebsite() {
@@ -64,6 +64,8 @@ public class PaySuccessfullTinkoff {
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
+        System.out.println("Оплата с продукта Excel за 1 руб: " + LoginAndPass.textEmail());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".order_offer__vyM7e > form > p")));
 //        Card.visibleTextError();
         iframe.getIframeForLand(driver);
     }
@@ -79,11 +81,13 @@ public class PaySuccessfullTinkoff {
         driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
         wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
         LoginAndPass.inputEmail();
+        System.out.println("Оплата с главной за 1 руб: " + LoginAndPass.textEmail());
         PayMain.setBtnOpen1Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
         iframe.getIframeForLand(driver);
     }
 
-        @Test
+    @Test
     @DisplayName("Registration on main 99 rub")
     public void RegistrationOnMain99Rub() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -92,7 +96,9 @@ public class PaySuccessfullTinkoff {
         PayMain.clickBuyLiteMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrah4flb:")));
         LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 99 руб: " + LoginAndPass.textEmail());
         PayMain.setBtnOpen99Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
         iframe.getIframeForLand(driver);
     }
 
@@ -105,7 +111,9 @@ public class PaySuccessfullTinkoff {
         PayMain.clickBuyPremiumMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrih4flb:")));
         LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 399 руб: " + LoginAndPass.textEmail());
         PayMain.setBtnOpen99Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
         iframe.getIframeForLand(driver);
     }
 
@@ -118,11 +126,13 @@ public class PaySuccessfullTinkoff {
         PayMain.clickBuyAllMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrqh4flb:")));
         LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 3990 руб: " + LoginAndPass.textEmail());
         PayMain.setBtnOpen99Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
         iframe.getIframeForLand(driver);
     }
 
-        @Test
+    @Test
     @DisplayName("Registration on main 3990 rub Shares")
     public void RegistrationOnMain3990RubShares() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -131,7 +141,9 @@ public class PaySuccessfullTinkoff {
         PayMain.clickBuyAllMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrqh4flb:")));
         LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 3990 руб Долями: " + LoginAndPass.textEmail());
         PayMain.setBtnOpenShares();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
         iframe.getIframeForLand(driver);
     }
 

@@ -9,13 +9,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.tutor.page.*;
 
 import java.time.Duration;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class PaySuccessfull {
 
@@ -44,75 +45,123 @@ public class PaySuccessfull {
         driver = null;
     }
 
-//    T-Bank
-
     @Test
     @DisplayName("Registration on website New User + Success Pay")
     public void RegistrationOnWebsite() {
 //        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        driver.get("https://client.dev.tutorplace.ru/register");
+        driver.get("https://client.ttplace.ru/register");
         LoginAndPass.registrationNewUser();
         iframe.getIframeForUserRegistration(driver);
         String title0 = driver.getTitle();
         Assert.assertEquals("Оформить подписку | TutorPlace", title0);
     }
 
-    @Test
-    @DisplayName("Success Pay from Excel page")
-    public void SuccessPayFromExcelPage() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel");
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q");
-
-        wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
-        PayMain.clickBtnStart();
-        PayMain.getDostup();
-//        Card.visibleTextError();
-        iframe.getIframeForLand(driver);
-    }
-
     //https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U - CPA
     //https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S - Гибрид
 //    https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q - RevShare
 
-//    Sber
     @Test
     @DisplayName("Success Pay from Excel page from Sber")
     public void SuccessPayFromExcelPageFromSber() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        driver.get("https://dev.tutorplace.ru/catalog/product/excel");
-
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5U");
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S");
-//        driver.get("https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q");
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel");
         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
         PayMain.clickBtnStart();
         PayMain.getDostup();
+        System.out.println("Оплата с продукта Excel за 1 руб: " + LoginAndPass.textEmail());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".order_offer__vyM7e > form > p")));
         iframe.getHandlesFromPageExcelCardSber(driver);
     }
 
     @Test
-    @DisplayName("email")
-    public void email(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-        driver.get("https://www.fakemail.net/");
-        wait.until(visibilityOf(LoginAndPass.mail));
-
-
-        String nameEmails = LoginAndPass.mail();
-//        System.out.println(nameEmail.getCssValue("//div[@data-email]"));
-        System.out.println(nameEmails);
-        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel");
-         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
-        PayMain.clickBtnStart();
-        PayMain.getMailDostup();
-
-//        List<> nameEmails = new ArrayList<>();
-
+    @DisplayName("Registration on main 1 rub")
+    public void RegistrationOnMain1Rub() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
+        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        LoginAndPass.inputEmail();
+        System.out.println("Оплата с главной за 1 руб: " + LoginAndPass.textEmail());
+        PayMain.setBtnOpen1Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".form_wrapper__P2PxW > form > p.mt-\\[-20px\\].text-\\[16px\\].text-red-500.text-center")));
+        iframe.getHandlesFromPageExcelCardSber(driver);
     }
 
+    @Test
+    @DisplayName("Registration on main 99 rub")
+    public void RegistrationOnMain99Rub() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
+        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        PayMain.clickBuyLiteMain(driver);
+        wait.until(visibilityOfElementLocated(By.id("radix-:Rrah4flb:")));
+        LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 99 руб: " + LoginAndPass.textEmail());
+        PayMain.setBtnOpen99Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
+        iframe.getHandlesFromPageExcelCardSber(driver);
+    }
 
+    @Test
+    @DisplayName("Registration on main 399 rub")
+    public void RegistrationOnMain399Rub() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
+        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        PayMain.clickBuyPremiumMain(driver);
+        wait.until(visibilityOfElementLocated(By.id("radix-:Rrih4flb:")));
+        LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 399 руб: " + LoginAndPass.textEmail());
+        PayMain.setBtnOpen99Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
+        iframe.getHandlesFromPageExcelCardSber(driver);
+    }
+
+    @Test
+    @DisplayName("Registration on main 3990 rub")
+    public void RegistrationOnMain3990Rub() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
+        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        PayMain.clickBuyAllMain(driver);
+        wait.until(visibilityOfElementLocated(By.id("radix-:Rrqh4flb:")));
+        LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 3990 руб: " + LoginAndPass.textEmail());
+        PayMain.setBtnOpen99Rub();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
+        iframe.getHandlesFromPageExcelCardSber(driver);
+    }
+
+    @Test
+    @DisplayName("Registration on main 3990 rub Shares")
+    public void RegistrationOnMain3990RubShares() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
+        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        PayMain.clickBuyAllMain(driver);
+        wait.until(visibilityOfElementLocated(By.id("radix-:Rrqh4flb:")));
+        LoginAndPass.getEmailFromLite();
+        System.out.println("Оплата с главной за 3990 руб Долями: " + LoginAndPass.textEmail());
+        PayMain.setBtnOpenShares();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".buy-modal_btnGroups__l9_cj > p")));
+        iframe.getHandlesFromPageExcelCardSber(driver);
+    }
+
+//    @Test
+//    @DisplayName("email")
+//    public void email(){
+//        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+//        driver.get("https://www.fakemail.net/");
+//        wait.until(visibilityOf(LoginAndPass.mail));
+//
+//
+//        String nameEmails = LoginAndPass.mail();
+////        System.out.println(nameEmail.getCssValue("//div[@data-email]"));
+//        System.out.println(nameEmails);
+//        driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel");
+//         wait.until(elementToBeClickable(By.cssSelector(".font-inter")));
+//        PayMain.clickBtnStart();
+//        PayMain.getMailDostup();
+
+//        List<> nameEmails = new ArrayList<>();
 
 }

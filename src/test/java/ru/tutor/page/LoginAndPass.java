@@ -40,6 +40,10 @@ public class LoginAndPass extends Driver {
 //        email.sendKeys("revshareSber@emaily3.pro");
     }
 
+    public static String textEmail() {
+        return email.getDomAttribute("value");
+    }
+
     @FindBy(id = "email")
     public static WebElement mail;
 
@@ -52,7 +56,7 @@ public class LoginAndPass extends Driver {
         email.sendKeys(mails);
     }
 
-    private static String emails() {
+    public static String emails() {
         return faker.internet().emailAddress();
     }
 
@@ -62,15 +66,22 @@ public class LoginAndPass extends Driver {
     private static WebElement emailReg;
 
     public static void getEmail() {
-//        emailReg.sendKeys("OrderDelete6@test.ru");
-//        emailReg.sendKeys("tp5052_2@test.ru");
         emailReg.sendKeys(emails());
     }
 
-        @FindBy(css = ".buy-modal_formInput__3OfQ8")
+    public static void getEmailStatic() {
+//        emailReg.sendKeys("deleteprod@test.ru"); //- прод
+        emailReg.sendKeys("tp5052_2@test.ru");
+    }
+
+    public static void getEmailForError() {
+        emailReg.sendKeys("1");
+    }
+
+    @FindBy(css = ".buy-modal_formInput__3OfQ8")
     private static WebElement emailFromLite;
 
-        public static void getEmailFromLite() {
+    public static void getEmailFromLite() {
         emailFromLite.sendKeys(emails());
     }
 
@@ -148,6 +159,15 @@ public class LoginAndPass extends Driver {
     public static void registrationUser() {
         try {
             getEmail();
+            getPassword();
+            ClientPrime.btnEnter();
+        } catch (NoSuchElementException e) {
+        }
+    }
+
+    public static void registrationUserStatic() {
+        try {
+            getEmailStatic();
             getPassword();
             ClientPrime.btnEnter();
         } catch (NoSuchElementException e) {

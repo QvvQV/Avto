@@ -1,6 +1,7 @@
 package ru.tutor.page;
 
 import com.github.dockerjava.api.model.Driver;
+import com.github.javafaker.Faker;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -9,11 +10,15 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.Objects;
+import java.util.Locale;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBeMoreThan;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static ru.tutor.test.Club.driver;
+
 
 public class ClubPage extends Driver {
+
+    private static final Faker faker = new Faker(new Locale("ru"));
 
     public ClubPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
@@ -27,7 +32,8 @@ public class ClubPage extends Driver {
         return (myDetails.isDisplayed());
     }
 
-    @FindBy(css = "._danger_1ery5_29")
+    @FindBy(css = "._radioGroup_1ae8c_36 > h4")
+//    @FindBy(css = "._danger_752pl_33")
     private static WebElement allFields;
 
     public static String getAllFields() {
@@ -38,10 +44,10 @@ public class ClubPage extends Driver {
     private static WebElement fullName;
 
     public static void inputFullName() {
-        fullName.sendKeys("Дуся Лопатин Ибрагимовна");
+        fullName.sendKeys(faker.name().fullName());
     }
 
-    public static String atrInputFullName(){
+    public static String atrInputFullName() {
         return fullName.getDomAttribute("value");
     }
 
@@ -49,7 +55,7 @@ public class ClubPage extends Driver {
         fullName.sendKeys(Keys.PAGE_DOWN);
     }
 
-    @FindBy(css = "#root > div > div.sc-btdwOF.iXpDDK > div._MemberClubRequisite_tklds_1 > div > div._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(2) > span")
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(2) > span")
     private static WebElement errorFullName;
 
     public static String getErrorFullName() {
@@ -60,10 +66,11 @@ public class ClubPage extends Driver {
     private static WebElement inn;
 
     public static void inputInn() {
-        inn.sendKeys("123456789011");
+
+        inn.sendKeys(faker.number().digits(12));
     }
 
-    public static String atrInputInn(){
+    public static String atrInputInn() {
         return inn.getDomAttribute("placeholder");
     }
 
@@ -71,7 +78,7 @@ public class ClubPage extends Driver {
     private static WebElement bik;
 
     public static void inputBik() {
-        bik.sendKeys("123456789");
+        bik.sendKeys(faker.number().digits(9));
     }
 
     public static void pgDnBik() {
@@ -82,14 +89,14 @@ public class ClubPage extends Driver {
     private static WebElement bankAccount;
 
     public static void inputBankAccount() {
-        bankAccount.sendKeys("12345678912345678912");
+        bankAccount.sendKeys(faker.number().digits(20));
     }
 
     @FindBy(name = "bankKorAccount")
     private static WebElement bankKorAccount;
 
     public static void inputBankKorAccount() {
-        bankKorAccount.sendKeys("12345678912345678912");
+        bankKorAccount.sendKeys(faker.number().digits(20));
     }
 
     @FindBy(name = "bankName")
@@ -103,14 +110,14 @@ public class ClubPage extends Driver {
     private static WebElement passSerial;
 
     public static void inputPassSerial() {
-        passSerial.sendKeys("4118");
+        passSerial.sendKeys(faker.number().digits(4));
     }
 
     @FindBy(name = "passNumber")
     private static WebElement passNumber;
 
     public static void inputPassNumber() {
-        passNumber.sendKeys("454785");
+        passNumber.sendKeys(faker.number().digits(6));
     }
 
     @FindBy(name = "passIssuer")
@@ -123,77 +130,87 @@ public class ClubPage extends Driver {
     @FindBy(name = "passIssued")
     private static WebElement passIssued;
 
-    public static void inputPassIssued() {
-        passIssued.click();
-        passIssued.sendKeys("30121958");
-        //        String[] Number = {
-//                "3",
-//                "0",
-//                "1",
-//                "2",
-//                "1",
-//                "9",
-//                "5",
-//                "8"
-//        };
-//
-//        for (int i = 0; i < Number.length; i++) {
-//            passIssued.sendKeys(Number[i]);
-//        }
+    public static void inputPassIssued() throws InterruptedException {
+//        JavascriptExecutor js = (JavascriptExecutor) driver;
+//        js.executeScript("arguments[0].value='30.12.1958';",passIssued);
+//        new Actions (driver).moveToElement(passIssued).click().perform();
+//        passIssued.sendKeys("30121958");
+        String[] Number = {
+                "3",
+                "0",
+                "1",
+                "2",
+                "1",
+                "9",
+                "5",
+                "8"
+        };
+
+        for (int i = 0; i < Number.length; i++) {
+            passIssued.sendKeys(Number[i]);
+            Thread.sleep(150);
+        }
     }
 
+
     public static void pgDwnPassIssued() {
-        passIssued.sendKeys(Keys.PAGE_DOWN);
+        passDepartment.sendKeys(Keys.PAGE_DOWN);
     }
 
     @FindBy(name = "passDepartment")
     private static WebElement passDepartment;
 
-    public static void inputPassDepartment() {
-        passDepartment.click();
-        passDepartment.sendKeys("514875");
-//        String[] Number = {
-//                "5",
-//                "1",
-//                "4",
-//                "8",
-//                "7",
-//                "5",
-//        };
+    public static void inputPassDepartment() throws InterruptedException {
 //        passDepartment.click();
-//        for (int i = 0; i < Number.length; i++) {
-//
-//            passDepartment.sendKeys(Number[i]);
-//        }
+//        JavascriptExecutor js = (JavascriptExecutor) driver;
+//        js.executeScript("arguments[0].value='514875';",passDepartment);
+//        passDepartment.sendKeys( "514875");
+
+        String[] Number = {
+                "5",
+                "1",
+                "4",
+                "8",
+                "7",
+                "5",
+        };
+        for (int i = 0; i < Number.length; i++) {
+
+            passDepartment.sendKeys(Number[i]);
+            Thread.sleep(150);
+        }
     }
 
     @FindBy(name = "dateBirth")
     private static WebElement dateBirth;
 
-    public static void inputDateBirth() {
-        dateBirth.click();
-        dateBirth.sendKeys("27071950");
-//        String[] Number = {
-//                "2",
-//                "7",
-//                "0",
-//                "7",
-//                "1",
-//                "9",
-//                "5",
-//                "0"
-//        };
+    public static void inputDateBirth() throws InterruptedException {
+//        JavascriptExecutor js = (JavascriptExecutor) driver;
+//        js.executeScript("arguments[0].value='27.07.1950';",dateBirth);
 //        dateBirth.click();
-//        for (int i = 0; i < Number.length; i++) {
-//            dateBirth.sendKeys(Number[i]);
-//        }
+//        dateBirth.sendKeys("27071950");
+        String[] Number = {
+                "2",
+                "7",
+                "0",
+                "7",
+                "1",
+                "9",
+                "5",
+                "0"
+        };
+//        dateBirth.click();
+        for (int i = 0; i < Number.length; i++) {
+            dateBirth.sendKeys(Number[i]);
+            Thread.sleep(150);
+        }
     }
 
     @FindBy(name = "addressRegister")
     private static WebElement addressRegister;
 
     public static void inputAddressRegister() {
-        addressRegister.sendKeys("4012252, Санкт-Петергбург, Богач, д5");
+        addressRegister.sendKeys("4012252, Санкт-Петербург, Богач, д5");
     }
 
     @FindBy(name = "isSameAddress")
@@ -218,53 +235,56 @@ public class ClubPage extends Driver {
 //        addressFact.sendKeys("4012252, Санкт-Петергбург, Богач, д5");
 //    }
 
-    @FindBy(css = "#root > div.sc-fggMnX.dQvEiM > div.sc-knHXcE.kIqAIF > div._MemberClubRequisite_tklds_1 > div > div._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(12) > input[type=text]")
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(12) > input[type=text]")
     private static WebElement numberPhoneSz;
 
-    public static void inputNumberPhoneIP() {
-        numberPhoneSz.click();
-        numberPhoneSz.sendKeys("9548562546");
-        //        String[] Number = {
-//                "9",
-//                "5",
-//                "4",
-//                "8",
-//                "5",
-//                "6",
-//                "2",
-//                "5",
-//                "4",
-//                "6"
-//        };
-//
-//        for (int i = 0; i < Number.length; i++) {
-//            numberPhoneSz.sendKeys(Number[i]);
-//        }
+    public static void inputNumberPhoneIP() throws InterruptedException {
+//        numberPhoneSz.click();
+//        numberPhoneSz.sendKeys("9548562546");
+        String[] Number = {
+                "9",
+                "5",
+                "4",
+                "8",
+                "5",
+                "6",
+                "2",
+                "5",
+                "4",
+                "6"
+        };
+
+        for (int i = 0; i < Number.length; i++) {
+            numberPhoneSz.sendKeys(Number[i]);
+            Thread.sleep(150);
+        }
     }
 
-    @FindBy(css = "#root > div > div.sc-knHXcE.kIqAIF > div._MemberClubRequisite_tklds_1 > div > div._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(9) > input[type=text]")
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(9) > input[type=text]")
     private static WebElement numberPhoneIP;
 
-    public static void inputNumberPhoneSz() {
-        numberPhoneIP.click();
-        numberPhoneIP.sendKeys("9548562546");
-//        String[] Number = {
-//                "9",
-//                "5",
-//                "4",
-//                "8",
-//                "5",
-//                "6",
-//                "2",
-//                "5",
-//                "4",
-//                "6"
-//        };
+    public static void inputNumberPhoneSz() throws InterruptedException {
 //        numberPhoneIP.click();
-//
-//        for (int i = 0; i < Number.length; i++) {
-//            numberPhoneIP.sendKeys(Number[i]);
-//        }
+//        numberPhoneIP.sendKeys("9548562546");
+        String[] Number = {
+                "9",
+                "5",
+                "4",
+                "8",
+                "5",
+                "6",
+                "2",
+                "5",
+                "4",
+                "6"
+        };
+
+
+        for (int i = 0; i < Number.length; i++) {
+//            numberPhoneIP.click();
+            numberPhoneIP.sendKeys(Number[i]);
+            Thread.sleep(150);
+        }
     }
 
     @FindBy(name = "idEdo")
@@ -286,7 +306,7 @@ public class ClubPage extends Driver {
 //        }
     }
 
-    @FindBy(css = "#root > div.sc-fggMnX.dQvEiM > div.sc-knHXcE.kIqAIF > div._MemberClubRequisite_tklds_1 > div > div._wrapper_1ery5_1 > form > div:nth-child(4) > div > label > input[type=checkbox]")
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(4) > div > label > input[type=checkbox]")
     private static WebElement success;
 
     public static void getSuccess() {
@@ -317,15 +337,21 @@ public class ClubPage extends Driver {
     }
 
     public static void btnDeleteDetail() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        wait.until(visibilityOfElementLocated(By.cssSelector("._delete_1ery5_86")));
+        wait.until(elementToBeClickable(By.cssSelector("._delete_1ery5_86")));
         deleteDetails.isDisplayed();
         deleteDetails.click();
     }
 
-        @FindBy(css = "._delete_8dmmy_86")
+    @FindBy(css = "._delete_8dmmy_86")
     private static WebElement deleteDetailsIp;
 
     public static String textDeleteDetailsIP() {
-        deleteDetailsIp.isDisplayed();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        wait.until(visibilityOfElementLocated(By.cssSelector("._delete_8dmmy_86")));
+        wait.until(elementToBeClickable(By.cssSelector("._delete_8dmmy_86")));
+//        deleteDetailsIp.isDisplayed();
         return deleteDetailsIp.getText().trim();
     }
 
@@ -338,6 +364,9 @@ public class ClubPage extends Driver {
     private static WebElement btnDeleteFromModal;
 
     public static void clickBtnDeleteFromModal() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(8));
+        wait.until(visibilityOfElementLocated(By.cssSelector("._Button_kio3a_1._btn_1n48r_45._danger_kio3a_110._fullWidth_kio3a_195")));
+        wait.until(elementToBeClickable(By.cssSelector("._Button_kio3a_1._btn_1n48r_45._danger_kio3a_110._fullWidth_kio3a_195")));
         try {
             btnDeleteFromModal.click();
         } catch (NoSuchElementException e) {
@@ -359,6 +388,213 @@ public class ClubPage extends Driver {
         return question.getText().trim();
     }
 
+    //Error самозанятый
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(2) > span")
+    private static WebElement error1;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(3) > span")
+    private static WebElement error2;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(4) > span")
+    private static WebElement error3;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(5) > span")
+    private static WebElement error4;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(6) > span")
+    private static WebElement error5;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(1) > div:nth-child(7) > span")
+    private static WebElement error6;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(2) > span")
+    private static WebElement error7;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(3) > span")
+    private static WebElement error8;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(4) > span")
+    private static WebElement error9;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(5) > span")
+    private static WebElement error10;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(7) > span")
+    private static WebElement error11;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(8) > span")
+    private static WebElement error12;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(9) > span")
+    private static WebElement error13;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(11) > span")
+    private static WebElement error14;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(12) > span")
+    private static WebElement error15;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(13) > span")
+    private static WebElement error16;
+
+    @FindBy(css = "._wrapper_1ery5_1 > form > div:nth-child(2) > div:nth-child(6) > span")
+    private static WebElement error17;
+
+    public static String getError1() {
+        return error1.getText().trim();
+    }
+
+    public static String getError2() {
+        return error2.getText().trim();
+    }
+
+    public static String getError3() {
+        return error3.getText().trim();
+    }
+
+    public static String getError4() {
+        return error4.getText().trim();
+    }
+
+    public static String getError5() {
+        return error5.getText().trim();
+    }
+
+    public static String getError6() {
+        return error6.getText().trim();
+    }
+
+    public static String getError7() {
+        return error7.getText().trim();
+    }
+
+    public static String getError8() {
+        return error8.getText().trim();
+    }
+
+    public static String getError9() {
+        return error9.getText().trim();
+    }
+
+    public static String getError10() {
+        return error10.getText().trim();
+    }
+
+    public static String getError11() {
+        return error11.getText().trim();
+    }
+
+    public static String getError12() {
+        return error12.getText().trim();
+    }
+
+    public static String getError13() {
+        return error13.getText().trim();
+    }
+
+    public static String getError14() {
+        return error14.getText().trim();
+    }
+
+    public static String getError15() {
+        return error15.getText().trim();
+    }
+
+    public static String getError16() {
+        return error16.getText().trim();
+    }
+
+    public static String getError17() {
+        return error17.getText().trim();
+    }
+
+    //Error Индивидуальный предприниматель
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(2) > span")
+    private static WebElement errorIP1;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(3) > span")
+    private static WebElement errorIP2;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(4) > span")
+    private static WebElement errorIP3;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(5) > span")
+    private static WebElement errorIP4;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(6) > span")
+    private static WebElement errorIP5;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(8) > span")
+    private static WebElement errorIP6;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(9) > span")
+    private static WebElement errorIP7;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(10) > span")
+    private static WebElement errorIP8;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(11) > span")
+    private static WebElement errorIP9;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(12) > span")
+    private static WebElement errorIP10;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(13) > span")
+    private static WebElement errorIP11;
+
+    @FindBy(css = "._wrapper_8dmmy_1 > form > div:nth-child(1) > div:nth-child(14) > span")
+    private static WebElement errorIP12;
+
+    public static String getErrorIP1() {
+        return errorIP1.getText().trim();
+    }
+
+    public static String getErrorIP2() {
+        return errorIP2.getText().trim();
+    }
+
+    public static String getErrorIP3() {
+        return errorIP3.getText().trim();
+    }
+
+    public static String getErrorIP4() {
+        return errorIP4.getText().trim();
+    }
+
+    public static String getErrorIP5() {
+        return errorIP5.getText().trim();
+    }
+
+    public static String getErrorIP6() {
+        return errorIP6.getText().trim();
+    }
+
+    public static String getErrorIP7() {
+        return errorIP7.getText().trim();
+    }
+
+    public static String getErrorIP8() {
+        return errorIP8.getText().trim();
+    }
+
+    public static String getErrorIP9() {
+        return errorIP9.getText().trim();
+    }
+
+    public static String getErrorIP10() {
+        return errorIP10.getText().trim();
+    }
+
+    public static String getErrorIP11() {
+        return errorIP11.getText().trim();
+    }
+
+    public static String getErrorIP12() {
+        return errorIP12.getText().trim();
+    }
+
+
     // Самозанятый
     public static void inpullAllFields(WebDriver driver) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -374,13 +610,14 @@ public class ClubPage extends Driver {
         inputPassNumber();
         inputPassIssuer();
         inputPassIssued();
+        pgDwnPassIssued();
         inputPassDepartment();
         inputDateBirth();
-        pgDwnPassIssued();
+
         inputAddressRegister();
         inputIsSameAddress();
         Assert.assertEquals(true, displaedAddressFact());
-        Assert.assertEquals("4012252, Санкт-Петергбург, Богач, д5", inputAddressFact());
+        Assert.assertEquals("4012252, Санкт-Петербург, Богач, д5", inputAddressFact());
         LoginAndPass.getEmail();
         inputNumberPhoneIP();
         inputIdEdo();
@@ -398,7 +635,7 @@ public class ClubPage extends Driver {
         clickBtnDeleteFromModal();
         Thread.sleep(1500);
         wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 58));
-        System.out.println("атрибут=" + atrInputFullName());
+        System.out.println("атрибут поля полное Имя =" + atrInputFullName());
         btnIndividEntrep();
     }
 
@@ -409,7 +646,7 @@ public class ClubPage extends Driver {
         deleteDetails.sendKeys(Keys.PAGE_DOWN);
     }
 
-        public static void scrollToIp(WebDriver driver) {
+    public static void scrollToIp(WebDriver driver) {
         new Actions(driver)
                 .scrollToElement(deleteDetailsIp)
                 .perform();
@@ -457,7 +694,7 @@ public class ClubPage extends Driver {
         inputAddressRegister();
         inputIsSameAddress();
         Assert.assertEquals(true, displaedAddressFact());
-        Assert.assertEquals("4012252, Санкт-Петергбург, Богач, д5", inputAddressFact());
+        Assert.assertEquals("4012252, Санкт-Петербург, Богач, д5", inputAddressFact());
         LoginAndPass.getEmail();
         inputNumberPhoneSz();
         inputBankAccount();
@@ -480,104 +717,128 @@ public class ClubPage extends Driver {
         clickBtnDeleteFromModal();
         Thread.sleep(1500);
         wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 50));
-        System.out.println("атрибут=" + atrInputFullName());
+        System.out.println("атрибут поля полное Имя =" + atrInputFullName());
         btnSelfEmployed();
     }
 
-    public static void errorSz(WebDriver driver){
+    public static void errorSz() {
         modal.modalTelephone();
         fullName.click();
         inn.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(5).getText());
-        pgDwnFullName();
         bik.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(6).getText());
+
+        Assert.assertEquals("Это поле обязательное", getError1());
+        Assert.assertEquals("Это поле обязательное", getError2());
+
         inn.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 12 символов", driver.findElements(By.tagName("span")).get(6).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(7).getText());
         bankAccount.click();
-        bik.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 9 символов",driver.findElements(By.tagName("span")).get(7).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(8).getText());
-        bankAccount.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 20 символов",driver.findElements(By.tagName("span")).get(8).getText());
         bankKorAccount.click();
+        Assert.assertEquals("Поле должно иметь 12 символов", getError2());
+        Assert.assertEquals("Это поле обязательное", getError3()); //bankAcc
+        Assert.assertEquals("Это поле обязательное", getError4());
+        pgDwnFullName();
+
         bankName.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(9).getText());
-        bankKorAccount.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 20 символов",driver.findElements(By.tagName("span")).get(9).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(10).getText());
         passSerial.click();
         passNumber.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(11).getText());
-        passSerial.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 4 символов",driver.findElements(By.tagName("span")).get(11).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(12).getText());
         passIssuer.click();
+
+        Assert.assertEquals("Это поле обязательное", getError5());
+        Assert.assertEquals("Это поле обязательное", getError6());
+        Assert.assertEquals("Это поле обязательное", getError7());
+        Assert.assertEquals("Это поле обязательное", getError8());
+
+        bik.sendKeys("1");
+        bankAccount.sendKeys("1");
+        bankKorAccount.sendKeys("1");
+        passSerial.sendKeys("1");
         passNumber.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 6 символов",driver.findElements(By.tagName("span")).get(12).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(13).getText());
+        Assert.assertEquals("Поле должно иметь 9 символов", getError3());
+        Assert.assertEquals("Поле должно иметь 20 символов", getError4());
+        Assert.assertEquals("Поле должно иметь 20 символов", getError5());
+        Assert.assertEquals("Поле должно иметь 4 символов", getError7());
+        Assert.assertEquals("Поле должно иметь 6 символов", getError8());
+
         pgDnBik();
+
         passIssued.click();
         passDepartment.click();
-        Assert.assertEquals("Дата выдачи должна быть заполнена корректно",driver.findElements(By.tagName("span")).get(14).getText());
-        passIssued.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 6 символов", driver.findElements(By.tagName("span")).get(15).getText());
-
-        passDepartment.sendKeys("1");
         dateBirth.click();
         addressRegister.click();
-        Assert.assertEquals("Дата выдачи должна быть заполнена корректно",driver.findElements(By.tagName("span")).get(14).getText());
-        Assert.assertEquals("Дата рождения должна быть заполнена корректно",driver.findElements(By.tagName("span")).get(16).getText());
-        dateBirth.sendKeys("1");
-        Assert.assertEquals("Дата рождения должна быть заполнена корректно",driver.findElements(By.tagName("span")).get(16).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(17).getText());
         addressFact.click();
         numberPhoneSz.click();
         idEdo.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(18).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(19).getText());
+
+        Assert.assertEquals("Это поле обязательное", getError9());
+        Assert.assertEquals("Дата выдачи должна быть заполнена корректно", getError10());
+        Assert.assertEquals("Дата рождения должна быть заполнена корректно", getError11());
+        Assert.assertEquals("Это поле обязательное", getError12());
+        Assert.assertEquals("Это поле обязательное", getError13());
+        Assert.assertEquals("Это поле обязательное", getError15());
+        Assert.assertEquals("Поле должно иметь 6 символов", getError17());
+
+        passIssued.sendKeys("1");
+        passDepartment.sendKeys("1");
+        dateBirth.sendKeys("1");
+        LoginAndPass.getEmailForError();
         numberPhoneSz.sendKeys("1");
-        Assert.assertEquals("Введите номер полностью", driver.findElements(By.tagName("span")).get(19).getText());
+
+        Assert.assertEquals("Дата рождения должна быть заполнена корректно", getError11());
+        Assert.assertEquals("Введите корректный адрес", getError14());
+        Assert.assertEquals("Введите номер полностью", getError15());
+        Assert.assertEquals("Это поле обязательное", getError16());
+
     }
 
-        public static void errorIP(WebDriver driver){
+    public static void errorIP() {
         modal.modalTelephone();
         btnIndividEntrep();
         fullName.click();
         ogrnip.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(5).getText());
         pgDwnFullName();
         inn.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(6).getText());
-        ogrnip.sendKeys("1");
-        inn.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 15 символов", driver.findElements(By.tagName("span")).get(6).getText());
-        Assert.assertEquals("Поле должно иметь 12 символов", driver.findElements(By.tagName("span")).get(7).getText());
+
+        Assert.assertEquals("Это поле обязательное", getErrorIP1());
+        Assert.assertEquals("Это поле обязательное", getErrorIP2());
+
         addressRegister.click();
         addressFact.click();
         numberPhoneIP.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(8).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(9).getText());
-        bankAccount.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(10).getText());
+        LoginAndPass.getEmailForError();
+
+        Assert.assertEquals("Это поле обязательное", getErrorIP3());
+        Assert.assertEquals("Это поле обязательное", getErrorIP4());
+        Assert.assertEquals("Это поле обязательное", getErrorIP5());
+        Assert.assertEquals("Введите корректный адрес", getErrorIP6());
+
+        ogrnip.sendKeys("1");
+        inn.sendKeys("1");
         numberPhoneIP.sendKeys("1");
-        Assert.assertEquals("Введите номер полностью", driver.findElements(By.tagName("span")).get(10).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(11).getText());
-        bik.click();
-        bankAccount.sendKeys("1");
-        bik.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 20 символов",driver.findElements(By.tagName("span")).get(11).getText());
-        Assert.assertEquals("Поле должно иметь 9 символов",driver.findElements(By.tagName("span")).get(12).getText());
+
+        Assert.assertEquals("Введите номер полностью", getErrorIP7());
+        Assert.assertEquals("Поле должно иметь 15 символов", getErrorIP2());
+        Assert.assertEquals("Поле должно иметь 12 символов", getErrorIP3());
+
         pgDnBik();
+        bankAccount.click();
+        bik.click();
         bankKorAccount.click();
         bankName.click();
         idEdo.click();
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(13).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(14).getText());
+
+        Assert.assertEquals("Это поле обязательное", getErrorIP8());
+        Assert.assertEquals("Это поле обязательное", getErrorIP9());
+        Assert.assertEquals("Это поле обязательное", getErrorIP10());
+        Assert.assertEquals("Это поле обязательное", getErrorIP11());
+
+        bankAccount.sendKeys("1");
+        bik.sendKeys("1");
         bankKorAccount.sendKeys("1");
-        Assert.assertEquals("Поле должно иметь 20 символов",driver.findElements(By.tagName("span")).get(13).getText());
-        Assert.assertEquals("Это поле обязательное", driver.findElements(By.tagName("span")).get(15).getText());
+
+        Assert.assertEquals("Это поле обязательное", getErrorIP12());
+        Assert.assertEquals("Поле должно иметь 20 символов", getErrorIP8());
+        Assert.assertEquals("Поле должно иметь 9 символов", getErrorIP9());
+        Assert.assertEquals("Поле должно иметь 20 символов", getErrorIP10());
     }
 
 }

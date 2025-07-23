@@ -13,14 +13,13 @@ import ru.tutor.page.*;
 
 import java.time.Duration;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
-import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBeMoreThan;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class PaySuccessfullLite {
 
     public static WebDriver driver;
-//    public static String url = "https://dev.tutorplace.ru/catalog/product/excel";
-//    https://client.dev.tutorplace.ru/login
+//    public static String url = "https://ttplace.ru/catalog/product/excel";
+//    https://client.ttplace.ru/login
 
     @Before
     public void setupAll() {
@@ -44,33 +43,39 @@ public class PaySuccessfullLite {
 
     @Test
     @DisplayName("Downgrade Premium for Lite")
-    public void DowngradePremiumForLite() {
-        iframe.BeforeRegistration(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/settings/subscription");
+    public void DowngradePremiumForLite() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        wait.until(elementToBeClickable(By.tagName("button")));
-        modal.modalDailyCall();
+        iframe.BeforeRegistrationStatic(driver);
+        driver.get("https://client.ttplace.ru/user/catalog");
         modal.modalTelephone();
+        Product.AllProductSearch(driver);
+        driver.get("https://client.ttplace.ru/user/settings/subscription");
+        wait.until(elementToBeClickable(By.tagName("button")));
         System.out.println("Подписка " + ClientLite.text());
         ClientLite.getChangeLite();
         Assert.assertEquals("Тарифный план “Полный доступ” отключен", ClientLite.getTextLite());
+        driver.get("https://client.ttplace.ru/user/main");
+        wait.until(visibilityOfElementLocated(By.cssSelector("._header_i1add_15 > h2")));
     }
 
     @Test
     @DisplayName("Pay Successfull Lite")
-    public void PaySuccessfullLite() {
+    public void PaySuccessfullLite() throws Exception {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-        iframe.BeforeRegistration(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/catalog");
-        modal.modalDailyCall();
+        iframe.BeforeRegistrationStatic(driver);
+        driver.get("https://client.ttplace.ru/user/catalog");
         modal.modalTelephone();
-        Product.ProductSearch(driver);
-        Product.diet();
-        modal.setYes();
-        wait.until(elementToBeClickable(By.cssSelector("div._actions_1ydyj_87 > button:nth-child(1)")));
+//        Product.ProductSearch(driver);
+        Product.diet(driver);
+        wait.until(visibilityOfElementLocated(By.cssSelector("._Button_kio3a_1._fullWidth_kio3a_195")));
+        modal.setYes(driver);
+        wait.until(elementToBeClickable(By.cssSelector("._actions_1ydyj_87 > button:nth-child(1)")));
         modal.getPremiumFor99();
         iframe.getIframe(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/settings/subscription");
+        driver.get("https://client.ttplace.ru/user/main");
+        Product.setDeleteAllProduct(driver);
+        Assert.assertEquals("продуктов больше нет", Product.setDeleteAllProduct(driver));
+        driver.get("https://client.ttplace.ru/user/settings/subscription");
         wait.until(elementToBeClickable(By.tagName("button")));
         Assert.assertEquals("Полный доступ", ClientPrime.setTextPremium());
     }
@@ -78,10 +83,11 @@ public class PaySuccessfullLite {
     @Test
     @DisplayName("delete kurs")
     public void DeleteKurs() throws Exception {
-        iframe.BeforeRegistration(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/catalog");
+        iframe.BeforeRegistrationStatic(driver);
+        driver.get("https://client.ttplace.ru/user/catalog");
+        modal.modalTelephone();
         Product.AllProductSearch(driver);
-        driver.get("https://client.dev.tutorplace.ru/user/my-courses");
+        driver.get("https://client.ttplace.ru/user/my-courses");
         Product.setDeleteAllProduct(driver);
         Assert.assertEquals("продуктов больше нет", Product.setDeleteAllProduct(driver));
 //        Product.setDeleteProduct(driver);
