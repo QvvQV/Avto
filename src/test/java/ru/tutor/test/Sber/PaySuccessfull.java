@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.tutor.page.*;
@@ -26,7 +27,9 @@ public class PaySuccessfull {
 
     @Before
     public void setupAll() {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--incognito");
+        driver = new ChromeDriver(options);
         ClientPrime Client = new ClientPrime(driver);
         PayMain Pay = new PayMain(driver);
         LoginAndPass loginAndPass = new LoginAndPass(driver);

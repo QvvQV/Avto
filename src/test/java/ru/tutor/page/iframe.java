@@ -79,15 +79,15 @@ public class iframe extends Driver {
         Object[] windowHandles = driver.getWindowHandles().toArray();
         driver.getWindowHandles();
         driver.switchTo().window((String) windowHandles[0]);
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("a"), 34));
-        System.out.println(driver.findElements(By.tagName("a")).get(3).getText());
-
-        driver.findElements(By.tagName("a")).get(3).click();
-        Object[] windowHandles1 = driver.getWindowHandles().toArray();
-        driver.getWindowHandles();
-        driver.switchTo().window((String) windowHandles1[0]);
         wait.until(numberOfElementsToBeMoreThan(By.tagName("a"), 15));
-        LoginAndPass.registrationFromExel();
+//        System.out.println(driver.findElements(By.tagName("a")).get(3).getText());
+
+//        driver.findElements(By.tagName("a")).get(3).click();
+//        Object[] windowHandles1 = driver.getWindowHandles().toArray();
+//        driver.getWindowHandles();
+//        driver.switchTo().window((String) windowHandles1[0]);
+//        wait.until(numberOfElementsToBeMoreThan(By.tagName("a"), 15));
+//        LoginAndPass.registrationFromExel();
 //        modal.modalCross();
 //        System.out.println(modal.modalDailyCall());
 //        System.out.println(modal.modalTelephone());

@@ -4,11 +4,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.tutor.page.*;
@@ -24,9 +27,12 @@ public class PaySuccessfullTinkoff {
 //    public static String url = "https://dev.tutorplace.ru/catalog/product/excel";
 //    https://client.dev.tutorplace.ru/login
 
+//    @BeforeEach
     @Before
     public void setupAll() {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--incognito");
+        driver = new ChromeDriver(options);
         ClientPrime Client = new ClientPrime(driver);
         PayMain Pay = new PayMain(driver);
         LoginAndPass loginAndPass = new LoginAndPass(driver);
@@ -38,8 +44,10 @@ public class PaySuccessfullTinkoff {
 //        driver.get(url);
     }
 
+//    @AfterEach
     @After
     public void quitDriver() {
+//        driver.manage().deleteAllCookies();
         driver.close();
         driver.quit();
         driver = null;
@@ -57,6 +65,7 @@ public class PaySuccessfullTinkoff {
     }
 
     @Test
+//    @RepeatedTest(1)
     @DisplayName("Success Pay from Excel page")
     public void SuccessPayFromExcelPage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
