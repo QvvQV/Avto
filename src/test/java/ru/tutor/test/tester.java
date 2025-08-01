@@ -60,11 +60,9 @@ public static String url = TestPage.url;
     public void ShowModalVersionFromTester() {
 
         String expected = "Excel-таблицы для начинающих | Онлайн-курс | TutorPlace";
-        String actual = title();
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, title());
 
         TestPage.clickBtnStart();
-        TestPage.inputEmail();
 
         System.out.println("Оплата с продукта Excel за 1 руб: " + TestPage.atrEmail());
         TestPage.clickCardPageBtn();
