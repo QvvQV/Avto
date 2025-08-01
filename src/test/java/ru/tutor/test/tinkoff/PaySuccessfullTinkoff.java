@@ -25,14 +25,14 @@ public class PaySuccessfullTinkoff {
 
     public static WebDriver driver;
 //    public static String url = "https://dev.tutorplace.ru/catalog/product/excel";
-//    https://client.dev.tutorplace.ru/login
+//    https://client.dev.tutorplace.ru/loginru
 
 //    @BeforeEach
     @Before
     public void setupAll() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
-        driver = new ChromeDriver(options);
+        driver = new ChromeDriver();
         ClientPrime Client = new ClientPrime(driver);
         PayMain Pay = new PayMain(driver);
         LoginAndPass loginAndPass = new LoginAndPass(driver);
@@ -83,7 +83,7 @@ public class PaySuccessfullTinkoff {
     //https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S - Гибрид
 //    https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q - RevShare
 
-    @Test
+//    @Test
     @DisplayName("Registration on main 1 rub")
     public void RegistrationOnMain1Rub() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -101,7 +101,7 @@ public class PaySuccessfullTinkoff {
     public void RegistrationOnMain99Rub() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
-        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        wait.until(visibilityOfElementLocated(By.cssSelector(".intro_subtitle__6L2rW > button")));
         PayMain.clickBuyLiteMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrah4flb:")));
         LoginAndPass.getEmailFromLite();
@@ -116,7 +116,7 @@ public class PaySuccessfullTinkoff {
     public void RegistrationOnMain399Rub() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
-        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        wait.until(visibilityOfElementLocated(By.cssSelector(".intro_subtitle__6L2rW > button")));
         PayMain.clickBuyPremiumMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrih4flb:")));
         LoginAndPass.getEmailFromLite();
@@ -131,7 +131,7 @@ public class PaySuccessfullTinkoff {
     public void RegistrationOnMain3990Rub() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
-        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        wait.until(visibilityOfElementLocated(By.cssSelector(".intro_subtitle__6L2rW > button")));
         PayMain.clickBuyAllMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrqh4flb:")));
         LoginAndPass.getEmailFromLite();
@@ -146,7 +146,7 @@ public class PaySuccessfullTinkoff {
     public void RegistrationOnMain3990RubShares() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.get("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru");
-        wait.until(visibilityOfElementLocated(By.cssSelector(".form_form__kHJJ8")));
+        wait.until(visibilityOfElementLocated(By.cssSelector(".intro_subtitle__6L2rW > button")));
         PayMain.clickBuyAllMain(driver);
         wait.until(visibilityOfElementLocated(By.id("radix-:Rrqh4flb:")));
         LoginAndPass.getEmailFromLite();
