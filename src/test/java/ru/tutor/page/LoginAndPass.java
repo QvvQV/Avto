@@ -1,5 +1,6 @@
 package ru.tutor.page;
 
+import com.codeborne.selenide.SelenideElement;
 import com.github.dockerjava.api.model.Driver;
 import com.github.javafaker.Faker;
 import org.openqa.selenium.NoSuchElementException;
@@ -9,6 +10,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.Locale;
+
+import static com.codeborne.selenide.Selenide.$;
 
 public class LoginAndPass extends Driver {
 
@@ -22,6 +25,14 @@ public class LoginAndPass extends Driver {
 
     @FindBy(css = "input")
     private static WebElement email;
+
+    private static SelenideElement mail = $("[id=\"email\"]");
+    private static SelenideElement password = $("[name=\"password\"]");
+    private static SelenideElement newPass = $("[name=\"newPassword\"]");
+    private static SelenideElement repeatPassword = $("[name=\"repeatPassword\"]");
+    private static SelenideElement name = $("[name=\"name\"]");
+
+//    private static SelenideElement email = $()
 
     public static void inputEmail() {
         email.isDisplayed();
@@ -44,8 +55,9 @@ public class LoginAndPass extends Driver {
         return email.getDomAttribute("value");
     }
 
-    @FindBy(id = "email")
-    public static WebElement mail;
+//    @FindBy(id = "email")
+//    public static WebElement mail;
+
 
     public static String mail() {
         return mail.getText().trim();
@@ -89,8 +101,9 @@ public class LoginAndPass extends Driver {
         emailReg.sendKeys("admin");
     }
 
-    @FindBy(name = "password")
-    private static WebElement password;
+//    @FindBy(name = "password")
+//    private static WebElement password;
+
 
     public static void getPassword() {
         password.sendKeys("12345678");
@@ -100,22 +113,27 @@ public class LoginAndPass extends Driver {
         password.sendKeys("admin");
     }
 
-    @FindBy(name = "newPassword")
-    private static WebElement newPass;
+//    @FindBy(name = "newPassword")
+//    private static WebElement newPass;
+
 
     public static void getNewPass() {
         newPass.sendKeys("12345678");
     }
 
-    @FindBy(name = "repeatPassword")
-    private static WebElement repeatPassword;
+//    @FindBy(name = "repeatPassword")
+//    private static WebElement repeatPassword;
+
+
 
     public static void getRepeat() {
         repeatPassword.sendKeys("12345678");
     }
 
-    @FindBy(name = "name")
-    private static WebElement name;
+//    @FindBy(name = "name")
+//    private static WebElement name;
+
+
 
     public static void getname() {
         name.sendKeys("dfn");

@@ -116,26 +116,6 @@ public class PayMain extends Driver {
          buyAllMain.click();
      }
 
-    public static void getMailDostup(){
-        LoginAndPass.inputMail();
-    }
-
-            public static void main(String[] args) {
-            String randomEmail = generateRandomEmail();
-            try {
-                InternetAddress address = new InternetAddress(randomEmail);
-                System.out.println("Generated email address: " + address.toString());
-            } catch (AddressException e) {
-                System.err.println("Invalid email address format: " + e.getMessage());
-            }
-        }
-
-        public static String generateRandomEmail() {
-            String username = RandomStringUtils.randomAlphanumeric(10); // 10 случайных символов для имени пользователя
-            String domain = "example.com"; // Пример домена
-            return username + "@" + domain;
-        }
-
     @FindBy(css = "[data-test='cardpay-page-button']")
     private static WebElement BankBtn;
 

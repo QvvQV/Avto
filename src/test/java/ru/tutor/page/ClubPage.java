@@ -1,5 +1,6 @@
 package ru.tutor.page;
 
+import com.codeborne.selenide.SelenideElement;
 import com.github.dockerjava.api.model.Driver;
 import com.github.javafaker.Faker;
 import org.junit.Assert;
@@ -12,6 +13,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Locale;
 
+import static com.codeborne.selenide.Selenide.$;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static ru.tutor.test.Club.driver;
 
@@ -32,6 +34,26 @@ public class ClubPage extends Driver {
         return (myDetails.isDisplayed());
     }
 
+    private static SelenideElement fullName = $("[name = \"fullName\"]");
+    private static SelenideElement inn = $("[name = \"inn\"]");
+    private static SelenideElement bik = $("[name = \"bik\"]");
+    private static SelenideElement bankAccount = $("[name = \"bankAccount\"]");
+    private static SelenideElement bankKorAccount = $("[name = \"bankKorAccount\"]");
+    private static SelenideElement bankName = $("[name = \"bankName\"]");
+    private static SelenideElement passSerial = $("[name = \"passSerial\"]");
+    private static SelenideElement passNumber = $("[name = \"passNumber\"]");
+    private static SelenideElement passIssuer = $("[name = \"passIssuer\"]");
+    private static SelenideElement passIssued = $("[name = \"passIssued\"]");
+    private static SelenideElement passDepartment = $("[name = \"passDepartment\"]");
+    private static SelenideElement dateBirth = $("[name = \"dateBirth\"]");
+    private static SelenideElement addressRegister = $("[name = \"addressRegister\"]");
+    private static SelenideElement isSameAddress = $("[name = \"isSameAddress\"]");
+    private static SelenideElement addressFact = $("[name = \"addressFact\"]");
+    private static SelenideElement idEdo = $("[name = \"idEdo\"]");
+    private static SelenideElement selfEmployed = $("[id = \"SZ\"]");
+    private static SelenideElement individEntrep = $("[id = \"IP\"]");
+    private static SelenideElement ogrnip = $("[name = \"ogrnip\"]");
+
     @FindBy(css = "._radioGroup_1ae8c_36 > h4")
 //    @FindBy(css = "._danger_752pl_33")
     private static WebElement allFields;
@@ -39,9 +61,6 @@ public class ClubPage extends Driver {
     public static String getAllFields() {
         return allFields.getText().trim();
     }
-
-    @FindBy(name = "fullName")
-    private static WebElement fullName;
 
     public static void inputFullName() {
         fullName.sendKeys(faker.name().fullName());
@@ -62,9 +81,6 @@ public class ClubPage extends Driver {
         return errorFullName.getText().trim();
     }
 
-    @FindBy(name = "inn")
-    private static WebElement inn;
-
     public static void inputInn() {
 
         inn.sendKeys(faker.number().digits(12));
@@ -74,9 +90,6 @@ public class ClubPage extends Driver {
         return inn.getDomAttribute("placeholder");
     }
 
-    @FindBy(name = "bik")
-    private static WebElement bik;
-
     public static void inputBik() {
         bik.sendKeys(faker.number().digits(9));
     }
@@ -85,50 +98,29 @@ public class ClubPage extends Driver {
         bik.sendKeys(Keys.PAGE_DOWN);
     }
 
-    @FindBy(name = "bankAccount")
-    private static WebElement bankAccount;
-
     public static void inputBankAccount() {
         bankAccount.sendKeys(faker.number().digits(20));
     }
-
-    @FindBy(name = "bankKorAccount")
-    private static WebElement bankKorAccount;
 
     public static void inputBankKorAccount() {
         bankKorAccount.sendKeys(faker.number().digits(20));
     }
 
-    @FindBy(name = "bankName")
-    private static WebElement bankName;
-
     public static void inputBankName() {
         bankName.sendKeys("Банк Санкт-Петербург Промышленный холдинг");
     }
-
-    @FindBy(name = "passSerial")
-    private static WebElement passSerial;
 
     public static void inputPassSerial() {
         passSerial.sendKeys(faker.number().digits(4));
     }
 
-    @FindBy(name = "passNumber")
-    private static WebElement passNumber;
-
     public static void inputPassNumber() {
         passNumber.sendKeys(faker.number().digits(6));
     }
 
-    @FindBy(name = "passIssuer")
-    private static WebElement passIssuer;
-
     public static void inputPassIssuer() {
         passIssuer.sendKeys("кем");
     }
-
-    @FindBy(name = "passIssued")
-    private static WebElement passIssued;
 
     public static void inputPassIssued() throws InterruptedException {
 //        JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -157,9 +149,6 @@ public class ClubPage extends Driver {
         passDepartment.sendKeys(Keys.PAGE_DOWN);
     }
 
-    @FindBy(name = "passDepartment")
-    private static WebElement passDepartment;
-
     public static void inputPassDepartment() throws InterruptedException {
 //        passDepartment.click();
 //        JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -180,9 +169,6 @@ public class ClubPage extends Driver {
             Thread.sleep(150);
         }
     }
-
-    @FindBy(name = "dateBirth")
-    private static WebElement dateBirth;
 
     public static void inputDateBirth() throws InterruptedException {
 //        JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -206,22 +192,16 @@ public class ClubPage extends Driver {
         }
     }
 
-    @FindBy(name = "addressRegister")
-    private static WebElement addressRegister;
 
     public static void inputAddressRegister() {
         addressRegister.sendKeys("4012252, Санкт-Петербург, Богач, д5");
     }
 
-    @FindBy(name = "isSameAddress")
-    private static WebElement isSameAddress;
 
     public static void inputIsSameAddress() {
         isSameAddress.click();
     }
 
-    @FindBy(name = "addressFact")
-    private static WebElement addressFact;
 
     public static boolean displaedAddressFact() {
         return addressFact.isDisplayed();
@@ -287,8 +267,6 @@ public class ClubPage extends Driver {
         }
     }
 
-    @FindBy(name = "idEdo")
-    private static WebElement idEdo;
 
     public static void inputIdEdo() {
         idEdo.sendKeys("2bm-73");
@@ -653,15 +631,11 @@ public class ClubPage extends Driver {
         deleteDetailsIp.sendKeys(Keys.PAGE_DOWN);
     }
 
-    @FindBy(id = "SZ")
-    private static WebElement selfEmployed;
 
     public static void btnSelfEmployed() {
         selfEmployed.click();
     }
 
-    @FindBy(id = "IP")
-    private static WebElement individEntrep;
 
     public static void btnIndividEntrep() {
         try {
@@ -671,8 +645,6 @@ public class ClubPage extends Driver {
         }
     }
 
-    @FindBy(name = "ogrnip")
-    private static WebElement ogrnip;
 
     public static void inputOgrnip() {
         ogrnip.sendKeys("123456789123456");
