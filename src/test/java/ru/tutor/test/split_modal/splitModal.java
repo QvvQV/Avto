@@ -39,7 +39,8 @@ public class splitModal {
 
     public static String url = "https://tester.tutorplace.ru/?utm_source=cpaws&aff_rid=1012_ELQp";
 
-    @BeforeEach
+//    @BeforeEach
+    @Before
     public void setupAll() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
@@ -60,7 +61,8 @@ public class splitModal {
         driver.manage().window().setSize(new Dimension(1920, 1080));
     }
 
-    @AfterEach
+//    @AfterEach
+    @After
     public void quitDriver() {
         driver.manage().deleteAllCookies();
         driver.close();

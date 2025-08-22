@@ -137,57 +137,5 @@ public class iframe extends Driver {
 //        modal.modalCross();
 //        System.out.println(modal.modalDailyCall());
 //        System.out.println(modal.modalTelephone());
-
-    }
-
-    //Ошибка 116 недостаточно средств
-    public static void getHandlesFromPageExcelCardSber116(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        wait.until(visibilityOfElementLocated(By.id("cardNumber")));
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 55));
-        Card.setCardSber116();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("style"), 14));
-        Card.transitionLink();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 28));
-        Card.setPasswordEdit();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 60));
-    }
-
-    //Ошибка 101 истёк срок
-    public static void getHandlesFromPageExcelCardSber101(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        wait.until(visibilityOfElementLocated(By.id("cardNumber")));
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 55));
-        Card.setCardSber101();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("style"), 14));
-        Card.transitionLink();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 28));
-        Card.setPasswordEdit();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 60));
-    }
-
-    //Остаток на балансе 100 рублей
-    public static void getHandlesFromPageExcelCardSberWith100Rub(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        wait.until(visibilityOfElementLocated(By.id("cardNumber")));
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 55));
-        Card.setCardSberWith100Rub();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("style"), 14));
-        Card.transitionLink();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 28));
-        Card.setPasswordEdit();
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("div"), 14));
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("a"), 33));
-        System.out.println(driver.findElements(By.tagName("a")).get(3).getText());
-
-        driver.findElements(By.tagName("a")).get(3).click();
-        Object[] windowHandles = driver.getWindowHandles().toArray();
-        driver.getWindowHandles();
-        driver.switchTo().window((String) windowHandles[0]);
-        wait.until(numberOfElementsToBeMoreThan(By.tagName("a"), 15));
-        LoginAndPass.registrationFromExel();
-        modal.modalCross();
-        System.out.println(modal.modalDailyCall());
-        System.out.println(modal.modalTelephone());
     }
 }

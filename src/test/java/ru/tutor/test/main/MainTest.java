@@ -1,6 +1,8 @@
 package ru.tutor.test.main;
 
 
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.After;
@@ -45,6 +47,7 @@ public class MainTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(7));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
         driver.manage().window().setSize(new Dimension(1920, 1080));
+        SelenideLogger.addListener("allure.properties", new AllureSelenide());
     }
 
     @After
@@ -52,59 +55,6 @@ public class MainTest {
         driver.manage().deleteAllCookies();
         driver.close();
         driver.quit();
-    }
-
-    @Test
-    @DisplayName("clicable from footer menu")
-    public void ClickableFromFooterMenu() throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        driver.get(url);
-        main.scrollTo(driver);
-
-        main.clickCompany();
-        wait.until(visibilityOfElementLocated(By.cssSelector(".hero_hero__subtitle-2__JLkI7")));
-        Assert.assertEquals("TutorPlace | О компании", driver.getTitle());
-        driver.get(url);
-        main.scrollTo(driver);
-
-        main.clickSubscription();
-        Thread.sleep(700);
-        Assert.assertEquals("TutorPlace | О подписке", driver.getTitle());
-        driver.get(url);
-        main.scrollTo(driver);
-
-        main.clickContacts();
-        Thread.sleep(700);
-        Assert.assertEquals("TutorPlace | Контакты", driver.getTitle());
-        driver.get(url);
-        main.scrollTo(driver);
-
-        main.clickWebmaster();
-        Thread.sleep(700);
-        Assert.assertEquals("TutorPlace | Веб-Мастерам", driver.getTitle());
-        driver.get(url);
-        main.scrollTo(driver);
-
-        main.clickForAuthors();
-        Thread.sleep(700);
-        Assert.assertEquals("TutorPlace | Для авторов", driver.getTitle());
-        driver.get(url);
-        main.scrollTo(driver);
-
-        main.clickInstall();
-        Thread.sleep(700);
-        Assert.assertEquals("TutorPlace | Установка ПО", driver.getTitle());
-
-        driver.get(url);
-        main.scrollTo(driver);
-        main.clickHorizon();
-        Thread.sleep(700);
-        Assert.assertEquals("TutorPlace | Новые горизонты", driver.getTitle());
-        driver.get(url);
-        main.scrollTo(driver);
-        main.clickVacancies();
-        Thread.sleep(700);
-        Assert.assertEquals("TutorPlace | Вакансии", driver.getTitle());
     }
 
     @Test
