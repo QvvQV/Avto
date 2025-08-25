@@ -1,14 +1,13 @@
 package ru.tutor.test.tinkoff;
 
-
+import io.qameta.allure.AllureId;
+import io.qameta.allure.Owner;
+import ru.tutor.page.*;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.chrome.ChromeOptions;
-import ru.tutor.page.CloudPage;
-import ru.tutor.page.ttPage;
-import ru.tutor.page.addressPage;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
@@ -75,7 +74,9 @@ public class tester {
     }
 
     @Test
+    @AllureId("2")
     @DisplayName("Оплата с главной за 399 руб")
+    @Owner("Vadim")
     public void PayMain399() {
         step("Открытие страницы", () -> {
             open(addressPage.urlMain);

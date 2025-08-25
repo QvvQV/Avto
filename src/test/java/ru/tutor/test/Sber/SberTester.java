@@ -47,7 +47,7 @@ public class SberTester {
     @Test
 //        @RepeatedTest(3)
     @DisplayName("Оплата по валидной карте с продукта exel")
-    public void ShowModalVersionFromTester() {
+    public void PayWithAValidCardFromTheProduct() {
         step("Открытие страницы", () -> {
         open(addressPage.urlExcel);});
 

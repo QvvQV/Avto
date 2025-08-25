@@ -2,7 +2,6 @@ package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
 import com.github.javafaker.Faker;
-import org.openqa.selenium.By;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -17,7 +16,7 @@ public class SberPage {
     private static final Faker faker = new Faker(new Locale("en"));
     public static final String url = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel";
     private static SelenideElement buyBtn = $$("button").find(exactText("начать обучение за 1 ₽*"));
-    private static SelenideElement accessBtn = $(By.id("access-button"));
+    private static SelenideElement accessBtn = $("[id=\"access-button\"]");
     private static SelenideElement error = $$("p").find(exactText("Произошла ошибка. Пожалуйста, попробуйте ещё раз."));
     private static SelenideElement email = $("[name=\"email\"]");
     private static SelenideElement cardNumber = $("[id=\"cardNumber\"]");

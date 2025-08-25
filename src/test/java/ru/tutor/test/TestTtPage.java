@@ -14,9 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.chrome.ChromeOptions;
-import ru.tutor.page.footer;
-import ru.tutor.page.ttPage;
-import ru.tutor.page.addressPage;
+import ru.tutor.page.*;
 
 import java.util.Arrays;
 import java.util.List;
