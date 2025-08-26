@@ -1,9 +1,6 @@
 image: Ubuntu2004  # образ для сборки
 
-stack: jdk 24.0.2  # версия JDK
-
-variables:
-  Allure_LAUNCH_NAME: "Тестирование"
+stack: jdk 11  # версия JDK
 
 branches:
   only:
@@ -11,12 +8,10 @@ branches:
 
 build: off  # будем использовать свой скрипт сборки
 
-install:
+#install:
   # запускаем SUT (& означает, что в фоновом режиме не блокируем терминал для запуска тестов)
 #  - java -jar ./artifacts/app-card-delivery.jar &
 #  - chmod +x gradlew
-  - allure generate
-  - allure serve
 
 build_script:
   - mvn test  # запускаем тест, флаг --info позволяет выводить больше информации
