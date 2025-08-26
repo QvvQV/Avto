@@ -1,77 +1,23 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/development/cicd/templates/
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+stages:
+  - test
 
-#stages:          # List of stages for jobs, and their order of execution
-#  - test
-#
-#variables:
-#  ALLURE_LAUNCH_NAME: "${CI_PROJECT_NAME} - ${CI_COMMIT_SHORT_SHA}"
-#  ALLURE_LAUNCH_TAGS: "regular, ${CI_COMMIT_REF_NAME}, ${GITLAB_USER_EMAIL}"
-#  ALLURE_TESTPLAN_PATH: ./testplan.json
-#
-#  test:
-#    image: maven
-#    stage: test
-#    before_script:
-#      - wget https://dl.bintray.com.qameta/generic/allurectl/1.17.0/alluretl_linux_386 /usr/bin/allurectl
-#      - chmod + x /usr/bin/allurectl
-#      - allurectl job-run start
-#      - allurectl job-run plan --output-file ${ALLURE_TESTPLAN_PATH}
-#    script:
-#      - allurectl upload --job-run-child --timeout 6000 allure-results &
-#      - echo "Running tests on ${BASE_URL} - ${BROWSER_NAME}"
-#      - mvn test
-#      - pkill allurectl
-#    after_script:
-#      - allurectl job-run stop
-
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/development/cicd/templates/
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+variables:
+  ALLURE_LAUNCH_NAME: "{CI_PROJECT-NAME} - ${CI_COMMIT_SHORT_SPA}"
+  ALLURE_LAUNCH_TAGS: "regular, ${CI_COMMIT_REF_NAME}, ${GITLAB_USER_EMAIL}"
+  ALLURE_TESTPLAN_PATH: ./testplan.json
 
 test:
-  stages: test
   image: maven
-  
-  variables:
-    ALLURE_ENDPOINT: https://testops.cpateam.xyz/
-    ALLURE_PROJECT_ID: 1
-    ALLURE_RESULTS: build/allure-results
- 
+  stage: test
   before_script:
-    - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
-    - chmod +x allurectl
-
+    - wget https://github.com/allure-framework/allurectl/releases/tag/2.17.0/allurectl_windows_386 -0 /usr/bin/allurectl
+    - allurectlwatch /usr/bin/allurectl
+    - allurectl job-run start
+    - allurectl job-run plan --output-file ${ALLURE_TESTPLAN_PATH}
   script:
-    - ./allurectl watch --mvn clean test
-      
-
+    - allurectl upload --job-run-child --timeout 6000 allure-results &
+    - echo "Running tests on ${BASE_URL} - ${BROWSER_NAME}"
+    - mvn test
+    - pkill allurectl
+  after_script:
+    - allurectl job-run stop
