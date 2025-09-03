@@ -10,9 +10,6 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
   workflow_dispatch:
     inputs:
       ALLURE_JOB_RUN_ID:
@@ -23,31 +20,28 @@ on:
 env:
   ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
   ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
-  ALLURE_ENDPOINT: https://testops.cpateam.xyz/
+  ALLURE_ENDPOINT: https://testops.cpateam.xyz
   ALLURE_PROJECT_ID: 1
   ALLURE_RESULTS: build/allure-results
 
 jobs:
-  build:
-
+  all-tests:
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+        distribution: 'oracle'
+
+
     - name: Install allurectl
       uses: allure-framework/setup-allurectl@v1
-
-    - name: Run tests
-      run: |
-        mvn clean test
+      
+    - name: Build with Maven
+      run: allurectl watch -- ./mvn clean test
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
