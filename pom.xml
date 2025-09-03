@@ -197,7 +197,8 @@
                     <systemPropertyVariables>
                         <property>
                             <name>allure.results.directory</name>
-                            <value>${project.basedir}/allure-results</value>
+                            <value>target/allure-results</value>-->
+<!--                            <value>${project.basedir}/allure-results</value>-->
                         </property>
                         <property>
                             <name>junit.jupiter.extensions.autodetection.enabled</name>
