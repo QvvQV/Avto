@@ -39,7 +39,7 @@ jobs:
 
 
     - name: Install allurectl
-      uses: allure-framework/setup-allurectl@v2.17
+      uses: allure-framework/setup-allurectl@v1
 
     - name: Build with Maven
       run: allurectl watch -- ./mvn clean test
