@@ -25,6 +25,7 @@ public class Registration {
     private static SelenideElement registration = $$("a").find(exactText("Зарегистрироваться"));
     private static SelenideElement errorLogin = $$(".sc-lbJcrp.jrguNu").get(0);
     private static SelenideElement errorPass = $$(".sc-lbJcrp.jrguNu").get(1);
+    private static SelenideElement errorRepeatPass = $$(".sc-lbJcrp.jrguNu").get(2);
     private static SelenideElement errorLogin1 = $(".sc-eifrsQ.csexSA");
 
     //    Страница Восстановление пароля
@@ -40,15 +41,27 @@ public class Registration {
     private static SelenideElement name = $("[name=\"name\"]");
     private static SelenideElement h2TextReg = $$("h2").find(exactText("Регистрация профиля"));
     private static SelenideElement btnRegistr = $$("button").find(exactText("Далее"));
+    private static SelenideElement btnRegistеr = $$("button").find(exactText("Зарегистрироваться"));
     private static SelenideElement number = $$("input").get(1);
     private static SelenideElement telegramm = $("[name=\"telegram\"]");
     private static SelenideElement btnBackRegistr = $("._goBackBtn_1aggk_169");
     private static SelenideElement btnLoginFromRegistr = $$("a").find(exactText("Войти"));
+    private static SelenideElement repeatPass = $("[name=\"repeatPassword\"]");
+
+    //ЛК
+    private static SelenideElement h2TextMod = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));
+    private static SelenideElement h2AddKurs = $$("h2").find(exactText("Добавленное"));
 
 
     public static void randomEmail() {
         step("вводим рандомный адрес", () -> {
             email.sendKeys(faker.internet().emailAddress());
+        });
+    }
+
+    public static void notKorrectEmail() {
+        step("вводим некорректный адрес", () -> {
+            email.sendKeys("kval");
         });
     }
 
@@ -61,6 +74,24 @@ public class Registration {
     public static void validPass() {
         step("вводим стандартный пароль", () -> {
             password.sendKeys("12345678");
+        });
+    }
+
+    public static void validRepeatPass() {
+        step("поле Повторить Пароль заполняем валидным паролем", () -> {
+            repeatPass.sendKeys("12345678");
+        });
+    }
+
+    public static void PassThreeNumber() {
+        step("поле Пароль заполнено менее 8 символов", () -> {
+            password.sendKeys("123");
+        });
+    }
+
+    public static void NotEquelRepeatPass() {
+        step("поле Повторить Пароль не совпадает с Паролем", () -> {
+            repeatPass.sendKeys("123");
         });
     }
 
@@ -86,6 +117,10 @@ public class Registration {
         return errorPass.shouldNot(visible);
     }
 
+    public static SelenideElement notShowErrorRepeatPass() {
+        return errorRepeatPass.shouldNot(visible);
+    }
+
     public static SelenideElement notShowErrorLoginTwo() {
         return errorLogin1.shouldNot(visible);
     }
@@ -96,11 +131,11 @@ public class Registration {
         });
     }
 
-    public static String textBtnRegistration(){
+    public static String textBtnRegistration() {
         return registration.shouldBe(visible).getText();
     }
 
-    public static void clickRegistr(){
+    public static void clickRegistr() {
         registration.click();
     }
 
@@ -138,63 +173,98 @@ public class Registration {
         });
     }
 
-//    Страница Регистрации
-    public static String showH2Reg(){
+    //    Страница Регистрации
+    public static String showH2Reg() {
         return h2TextReg.shouldBe(visible).getText();
     }
 
-    public static void inputName(){
-        step("Вводим имя", ()->{name.sendKeys(faker.name().firstName());});
+    public static void inputName() {
+        step("Вводим имя", () -> {
+            name.sendKeys(faker.name().firstName());
+        });
     }
 
-    public static void inputNumber(){
-        step("Заполняем графу телефон",()->{
+    public static void inputNumber() {
+        step("Заполняем графу телефон", () -> {
             number.sendKeys(faker.number().digits(5));
         });
     }
 
-    public static String valueName(){
+    public static String valueName() {
         return name.getAttribute("value");
     }
 
-    public static void deleteName(){
-       step("удаляем имя из поля",()->{
-           name.doubleClick().sendKeys(Keys.DELETE);
-       });
+    public static void deleteName() {
+        step("удаляем имя из поля", () -> {
+            name.doubleClick().sendKeys(Keys.DELETE);
+        });
     }
 
-    public static String valueTelephone(){
+    public static String valueTelephone() {
         return number.getAttribute("value");
     }
 
-    public static void inputTelegramm(){
-        step("Заполняем графу телеграмм",()->{
+    public static void inputTelegramm() {
+        step("Заполняем графу телеграмм", () -> {
             telegramm.sendKeys(faker.internet().emailAddress());
         });
     }
 
-    public static String valueTelegramm(){
-       return telegramm.getAttribute("value");
+    public static String valueTelegramm() {
+        return telegramm.getAttribute("value");
     }
 
-    public static String emptyValue(){
-        if (Objects.requireNonNull(telegramm.getAttribute("value")).isEmpty()){
+    public static String emptyValue() {
+        if (Objects.requireNonNull(telegramm.getAttribute("value")).isEmpty()) {
             return "поле телеграмм пустое";
-        } if (Objects.requireNonNull(number.getAttribute("value")).isEmpty()){
+        }
+        if (Objects.requireNonNull(number.getAttribute("value")).isEmpty()) {
             return "поле телефон пустое";
-        } if (Objects.requireNonNull(name.getAttribute("value")).isEmpty()){
+        }
+        if (Objects.requireNonNull(name.getAttribute("value")).isEmpty()) {
             return "поле имя пустое";
         } else return "все поля заполнены";
     }
 
-    public static void clickBtnRegistr(){
-        step("Кликаем по кнопке далее",()->{
+    public static void clickBtnRegistr() {
+        step("Кликаем по кнопке далее", () -> {
             btnRegistr.shouldBe(visible).click();
         });
     }
 
-    public static String disablBtnRegist(){
+    public static void clickBtnRegister() {
+        step("Кликаем по кнопке Зарегистироваться", () -> {
+            btnRegistеr.shouldBe(visible).click();
+        });
+    }
+
+    public static String disablBtnRegist() {
         return btnRegistr.getAttribute("disabled");
+    }
+
+    public static String showErrorRepeatPass() {
+        return errorRepeatPass.shouldBe(visible).getText();
+    }
+
+    public static void clickBtnBackFromRegistr() {
+        step("Кликаем по кнопке назад на стр Зарегистироваться", () -> {
+            btnBackRegistr.shouldBe(visible).click();
+        });
+    }
+
+    public static void clickBtnEnter() {
+        step("Кликаем по кнопке Войти на стр зарегистрироваться", () -> {
+            btnLoginFromRegistr.shouldBe(visible).click();
+        });
+    }
+
+    //ЛК
+    public static String showH2Mod() {
+        return h2TextMod.shouldBe(visible).getText();
+    }
+
+    public static String showH2AddKurs() {
+        return h2AddKurs.shouldBe(visible).getText();
     }
 
 }

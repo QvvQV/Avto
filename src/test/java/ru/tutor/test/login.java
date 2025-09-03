@@ -3,6 +3,7 @@ package ru.tutor.test;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.AllureId;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
@@ -42,7 +43,8 @@ public class login {
     }
 
     @Test
-//        @RepeatedTest(3)
+    @AllureId("5")
+    //        @RepeatedTest(3)
     @DisplayName("открытие стр login")
     public void OpenPageLogin() {
         step("Открытие стр", () -> {
@@ -56,6 +58,7 @@ public class login {
     }
 
     @Test
+    @AllureId("39")
     @DisplayName("текст ошибки при пустых полях логин/пароль")
     public void showTextErrorFromEmpty() {
         step("Открытие стр", () -> {
@@ -80,6 +83,7 @@ public class login {
     }
 
     @Test
+    @AllureId("39")
     @DisplayName("текст ошибки при пустом поле пароль")
     public void showTextErrorFromEmptyPass() {
         step("Открытие стр", () -> {
@@ -102,6 +106,7 @@ public class login {
     }
 
     @Test
+    @AllureId("36")
     @DisplayName("текст ошибки при пустом поле Логин")
     public void showTextErrorFromEmptyLogin() {
         step("Открытие стр", () -> {
@@ -124,6 +129,7 @@ public class login {
     }
 
     @Test
+    @AllureId("41")
     @DisplayName("текст ошибки при не зарегистрирован пользователе")
     public void showTextErrorFromNotUser() {
         step("Открытие стр", () -> {
@@ -147,6 +153,31 @@ public class login {
     }
 
     @Test
+    @AllureId("47")
+    @DisplayName("текст ошибки при некорректном логине")
+    public void showTextErrorFromNotKorrectLogin() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        Registration.notKorrectEmail();
+        Registration.validPass();
+        step("кликаем по кнопке Войти", () -> {
+            Registration.clickBtnLogin();
+        });
+        step("Проверяем текст ошибки под полем Логин", () -> {
+            Assertions.assertEquals("Введите корректный адрес", Registration.showErrorLogin());
+        });
+        step("Проверяем что ошибка одна на стр", () -> {
+            Registration.notShowErrorPass();
+        });
+    }
+
+    @Test
+    @AllureId("12")
     @DisplayName("открытие стр Recover - восстановление пароля")
     public void OpenPageRecover() {
         step("Открытие стр", () -> {
@@ -166,6 +197,7 @@ public class login {
     }
 
     @Test
+    @AllureId("32")
     @DisplayName("текст ошибки при пустом поле на стр Восстановить пароль")
     public void showTextErrorFromRecoverPass() {
         step("Открытие стр", () -> {
@@ -183,6 +215,7 @@ public class login {
     }
 
     @Test
+    @AllureId("34")
     @DisplayName("текст сообщения после ввода адреса почты")
     public void showTextAfterPutEmail() {
         step("Открытие стр", () -> {
@@ -204,6 +237,7 @@ public class login {
     }
 
     @Test
+    @AllureId("40")
     @DisplayName("переход со стр восстановить пароль на стр логин/пароль")
     public void backRecoveryLogin() {
         step("Открытие стр", () -> {
@@ -224,8 +258,9 @@ public class login {
     }
 
     @Test
+    @AllureId("35")
     @DisplayName("переход на стр регистрации")
-    public void goRegistr(){
+    public void goRegistr() {
         step("Открытие стр", () -> {
             open(addressPage.login);
         });
@@ -233,20 +268,21 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация",()->{
+        step("кликаем по кнопке регистрация", () -> {
             Registration.clickRegistr();
         });
-        step("Проверяем заголовок стр",()->{
-            Assertions.assertEquals("Регистрация профиля",Registration.showH2Reg());
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
-        step("проверяем что кнопка Далее disable=true",()->{
-           Assertions.assertEquals("true",Registration.disablBtnRegist());
+        step("проверяем что кнопка Далее disable=true", () -> {
+            Assertions.assertEquals("true", Registration.disablBtnRegist());
         });
     }
 
     @Test
+    @AllureId("37")
     @DisplayName("заполнение полей")
-    public void inputField(){
+    public void inputField() {
         step("Открытие стр", () -> {
             open(addressPage.login);
         });
@@ -254,49 +290,294 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация",()->{
+        step("кликаем по кнопке регистрация", () -> {
             Registration.clickRegistr();
         });
-        step("Проверяем заголовок стр",()->{
-            Assertions.assertEquals("Регистрация профиля",Registration.showH2Reg());
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
         Registration.inputName();
         Registration.inputNumber();
         Registration.inputTelegramm();
-        step("Проверяем что в полях имя/телеграмм/телефон есть значения",()->{
+        step("Проверяем что в полях имя/телеграмм/телефон есть значения", () -> {
             Assertions.assertEquals("все поля заполнены", Registration.emptyValue());
         });
     }
 
     @Test
+    @AllureId("33")
     @DisplayName("текст ошибки под полем имя")
-    public void showTextErrorUnderName(){
-                step("Открытие стр", () -> {
+    public void showTextErrorUnderName() {
+        step("Открытие стр", () -> {
             open(addressPage.login);
         });
         step("проверяем title", () -> {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация",()->{
+        step("кликаем по кнопке регистрация", () -> {
             Registration.clickRegistr();
         });
-        step("Проверяем заголовок стр",()->{
-            Assertions.assertEquals("Регистрация профиля",Registration.showH2Reg());
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
         Registration.inputName();
         Registration.inputTelegramm();
         Registration.inputNumber();
         Registration.deleteName();
-        step("проверяем что кнопка Далее disable=false",()->{
-            Assertions.assertEquals(null,Registration.disablBtnRegist());
+        step("проверяем что кнопка Далее disable=false", () -> {
+            Assertions.assertEquals(null, Registration.disablBtnRegist());
         });
         Registration.clickBtnRegistr();
-        step("сверяем текст ошибки под полем имя",()->{
-            Assertions.assertEquals("Это поле обязательное",Registration.showErrorLogin());
+        step("сверяем текст ошибки под полем имя", () -> {
+            Assertions.assertEquals("Это поле обязательное", Registration.showErrorLogin());
         });
-        step("Проверяем что поле имя пустое",()->{
-            Assertions.assertEquals("поле имя пустое",Registration.emptyValue());
+        step("Проверяем что поле имя пустое", () -> {
+            Assertions.assertEquals("поле имя пустое", Registration.emptyValue());
+        });
+    }
+
+    @Test
+    @AllureId("50")
+    @DisplayName("текст ошибки под полем почта/пароль/повторите пароль на стр регистрация")
+    public void showTextErrorUnderEmailPassRepeat() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        step("кликаем по кнопке регистрация", () -> {
+            Registration.clickRegistr();
+        });
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.inputName();
+        Registration.clickBtnRegistr();
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.clickBtnRegister();
+        step("Проверяем текст ошибки под полем адресом электронной почты", () -> {
+            Assertions.assertEquals("Введите корректный адрес", Registration.showErrorLogin());
+        });
+        step("Проверяем текст ошибки под полем Пароль", () -> {
+            Assertions.assertEquals("Пароль должен содержать не менее 8 символов", Registration.showErrorPass());
+        });
+        step("Проверяем текст ошибки под полем Повторить Пароль", () -> {
+            Assertions.assertEquals("Это поле обязательное", Registration.showErrorRepeatPass());
+        });
+    }
+
+    @Test
+    @AllureId("51")
+    @DisplayName("текст ошибки под полем пароль/повторите пароль на стр регистрация")
+    public void showTextErrorUnderPassRepeat() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        step("кликаем по кнопке регистрация", () -> {
+            Registration.clickRegistr();
+        });
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.inputName();
+        Registration.clickBtnRegistr();
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.randomEmail();
+        Registration.clickBtnRegister();
+        step("Проверяем текст ошибки под полем Пароль", () -> {
+            Assertions.assertEquals("Пароль должен содержать не менее 8 символов", Registration.showErrorLogin());
+        });
+        step("Проверяем текст ошибки под полем Повторите Пароль", () -> {
+            Assertions.assertEquals("Это поле обязательное", Registration.showErrorPass());
+        });
+    }
+
+    @Test
+    @AllureId("52")
+    @DisplayName("текст ошибки при пароле из 3-х цифр на стр регистрация")
+    public void showTextErrorUnderPassNumber3() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        step("кликаем по кнопке регистрация", () -> {
+            Registration.clickRegistr();
+        });
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.inputName();
+        Registration.clickBtnRegistr();
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.randomEmail();
+        Registration.PassThreeNumber();
+        Registration.clickBtnRegister();
+        step("Проверяем текст ошибки под полем Пароль", () -> {
+            Assertions.assertEquals("Пароль должен содержать не менее 8 символов", Registration.showErrorLogin());
+        });
+        step("Проверяем текст ошибки под полем Повторите Пароль", () -> {
+            Assertions.assertEquals("Пароли должны совпадать", Registration.showErrorPass());
+        });
+    }
+
+    @Test
+    @AllureId("48")
+    @DisplayName("текст ошибки при Пароль != Повторите пароль на стр регистрация")
+    public void showTextErrorPassNotEquelRepeatPass() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        step("кликаем по кнопке регистрация", () -> {
+            Registration.clickRegistr();
+        });
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.inputName();
+        Registration.clickBtnRegistr();
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.randomEmail();
+        Registration.validPass();
+        Registration.NotEquelRepeatPass();
+        Registration.clickBtnRegister();
+        step("Проверяем текст ошибки под полем Пароль", () -> {
+            Assertions.assertEquals("Пароли должны совпадать", Registration.showErrorLogin());
+        });
+        step("Проверяем что ошибка одна на стр", () -> {
+            Registration.notShowErrorPass();
+            Registration.notShowErrorRepeatPass();
+        });
+    }
+
+    @Test
+    @AllureId("49")
+    @DisplayName("возвращаемся на стр ввода имени из стр зарегистрироваться")
+    public void backFromRegistr() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        step("кликаем по кнопке регистрация", () -> {
+            Registration.clickRegistr();
+        });
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.inputName();
+        String exist = Registration.valueName();
+        Registration.clickBtnRegistr();
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.clickBtnBackFromRegistr();
+        step("проверяем что мы на стр для ввода имени, прошлое значение имени с текущим", () -> {
+            Assertions.assertEquals(exist, Registration.valueName());
+        });
+    }
+
+    @Test
+    @AllureId("53")
+    @DisplayName("переходим со стр зарегистрироваться на стр войти")
+    public void RegisterGoEnter() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        step("кликаем по кнопке регистрация", () -> {
+            Registration.clickRegistr();
+        });
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.inputName();
+        Registration.clickBtnRegistr();
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.clickBtnEnter();
+        step("Проверяем что попали на стр Логин/пароль", () -> {
+            Assertions.assertEquals("Зарегистрироваться", Registration.textBtnRegistration());
+        });
+    }
+
+    @Test
+    @AllureId("54")
+    @DisplayName("переход со стр зарегистр на стр ЛК")
+    public void EnterForPersonalAccount() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+        step("кликаем по кнопке регистрация", () -> {
+            Registration.clickRegistr();
+        });
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.inputName();
+        Registration.clickBtnRegistr();
+        step("Проверяем заголовок стр", () -> {
+            Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
+        });
+        Registration.randomEmail();
+        Registration.validPass();
+        Registration.validRepeatPass();
+        Registration.clickBtnRegister();
+        step("Проверяем что попали на стр Личного кабинета", () -> {
+            Assertions.assertEquals("Добро пожаловать на TutorPlace", Registration.showH2Mod());
+        });
+    }
+
+    @Test
+    @AllureId("57")
+    @DisplayName("регистрируемся с ранее созданного акк")
+    public void RegistrathionFromEarlyAcc() {
+        step("Открытие стр", () -> {
+            open(addressPage.login);
+        });
+        step("проверяем title", () -> {
+            String expected = "TutorPlace";
+            Assertions.assertEquals(expected, title());
+        });
+
+        Registration.validEmail();
+        Registration.validPass();
+        step("кликаем по кнопке Войти", () -> {
+            Registration.clickBtnLogin();
+        });
+        step("Проверяем что попали на стр Личного кабинета", () -> {
+            Assertions.assertEquals("Добавленное", Registration.showH2AddKurs());
         });
     }
 
