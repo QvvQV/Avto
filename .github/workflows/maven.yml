@@ -42,7 +42,7 @@ jobs:
       uses: allure-framework/setup-allurectl@v1
 
     - name: run test
-      run: allurectl upload -- ./mvn clean test
+      run: allurectl watch -- ./mvn clean test
 
     - name: Store allure results
       run: actions/upload-artifact@v3
