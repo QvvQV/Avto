@@ -45,8 +45,7 @@ jobs:
       run: mvn clean test
 
     - name: report
-      run: allurectl watch -- allure generate
-
+      run: allurectl watch -- allure serve
     - name: Store allure results
       run: actions/upload-artifact@v3
 
