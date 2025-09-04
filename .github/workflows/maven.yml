@@ -23,7 +23,7 @@ env:
   ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
   ALLURE_ENDPOINT: https://testops.cpateam.xyz/
   ALLURE_PROJECT_ID: 1
-#  ALLURE_RESULTS: target/allure-results
+  ALLURE_RESULTS: target/allure-results
 
 jobs:
   all-tests:
@@ -42,7 +42,7 @@ jobs:
       uses: allure-framework/setup-allurectl@v1
 
     - name: run test
-      run: allurectl watch --results target/allure-results -- ./mvn clean test
+      run: allurectl upload -- ./mvn clean test
 
     - name: Store allure results
       run: actions/upload-artifact@v3
