@@ -42,7 +42,7 @@ jobs:
       uses: allure-framework/setup-allurectl@v1
 
     - name: run test
-      run: ./mvn clean test
+      run: mvn clean test
 
     - name: report
       run: allurectl watch -- allure generate
