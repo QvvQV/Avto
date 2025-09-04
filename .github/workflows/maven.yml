@@ -41,6 +41,9 @@ jobs:
     - name: Install allurectl
       uses: allure-framework/setup-allurectl@v1
 
+    - name: echo
+      run: echo allure-results
+
     - name: run test
       run: allurectl watch -- ./mvn clean test
 
