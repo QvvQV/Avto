@@ -47,7 +47,7 @@ jobs:
     - name: Deploy Allure Report
       uses: actions/upload-pages-artifact@v4
       with:
-          path: ${ALLURE_RESULTS}
+          path: 'target/site/allure-results'
 
     - name: ctl
       run: allurectl watch
