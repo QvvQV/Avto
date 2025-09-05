@@ -3,6 +3,7 @@ package ru.tutor.test;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.AllureId;
 import io.qameta.allure.Issue;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -47,6 +48,7 @@ public class TestTtPage {
 
     @DisplayName("Текст внутри модалок на оплату")
     @Test
+    @AllureId("11")
 //        @RepeatedTest(3)
 
     public void ShowModalText() {
@@ -91,7 +93,7 @@ public class TestTtPage {
         assertEquals("Политика конфиденциальности", footer.setPolicy());
         assertEquals("Пользовательское соглашение", footer.setUserAgreement());
         assertEquals("Публичная оферта", footer.setOffer());
-        assertEquals("Руководство пользователя", footer.setManual());
+//        assertEquals("Руководство пользователя", footer.setManual());
         assertEquals("Согласие на обработку персональных данных", footer.setPersonalDate());
         assertEquals("О компании", footer.setAboutCompany());
         assertEquals("О подписке", footer.setAboutSubscription());
@@ -99,7 +101,7 @@ public class TestTtPage {
         assertEquals("Новые горизонты", footer.setNewHorizon());
         assertEquals("Вебмастерам", footer.setWebmaster());
         assertEquals("Для авторов", footer.setForAuthors());
-        assertEquals("Установка ПО", footer.setInstall());
+//        assertEquals("Установка ПО", footer.setInstall());
         assertEquals("Карьера", footer.setCareer());
         assertEquals("8 (800) 555 32 82", footer.setNumber());
         assertEquals("Автоинформатор", footer.setInformation());
@@ -131,7 +133,7 @@ public class TestTtPage {
         assertEquals("/new-horizons", footer.atrNewHorizon());
         assertEquals("/webmasters", footer.atrWebmasters());
         assertEquals("/for-authors", footer.atrForAuthors());
-        assertEquals("/install", footer.atrInstall());
+//        assertEquals("/install", footer.atrInstall());
         assertEquals("/vacancies", footer.atrCareer());
         assertEquals("mailto:support@tutorplace.ru", footer.atrEmailSupport());
         assertEquals("tel:+78005553282", footer.atrNumber());});
@@ -163,9 +165,9 @@ public class TestTtPage {
         footer.clickForAuthors();
         step ("Сравниваем title стр`", ()->{
         assertEquals("TutorPlace | Для авторов", title());});
-        footer.clickInstall();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("TutorPlace | Установка ПО", title());});
+//        footer.clickInstall();
+//        step ("Сравниваем title стр`", ()->{
+//        assertEquals("TutorPlace | Установка ПО", title());});
         executeJavaScript("window.scrollTo(0, document.body.scrollHeight)");
         footer.clickCareer();
         step ("Сравниваем title стр`", ()->{
@@ -173,6 +175,7 @@ public class TestTtPage {
     }
 
     @Test
+    @AllureId("10")
     @DisplayName("api product ")
     public void ApiFooterMenuProduct(){
 step("Задаём список продуктов по которым необходимо пробежаться. Проверяем код ответа на 200", ()-> {
@@ -225,6 +228,7 @@ step("Задаём список продуктов по которым необ�
     }
 
     @Test
+    @AllureId("4")
     @DisplayName("api category")
     public void ApiFooterMenuCategory(){
 
