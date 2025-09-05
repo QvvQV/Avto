@@ -42,7 +42,18 @@ jobs:
       uses: allure-framework/setup-allurectl@v1
 
     - name: run test
-      run: allurectl watch -- ./mvn clean test
+      run: mvn clean test
+
+    - name: Deploy Allure Report
+      uses: actions/upload-pages-artifact@v2
+      with:
+          path: ${ALLURE_RESULTS}
+
+    - name: ctl
+      run: allurectl watch
+#
+#- name: run test
+#      run: allurectl watch -- ./mvn clean test
 
     - name: Store allure results
       run: actions/upload-artifact@v3
