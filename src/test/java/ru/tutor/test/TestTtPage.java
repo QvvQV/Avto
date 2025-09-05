@@ -48,7 +48,6 @@ public class TestTtPage {
 
     @DisplayName("Текст внутри модалок на оплату")
     @Test
-    @AllureId("11")
 //        @RepeatedTest(3)
 
     public void ShowModalText() {
@@ -78,7 +77,7 @@ public class TestTtPage {
         ttPage.clickBtnClose();
     }
 
-    @Issue(value = "tests-73")
+//    @Issue(value = "tests-73")
     @Test
     @Severity(value = SeverityLevel.MINOR)
     @DisplayName("футер главной страницы")
@@ -175,7 +174,6 @@ public class TestTtPage {
     }
 
     @Test
-    @AllureId("10")
     @DisplayName("api product ")
     public void ApiFooterMenuProduct(){
 step("Задаём список продуктов по которым необходимо пробежаться. Проверяем код ответа на 200", ()-> {
@@ -228,7 +226,7 @@ step("Задаём список продуктов по которым необ�
     }
 
     @Test
-    @AllureId("4")
+    @AllureId("1")
     @DisplayName("api category")
     public void ApiFooterMenuCategory(){
 
