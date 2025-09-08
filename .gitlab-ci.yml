@@ -23,6 +23,8 @@ test:
   after_script:
     - "echo Uploading reports..."
   artifacts:
+   when: always
+   path: package.json
    reports:
     junit:
      - ./allure-results
