@@ -25,6 +25,6 @@ test:
   artifacts:
     when: always
     paths: package.json
-    reports:
-      junit:
-      - ./allure-results
+   # reports:
+   #   junit:
+     # - ./allure-results
