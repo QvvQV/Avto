@@ -22,7 +22,7 @@ test:
     - ./allurectl watch -- gradle clean test
   after_script:
     - "echo Uploading reports..."
-  artifacts:
-    reports:
-      junit:
-        - "./index.html"
+#  artifacts:
+ #   reports:
+  #    junit:
+   #     - "./index.html"
