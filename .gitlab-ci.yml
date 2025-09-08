@@ -11,6 +11,8 @@ test:
     - gradle init
   script:
     - ./allurectl watch -- maven clean test
+  after_script:
+    - "Uploading reports..."
   artifacts:
     reports:
       junit:
