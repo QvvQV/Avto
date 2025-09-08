@@ -24,7 +24,7 @@ test:
     - "echo Uploading reports..."
   artifacts:
    when: always
-   path: package.json
+   paths: package.json
    reports:
     junit:
      - ./allure-results
