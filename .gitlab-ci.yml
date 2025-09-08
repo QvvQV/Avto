@@ -25,5 +25,5 @@ test:
   artifacts:
    reports:
     junit:
-    - ./ allure-generate
-     - ./allure-results
+    - target/site/allure-results
+    # - ./allure-results
