@@ -8,6 +8,5 @@ test:
   before_script:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
-    - echo before_script
   script:
     - ./allurectl watch -- gradle clean test
