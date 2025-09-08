@@ -25,4 +25,4 @@ test:
   artifacts:
     reports:
       junit:
-        - "./pom.xml"
+        - "./index.html"
