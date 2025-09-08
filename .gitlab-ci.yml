@@ -24,7 +24,7 @@ test:
     - chmod +x allurectl
     - gradle init
   script:
-    - ./allurectl watch -- maven clean test
+    - ./allurectl watch -- gradle clean test
   after_script:
     - "Uploading reports..."
   artifacts:
