@@ -13,6 +13,8 @@ test:
     ALLURE_ENDPOINT: https://testops.tutormail.ru
     ALLURE_PROJECT_ID: 1
     ALLURE_RESULTS: build/allure-results
+    PRODUCT_VERSION: '1.23'
+    TESTS_BROWSER: chrome
   before_script:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
