@@ -5,12 +5,6 @@
 stages:
   - run_tests
 
-variables:
-  ALLURE_LAUNCH_TAGS: "Branch - ${CI_COMMIT_REF_NAME}, Medium API tests"
-  ALLURE_TESTPLAN_PATH: "target/testplan.json"
-  ALLURE_RESULTS: "target/allure-results/"
-  TESTS_BRANCH: ${CI_COMMIT_REF_NAME}
-
 test:
   stage: run_tests
   image: gradle
@@ -22,11 +16,10 @@ test:
   before_script:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
-    - gradle init
   script:
     - ./allurectl watch -- gradle clean test
   after_script:
-    - "Uploading reports..."
+    - "echo Uploading reports..."
   artifacts:
     reports:
       junit:
