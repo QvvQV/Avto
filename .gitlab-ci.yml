@@ -11,3 +11,7 @@ test:
     - gradle init
   script:
     - ./allurectl watch -- maven clean test
+  artifacts:
+    reports:
+      junit:
+        - "./pom.xml"
