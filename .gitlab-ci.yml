@@ -1,6 +1,14 @@
+  cache:
+    paths:
+      - .m2/repository
+  build:
+    stage: build
+    script:
+      - mvn compile
   test:
     stage: test
-    image: maven
+    image: maven:latest
+
     variables:
       ALLURE_ENDPOINT: https://testops.tutormail.ru/project
       ALLURE_PROJECT_ID: 1
