@@ -1,23 +1,12 @@
-#stages:
-#  - test
-#
-#variables:
-#  ALLURE_LAUNCH_NAME: "{CI_PROJECT-NAME} - ${CI_COMMIT_SHORT_SPA}"
-#  ALLURE_LAUNCH_TAGS: "regular, ${CI_COMMIT_REF_NAME}, ${GITLAB_USER_EMAIL}"
-#  ALLURE_TESTPLAN_PATH: ./testplan.json
-#
-#test:
-#  image: maven
-#  stage: test
-#  before_script:
-#    - wget https://github.com/allure-framework/allurectl/releases/tag/2.17.0/allurectl_windows_386 -0 /usr/bin/allurectl
-#    - allurectlwatch /usr/bin/allurectl
-#    - allurectl job-run start
-#    - allurectl job-run plan --output-file ${ALLURE_TESTPLAN_PATH}
-#  script:
-#    - allurectl upload --job-run-child --timeout 6000 allure-results &
-#    - echo "Running tests on ${BASE_URL} - ${BROWSER_NAME}"
-#    - mvn test
-#    - pkill allurectl
-#  after_script:
-#    - allurectl job-run stop
+  test:
+    stage: test
+    image: gradle
+    variables:
+      ALLURE_ENDPOINT: https://testops.tutormail.ru/project
+      ALLURE_PROJECT_ID: 1
+      ALLURE_RESULTS: target/site/allure-results
+    before_script:
+      - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
+      - chmod +x allurectl
+    script:
+      - ./allurectl watch -- gradle clean test
