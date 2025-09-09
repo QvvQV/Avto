@@ -10,29 +10,13 @@ test:
   before_script:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
-  test_with_allure:
-    stage: test
-    script:
-      - mvn clean test allure:report
-    artifacts:
-      when: on_success
-      paths:
-        - target/site/allure-maven/ # Путь к сгенерированным отчетам
-      expire_in: 1 week # Время хранения артефактов
-    needs:
-      - build_job
-  
-  
-  
-  
-  
-  #script:
-  #  - mvn clean test allure:report
-  #artifacts:
- #   when: always
- #   paths:
-  #    - allure-results/
-  #  expire_in: 5 days
+  script:
+    - mvn clean test allure:report
+  artifacts:
+    when: always
+    paths:
+      - allure-results/
+    expire_in: 5 days
   #needs:
   #  - build_job
     #reports:
