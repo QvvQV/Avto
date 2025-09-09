@@ -23,7 +23,7 @@ test:
      - allure-results # Путь к сгенерированным отчетам
     expire_in: 1 week # Время хранения артефактов
   
-  generate_report:
+generate_report:
     stage: report
     image: maven:3-jdk-11
     script:
