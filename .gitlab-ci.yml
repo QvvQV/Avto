@@ -16,6 +16,7 @@ test:
   script:
     #- ./allurectl watch -- mvn clean test
     - allure install
+    - allure generate allure-results -o
     #- mvn clean test
   artifacts:
     when: always
@@ -24,10 +25,10 @@ test:
      - allure-results # Путь к сгенерированным отчетам
      - jobid
    
-  after_script:
-    stage: report
-      - mvn ./allure-results
-      - allure generate allure-results -o
+  #after_script:
+   # stage: report
+   #   - mvn ./allure-results
+   #   - allure generate allure-results -o
 
   
       #junit: index.html    
