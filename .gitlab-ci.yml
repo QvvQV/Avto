@@ -1,5 +1,5 @@
 test:
   stage: test
-  image: gradle
+  image: maven
   script:
-    - gradle clean test
+    - mvn clean test
