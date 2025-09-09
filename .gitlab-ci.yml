@@ -24,7 +24,7 @@ test:
      - jobid
    
   after_script:
-    - mvn ./executor.json ./allure-results
+    - mvn ./allure-results
     - allure generate allure-results -o
 
   
