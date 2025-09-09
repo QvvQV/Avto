@@ -16,9 +16,6 @@ build:
   script:
     - echo "Сборка проекта..."
     - mvn clean install # Сборка без тестов
-  cache:
-    paths:
-      - .m2/repository/
 
 # Этап выполнения тестов и генерации отчётов Allure
 test:
