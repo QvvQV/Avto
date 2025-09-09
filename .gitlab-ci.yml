@@ -14,7 +14,7 @@ test:
     - ./allurectl watch -- mvn clean test 
   artifacts:
     when: always
-    paths:
-      - allure-results
+    #paths:
+     # - allure-results
     reports:
       - junit: allure-results.json
