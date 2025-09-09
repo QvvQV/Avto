@@ -21,7 +21,7 @@ test:
   script:
   #  ./allurectl watch 
     - gradle clean test
-    - allure generate
+    - ./allurectl watch allure generate
   after_script:
     - allure open
     - "echo Uploading reports..."
@@ -30,5 +30,8 @@ test:
     paths: 
       - package.json
     reports:
-      junit:
-      - ./allure-results
+      cobertura:
+        - package.xml
+    #reports:
+     # junit:
+      #- ./allure-results
