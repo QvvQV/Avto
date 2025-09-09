@@ -15,23 +15,13 @@ test:
 
   script:
     #- ./allurectl watch -- mvn clean test
-    - mvn clean test
+    - mvn clean test allure:report
 
   artifacts:
     when: always
     paths:
      - allure-results # Путь к сгенерированным отчетам
     expire_in: 1 week # Время хранения артефактов
-  
-pages:
-  stage: report
-  image: maven:3-jdk-11
-  script:
-    - mvn allure:report
-  dependencies:
-    - test
-  artifacts:
-    paths:
-      - allure-maven-plugin
+
 
       #junit: index.html    
