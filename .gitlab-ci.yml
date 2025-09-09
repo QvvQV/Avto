@@ -14,7 +14,7 @@ test:
     - ./allurectl watch -- mvn clean test -- allure generate=report.xml
   artifacts:
     when: always
-    path:
+    paths:
       - report.xml
     reports:
       junit: report.xml
