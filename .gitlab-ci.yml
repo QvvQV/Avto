@@ -10,7 +10,7 @@ stages:
 build:
   stage: build
   script:
-    - 'mvn install'
+    - 'maven install'
   cache:
     paths:
       - ./target
