@@ -1,32 +1,26 @@
-stages:
-  - test
-  - report
-
-variables:
-  # Переменные для Java и Maven/Gradle
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-  # Переменные для Allure
-  ALLURE_RESULTS_DIR: "allure-results"
-  ALLURE_REPORT_DIR: "allure-report"
-
-
-
-# Этап выполнения тестов и генерации отчётов Allure
 test:
   stage: test
-  script:
-    - echo "Запуск тестов и генерация отчётов Allure..."
-    - mvn test -Dallure.results.directory=$ALLURE_RESULTS_DIR $MAVEN_OPTS # Выполнение тестов
-    - allure generate $ALLURE_RESULTS_DIR --clean -o $ALLURE_REPORT_DIR # Генерация отчёта
-  dependencies:
-    - build # Зависит от успешной сборки
+  image: maven
+  variables:
+    ALLURE_ENDPOINT: https://testops.tutormail.ru
+    ALLURE_PROJECT_ID: 1
+    ALLURE_RESULTS: allure-results
+    PRODUCT_VERSION: '1.23'
+    TESTS_BROWSER: chrome
+    ALLURE_REPORT_DIR: allure-report
+  before_script:
+    - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
+    - chmod +x allurectl
 
-# Этап просмотра отчёта
-report:
-  stage: report
+
   script:
-    - echo "Отчёт сгенерирован. Можно просмотреть артефакты."
+    - ./allurectl watch -- mvn clean
+
   artifacts:
+    when: always
     paths:
-      - $ALLURE_REPORT_DIR
-    expire_in: 1 week # Указываем срок хранения артефактов
+      - pom.xml # Путь к сгенерированным отчетам
+    expire_in: 1 week # Время хранения артефактов
+    #reports:
+
+      #junit: index.html
