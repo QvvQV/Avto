@@ -11,7 +11,8 @@ test:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
   script:
-    - ./allurectl watch -- mvn clean test -- allure generate=report.xml
+    - ./allurectl watch -- mvn clean test 
+    - allure generate=report.xml
   artifacts:
     when: always
     paths:
