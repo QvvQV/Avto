@@ -15,6 +15,6 @@ test:
   artifacts:
     when: always
     paths:
-      - allure-results
+      - allure-reports/index.html
     reports:
       junit: allure-results.json
