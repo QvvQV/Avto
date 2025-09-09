@@ -11,10 +11,13 @@ test:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
   script:
-    - ./allurectl watch -- mvn clean test
+    - mvn clean test allure:report
   artifacts:
     when: always
     paths:
-      - allure-results
-    reports:
-      junit: allure-results.json
+      - allure-results/
+    expire_in: 5 days
+    needs:
+      - build_job
+    #reports:
+      #junit: allure-results.json
