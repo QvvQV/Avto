@@ -17,7 +17,7 @@ test:
     paths:
       - allure-results/
     expire_in: 5 days
-    needs:
+  needs:
       - build_job
     #reports:
       #junit: allure-results.json
