@@ -14,7 +14,7 @@ test:
 
 
   script:
-    - ./allurectl watch -- mvn clean
+    - ./allurectl watch -- mvn clean test
 
   artifacts:
     when: always
