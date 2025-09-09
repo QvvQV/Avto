@@ -28,10 +28,7 @@ test:
   artifacts:
     when: always
     paths: 
-      - package.json
+      - allure-results.json
     reports:
-      cobertura:
-        - package.xml
-    #reports:
-     # junit:
-      #- ./allure-results
+      junit:
+      - ./allure-results
