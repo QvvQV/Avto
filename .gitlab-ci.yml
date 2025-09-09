@@ -1,30 +1,36 @@
-test:
-  stage: test
-  image: maven
-  variables:
-    ALLURE_ENDPOINT: https://testops.tutormail.ru
-    ALLURE_PROJECT_ID: 1
-    ALLURE_RESULTS: allure-results
-    PRODUCT_VERSION: '1.23'
-    TESTS_BROWSER: chrome
-  before_script:
-    - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
-    - chmod +x allurectl
-  build_job:
-    stage: build
-    script:
-      - mvn clean install
+#test:
+ # stage: test
+ # image: maven
+ # variables:
+  #  ALLURE_ENDPOINT: https://testops.tutormail.ru
+#    ALLURE_PROJECT_ID: 1
+ #   ALLURE_RESULTS: allure-results
+ #   PRODUCT_VERSION: '1.23'
+  #  TESTS_BROWSER: chrome
+ # before_script:
+  #  - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
+  #  - chmod +x allurectl
   
-  test_with_allure:
-    stage: test
-    script:
-      - mvn clean test allure:report
-    artifacts:
-      when: always
-      paths:
-        - target/site/allure-results
-      expire_in: 5 days
-    needs:
-      - build_job
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - mvn clean install
+
+test_with_allure:
+  stage: test
+  script:
+    - mvn clean test allure:report
+  artifacts:
+    when: on_success
+    paths:
+      - target/site/allure-maven/ # Путь к сгенерированным отчетам
+    expire_in: 1 week # Время хранения артефактов
+  needs:
+    - build_job
     #reports:
       #junit: allure-results.json
