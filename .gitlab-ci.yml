@@ -14,7 +14,7 @@ test:
   
 
   script:
-    - ./allurectl watch -- mvn clean test -o allure-report
+    - ./allurectl watch -- mvn clean test -o allure-results
   
   artifacts:
     when: always
