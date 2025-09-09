@@ -7,6 +7,7 @@ test:
     ALLURE_RESULTS: allure-results
     PRODUCT_VERSION: '1.23'
     TESTS_BROWSER: chrome
+    ALLURE_RESULTS_DIR: "allure-results"
     ALLURE_REPORT_DIR: "allure-report"
   before_script:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
@@ -15,13 +16,13 @@ test:
 
   script:
     - ./allurectl watch -- mvn clean test
-    - allure generate $ALLURE_REPORT_DIR -- clean
+    - allure generate $ALLURE_RESULTST_DIR -- clean -o $ALLURE_REPORT_DIR
   
   
   artifacts:
     when: always
     paths:
-      - allure-results # Путь к сгенерированным отчетам
+      - $ALLURE_REPORT_DIR # Путь к сгенерированным отчетам
     expire_in: 1 week # Время хранения артефактов
     #reports:
 
