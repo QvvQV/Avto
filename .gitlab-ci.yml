@@ -15,7 +15,7 @@ build:
   stage: build
   script:
     - echo "Сборка проекта..."
-    - mvn clean install # Сборка без тестов
+    - mvn install # Сборка без тестов
 
 # Этап выполнения тестов и генерации отчётов Allure
 test:
