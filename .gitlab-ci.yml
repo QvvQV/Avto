@@ -1,22 +1,20 @@
 image: openjdk:11-jdk-slim
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
 stages:
   - build
   - test
-
-.dependencies_cache:
-  cache:
-    key:
-      files:
-        - build.gradle
-      paths:
-        - .gradle-cache
-variables:
-  GRADLE_USER_HOME: '.gradle-cache'
+  - package
 
 build:
   stage: build
   script:
-    - ./gradlew build -x test
+    - 'mvn --settings $MAVEN_SETTINGS compile'
+  cache:
+    paths:
+      - ./target
+      - ./.m2
 
 test:
   stage: test
@@ -33,19 +31,30 @@ test:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
 
-
   script:
     #- ./allurectl watch -- mvn clean test
-    - ./allurectl watch -- gradlew clean test
+    - ./allurectl watch -- mvn --settings $MAVEN_SETTINGS test
     #- mvn clean test
+  cache:
+    paths:
+      - ./target
+      - ./.m2
+
+  package:
+    stage: package
+    script:
+      - 'mvn --settings $MAVEN_SETTINGS package -Dmaven.test.skip=true'
   artifacts:
-    when: always
-    expire_in: 1 week # Время хранения артефактов
+    paths:
+      - target/*.jar
+  #artifacts:
+    #when: always
+    #expire_in: 1 week # Время хранения артефактов
     #paths:
      #- allure-results # Путь к сгенерированным отчетам
-    reports:
-      junit:
-        - builds/allure-results/test/TEST-*.xml
+   # reports:
+    #  junit:
+      #  - builds/allure-results/test/TEST-*.xml
    
   #after_script:
    # stage: report
