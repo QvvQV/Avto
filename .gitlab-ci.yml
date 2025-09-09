@@ -1,5 +1,4 @@
 stages:
-  - build
   - test
   - report
 
@@ -10,12 +9,7 @@ variables:
   ALLURE_RESULTS_DIR: "allure-results"
   ALLURE_REPORT_DIR: "allure-report"
 
-# Этап сборки проекта
-build:
-  stage: build
-  script:
-    - echo "Сборка проекта..."
-    - mvn install # Сборка без тестов
+
 
 # Этап выполнения тестов и генерации отчётов Allure
 test:
