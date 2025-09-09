@@ -22,7 +22,7 @@ test:
     paths:
      - allure-results # Путь к сгенерированным отчетам
      - jobid
-allure:
+test_allure:
   stage: report   
   script:
     - mvn ./executor.json ./allure-results
