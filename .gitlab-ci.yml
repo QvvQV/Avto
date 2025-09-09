@@ -3,12 +3,13 @@ stage:
   - build
   - test
 
-cache:
-  key:
-    files:
-      - build.gradle
-    paths:
-      - .gradle-cache
+.dependencies_cache:
+  cache:
+    key:
+      files:
+        - build.gradle
+      paths:
+        - .gradle-cache
 variables:
   GRADLE_USER_HOME: '.gradle-cache'
 
