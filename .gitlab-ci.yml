@@ -22,9 +22,8 @@ test:
     paths:
      - allure-results # Путь к сгенерированным отчетам
      - jobid
-after_script:
-  stage: report   
-  script:
+   
+  after_script:
     - mvn ./executor.json ./allure-results
     - allure generate allure-results -o
 
