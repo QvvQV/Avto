@@ -13,7 +13,7 @@ test:
   
 
   script:
-    - ./allurectl watch -- mvn clean test allure:report
+    - ./allurectl watch -- mvn clean test
   artifacts:
     when: always
     paths:
