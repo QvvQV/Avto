@@ -1,26 +1,62 @@
-test:
-  stage: test
-  image: maven
-  variables:
-    ALLURE_ENDPOINT: https://testops.tutormail.ru
-    ALLURE_PROJECT_ID: 1
-    ALLURE_RESULTS: allure-results
-    PRODUCT_VERSION: '1.23'
-    TESTS_BROWSER: chrome
-    ALLURE_REPORT_DIR: allure-report
-  before_script:
-    - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
-    - chmod +x allurectl
+#test:
+ # stage: test
+  #image: maven
+  #variables:
+  #  ALLURE_ENDPOINT: https://testops.tutormail.ru
+   # ALLURE_PROJECT_ID: 1
+    #ALLURE_RESULTS: allure-results
+    #PRODUCT_VERSION: '1.23'
+   # TESTS_BROWSER: chrome
+   # ALLURE_REPORT_DIR: allure-report
+  #before_script:
+   # - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
+    #- chmod +x allurectl
 
 
-  script:
-    - ./allurectl watch -- mvn clean test
+  #script:
+   # - ./allurectl watch -- mvn clean test
 
-  artifacts:
-    when: always
-    paths:
-      - pom.xml # Путь к сгенерированным отчетам
-    expire_in: 1 week # Время хранения артефактов
+  #artifacts:
+  #  when: always
+   # paths:
+    #  - allure-results # Путь к сгенерированным отчетам
+    #expire_in: 1 week # Время хранения артефактов
     #reports:
 
       #junit: index.html
+
+
+stages:
+  - test
+  - report
+
+run_tests:
+  stage: test
+  image: your_test_runner_image # e.g., cypress/base:10
+  script:
+    - mvn install
+    - mvn clean test --reporter allure-cypress # Example for Cypress
+  artifacts:
+    paths:
+      - allure-results
+
+generate_allure_report:
+  stage: report
+  image: franela/allure-docker:latest
+  script:
+    - allure generate --clean allure-results -o allure-report
+  artifacts:
+    paths:
+      - allure-report
+    expire_in: 1 week
+
+pages: # Optional, for GitLab Pages deployment
+  stage: report
+  image: alpine:latest
+  script:
+    - mv allure-report public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master # Or your main branch      
