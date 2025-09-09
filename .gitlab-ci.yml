@@ -13,9 +13,9 @@ test:
   
 
   script:
-    - mvn clean test allure:report
+    - ./allurectl watch -- mvn clean test allure:report
   artifacts:
-    when: on_success
+    when: always
     paths:
       - allure-results # Путь к сгенерированным отчетам
     expire_in: 1 week # Время хранения артефактов
