@@ -15,7 +15,7 @@ build:
   stage: build
   script:
     - echo "Сборка проекта..."
-    - mvn clean install -DskipTests $MAVEN_OPTS # Сборка без тестов
+    - mvn clean install # Сборка без тестов
   cache:
     paths:
       - .m2/repository/
