@@ -17,7 +17,7 @@ test:
   artifacts:
     when: on_success
     paths:
-      - target/site/allure-results/ # Путь к сгенерированным отчетам
+      - allure-results # Путь к сгенерированным отчетам
     expire_in: 1 week # Время хранения артефактов
     #reports:
       #junit: allure-results.json
