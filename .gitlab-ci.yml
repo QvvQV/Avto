@@ -18,6 +18,6 @@ test:
       - allure-results/
     expire_in: 5 days
   needs:
-      - build_job
+    - build_job
     #reports:
       #junit: allure-results.json
