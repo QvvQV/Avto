@@ -46,11 +46,6 @@ test:
     reports:
       junit:
         - builds/allure-results/test/TEST-*.xml
-
-dockerize:
-  stage: package
-  script:
-    - "docker build -t spring-boot-realworld-example-app: $CI_JOB_ID"
    
   #after_script:
    # stage: report
