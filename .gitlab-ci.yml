@@ -14,12 +14,12 @@ test:
   
 
   script:
-    - ./allurectl watch -- mvn clean test -o allure-results
+    - ./allurectl watch -- mvn clean
   
   artifacts:
     when: always
     paths:
-      - $ALLURE_REPORT_DIR # Путь к сгенерированным отчетам
+      - allure-results # Путь к сгенерированным отчетам
     expire_in: 1 week # Время хранения артефактов
     #reports:
 
