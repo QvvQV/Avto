@@ -12,7 +12,6 @@ test:
     - chmod +x allurectl
   script:
     - ./allurectl watch -- mvn clean test 
-    - allure generate=report.xml
   artifacts:
     when: always
     paths:
