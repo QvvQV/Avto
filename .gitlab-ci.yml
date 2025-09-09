@@ -15,7 +15,7 @@ test:
 
   script:
     #- ./allurectl watch -- mvn clean test
-    - ./allurectl watch -- allure install
+    - ./allurectl watch -- mvn test ./allure-generate
     #- mvn clean test
   artifacts:
     when: always
@@ -24,7 +24,7 @@ test:
      - allure-results # Путь к сгенерированным отчетам
     reports:
       junit:
-        - build/allure-results-*.xml
+        - builds/products/tutorplace/qa/AvtoTest/allure-results-*.xml
    
   #after_script:
    # stage: report
