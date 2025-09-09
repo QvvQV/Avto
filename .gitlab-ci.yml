@@ -40,10 +40,10 @@ test:
       - ./target
       - ./.m2
 
-  package:
-    stage: package
-    script:
-      - 'mvn --settings $MAVEN_SETTINGS package -Dmaven.test.skip=true'
+package:
+  stage: package
+  script:
+    - 'mvn --settings $MAVEN_SETTINGS package -Dmaven.test.skip=true'
   artifacts:
     paths:
       - target/*.jar
