@@ -15,7 +15,11 @@ test:
 
   script:
     #- ./allurectl watch -- mvn clean test
-    - mvn clean test allure:report
+    - mvn clean test
+  after_script:
+    - mvn allure:report
+
+  
 
   artifacts:
     when: always
