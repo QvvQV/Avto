@@ -20,4 +20,4 @@ test:
       - allure-results # Путь к сгенерированным отчетам
     expire_in: 1 week # Время хранения артефактов
     reports:
-      junit: path.json
+      junit: allure-results.json
