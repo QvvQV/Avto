@@ -10,7 +10,7 @@ stages:
 build:
   stage: build
   script:
-    - 'mvn compile'
+    - 'mvn compiler:compile'
   cache:
     paths:
       - ./target
