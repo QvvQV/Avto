@@ -1,6 +1,6 @@
 test:
   stage: test
-  image: maven:3-jdk-11
+  image: maven:3.8.2-openjdk-11
   variables:
     ALLURE_ENDPOINT: https://testops.tutormail.ru
     ALLURE_PROJECT_ID: 1
@@ -24,12 +24,9 @@ test:
      - jobid
    
   after_script:
-    - mvn ./allure-results
-    - allure generate allure-results -o
+    stage: report
+      - mvn ./allure-results
+      - allure generate allure-results -o
 
   
-
-  
-
-
       #junit: index.html    
