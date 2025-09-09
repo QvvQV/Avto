@@ -20,6 +20,8 @@ test:
     - chmod +x allurectl
   script:
     - ./allurectl watch -- gradle clean test
+    - ./allure generate
+    - ./allure report
   after_script:
     - "echo Uploading reports..."
   artifacts:
