@@ -10,7 +10,7 @@ stages:
 build:
   stage: build
   script:
-    - 'mvn --compile'
+    - 'mvn compile'
   cache:
     paths:
       - ./target
@@ -33,7 +33,7 @@ test:
 
   script:
     #- ./allurectl watch -- mvn clean test
-    - ./allurectl watch -- mvn --test
+    - ./allurectl watch -- mvn test
     #- mvn clean test
   cache:
     paths:
@@ -43,7 +43,7 @@ test:
 package:
   stage: package
   script:
-    - 'mvn --package -Dmaven.test.skip=true'
+    - 'mvn package -Dmaven.test.skip=true'
   artifacts:
     paths:
       - target/*.jar
