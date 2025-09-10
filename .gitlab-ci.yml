@@ -4,13 +4,13 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
 stages:
   - test
-  - allure_report
+  - report
   - deploy
 
 test:
   stage: test
-  #image: maven:3.8.2-openjdk-11
-  image: gradle
+  image: maven:3.8.2-openjdk-11
+  #image: gradle
   variables:
     ALLURE_ENDPOINT: https://testops.tutormail.ru
     ALLURE_PROJECT_ID: 1
@@ -29,7 +29,7 @@ test:
     - ./allurectl watch -- mvn test
     #- mvn clean test
 
-allure_report:
+report:
   stage: allure
   when: always
   image:
