@@ -4,7 +4,7 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
 stages:
   - test
-  - allure
+  - allure_report
   - deploy
 
 test:
