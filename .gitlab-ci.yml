@@ -1,40 +1,45 @@
-image: openjdk:11-jdk-slim
+
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
 stages:
+  - build
   - test
+
+build-job:
+  stage: build
+  image: maven:3.8.2-openjdk-11
+  script:
+    - echo "Start..."
+    - mvn clean package
+
 
 test:
   stage: test
   image: maven:3.8.2-openjdk-11
   #image: gradle
-  variables:
-    ALLURE_ENDPOINT: https://testops.tutormail.ru
-    ALLURE_PROJECT_ID: 1
-    ALLURE_RESULTS: builds/allure-results
-    PRODUCT_VERSION: '1.23'
-    TESTS_BROWSER: chrome
-    ALLURE_REPORT_DIR: allure-report
-  before_script:
-    - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
-    - chmod +x allurectl
+  #variables:
+   # ALLURE_ENDPOINT: https://testops.tutormail.ru
+    #ALLURE_PROJECT_ID: 1
+    #ALLURE_RESULTS: builds/allure-results
+    #PRODUCT_VERSION: '1.23'
+    #TESTS_BROWSER: chrome
+    #ALLURE_REPORT_DIR: allure-report
+  #before_script:
+   # - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
+    #- chmod +x allurectl
 
-  script:
-    - ./allurectl watch -- mvn clean test
-    - allure generate allure-results - o allure-report
-    - allure open allure-report
-
-
-
-  artifacts:
-    when: always
-    expire_in: 1 week # Время хранения артефактов
-    paths:
-     - allure-results # Путь к сгенерированным отчетам
-    reports:
-      junit:
-        - allure-report-*.xml
+  #script:
+   # - ./allurectl watch -- mvn clean test
+    
+  #artifacts:
+  #  when: always
+   # expire_in: 1 week # Время хранения артефактов
+    #paths:
+     #- allure-results # Путь к сгенерированным отчетам
+    #reports:
+     # junit:
+      #  - allure-report-*.xml
    
   #after_script:
    # stage: report
