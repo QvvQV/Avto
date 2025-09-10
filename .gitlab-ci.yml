@@ -3,18 +3,9 @@ image: openjdk:11-jdk-slim
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
 stages:
-  - build
   - test
-  - package
-
-build:
-  stage: build
-  script:
-    - 'maven install'
-  cache:
-    paths:
-      - ./target
-      - ./.m2
+  - allure
+  - deploy
 
 test:
   stage: test
@@ -33,20 +24,49 @@ test:
 
   script:
     #- ./allurectl watch -- mvn clean test
+    - mvn install
+    - allure install
     - ./allurectl watch -- mvn test
     #- mvn clean test
-  cache:
-    paths:
-      - ./target
-      - ./.m2
 
-package:
-  stage: package
+allure_report:
+  stage: allure
+  when: always
+  image:
+    name: ubuntu:latest
+    endpoint: [""]
+  before_script:
+    - apt-get update
+    - apt-get install -y default-jdk wget inzip
+    - mkdir /work/
+    - wget https://github.com/allure-framework/allure2/releases/download/2.13.8/allure-2.13.8.zip -P /work/
+    - unzip /work/allure-2.13.8.zip -d /work/
   script:
-    - 'mvn package -Dmaven.test.skip=true'
+    - /work/allure-2.13.8/bin/allure generate allure-results --clean -o allure-report
+  artifacts:
+    when: always
+    paths:
+      - allure-report/
+      - allure-results/
+  only:
+    - master
+
+pages:
+  stage: deploy
+  when: always
+  dependencies:
+    - allure_report
+  script:
+    - mv allure-report/ public/
   artifacts:
     paths:
-      - target/*.jar
+      - public
+    expire_in: 30 days
+  only:
+    - master
+
+
+
   #artifacts:
     #when: always
     #expire_in: 1 week # Время хранения артефактов
