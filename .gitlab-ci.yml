@@ -1,31 +1,19 @@
-.allurectl-login:
-  before_script:
-    - ./allurectl auth login --endpoint $ALLURE_ENDPOINT --token $ALLURE_TOKEN
-
 stages:
-  - run_tests
+  - test
+
+variables:
+  ALLURE_ENDPOINT: https://testops.tutormail.ru
+  ALLURE_PROJECT_ID: 1
+  PRODUCT_VERSION: '1.23'
+  TESTS_BROWSER: chrome
+  ALLURE_REPORT_DIR: allure-report
+  ALLURE_RESULTS: "build/allure-results"
 
 test:
-  stage: run_tests
-  image: gradle
-  extends: .allurectl-login
-  variables:
-    ALLURE_ENDPOINT: https://testops.tutormail.ru
-    ALLURE_PROJECT_ID: 1
-    ALLURE_RESULTS: target/allure-results
-    PRODUCT_VERSION: '1.23'
-    TESTS_BROWSER: chrome
+  image: gradle:alpine
+  stage: test
   before_script:
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
   script:
     - ./allurectl watch -- gradle clean test
-  after_script:
-    - "echo Uploading reports..."
-  artifacts:
-    when: always
-    paths: 
-      - package.json
-    reports:
-      junit:
-      - ./allure-results
