@@ -1,17 +1,17 @@
 
 
-variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
+#variables:
+ # MAVEN_OPTS: "-Dmaven.repo.local=./.m2/repository"
 stages:
-  - build
+ # - build
   - test
 
-build-job:
-  stage: build
-  image: maven:3.8.5-openjdk-11
-  script:
-    - echo "Start..."
-    - mvn clean package
+#build-job:
+  #stage: build
+ # image: maven:3.8.5-openjdk-11
+  #script:
+  #  - echo "Start..."
+  #  - mvn clean package
 
 
 test-job:
@@ -19,7 +19,11 @@ test-job:
   image: maven:3.8.5-openjdk-11
   script:
     - echo "Run...."
-    - mvn clean test
+    - ./mvn clean test
+    - ./mvn allureReport
+  artifacts:
+    paths:
+      - build/allure-results/allure-report/*
   #image: gradle
   #variables:
    # ALLURE_ENDPOINT: https://testops.tutormail.ru
