@@ -8,15 +8,18 @@ stages:
 
 build-job:
   stage: build
-  image: maven:3.8.2-openjdk-11
+  image: maven:3.8.5-openjdk-11
   script:
     - echo "Start..."
     - mvn clean package
 
 
-test:
+test-job:
   stage: test
-  image: maven:3.8.2-openjdk-11
+  image: maven:3.8.5-openjdk-11
+  script:
+    - echo "Run...."
+    - mvn clean test
   #image: gradle
   #variables:
    # ALLURE_ENDPOINT: https://testops.tutormail.ru
