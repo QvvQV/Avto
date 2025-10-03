@@ -1,8 +1,9 @@
 package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
-import com.github.javafaker.Faker;
+
 import io.qameta.allure.Step;
+import net.datafaker.Faker;
 import org.openqa.selenium.By;
 
 import java.time.Duration;

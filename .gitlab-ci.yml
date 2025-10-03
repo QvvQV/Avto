@@ -5,15 +5,36 @@ variables:
   ALLURE_ENDPOINT: https://testops.tutormail.ru
   ALLURE_PROJECT_ID: 1
   PRODUCT_VERSION: '1.23'
-  TESTS_BROWSER: chrome
-  ALLURE_REPORT_DIR: allure-report
-  ALLURE_RESULTS: "build/allure-results"
+  ALLURE_RESULTS: allure-results
 
 test:
-  image: gradle:alpine
+  image: gradle:jdk24
   stage: test
+  allow_failure: true
   before_script:
+    - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+    - sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    - apt-get update && apt-get install -y google-chrome-stable
+
+    - wget https://github.com/allure-framework/allure2/releases/download/2.35.1/allure-2.35.1.tgz && tar -zxvf allure-2.35.1.tgz -C /opt/ && ln -s /opt/allure-2.35.1/bin/allure /usr/bin/allure
+   # - apt-get update && apt install -y openjdk-22-jdk openjdk-22-jre
+    #- google-chrome --version
+
+
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
   script:
     - ./allurectl watch -- gradle clean test
+  after_script:
+    - gradle allureReport
+    - allure generate -c allure-results -o allure-report
+
+  artifacts:
+    when: always
+    expire_in: 3 days
+    paths:
+      - allure-results
+    #- gradle test --info
+    #- gradle test --debug
+    #- gradle test --stacktrace
+

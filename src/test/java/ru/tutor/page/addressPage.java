@@ -4,15 +4,24 @@ package ru.tutor.page;
 public class addressPage {
 
     // eхcel продукт
-    public static final String urlExcel = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel";
+    public static String urlExcel = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel";
 
     // главная страница
-    public static final String urlMain = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru";
+    public static String urlMain = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru";
 
     // стр для регистрации зарегистрированного пользователя
-    public static final String login = "https://client.ttplace.ru/login";
+    public static String login = "https://client.ttplace.ru/login";
 
     // стр регистрации нового пользователя
-    public static final String register = "https://client.ttplace.ru/register";
+    public static String register = "https://client.ttplace.ru/register";
+
+    //стр admin Dev
+    public static String devAdmin = "https://admin.ttplace.ru";
+
+    // стр продукта под задачу TP-5345 Поля "навыки" для новых карточек в настройке продукта
+    public static String product525 = "https://admin.ttplace.ru/product/edit/525";
+
+    //стр для Api тестов
+    public static String apiDevAdress = "https://api.dev.tutorplace.ru";
 
 }

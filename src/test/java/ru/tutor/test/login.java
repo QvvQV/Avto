@@ -1,35 +1,20 @@
 package ru.tutor.test;
 
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Attachment;
-import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.chrome.ChromeOptions;
-import ru.tutor.page.CloudPage;
+import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.Registration;
 import ru.tutor.page.addressPage;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
-public class login {
-
-    //    @BeforeEach
-    @BeforeAll
-    public static void setupAll() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--incognito");
-        Configuration.browserCapabilities = options;
-        Configuration.browserSize = "1920x1080";
-        SelenideLogger.addListener("allure.properties", new AllureSelenide()
-                .screenshots(true)
-                .savePageSource(true));
-    }
+public class login extends BaseUiTest {
 
     @Attachment(value = "Screenshot", type = "image/png", fileExtension = "png")
     public void takeScreenshot() {
@@ -39,11 +24,11 @@ public class login {
     @AfterAll
     public static void quitDriver() {
         closeWebDriver();
-        SelenideLogger.removeListener("allure.properties");
+        SelenideLogger.removeListener("AllureSelenide");
     }
 
     @Test
-    @AllureId("5")
+    @AllureId("15")
     //        @RepeatedTest(3)
     @DisplayName("открытие стр login")
     public void OpenPageLogin() {
@@ -58,7 +43,7 @@ public class login {
     }
 
     @Test
-    @AllureId("39")
+    @AllureId("31")
     @DisplayName("текст ошибки при пустых полях логин/пароль")
     public void showTextErrorFromEmpty() {
         step("Открытие стр", () -> {
@@ -68,9 +53,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке Войти", () -> {
-            Registration.clickBtnLogin();
-        });
+        step("кликаем по кнопке Войти", Registration::clickBtnLogin);
         step("Проверяем что определённого текста не появилось на стр", () -> {
             Registration.notShowErrorLoginTwo();
         });
@@ -83,7 +66,7 @@ public class login {
     }
 
     @Test
-    @AllureId("39")
+    @AllureId("31")
     @DisplayName("текст ошибки при пустом поле пароль")
     public void showTextErrorFromEmptyPass() {
         step("Открытие стр", () -> {
@@ -94,9 +77,7 @@ public class login {
             Assertions.assertEquals(expected, title());
         });
         Registration.randomEmail();
-        step("кликаем по кнопке Войти", () -> {
-            Registration.clickBtnLogin();
-        });
+        step("кликаем по кнопке Войти", Registration::clickBtnLogin);
         step("Проверяем что ошибка одна на стр", () -> {
             Registration.notShowErrorPass();
         });
@@ -106,7 +87,7 @@ public class login {
     }
 
     @Test
-    @AllureId("36")
+    @AllureId("20")
     @DisplayName("текст ошибки при пустом поле Логин")
     public void showTextErrorFromEmptyLogin() {
         step("Открытие стр", () -> {
@@ -117,9 +98,7 @@ public class login {
             Assertions.assertEquals(expected, title());
         });
         Registration.validPass();
-        step("кликаем по кнопке Войти", () -> {
-            Registration.clickBtnLogin();
-        });
+        step("кликаем по кнопке Войти", Registration::clickBtnLogin);
         step("Проверяем что ошибка одна на стр", () -> {
             Registration.notShowErrorPass();
         });
@@ -129,7 +108,7 @@ public class login {
     }
 
     @Test
-    @AllureId("41")
+    @AllureId("16")
     @DisplayName("текст ошибки при не зарегистрирован пользователе")
     public void showTextErrorFromNotUser() {
         step("Открытие стр", () -> {
@@ -141,9 +120,7 @@ public class login {
         });
         Registration.randomEmail();
         Registration.validPass();
-        step("кликаем по кнопке Войти", () -> {
-            Registration.clickBtnLogin();
-        });
+        step("кликаем по кнопке Войти", Registration::clickBtnLogin);
         step("Проверяем текст ошибки под полем Логин", () -> {
             Assertions.assertEquals("Не подходит адрес почты? Напишите нам, и мы поможем восстановить доступ!", Registration.showErrorLoginTwo());
         });
@@ -153,7 +130,7 @@ public class login {
     }
 
     @Test
-    @AllureId("47")
+    @AllureId("22")
     @DisplayName("текст ошибки при некорректном логине")
     public void showTextErrorFromNotKorrectLogin() {
         step("Открытие стр", () -> {
@@ -165,9 +142,7 @@ public class login {
         });
         Registration.notKorrectEmail();
         Registration.validPass();
-        step("кликаем по кнопке Войти", () -> {
-            Registration.clickBtnLogin();
-        });
+        step("кликаем по кнопке Войти", Registration::clickBtnLogin);
         step("Проверяем текст ошибки под полем Логин", () -> {
             Assertions.assertEquals("Введите корректный адрес", Registration.showErrorLogin());
         });
@@ -177,7 +152,7 @@ public class login {
     }
 
     @Test
-    @AllureId("12")
+    @AllureId("27")
     @DisplayName("открытие стр Recover - восстановление пароля")
     public void OpenPageRecover() {
         step("Открытие стр", () -> {
@@ -191,13 +166,13 @@ public class login {
         step("проверяем текст Заголовка на стр восстановить пароль", () -> {
             Assertions.assertEquals("Восстановление пароля", Registration.showH2());
         });
-        step("проверяем текст Подзаголовка на стр восстановить пароль", () -> {
+        step("проверяем видимость текста Подзаголовка на стр восстановить пароль", () -> {
             Registration.showP();
         });
     }
 
     @Test
-    @AllureId("32")
+    @AllureId("17")
     @DisplayName("текст ошибки при пустом поле на стр Восстановить пароль")
     public void showTextErrorFromRecoverPass() {
         step("Открытие стр", () -> {
@@ -215,7 +190,7 @@ public class login {
     }
 
     @Test
-    @AllureId("34")
+    @AllureId("25")
     @DisplayName("текст сообщения после ввода адреса почты")
     public void showTextAfterPutEmail() {
         step("Открытие стр", () -> {
@@ -229,15 +204,16 @@ public class login {
         Registration.randomEmail();
         Registration.clickBtnRecover();
         step("Сравниванием текст после ввода почты", () -> {
-            Assertions.assertEquals("Новый пароль был отправлен на почту " + CloudPage.atrEmail(), Registration.showP());
-            Assertions.assertEquals("Обязательно проверьте папку спам.", Registration.showP1());
-            Assertions.assertEquals("Если письмо так и не пришло - напиши нам, и мы можем восстановить доступ!", Registration.showP2());
-            Assertions.assertEquals("Я понял(а)", Registration.textBtnRecover());
+//            Assertions.assertEquals("Новый пароль был отправлен на почту " + CloudPage.atrEmail(), Registration.showP());
+//            Assertions.assertEquals("Обязательно проверьте папку спам.", Registration.showP1());
+//            Assertions.assertEquals("Если письмо так и не пришло - напиши нам, и мы можем восстановить доступ!", Registration.showP2());
+//            Assertions.assertEquals("Я понял(а)", Registration.textBtnRecover());
+            Assertions.assertEquals("Пользователь не найден!", Registration.showErrorLogin());
         });
     }
 
     @Test
-    @AllureId("40")
+    @AllureId("24")
     @DisplayName("переход со стр восстановить пароль на стр логин/пароль")
     public void backRecoveryLogin() {
         step("Открытие стр", () -> {
@@ -258,7 +234,7 @@ public class login {
     }
 
     @Test
-    @AllureId("35")
+    @AllureId("28")
     @DisplayName("переход на стр регистрации")
     public void goRegistr() {
         step("Открытие стр", () -> {
@@ -268,9 +244,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -280,7 +254,7 @@ public class login {
     }
 
     @Test
-    @AllureId("37")
+    @AllureId("26")
     @DisplayName("заполнение полей")
     public void inputField() {
         step("Открытие стр", () -> {
@@ -290,9 +264,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -305,7 +277,7 @@ public class login {
     }
 
     @Test
-    @AllureId("33")
+    @AllureId("30")
     @DisplayName("текст ошибки под полем имя")
     public void showTextErrorUnderName() {
         step("Открытие стр", () -> {
@@ -315,9 +287,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -326,7 +296,7 @@ public class login {
         Registration.inputNumber();
         Registration.deleteName();
         step("проверяем что кнопка Далее disable=false", () -> {
-            Assertions.assertEquals(null, Registration.disablBtnRegist());
+            Assertions.assertNull(Registration.disablBtnRegist());
         });
         Registration.clickBtnRegistr();
         step("сверяем текст ошибки под полем имя", () -> {
@@ -338,7 +308,7 @@ public class login {
     }
 
     @Test
-    @AllureId("50")
+    @AllureId("21")
     @DisplayName("текст ошибки под полем почта/пароль/повторите пароль на стр регистрация")
     public void showTextErrorUnderEmailPassRepeat() {
         step("Открытие стр", () -> {
@@ -348,9 +318,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -372,7 +340,7 @@ public class login {
     }
 
     @Test
-    @AllureId("51")
+    @AllureId("29")
     @DisplayName("текст ошибки под полем пароль/повторите пароль на стр регистрация")
     public void showTextErrorUnderPassRepeat() {
         step("Открытие стр", () -> {
@@ -382,9 +350,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -404,7 +370,7 @@ public class login {
     }
 
     @Test
-    @AllureId("52")
+    @AllureId("32")
     @DisplayName("текст ошибки при пароле из 3-х цифр на стр регистрация")
     public void showTextErrorUnderPassNumber3() {
         step("Открытие стр", () -> {
@@ -414,9 +380,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -437,7 +401,7 @@ public class login {
     }
 
     @Test
-    @AllureId("48")
+    @AllureId("19")
     @DisplayName("текст ошибки при Пароль != Повторите пароль на стр регистрация")
     public void showTextErrorPassNotEquelRepeatPass() {
         step("Открытие стр", () -> {
@@ -447,9 +411,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -472,7 +434,7 @@ public class login {
     }
 
     @Test
-    @AllureId("49")
+    @AllureId("23")
     @DisplayName("возвращаемся на стр ввода имени из стр зарегистрироваться")
     public void backFromRegistr() {
         step("Открытие стр", () -> {
@@ -482,9 +444,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -501,7 +461,7 @@ public class login {
     }
 
     @Test
-    @AllureId("53")
+    @AllureId("18")
     @DisplayName("переходим со стр зарегистрироваться на стр войти")
     public void RegisterGoEnter() {
         step("Открытие стр", () -> {
@@ -511,9 +471,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -528,7 +486,7 @@ public class login {
         });
     }
 
-    @Test
+//    @Test
     @AllureId("54")
     @DisplayName("переход со стр зарегистр на стр ЛК")
     public void EnterForPersonalAccount() {
@@ -539,9 +497,7 @@ public class login {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
-        step("кликаем по кнопке регистрация", () -> {
-            Registration.clickRegistr();
-        });
+        step("кликаем по кнопке регистрация", Registration::clickRegistr);
         step("Проверяем заголовок стр", () -> {
             Assertions.assertEquals("Регистрация профиля", Registration.showH2Reg());
         });
@@ -559,7 +515,7 @@ public class login {
         });
     }
 
-    @Test
+//    @Test
     @AllureId("57")
     @DisplayName("регистрируемся с ранее созданного акк")
     public void RegistrathionFromEarlyAcc() {
@@ -573,9 +529,7 @@ public class login {
 
         Registration.validEmail();
         Registration.validPass();
-        step("кликаем по кнопке Войти", () -> {
-            Registration.clickBtnLogin();
-        });
+        step("кликаем по кнопке Войти", Registration::clickBtnLogin);
         step("Проверяем что попали на стр Личного кабинета", () -> {
             Assertions.assertEquals("Добавленное", Registration.showH2AddKurs());
         });

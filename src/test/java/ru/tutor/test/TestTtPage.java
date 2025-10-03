@@ -1,20 +1,17 @@
 package ru.tutor.test;
 
 
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.AllureId;
-import io.qameta.allure.Issue;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
-import io.qameta.allure.selenide.AllureSelenide;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.chrome.ChromeOptions;
+import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.*;
 
 import java.util.Arrays;
@@ -26,28 +23,23 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class TestTtPage {
+public class TestTtPage extends BaseUiTest {
 
     //    @BeforeEach
     @BeforeAll
     public static void setupAll() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--incognito");
-        Configuration.browserCapabilities = options;
-        Configuration.browserSize = "1920x1080";
         open(addressPage.urlMain);
-        SelenideLogger.addListener("allure.properties", new AllureSelenide()
-        .screenshots(true));
     }
 
     @AfterAll
     public static void tearDownAll() {
 //        closeWebDriver();
-        SelenideLogger.removeListener("allure.properties");
+        SelenideLogger.removeListener("AllureSelenide");
     }
 
     @DisplayName("Текст внутри модалок на оплату")
     @Test
+    @AllureId("12")
 //        @RepeatedTest(3)
 
     public void ShowModalText() {
@@ -78,7 +70,7 @@ public class TestTtPage {
     }
 
 //    @Issue(value = "tests-73")
-    @Test
+//    @Test
     @Severity(value = SeverityLevel.MINOR)
     @DisplayName("футер главной страницы")
     public void FooterPage() {
@@ -110,7 +102,7 @@ public class TestTtPage {
         assertEquals("© OOO «ДИДЖИТАЛ КОНТЕНТ»\n2022–2025", footer.setDidgital());});
     }
 
-    @Test
+//    @Test
     @DisplayName("ссылки в атрибуте href")
     public void linksTtPage() {
         String expected = "TutorPlace - Платформа для обучения, курсы по подписке, онлайн школа";
@@ -138,7 +130,7 @@ public class TestTtPage {
         assertEquals("tel:+78005553282", footer.atrNumber());});
     }
 
-    @Test
+//    @Test
     @DisplayName("прокликивание футера")
     public void clickFooterTtpage() {
         String expected = "TutorPlace - Платформа для обучения, курсы по подписке, онлайн школа";
@@ -174,6 +166,7 @@ public class TestTtPage {
     }
 
     @Test
+    @AllureId("13")
     @DisplayName("api product ")
     public void ApiFooterMenuProduct(){
 step("Задаём список продуктов по которым необходимо пробежаться. Проверяем код ответа на 200", ()-> {

@@ -1,7 +1,7 @@
 package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import org.openqa.selenium.Keys;
 
 import java.util.Locale;
@@ -23,19 +23,21 @@ public class Registration {
 
     private static SelenideElement recoverPass = $$("a").find(exactText("Восстановить пароль"));
     private static SelenideElement registration = $$("a").find(exactText("Зарегистрироваться"));
-    private static SelenideElement errorLogin = $$(".sc-lbJcrp.jrguNu").get(0);
-    private static SelenideElement errorPass = $$(".sc-lbJcrp.jrguNu").get(1);
-    private static SelenideElement errorRepeatPass = $$(".sc-lbJcrp.jrguNu").get(2);
-    private static SelenideElement errorLogin1 = $(".sc-eifrsQ.csexSA");
+//    private static SelenideElement errorLogin = $$("span").find(exactText("Это поле обязательное"));
+    private static SelenideElement errorLogin = $$(".sc-uVWWZ.bBKkoe").get(0);
+//    private static SelenideElement errorPass = $$("span").find(exactText("Это поле обязательное"));
+    private static SelenideElement errorPass = $$(".sc-uVWWZ.bBKkoe").get(1);
+    private static SelenideElement errorRepeatPass = $$(".sc-uVWWZ.bBKkoe").get(2);
+    private static SelenideElement errorLogin1 = $(".sc-hCPjZK.gODAEi");
 
     //    Страница Восстановление пароля
     private static SelenideElement h2Text = $$("h2").find(exactText("Восстановление пароля"));
     private static SelenideElement pText = $("._subtitle_12k9l_33");
     private static SelenideElement pText1 = $$("._subtitle_12k9l_33").get(1);
     private static SelenideElement pText2 = $$("._subtitle_12k9l_33").get(2);
-    private static SelenideElement btnRecover = $$("button").find(exactText("Восстановить пароль"));
+    private static SelenideElement btnRecover = $("button");
     private static SelenideElement btnRecover1 = $$("button").find(exactText("Я понял(а)"));
-    private static SelenideElement btnBack = $("._goBackBtn_12k9l_89");
+    private static SelenideElement btnBack = $("._goBackBtn_i0xzq_92");
 
     //    Страница Регистрации
     private static SelenideElement name = $("[name=\"name\"]");

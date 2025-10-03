@@ -1,7 +1,7 @@
 package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 
 import java.time.Duration;
 import java.util.Locale;
