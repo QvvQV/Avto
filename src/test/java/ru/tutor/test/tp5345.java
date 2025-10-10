@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.AllureId;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.internal.shadowed.jackson.core.JsonProcessingException;
 import io.qameta.allure.selenide.AllureSelenide;
@@ -103,7 +104,8 @@ public class tp5345 extends BaseUiTest {
     }
 
      @Test
-    @DisplayName("добавление навыков только за счёт бека, без фронта")
+     @AllureId("36")
+     @DisplayName("добавление навыков только за счёт бека, без фронта")
     public void open1() throws JsonProcessingException {
         step("Открытие стр админки", () -> {
             open(addressPage.devAdmin);

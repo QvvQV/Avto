@@ -1,5 +1,7 @@
 package ru.tutor.page;
 
+import ru.tutor.config.TestConfig;
+
 // здесь указываются все ссылки на платформе
 public class addressPage {
 
@@ -8,6 +10,8 @@ public class addressPage {
 
     // главная страница
     public static String urlMain = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru";
+
+//    public static final String URL_MAIN = AUTH_BASE_URL;
 
     // стр для регистрации зарегистрированного пользователя
     public static String login = "https://client.ttplace.ru/login";

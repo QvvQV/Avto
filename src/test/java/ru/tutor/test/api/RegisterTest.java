@@ -30,6 +30,7 @@ class RegisterTest extends BaseApiTest {
     private static final Faker faker = new Faker(new Locale("en"));
 
     @Test
+    @AllureId("73")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("✅ Успешная регистрация нового пользователя")
     @Order(1)
@@ -56,6 +57,7 @@ class RegisterTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("74")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Успешная регистрация с минимальными данными")
     @Order(2)
@@ -72,6 +74,7 @@ class RegisterTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("72")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Регистрация с существующим email")
     @Order(3)
@@ -85,6 +88,7 @@ class RegisterTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("69")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Регистрация без согласия с политикой")
     @Order(4)
@@ -101,6 +105,7 @@ class RegisterTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("75")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Регистрация с пустым email")
     @Order(5)
@@ -114,6 +119,7 @@ class RegisterTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("71")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Регистрация с пустым именем")
     @Order(6)
@@ -128,6 +134,7 @@ class RegisterTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("70")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Регистрация с коротким паролем")
     @Order(7)
@@ -144,6 +151,7 @@ class RegisterTest extends BaseApiTest {
     }
 
     @ParameterizedTest
+    @AllureId("77")
     @ValueSource(strings = {
             "invalid-email",
             "test@",

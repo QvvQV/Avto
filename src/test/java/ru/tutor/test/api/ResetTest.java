@@ -32,6 +32,7 @@ public class ResetTest extends BaseApiTest {
     private static final Faker faker = new Faker(new Locale("en"));
 
     @Test
+    @AllureId("90")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Сброс пароля с несуществующим email")
     @Order(2)
@@ -56,6 +57,7 @@ public class ResetTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("85")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Сброс пароля с пустым email")
     @Order(3)
@@ -76,6 +78,7 @@ public class ResetTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("87")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Сброс пароля с валидным email")
     @Order(1)
@@ -106,6 +109,7 @@ public class ResetTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("94")
     @DisplayName("🔴 Базовая проверка неуспешного сброса")
     void basicUnsuccessfulResetCheck() {
         Response response = resetSteps.requestPasswordReset("nonexistent@example.com");
@@ -117,6 +121,7 @@ public class ResetTest extends BaseApiTest {
     }
 
     @ParameterizedTest
+    @AllureId("89")
     @ValueSource(strings = {
             "invalid-email",
             "test@",
@@ -140,6 +145,7 @@ public class ResetTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("92")
     @Severity(SeverityLevel.MINOR)
     @DisplayName("🔠 Сброс пароля с email в верхнем регистре")
     @Order(6)
@@ -158,6 +164,7 @@ public class ResetTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("95")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🔣 Сброс пароля с email содержащим спецсимволы")
     @Order(7)
@@ -178,6 +185,7 @@ public class ResetTest extends BaseApiTest {
     }
 
     @Test
+    @AllureId("93")
     @Severity(SeverityLevel.MINOR)
     @DisplayName("🔄 Повторный запрос сброса пароля")
     @Order(8)

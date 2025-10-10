@@ -1,5 +1,6 @@
 package ru.tutor.test.api;
 
+import io.qameta.allure.AllureId;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ public class ProductsTest {
             new ProductsSteps("https://ttplace.ru", "admin", "JWwppsEA84B4BozJgE44sNiZZ");
 
     @Test
+    @AllureId("50")
     @DisplayName("Все продукты из каталога должны быть доступны по коду 200")
     void allProductsAccessible() {
         productSteps.checkAllProductsAvailable();

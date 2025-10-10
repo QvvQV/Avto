@@ -30,6 +30,7 @@ class LoginResponseTest {
     private static final Faker faker = new Faker(new Locale("en"));
 
     @Test
+    @AllureId("58")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("✅ Успешный логин - полная проверка ответа")
     @Order(1)
@@ -56,6 +57,7 @@ class LoginResponseTest {
     }
 
     @Test
+    @AllureId("59")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Неверный пароль - проверка тела ошибки")
     @Order(2)
@@ -84,6 +86,7 @@ class LoginResponseTest {
     }
 
     @Test
+    @AllureId("56")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Неверный email - проверка структуры ошибки")
     @Order(3)
@@ -120,6 +123,7 @@ class LoginResponseTest {
     }
 
     @Test
+    @AllureId("60")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Пустые поля - специальная проверка")
     @Order(4)
@@ -149,6 +153,7 @@ class LoginResponseTest {
     }
 
     @Test
+    @AllureId("57")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("📧 Email в неверном формате - проверка валидации")
     @Order(5)
@@ -165,6 +170,7 @@ class LoginResponseTest {
     }
 
     @Test
+    @AllureId("55")
     @Severity(SeverityLevel.MINOR)
     @DisplayName("⏱️  Проверка времени ответа")
     @Order(6)
@@ -186,6 +192,7 @@ class LoginResponseTest {
     }
 
     @Test
+    @AllureId("62")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🔧 Проверка реальных заголовков ответа")
     @Order(7)

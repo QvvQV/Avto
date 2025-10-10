@@ -2,6 +2,8 @@ package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.sleep;
@@ -23,21 +25,19 @@ public class ttPage {
 
     public static void clickLite99() {
         step("Кликаем по кнопке Лайт 99", () ->{
-        lite99.shouldBe(visible).click();
+        lite99.shouldBe(visible, Duration.ofSeconds(1)).click();
     });
     }
 
     public static void clickLife() {
         step("Кликаем по кнопке Пожизненный доступ", () ->{
-        sleep(500);
-        life.shouldBe(visible).click();
+        life.shouldBe(visible, Duration.ofSeconds(1)).click();
     });
     }
 
     public static void clickPremium() {
         step("Кликаем по кнопке Премиум", () ->{
-        sleep(500);
-        premium.shouldBe(visible).click();
+        premium.shouldBe(visible, Duration.ofSeconds(1)).click();
     });
     }
 

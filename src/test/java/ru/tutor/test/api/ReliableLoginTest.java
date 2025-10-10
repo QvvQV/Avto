@@ -20,6 +20,7 @@ class ReliableLoginTest {
     private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
 
     @Test
+    @AllureId("86")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("✅ Успешный логин - минимальные проверки")
     void successfulLogin_MinimalChecks() {
@@ -44,6 +45,7 @@ class ReliableLoginTest {
     }
 
     @Test
+    @AllureId("88")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Неуспешный логин - минимальные проверки")
     void unsuccessfulLogin_MinimalChecks() {
@@ -68,6 +70,7 @@ class ReliableLoginTest {
     }
 
     @Test
+    @AllureId("84")
     @DisplayName("🔍 Анализ реальной структуры ответов")
     void analyzeActualResponseStructure() {
         step("Анализ успешного ответа", () -> {

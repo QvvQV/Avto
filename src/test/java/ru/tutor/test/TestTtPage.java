@@ -40,7 +40,7 @@ public class TestTtPage extends BaseUiTest {
     @DisplayName("Текст внутри модалок на оплату")
     @Test
     @AllureId("12")
-//        @RepeatedTest(3)
+    //        @RepeatedTest(3)
 
     public void ShowModalText() {
 

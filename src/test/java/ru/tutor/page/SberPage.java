@@ -1,7 +1,11 @@
 package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import net.datafaker.Faker;
+import ru.tutor.config.TestConfig;
+import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -14,126 +18,214 @@ import static io.qameta.allure.Allure.step;
 
 public class SberPage {
     private static final Faker faker = new Faker(new Locale("en"));
-    public static final String url = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel";
-    private static SelenideElement buyBtn = $$("button").find(exactText("начать обучение за 1 ₽*"));
-    private static SelenideElement accessBtn = $("[id=\"access-button\"]");
-    private static SelenideElement error = $$("p").find(exactText("Произошла ошибка. Пожалуйста, попробуйте ещё раз."));
-    private static SelenideElement email = $("[name=\"email\"]");
-    private static SelenideElement cardNumber = $("[id=\"cardNumber\"]");
-    private static SelenideElement expiryDate = $("[id=\"expiryDate\"]");
-    private static SelenideElement cvc = $("[id=\"cvc\"]");
-    private static SelenideElement detailBtn = $("[id=\"details-button\"]");
-    private static SelenideElement proceedLink = $("[id=\"proceed-link\"]");
-    private static SelenideElement successBtn = $$("button").find(exactText("Оплатить"));
-    private static SelenideElement passwordEdit = $("[id=\"passwordEdit\"]");
-    private static SelenideElement textError = $$("span").find(exactText("Операция отклонена. Проверьте введенные данные, достаточность средств на карте и повторите операцию"));
-    private static SelenideElement goShop = $$("button").find(exactText("Перейти в магазин"));
 
+    //Локаторы
+    private static final SelenideElement BUY_BUTTON = $$("button").find(exactText("начать обучение за 1 ₽*"));
+    private static final SelenideElement ACCESS_BUTTON = $("#access-button");
+    private static final SelenideElement ERROR_MESSAGE = $$("p").find(exactText("Произошла ошибка. Пожалуйста, попробуйте ещё раз."));
+    private static final SelenideElement EMAIL_INPUT = $("[name=\"email\"]");
+    private static final SelenideElement CARD_NUMBER = $("#cardNumber");
+    private static final SelenideElement EXPIRY_DATE = $("#expiryDate");
+    private static final SelenideElement CVC = $("#cvc");
+    private static final SelenideElement SUCCESS_BUTTON = $$("button").find(exactText("Оплатить"));
+    private static final SelenideElement PASSWORD_EDIT = $("#passwordEdit");
+    private static final SelenideElement TEXT_ERROR = $$("span").find(exactText("Операция отклонена. Проверьте введенные данные, достаточность средств на карте и повторите операцию"));
+    private static final SelenideElement GO_SHOP = $$("button").find(exactText("Перейти в магазин"));
 
-    public static void changeWindowHandle(){
-        String a = "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”";
-        String b = "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”";
-        String c = "ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ";
+    @Step("Переключение на новое окно браузера")
+    public static void switchToNewWindow() {
         String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
-        step("Ввод email. Отсутствие ошибки под полем mail", () ->{
-        email.sendKeys(faker.internet().emailAddress());
-        if (ttPage.setTextFromModal().equals(a)){
-            System.out.println("Оплата продукта с главной Лайт: " + atrEmail());
-        } else if (ttPage.setTextFromModal().equals(b)) {
-            System.out.println("Оплата продукта с главной Премиум: " + atrEmail());
-        } else if (ttPage.setTextFromModal().equals(c)){
-            System.out.println("Оплата продукта с главной Пожизненный: " + atrEmail());
-        }
-        CloudPage.full.shouldBe(visible).click();
-        sleep(9000);
-        error.shouldNot(visible);});
         Set<String> windowHandles = webdriver().driver().getWebDriver().getWindowHandles();
+
         for (String windowHandle : windowHandles) {
+
             if (!windowHandle.equals(currentWindowHandle)) {
                 webdriver().driver().getWebDriver().switchTo().window(windowHandle);
+                AllureAttachments.attachText("Переключение окна",
+                        "Переключено на окно: " + windowHandle);
                 break;
             }
         }
     }
 
-    public static void clickBtnStart() {
-        step("клик по кнопке оплатить", () ->{
-        buyBtn.shouldBe(visible).click();});
-        String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
-        step("Ввод email. Отсутствие ошибки под полем mail", () ->{
-        email.sendKeys(faker.internet().emailAddress());
-        System.out.println("Оплата с продукта Excel за 1 руб: " + atrEmail());
-        accessBtn.shouldBe(visible).click();
-        sleep(9000);
-        error.shouldNot(visible);});
-        Set<String> windowHandles = webdriver().driver().getWebDriver().getWindowHandles();
-        for (String windowHandle : windowHandles) {
-            if (!windowHandle.equals(currentWindowHandle)) {
-                webdriver().driver().getWebDriver().switchTo().window(windowHandle);
+    @Step("Заполнение email и обработка модального окна")
+    public static void fillEmailAndProcessModal() {
+        step("Ввод email и проверка отсутствия ошибок", () -> {
+            String email = faker.internet().emailAddress();
+            EMAIL_INPUT.setValue(email);
+
+            // Логика определения типа продукта
+            String modalText = ttPage.setTextFromModal();
+            logModalType(modalText, email);
+
+            CloudPage.FULL_OPTION.shouldBe(visible).click();
+            sleep(9000);
+            ERROR_MESSAGE.shouldNotBe(visible);
+
+            AllureAttachments.attachText("Email в модалке", email);
+            System.out.println(modalText + ": " + email);
+        });
+    }
+
+    public static void logModalType(String modalText, String email) {
+        switch (modalText) {
+            case "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”":
+                AllureAttachments.attachText("Оплата продукта", "Лайт тариф, email: " + email);
                 break;
-            }
+            case "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”":
+                AllureAttachments.attachText("Оплата продукта", "Премиум тариф, email: " + email);
+                break;
+            case "ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ":
+                AllureAttachments.attachText("Оплата продукта", "Пожизненный доступ, email: " + email);
+                break;
+            default:
+                AllureAttachments.attachText("Оплата продукта", "Неизвестный тариф, email: " + email);
         }
     }
 
-//    Валидная карта
+    @Step("Начало оформления заказа с продукта Excel")
+    public static void startOrderFromProduct() {
+        step("Клик по кнопке оплатить", () -> {
+            BUY_BUTTON.shouldBe(visible, Duration.ofSeconds(10)).click();
+        });
 
-    public static String atrEmail() {
-        return email.getDomAttribute("value");
+        step("Заполнение email", () -> {
+            String email = faker.internet().emailAddress();
+            EMAIL_INPUT.setValue(email);
+            ACCESS_BUTTON.shouldBe(visible).click();
+            sleep(9000);
+
+            ERROR_MESSAGE.shouldNotBe(visible);
+            AllureAttachments.attachText("Оплата с продукта Excel", "Email: " + email);
+            System.out.println("Оплата продукта с Excel: " + email);
+        });
+
+        switchToNewWindow();
     }
 
-    public static String getTextError() {
-        return textError.getText().trim();
+    private static void fillCardData(String cardNumber, String expiry, String cvc) {
+        step("Заполнение данных карты: " + maskCardNumber(cardNumber), () -> {
+            CARD_NUMBER.shouldBe(visible, Duration.ofSeconds(10)).setValue(cardNumber);
+            EXPIRY_DATE.setValue(expiry);
+            CVC.setValue(cvc);
+            SUCCESS_BUTTON.shouldBe(visible).click();
+
+            AllureAttachments.attachText("Данные карты",
+                    "Карта: " + maskCardNumber(cardNumber) + "\nСрок: " + expiry + "\nCVC: " + cvc);
+        });
     }
 
-    public static void getApprovedCard() {
-        step("Ввод валидной карты", () ->{
-        cardNumber.shouldBe(visible).sendKeys("2202205000012424");
-        expiryDate.sendKeys("0535");
-        cvc.sendKeys("669");
-        successBtn.shouldBe(visible).click();
-        goShop.shouldBe(visible, Duration.ofSeconds(10)).click();});
+    private static String maskCardNumber(String cardNumber) {
+        if (cardNumber.length() > 8) {
+            return cardNumber.substring(0, 4) + "********" + cardNumber.substring(cardNumber.length() - 4);
+        }
+        return cardNumber;
     }
 
-//    Недостаточно средств
-
-    public static void getNoMoneyCard() {
-        step("Ввод данных карты - недостаточно средств", () ->{
-        cardNumber.shouldBe(visible).sendKeys("2202205000060910");
-        expiryDate.sendKeys("0628");
-        cvc.sendKeys("810");
-        successBtn.shouldBe(visible).click();
-//        detailBtn.shouldBe(visible, Duration.ofSeconds(10)).click();
-//        proceedLink.shouldBe(visible).click();
-        passwordEdit.shouldBe(visible, Duration.ofSeconds(10)).sendKeys("111111");
-        sleep(3000);});
+    private static void handleDeclinePayment() {
+        step("Заполнение ACS кода", () -> {
+            PASSWORD_EDIT.shouldBe(visible, Duration.ofSeconds(10)).setValue("111111");
+            WaitHelper.waitForPageLoad();
+            AllureAttachments.attachText("Статус оплаты", "Платеж отклонен");
+        });
     }
 
-    //Карта просрочена
-
-    public static void getExpireCard() {
-        step("Ввод данных карты с истёкшим сроком", () ->{
-        cardNumber.shouldBe(visible).sendKeys("2202202107593166");
-        expiryDate.sendKeys("0622");
-        cvc.sendKeys("123");
-        successBtn.shouldBe(visible).click();
-//        detailBtn.shouldBe(visible, Duration.ofSeconds(10)).click();
-//        proceedLink.shouldBe(visible).click();
-        passwordEdit.shouldBe(visible, Duration.ofSeconds(10)).sendKeys("111111");
-        sleep(3000);});
+    @Step("Оплата одобренной картой")
+    public static void payWithApprovedCard() {
+        fillCardData(
+                TestConfig.Cards.APPROVED,
+                TestConfig.Cards.Approved.EXPIRY,
+                TestConfig.Cards.Approved.CVC
+        );
+        step("Переход в магазин", () -> {
+            GO_SHOP.shouldBe(visible, Duration.ofSeconds(15)).click();
+            AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
+        });
     }
 
-//    Фиксированный баланс 100р
+    @Step("Оплата картой с недостаточными средствами")
+    public static void payWithInsufficientFundsCard() {
+        fillCardData(
+                TestConfig.Cards.INSUFFICIENT_FUNDS,
+                TestConfig.Cards.InsufficientFunds.EXPIRY,
+                TestConfig.Cards.InsufficientFunds.CVC
+        );
 
-    public static void getFixBalanceCard() {
-        step("Ввод данных карты с фиксированным остатком", () ->{
-        cardNumber.shouldBe(visible).sendKeys("2202205300068092");
-        expiryDate.sendKeys("0526");
-        cvc.sendKeys("583");
-        successBtn.shouldBe(visible).click();
-//        detailBtn.shouldBe(visible, Duration.ofSeconds(10)).click();
-//        proceedLink.shouldBe(visible).click();
-        passwordEdit.shouldBe(visible, Duration.ofSeconds(10)).sendKeys("111111");
-        sleep(3000);});
+        handleDeclinePayment();
     }
 
+    @Step("Оплата просроченной картой")
+    public static void payWithExpiredCard() {
+        fillCardData(
+                TestConfig.Cards.EXPIRED,
+                TestConfig.Cards.Expired.EXPIRY,
+                TestConfig.Cards.Expired.CVC
+        );
+
+        handleDeclinePayment();
+    }
+
+    @Step("Оплата картой с фиксированным балансом")
+    public static void payWithFixedBalanceCard() {
+        fillCardData(
+                TestConfig.Cards.FIXED_BALANCE,
+                TestConfig.Cards.FixBalance.EXPIRY,
+                TestConfig.Cards.FixBalance.CVC
+        );
+        handleDeclinePayment();
+
+        step("Переход в магазин", () -> {
+            GO_SHOP.shouldBe(visible, Duration.ofSeconds(15)).click();
+            AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
+        });
+    }
+
+    public static String getErrorText() {
+        return TEXT_ERROR.shouldBe(visible, Duration.ofSeconds(10)).getText().trim();
+    }
+
+    //    public static void changeWindowHandle(){
+//        String a = "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”";
+//        String b = "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”";
+//        String c = "ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ";
+//        String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
+//        step("Ввод email. Отсутствие ошибки под полем mail", () ->{
+//        EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
+//        if (ttPage.setTextFromModal().equals(a)){
+//            System.out.println("Оплата продукта с главной Лайт: " + atrEmail());
+//        } else if (ttPage.setTextFromModal().equals(b)) {
+//            System.out.println("Оплата продукта с главной Премиум: " + atrEmail());
+//        } else if (ttPage.setTextFromModal().equals(c)){
+//            System.out.println("Оплата продукта с главной Пожизненный: " + atrEmail());
+//        }
+//        CloudPage.FULL_OPTION.shouldBe(visible).click();
+//        sleep(9000);
+//        ERROR_MESSAGE.shouldNot(visible);});
+//        Set<String> windowHandles = webdriver().driver().getWebDriver().getWindowHandles();
+//        for (String windowHandle : windowHandles) {
+//            if (!windowHandle.equals(currentWindowHandle)) {
+//                webdriver().driver().getWebDriver().switchTo().window(windowHandle);
+//                break;
+//            }
+//        }
+//    }
+//
+//    public static void clickBtnStart() {
+//        step("клик по кнопке оплатить", () ->{
+//        BUY_BUTTON.shouldBe(visible).click();});
+//        String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
+//        step("Ввод email. Отсутствие ошибки под полем mail", () ->{
+//        EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
+//        System.out.println("Оплата с продукта Excel за 1 руб: " + atrEmail());
+//        ACCESS_BUTTON.shouldBe(visible).click();
+//        sleep(9000);
+//        ERROR_MESSAGE.shouldNot(visible);});
+//        Set<String> windowHandles = webdriver().driver().getWebDriver().getWindowHandles();
+//        for (String windowHandle : windowHandles) {
+//            if (!windowHandle.equals(currentWindowHandle)) {
+//                webdriver().driver().getWebDriver().switchTo().window(windowHandle);
+//                break;
+//            }
+//        }
+//    }
 }

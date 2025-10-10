@@ -1,5 +1,6 @@
 package ru.tutor.test.api;
 
+import io.qameta.allure.AllureId;
 import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ public class ConfigTest {
     );
 
     @Test
+    @AllureId("45")
     @DisplayName("GET /api/config - успешное получение конфигурации")
     void getConfigSuccess() {
         Response response = configSteps.getConfig();
@@ -25,6 +27,7 @@ public class ConfigTest {
     }
 
     @Test
+    @AllureId("44")
     @DisplayName("POST /api/config - попытка создать (ожидаем 405)")
     void createConfigNotAllowed() {
         String body = "{\"requestPath\":\"https://fake.ru\"}";
@@ -33,6 +36,7 @@ public class ConfigTest {
     }
 
     @Test
+    @AllureId("43")
     @DisplayName("PUT /api/config - попытка обновить (ожидаем 405)")
     void updateConfigNotAllowed() {
         String body = "{\"requestPath\":\"https://new.dev.ru\"}";
@@ -41,6 +45,7 @@ public class ConfigTest {
     }
 
     @Test
+    @AllureId("42")
     @DisplayName("DELETE /api/config - попытка удалить (ожидаем 405)")
     void deleteConfigNotAllowed() {
         Response response = configSteps.deleteConfig();

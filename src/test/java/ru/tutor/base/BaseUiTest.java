@@ -11,18 +11,19 @@ public abstract class BaseUiTest {
     @BeforeAll
     public static void setupSelenide() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--incognito");
+        options.addArguments("--incognito", "--disable-dev-shm-usage", "--no-sandbox");
         options.addArguments("--headless");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--no-sandbox");
 
         Configuration.browserCapabilities = options;
         Configuration.browserSize = "1920x1080";
-        Configuration.headless = true; // headless режим для CI
+        Configuration.timeout = 10000;
+        Configuration.pageLoadTimeout = 30000;
+        Configuration.headless = false; // headless режим для CI
 
         // Логирование шагов в Allure
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide()
                 .screenshots(true)
-                .savePageSource(true));
+                .savePageSource(true)
+                .includeSelenideSteps(true));
     }
 }

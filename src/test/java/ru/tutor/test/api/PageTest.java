@@ -1,5 +1,6 @@
 package ru.tutor.test.api;
 
+import io.qameta.allure.AllureId;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ public class PageTest {
     private final PageSteps pageSteps = new PageSteps("https://ttplace.ru", "admin", "JWwppsEA84B4BozJgE44sNiZZ");
 
     @Test
+    @AllureId("47")
     @DisplayName("Проверка на код 200 футер")
     void checkAllStaticPages(){
         List<String> endpoints = List.of(

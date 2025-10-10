@@ -1,5 +1,6 @@
 package ru.tutor.test.api;
 
+import io.qameta.allure.AllureId;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ public class CatalogTest {
             new CatalogSteps("https://ttplace.ru", "admin", "JWwppsEA84B4BozJgE44sNiZZ");
 
     @Test
+    @AllureId("41")
     @DisplayName("Все страницы каталога возвращают 200")
     void checkAllCatalogPages() {
         List<String> endpoints = List.of(

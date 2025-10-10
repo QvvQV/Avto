@@ -12,16 +12,9 @@ import static io.qameta.allure.Allure.step;
 
 public class tester extends BaseUiTest {
 
-    //                @AfterEach
-//    @AfterAll
-//    public static void tearDownAll() {
-//        closeWebDriver();
-//        SelenideLogger.removeListener("allure.config.properties");
-//    }
-
     @Test
     @AllureId("1")
-//        @RepeatedTest(2)
+    //        @RepeatedTest(2)
     @DisplayName("Оплата с продукта exel")
     public void PayFromExcel() {
         step("Открытие страницы", () -> {
@@ -52,13 +45,12 @@ public class tester extends BaseUiTest {
         ttPage.clickBtnOpenFor();
         ttPage.clickLite99();
         CloudPage.setDateModal();
-        System.out.println("Оплата продукта с главной Лайт: " + CloudPage.atrEmail());
         CloudPage.clickCardPageBtn();
     }
 
     @Test
     @AllureId("2")
-//    @RepeatedTest(2)
+//        @RepeatedTest(2)
     @DisplayName("Оплата с главной за 399 руб")
     @Owner("Vadim")
     public void PayMain399() {
@@ -73,9 +65,6 @@ public class tester extends BaseUiTest {
         ttPage.clickBtnOpenFor();
         ttPage.clickPremium();
         CloudPage.setDateModal();
-        step("email пользователя", () -> {
-            System.out.println("Оплата продукта с главной Премиум: " + CloudPage.atrEmail());
-        });
         CloudPage.clickCardPageBtn();
     }
 
@@ -94,7 +83,6 @@ public class tester extends BaseUiTest {
         ttPage.clickBtnOpenFor();
         ttPage.clickLife();
         CloudPage.setDateModal();
-        System.out.println("Оплата продукта с главной Пожизненный: " + CloudPage.atrEmail());
         CloudPage.clickCardPageBtn();
     }
 
@@ -113,7 +101,6 @@ public class tester extends BaseUiTest {
         ttPage.clickBtnOpenFor();
         ttPage.clickLife();
         CloudPage.setDateModalInstallments();
-        System.out.println("Оплата продукта с главной Пожизненный оплата Долями: " + CloudPage.atrEmail());
         CloudPage.clickCardPageBtn();
     }
 }
