@@ -32,3 +32,5 @@ public class AllureAttachments {
             new ByteArrayInputStream(Selenide.screenshot(OutputType.BYTES)));
     }
 }
+
+//пробный
