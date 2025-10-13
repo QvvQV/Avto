@@ -8,7 +8,8 @@ import java.io.ByteArrayInputStream;
 
 public class AllureAttachments {
 
-    private AllureAttachments() {}
+    private AllureAttachments() {
+    }
 
     public static void attachText(String name, String content) {
         Allure.addAttachment(name, "text/plain", content);
@@ -20,20 +21,14 @@ public class AllureAttachments {
 
     public static void attachProductComparison(String productId, String expected, String actual) {
         String comparison = String.format(
-            "Product: %s\nExpected: %s\nActual: %s\nMatch: %s",
-            productId, expected, actual, expected.equals(actual) ? "✅" : "❌"
+                "Product: %s\nExpected: %s\nActual: %s\nMatch: %s",
+                productId, expected, actual, expected.equals(actual) ? "✅" : "❌"
         );
         attachText("Product Name Comparison - " + productId, comparison);
     }
 
-    public static void attachScreenshot(String name) {
-        Allure.addAttachment(name, "image/png",
-                new ByteArrayInputStream(Selenide.screenshot(OutputType.BYTES)), "png");
+        public static void attachScreenshot(String name) {
+        Allure.addAttachment(name,
+            new ByteArrayInputStream(Selenide.screenshot(OutputType.BYTES)));
     }
-
-    public static void attachPageSource(){
-        Allure.addAttachment("Page Source", "text/html",
-                com.codeborne.selenide.WebDriverRunner.getWebDriver().getPageSource());
-    }
-
 }

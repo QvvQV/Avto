@@ -72,8 +72,8 @@ public class SberTester extends BaseUiTest {
                 .captureScreenshot();
     }
 
-//    @Test
-    @RepeatedTest(3)
+    @Test
+//    @RepeatedTest(3)
     @AllureId("10")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Успешная оплата Премиум тарифа с главной страницы")
