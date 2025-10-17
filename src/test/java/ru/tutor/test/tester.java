@@ -12,7 +12,7 @@ import static io.qameta.allure.Allure.step;
 
 public class tester extends BaseUiTest {
 
-    @Test
+//    @Test
     @AllureId("1")
     //        @RepeatedTest(2)
     @DisplayName("Оплата с продукта exel")

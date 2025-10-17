@@ -1,12 +1,9 @@
 package ru.tutor.test;
 
-import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.AllureId;
-import io.qameta.allure.Attachment;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
+
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.Registration;
 import ru.tutor.page.addressPage;
@@ -14,12 +11,7 @@ import ru.tutor.page.addressPage;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
-public class login extends BaseUiTest {
-
-    @Attachment(value = "Screenshot", type = "image/png", fileExtension = "png")
-    public void takeScreenshot() {
-        ((TakesScreenshot) WebDriverRunner.getWebDriver()).getScreenshotAs(OutputType.BYTES);
-    }
+public class loginTest extends BaseUiTest {
 
     @AfterAll
     public static void quitDriver() {

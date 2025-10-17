@@ -39,7 +39,6 @@ class OrderRedirectTest extends BaseUiTest {
         step("Заполнение данных и оплата", () -> {
         CloudPage.setDateModal();
         AllureAttachments.attachText("Email пользователя", CloudPage.atrEmail());
-            System.out.println("Оплата продукта с главной Премиум: " + CloudPage.atrEmail());
 
             CloudPage.clickCardPageBtn();
         });

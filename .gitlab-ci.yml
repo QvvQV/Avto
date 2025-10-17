@@ -8,33 +8,46 @@ variables:
   ALLURE_RESULTS: allure-results
 
 test:
-  image: gradle:jdk24
+  image: gradle:jdk17  # ИСПРАВЛЕНО: используйте jdk17 вместо jdk24
   stage: test
   allow_failure: true
   before_script:
+    - apt-get update
+    - apt-get install -y wget gnupg
     - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
     - sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
     - apt-get update && apt-get install -y google-chrome-stable
 
-    - wget https://github.com/allure-framework/allure2/releases/download/2.35.1/allure-2.35.1.tgz && tar -zxvf allure-2.35.1.tgz -C /opt/ && ln -s /opt/allure-2.35.1/bin/allure /usr/bin/allure
-   # - apt-get update && apt install -y openjdk-22-jdk openjdk-22-jre
-    #- google-chrome --version
+    # Установка Allure
+    - wget -q https://github.com/allure-framework/allure2/releases/download/2.35.1/allure-2.35.1.tgz
+    - tar -zxvf allure-2.35.1.tgz -C /opt/
+    - ln -sf /opt/allure-2.35.1/bin/allure /usr/bin/allure
 
-
+    # Установка allurectl
     - curl -fsSL https://github.com/allure-framework/allurectl/releases/latest/download/allurectl_linux_amd64 -o allurectl
     - chmod +x allurectl
+
+    # Проверка установки
+    - google-chrome --version
+    - allure --version
+
   script:
-    - ./allurectl watch -- gradle clean test
+    # Запуск тестов с allurectl
+    - export ALLURE_ENDPOINT=$ALLURE_ENDPOINT
+    - export ALLURE_PROJECT_ID=$ALLURE_PROJECT_ID
+    - export ALLURE_TOKEN=$ALLURE_TOKEN  # Не забудьте добавить в GitLab CI/CD variables
+    - ./allurectl watch -- gradle clean test -Dselenide.browser=chrome
+
   after_script:
-    - gradle allureReport
-    - allure generate -c allure-results -o allure-report
+    # ИСПРАВЛЕНО: убрана команда gradle allureReport
+    # Генерируем отчет только через Allure CLI
+    - if [ -d "allure-results" ]; then allure generate allure-results -o allure-report; fi
 
   artifacts:
     when: always
     expire_in: 3 days
     paths:
       - allure-results
-    #- gradle test --info
-    #- gradle test --debug
-    #- gradle test --stacktrace
-
+      - allure-report/  # Добавьте отчет в артефакты
+    reports:
+      junit: build/test-results/test/**/*.xml  # Для интеграции с GitLab

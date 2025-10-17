@@ -12,7 +12,7 @@ public abstract class BaseUiTest {
     public static void setupSelenide() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito", "--disable-dev-shm-usage", "--no-sandbox");
-        options.addArguments("--headless");
+//        options.addArguments("--headless");
 
         Configuration.browserCapabilities = options;
         Configuration.browserSize = "1920x1080";

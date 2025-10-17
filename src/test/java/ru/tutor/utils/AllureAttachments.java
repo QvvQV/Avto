@@ -2,6 +2,7 @@ package ru.tutor.utils;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Allure;
+import io.restassured.http.Headers;
 import org.openqa.selenium.OutputType;
 
 import java.io.ByteArrayInputStream;
@@ -31,6 +32,15 @@ public class AllureAttachments {
         Allure.addAttachment(name,
             new ByteArrayInputStream(Selenide.screenshot(OutputType.BYTES)));
     }
-}
 
-//пробный
+    public static void attachHeaders(String name, Headers headers) {
+    StringBuilder headersText = new StringBuilder();
+    headers.forEach(header ->
+        headersText.append(header.getName())
+                  .append(": ")
+                  .append(header.getValue())
+                  .append("\n"));
+
+    attachText(name, headersText.toString());
+}
+}

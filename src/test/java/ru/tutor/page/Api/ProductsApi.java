@@ -10,8 +10,8 @@ import java.util.Base64;
 import static io.restassured.RestAssured.given;
 
 public class ProductsApi extends BaseApi {
-    private final String baseCatalogUrl = "https://ttplace.ru/catalog";
-    private final String baseProductUrl = "https://ttplace.ru/catalog/product";
+//    private final String baseCatalogUrl = "https://ttplace.ru/catalog";
+//    private final String baseProductUrl = "https://ttplace.ru/catalog/product";
     private final String authHeader;
 
     public ProductsApi(String baseUrl, String login, String password) {

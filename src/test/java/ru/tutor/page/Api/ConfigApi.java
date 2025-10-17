@@ -18,9 +18,12 @@ public class ConfigApi extends BaseApi {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + basicAuth)
+                .header("Accept", "application/json")
+                .log().all()
                 .when()
                 .get("/api/config")
                 .then()
+                .log().ifError()
                 .extract()
                 .response();
     }
@@ -29,10 +32,14 @@ public class ConfigApi extends BaseApi {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + basicAuth)
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
                 .body(body)
+                .log().all()
                 .when()
                 .post("/api/config")
                 .then()
+                .log().ifError()
                 .extract()
                 .response();
     }
@@ -41,10 +48,14 @@ public class ConfigApi extends BaseApi {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + basicAuth)
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
                 .body(body)
+                .log().all()
                 .when()
                 .put("/api/config")
                 .then()
+                .log().ifError()
                 .extract()
                 .response();
     }
@@ -53,10 +64,27 @@ public class ConfigApi extends BaseApi {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + basicAuth)
+                .header("Accept", "application/json")
+                .log().all()
                 .when()
                 .delete("/api/config")
                 .then()
+                .log().ifError()
                 .extract()
                 .response();
     }
+// Метод без авторизации для тестирования безопасности
+    public Response getConfigWithAuth() {
+        return given()
+                .filter(new AllureRestAssured())
+                .header("Accept", "application/json")
+                .log().all()
+                .when()
+                .get("/api/config")
+                .then()
+                .log().ifError()
+                .extract()
+                .response();
+    }
+
 }

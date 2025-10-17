@@ -10,16 +10,16 @@ import ru.tutor.utils.WaitHelper;
 import java.time.Duration;
 import java.util.Locale;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.tutor.page.SberPage.logModalType;
 
 public class CloudPage {
     private static final Faker faker = new Faker(new Locale("en"));
 
-    //Локаторы
+    //Локаторы в модальном окне
     private static SelenideElement BUY_BUTTON = $$("button").find(exactText("начать обучение за 1 ₽*"));
     private static SelenideElement ACCESS_BUTTON = $(By.id("access-button"));
     private static SelenideElement ERROR_MESSAGE = $$("p").find(exactText("Произошла ошибка. Пожалуйста, попробуйте ещё раз."));
@@ -31,8 +31,18 @@ public class CloudPage {
     public static SelenideElement FULL_OPTION = $("[name=\"full\"]");
     private static SelenideElement INSTALLMENTS_OPTION = $("[name=\"installments\"]");
 
+    //Локаторы в отдельном окне
+    private static SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));
+    private static SelenideElement DATE_INPUT = $(By.id("date"));
+    private static SelenideElement CVV_INPUT = $(By.id("cvv"));
+    private static SelenideElement CONFIRM_BUTTON = $("button[data-v-59c9a1ad]");
+    private static SelenideElement BACK_TO_SHOP_BUTTON = $("button[data-v-c1ac6fa4]");
+
     //Тестовые данные
     private static final String TEST_CARD_NUMBER = "42424242424242420745555";
+    private static final String TEST_CARD = "4242424242424242";
+    private static final String TEST_DATE = "0745";
+    private static final String TEST_CVV = "555";
 
     @Step("Заполнение данных модального окна")
     public static void clickBtnStart() {
@@ -90,6 +100,47 @@ public class CloudPage {
 
             AllureAttachments.attachText("Email в модалке", email);
             System.out.println(modalText + ": " + email);
+        });
+    }
+
+    @Step("Наполнение тестовыми данными")
+    public static void fillingWithTestData() {
+        step("Ввод номера карты", () ->
+                CARD_INPUT_NEW_WINDOW.shouldBe(visible, Duration.ofSeconds(5)).setValue(TEST_CARD));
+        step("Ввод срока действия:", () ->
+                DATE_INPUT.shouldBe(visible, Duration.ofSeconds(5)).setValue(TEST_DATE));
+        step("Ввод CVV:", () ->
+            CVV_INPUT.setValue(TEST_CVV));
+
+        step("Отправка формы оплаты", () ->
+                CONFIRM_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
+                        .shouldBe(enabled)
+                        .click());
+
+        AllureAttachments.attachText("Введённые банковские данные: ", "\nНомер: " + TEST_CARD +
+                    "\nСрок действия: " + TEST_DATE + "\nCVV: " + TEST_CVV);
+
+        WaitHelper.waitForAnimationComplete();
+        step("Подтверждение заказа", () -> {
+            switchTo().frame(0);
+            CONFIRM_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
+                    .click();
+
+            WaitHelper.waitForAnimationComplete();
+            WaitHelper.waitForPageLoad();
+
+            switchTo().defaultContent();
+
+            String actualText = BACK_TO_SHOP_BUTTON.getText().trim();
+            String expectedText = "Вернуться в магазин";
+
+            assertEquals(expectedText, actualText,
+                    String.format("Текст кнопки не совпадает. Ожидалось: '%s', Фактически: '%s'",
+                            expectedText, actualText));
+
+            AllureAttachments.attachText("Проверка текста кнопки",
+                    "✓ Текст кнопки корректен: " + actualText);
+            AllureAttachments.attachScreenshot("Страница после оплаты");
         });
     }
 

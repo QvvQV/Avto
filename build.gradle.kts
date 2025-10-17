@@ -19,7 +19,7 @@ dependencies {
     // Selenide
     testImplementation("com.codeborne:selenide:7.10.0")
 
-//    testImplementation("io.qameta.allure:allure-java-commons:2.29.1")
+
 //    implementation("io.qameta.allure:allure-commandline:2.35.1")
 
     // Allure
@@ -27,6 +27,7 @@ dependencies {
     testImplementation("io.qameta.allure:allure-assertj:2.29.1")
     testImplementation("io.qameta.allure:allure-selenide:2.29.1")
     testImplementation("io.qameta.allure:allure-rest-assured:2.29.1")
+    testImplementation("io.qameta.allure:allure-java-commons:2.29.1")
 
     implementation("javax.mail:mail:1.4.7")
 
@@ -42,7 +43,6 @@ dependencies {
     implementation("commons-io:commons-io:2.20.0")
     implementation("net.datafaker:datafaker:2.4.4")
     implementation("org.json:json:20250517")
-
     implementation("org.jsoup:jsoup:1.21.2")
 
 //    implementation("io.qameta.allure:allure-maven:2.15.2")

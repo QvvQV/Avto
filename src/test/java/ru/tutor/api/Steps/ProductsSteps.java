@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.tutor.page.Api.ProductsApi;
+import ru.tutor.utils.AllureAttachments;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -16,6 +17,12 @@ import java.util.Set;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.collection.IsMapContaining.hasKey;
+import static org.hamcrest.core.AnyOf.anyOf;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProductsSteps {
@@ -118,6 +125,5 @@ public class ProductsSteps {
             // Вложенный attachment с ответом
             Allure.addAttachment("Response Body", "text/plain", resp.asPrettyString(), ".txt");
         });
-
     }
 }
