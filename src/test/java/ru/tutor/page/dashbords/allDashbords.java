@@ -197,9 +197,9 @@ public class allDashbords {
                 verifyFirstDashboard(dashboardName);
             });
             step("4. Удаляем курс", ()->{
-                Home.deleteProduct();
-                AllureAttachments.attachText("Продукт удален", "✅ " + productName);
-                AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
+                Home.deleteProduct(productName);
+//                AllureAttachments.attachText("Продукт удален", "✅ " + productName);
+//                AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
             });
             step("5. Подготовка к следующему продукту", ()->{
                 WaitHelper.waitFor(Duration.ofSeconds(1));

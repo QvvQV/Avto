@@ -278,8 +278,9 @@ public class Registration {
         validEmail();
         validPass();
         clickBtnLogin();
+        WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
-        AllureAttachments.attachScreenshot("Главная страница");
+//        AllureAttachments.attachScreenshot("Главная страница");
     }
 
 }

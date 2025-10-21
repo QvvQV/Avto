@@ -1,46 +1,82 @@
 package ru.tutor.test;
 
 import io.qameta.allure.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.*;
 import ru.tutor.page.PaymentModalWindow.paymentModal;
 import ru.tutor.page.PersonalAccount.Catalog;
 import ru.tutor.page.PersonalAccount.Home;
-import ru.tutor.page.dashbords.allDashbords;
-import ru.tutor.page.dashbords.helloDash;
-import ru.tutor.page.dashbords.memoryTrainer;
+import ru.tutor.page.dashbords.*;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
 import java.util.Map;
 
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.refresh;
+import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
 @Epic("Дашборды и onboarding")
 @Feature("Процесс onboarding нового пользователя")
 @Story("Заполнение приветственных модулей и проверка дашбордов")
 @DisplayName("📊 Тесты onboarding процесса и дашбордов")
+@Execution(ExecutionMode.SAME_THREAD)
+
+
 public class DashbordsTest extends BaseUiTest {
+
+    @AfterEach
+    protected void tearDown() {
+        closeWebDriver();
+    }
 
     private static final Map<String, String> PRODUCTS_DASHBOARDS = Map.of(
             "таро", "Таро",
-        "дневник питания", "Трекер питания",
-        "spyHeart", "SpyHeart",
-        "матрица судьбы", "Расчет матрицы",
-        "астрология", "Натальная карта",
-        "тренировка памяти", "Тренажер памяти",
-        "авито", "Редактор карточек товара",
-        "таргетолог", "Учет каналов"
+            "дневник питания", "Трекер питания",
+            "spyHeart", "SpyHeart",
+            "матрица судьбы", "Расчет матрицы",
+            "астрология", "Натальная карта",
+            "тренировка памяти", "Тренажер памяти",
+            "авито", "Редактор карточек товара",
+            "таргетолог", "Учет каналов"
     );
+
+    private void executeCarouselTest(String productName, String dashboardName) {
+        step("Открытие страницы логина", () -> {
+            open(addressPage.login);
+            AllureAttachments.attachText("Логин", "Страница логина открыта");
+        });
+        step("Заполнение валидными данными", () -> {
+            Registration.validPerson();
+        });
+        allDashbords.testSingleProduct(productName, dashboardName);
+    }
+
+    private void chekingInsideTheDashboard(String productName) {
+        step("1. Открытие страницы логина", () -> {
+            open(addressPage.login);
+            AllureAttachments.attachText("Логин", "Страница логина открыта");
+        });
+        step("2. Заполнение валидными данными", () -> {
+            Registration.validPerson();
+        });
+        step("3. Добавляем продукт", () -> {
+            Home.walkthroughtAddingACourse(productName);
+        });
+        step("4. Обновляем страницу", () -> {
+            refresh();
+            WaitHelper.waitForPageLoad();
+        });
+    }
 
     @Test
 //    @RepeatedTest(5)
     @Severity(SeverityLevel.CRITICAL)
+    @Order(1)
     @DisplayName("✅ Успешное оформление заказа с полным onboarding процессом с главной")
     void successfulOrderWithRedirectCorrection() {
 
@@ -76,6 +112,7 @@ public class DashbordsTest extends BaseUiTest {
     }
 
     @Test
+    @Order(2)
     @Severity(SeverityLevel.CRITICAL)
     @Tag("registration")
     @Tag("onboarding")
@@ -118,6 +155,7 @@ public class DashbordsTest extends BaseUiTest {
     }
 
     @Test
+    @Order(3)
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Переход на страницу оплаты зарегистрированного пользователя с модуля Приложения")
     void transitionToThePaymentPageForRegisteredUser() {
@@ -166,38 +204,177 @@ public class DashbordsTest extends BaseUiTest {
     }
 
     @Test
-    @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("Изменение первого продукта в карусели Приложения")
-    void changingTheFirstProductInTheAppsCarousel() {
-        step("Открытие страницы логина", () -> {
-            open(addressPage.login);
-            AllureAttachments.attachText("Логин", "Страница логина открыта");
+    @Order(4)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'Дневник питания'")
+    void testingRedirectsForNutrionDashboard() {
+        String productName = "Дневник питания";
+        chekingInsideTheDashboard(productName);
+
+        step("5. переходим в дашборд питания", () -> {
+            nutritionTracker.clickFromNutritionTracker();
         });
-        step("Заполнение валидными данными", () -> {
-            Registration.validPerson();
+        step("6. Начинаем программу диет", () -> {
+            nutritionTracker.startProgramm();
+            refresh();
         });
+        step("7. Проверяем редирект по страницам приёма пищи", () -> {
+            nutritionTracker.mealNavigationWithCollection();
+        });
+        step("8. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
 
-        for (Map.Entry<String, String> entry : PRODUCTS_DASHBOARDS.entrySet()) {
-            String productName = entry.getKey();
-            String dashboardName = entry.getValue();
+    @Test
+    @Order(5)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'Натальная карта'")
+    void testingRedirectsForNatalChart() {
+        String productName = "астрология";
+        chekingInsideTheDashboard(productName);
 
-            allDashbords.testSingleProduct(productName, dashboardName);
-        }
+        step("5. Переходим в дашборд 'Натальная карта'", () -> {
+            natalChart.clickFromNatalChar();
+        });
+        step("6. Проверяем кнопки персонального календаря", () -> {
+            natalChart.personaleCalendar();
+        });
+        step("7. проверяем страницу 'Info'", () -> {
+            natalChart.redirectToTheInfoPage();
+        });
+        step("8. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
+
+    @Test
+    @Order(6)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'SpyHeart'")
+    void testingRedirectsForSpyHeart() {
+        String productName = "spyHeart";
+        chekingInsideTheDashboard(productName);
+        step("5. Переходим в дашборд 'Натальная карта'", () -> {
+            spyHeart.clickFromSpyHeart();
+        });
+        step("6. Проверка функционала", () -> {
+            spyHeart.ckeckVisionElement();
+        });
+        step("7. Редирект на главную страницу", () -> {
+            Home.clickMainlink();
+        });
+        step("8. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
+
+    @Test
+    @Order(7)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'Тренажер памяти'")
+    void testingRedirectsForMemoryTrainer() {
+        String productName = "тренировка памяти";
+        chekingInsideTheDashboard(productName);
+        step("5. Переходим в дашборд 'Тренажер памяти'", () -> {
+            memoryTrainer.clickFromMemoryTrainer();
+        });
+        step("6. Проверяем редирект по страницам Игр", () -> {
+            memoryTrainer.gameNavigationWithCollection();
+        });
+        step("7. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
 
 
+    @Test
+    @Order(8)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'Расчёт матрицы'")
+    void testingRedirectsForMatrixCalculation() {
+        String productName = "матрица судьбы";
+        chekingInsideTheDashboard(productName);
+        step("5. Переходим в дашборд 'Расчёт матрицы'", () -> {
+            matrixCalculation.clickFromMatrixCalculation();
+        });
+        step("6. Проверяем работу внутри дашборда", () -> {
+            matrixCalculation.openModalWindowInTheDashboard();
+        });
+        step("7. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
 
+    @Test
+    @Order(9)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'Учет каналов'")
+    void testingRedirectsForChannelAccounting() {
+        String productName = "таргетолог";
+        chekingInsideTheDashboard(productName);
+        step("5. Переходим в дашборд 'Учет каналов'", () -> {
+            channelAccounting.clickFromChannelAccounting();
+        });
+        step("6. Проверяем работу внутри дашборда", () -> {
+            channelAccounting.fillForm();
+        });
+        step("7. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
 
-//        step("3. Добавление курса с дашбордом", () -> {
-//            Home.enterCourseNames();
-//        });
-//        allDashbords.verifyDashboardsVisibilityOnFirstSlide();
-//        step("4. Удаляем курс", () -> {
-//            Home.deleteProduct();
-//        });
-//        step("5. Фиксация финального состояния", () -> {
-//            WaitHelper.waitForPageLoad();
-//
-//            AllureAttachments.attachScreenshot("Финальное состояние после onboarding");
-//        });
+    @Test
+    @Order(10)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'Таро'")
+    void testingRedirectsForTaro() {
+        String productName = "таро";
+        chekingInsideTheDashboard(productName);
+        step("5. Переходим в дашборд 'Таро'", () -> {
+            taro.clickFromTaro();
+        });
+        step("6. Проверяем работу внутри дашборда", () -> {
+            taro.mealNavigationWithCollection();
+        });
+        step("7. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
+
+    @Test
+    @Order(11)
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Тестирование редиректов страниц дашборда 'Редактор карточек товара'")
+    void testingRedirectsForProductCardEdition() {
+        String productName = "авито";
+        chekingInsideTheDashboard(productName);
+        step("5. Переходим в дашборд 'Редактор карточек товара'", () -> {
+            productCardEditor.clickFromProductCardEdition();
+        });
+        step("6. Проверяем работу внутри дашборда", () -> {
+            productCardEditor.workDashboard();
+        });
+        step("7. Удаляем курс", () -> {
+            Home.deleteProduct(productName);
+        });
+    }
+
+    @ParameterizedTest
+    @Order(7)
+    @CsvSource({
+            "авито, Редактор карточек товара",
+            "таргетолог, Учет каналов",
+            "таро, Таро",
+            "дневник питания, Трекер питания",
+            "spyHeart, SpyHeart",
+            "матрица судьбы, Расчет матрицы",
+            "астрология, Натальная карта",
+            "тренировка памяти, Тренажер памяти"
+    })
+    @Severity(SeverityLevel.MINOR)
+    @DisplayName("Тестирование карусели для: {0}")
+    void testCarouselForProduct(String productName, String dashboardName) {
+        executeCarouselTest(productName, dashboardName);
     }
 }

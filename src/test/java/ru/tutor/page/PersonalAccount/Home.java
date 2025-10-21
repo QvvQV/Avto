@@ -43,15 +43,18 @@ public class Home {
     public static void navigateToMainPage() {
         step("Переход на главную страницу", () -> {
             String originalUrl = WebDriverRunner.url();
-            MAIN_LINK.shouldBe(visible, Duration.ofSeconds(5))
-                    .shouldBe(interactable)
-                    .click();
-
-            WaitHelper.waitForPageLoad();
+            clickMainlink();
 
             verifyMainPageLoaded(originalUrl);
             AllureAttachments.attachScreenshot("Главная страница");
         });
+    }
+
+    public static void clickMainlink(){
+        MAIN_LINK.shouldBe(visible, Duration.ofSeconds(5))
+                    .shouldBe(interactable)
+                    .click();
+        WaitHelper.waitForPageLoad();
     }
 
     @Step("Проверка загрузки главной страницы")
@@ -192,7 +195,7 @@ public class Home {
 //    }
 
     @Step("Удаляем продукт")
-    public static void deleteProduct() {
+    public static void deleteProduct(String productName) {
         step("Удаляем продукт", () -> {
             refresh();
             allDashbords.safeCarouselClick(ELLIPSES_BUTTON);
@@ -209,7 +212,8 @@ public class Home {
                     .click();
             WaitHelper.waitForAnimationComplete();
         });
-        AllureAttachments.attachText("Курс удалён", "✅ ");
+        AllureAttachments.attachText("Курс удалён", "✅ " + productName);
+        AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
     }
 
 }
