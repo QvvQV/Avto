@@ -70,7 +70,6 @@ public class allDashbords {
         AllureAttachments.attachText("Проверка дашборда",
                 "На первой позиции: " + actualText);
         AllureAttachments.attachScreenshot(actualText);
-
     }
 
     @Step("Безопасный клик по карусели")
@@ -185,26 +184,26 @@ public class allDashbords {
 
     @Step("Тестирование продукта")
     public static void testSingleProduct (String productName, String dashboardName) {
-        step("Тестирование продукта: " + productName, ()->{
-            step("1. Добавляем продукт", () -> {
-                Home.walkthroughtAddingACourse(productName);
-            });
-            step("2. Обновляем страницу", ()->{
+//        step("Тестирование продукта: " + productName, ()->{
+//            step("1. Добавляем продукт", () -> {
+//                Home.walkthroughtAddingACourse(productName);
+//            });
+            step("1. Обновляем страницу", ()->{
                 refresh();
                 WaitHelper.waitForPageLoad();
             });
-            step("3. Проверяем что в карусели на первой позиции дашборд: " + dashboardName, ()->{
+            step("2. Проверяем что в карусели на первой позиции дашборд: " + dashboardName, ()->{
                 verifyFirstDashboard(dashboardName);
             });
-            step("4. Удаляем курс", ()->{
-                Home.deleteProduct(productName);
-//                AllureAttachments.attachText("Продукт удален", "✅ " + productName);
-//                AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
-            });
-            step("5. Подготовка к следующему продукту", ()->{
-                WaitHelper.waitFor(Duration.ofSeconds(1));
-            });
-        });
+//            step("4. Удаляем курс", ()->{
+//                Home.deleteProduct(productName);
+////                AllureAttachments.attachText("Продукт удален", "✅ " + productName);
+////                AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
+//            });
+//            step("5. Подготовка к следующему продукту", ()->{
+//                WaitHelper.waitFor(Duration.ofSeconds(1));
+//            });
+//        });
     }
 
 }

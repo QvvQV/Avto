@@ -56,7 +56,7 @@ public class DashbordsTest extends BaseUiTest {
         allDashbords.testSingleProduct(productName, dashboardName);
     }
 
-    private void chekingInsideTheDashboard(String productName) {
+    private void chekingInsideTheDashboard(String productName, String dashboard) {
         step("1. Открытие страницы логина", () -> {
             open(addressPage.login);
             AllureAttachments.attachText("Логин", "Страница логина открыта");
@@ -68,8 +68,9 @@ public class DashbordsTest extends BaseUiTest {
             Home.walkthroughtAddingACourse(productName);
         });
         step("4. Обновляем страницу", () -> {
-            refresh();
-            WaitHelper.waitForPageLoad();
+//            refresh();
+//            WaitHelper.waitForPageLoad();
+            allDashbords.testSingleProduct(productName, dashboard);
         });
     }
 
@@ -209,7 +210,8 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'Дневник питания'")
     void testingRedirectsForNutrionDashboard() {
         String productName = "Дневник питания";
-        chekingInsideTheDashboard(productName);
+        String dashboard = "Трекер питания";
+        chekingInsideTheDashboard(productName, dashboard);
 
         step("5. переходим в дашборд питания", () -> {
             nutritionTracker.clickFromNutritionTracker();
@@ -232,7 +234,8 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'Натальная карта'")
     void testingRedirectsForNatalChart() {
         String productName = "астрология";
-        chekingInsideTheDashboard(productName);
+        String dashboard = "Натальная карта";
+        chekingInsideTheDashboard(productName, dashboard);
 
         step("5. Переходим в дашборд 'Натальная карта'", () -> {
             natalChart.clickFromNatalChar();
@@ -254,8 +257,9 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'SpyHeart'")
     void testingRedirectsForSpyHeart() {
         String productName = "spyHeart";
-        chekingInsideTheDashboard(productName);
-        step("5. Переходим в дашборд 'Натальная карта'", () -> {
+        String dashboard = "SpyHeart";
+        chekingInsideTheDashboard(productName, dashboard);
+        step("5. Переходим в дашборд 'SpyHeart'", () -> {
             spyHeart.clickFromSpyHeart();
         });
         step("6. Проверка функционала", () -> {
@@ -275,7 +279,8 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'Тренажер памяти'")
     void testingRedirectsForMemoryTrainer() {
         String productName = "тренировка памяти";
-        chekingInsideTheDashboard(productName);
+        String dashboard = "Тренажер памяти";
+        chekingInsideTheDashboard(productName, dashboard);
         step("5. Переходим в дашборд 'Тренажер памяти'", () -> {
             memoryTrainer.clickFromMemoryTrainer();
         });
@@ -294,7 +299,8 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'Расчёт матрицы'")
     void testingRedirectsForMatrixCalculation() {
         String productName = "матрица судьбы";
-        chekingInsideTheDashboard(productName);
+        String dashboard = "Расчет матрицы";
+        chekingInsideTheDashboard(productName, dashboard);
         step("5. Переходим в дашборд 'Расчёт матрицы'", () -> {
             matrixCalculation.clickFromMatrixCalculation();
         });
@@ -312,7 +318,8 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'Учет каналов'")
     void testingRedirectsForChannelAccounting() {
         String productName = "таргетолог";
-        chekingInsideTheDashboard(productName);
+        String dashboard = "Учет каналов";
+        chekingInsideTheDashboard(productName, dashboard);
         step("5. Переходим в дашборд 'Учет каналов'", () -> {
             channelAccounting.clickFromChannelAccounting();
         });
@@ -330,7 +337,8 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'Таро'")
     void testingRedirectsForTaro() {
         String productName = "таро";
-        chekingInsideTheDashboard(productName);
+        String dashboard = "Таро";
+        chekingInsideTheDashboard(productName, dashboard);
         step("5. Переходим в дашборд 'Таро'", () -> {
             taro.clickFromTaro();
         });
@@ -348,7 +356,8 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("Тестирование редиректов страниц дашборда 'Редактор карточек товара'")
     void testingRedirectsForProductCardEdition() {
         String productName = "авито";
-        chekingInsideTheDashboard(productName);
+        String dashboard = "Редактор карточек товара";
+        chekingInsideTheDashboard(productName, dashboard);
         step("5. Переходим в дашборд 'Редактор карточек товара'", () -> {
             productCardEditor.clickFromProductCardEdition();
         });
@@ -360,21 +369,21 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @ParameterizedTest
-    @Order(7)
-    @CsvSource({
-            "авито, Редактор карточек товара",
-            "таргетолог, Учет каналов",
-            "таро, Таро",
-            "дневник питания, Трекер питания",
-            "spyHeart, SpyHeart",
-            "матрица судьбы, Расчет матрицы",
-            "астрология, Натальная карта",
-            "тренировка памяти, Тренажер памяти"
-    })
-    @Severity(SeverityLevel.MINOR)
-    @DisplayName("Тестирование карусели для: {0}")
-    void testCarouselForProduct(String productName, String dashboardName) {
-        executeCarouselTest(productName, dashboardName);
-    }
+//    @ParameterizedTest
+//    @Order(12)
+//    @CsvSource({
+//            "авито, Редактор карточек товара",
+//            "таргетолог, Учет каналов",
+//            "таро, Таро",
+//            "дневник питания, Трекер питания",
+//            "spyHeart, SpyHeart",
+//            "матрица судьбы, Расчет матрицы",
+//            "астрология, Натальная карта",
+//            "тренировка памяти, Тренажер памяти"
+//    })
+//    @Severity(SeverityLevel.MINOR)
+//    @DisplayName("Тестирование карусели для: {0}")
+//    void testCarouselForProduct(String productName, String dashboardName) {
+//        executeCarouselTest(productName, dashboardName);
+//    }
 }
