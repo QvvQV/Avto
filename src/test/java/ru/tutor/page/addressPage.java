@@ -1,7 +1,5 @@
 package ru.tutor.page;
 
-import ru.tutor.config.TestConfig;
-
 // здесь указываются все ссылки на платформе
 public class addressPage {
 
@@ -27,5 +25,11 @@ public class addressPage {
 
     //стр для Api тестов
     public static String apiDevAdress = "https://api.dev.tutorplace.ru";
+
+    // стр Отписки от Premium
+    public static final String SUBSCRIPTION_SETTINGS = "https://client.ttplace.ru/user/settings/subscription";
+
+    // стр отписки от Lite
+    public static final String PAYMENTS_SETTINGS = "https://client.ttplace.ru/user/settings/payments";
 
 }

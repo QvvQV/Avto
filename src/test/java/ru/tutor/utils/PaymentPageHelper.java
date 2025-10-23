@@ -28,6 +28,7 @@ public class PaymentPageHelper {
             // Проверяем Url
             verifyPaymentpageUrl();
 
+            WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
 
             AllureAttachments.attachScreenshot("Страница оплаты");
