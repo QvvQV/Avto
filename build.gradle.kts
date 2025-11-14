@@ -14,10 +14,10 @@ dependencies {
 
     // REST Assured
     testImplementation("io.rest-assured:rest-assured:5.5.6")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.19.4")
 
     // Selenide
-    testImplementation("com.codeborne:selenide:7.10.0")
+    testImplementation("com.codeborne:selenide:7.12.0")
 
 
 //    implementation("io.qameta.allure:allure-commandline:2.35.1")
@@ -33,11 +33,11 @@ dependencies {
 
 
     //JUnit 5
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.13.4")
-    testImplementation("org.junit.platform:junit-platform-launcher:1.13.4")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.14.0")
+    testImplementation("org.junit.platform:junit-platform-launcher:1.14.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.4")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.13.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.14.0")
 
     // Utils
     implementation("commons-io:commons-io:2.20.0")

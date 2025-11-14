@@ -16,7 +16,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import ru.tutor.base.BaseUiTest;
-import ru.tutor.page.addressPage;
+import ru.tutor.page.*;
+import ru.tutor.page.admin.AdminLoginPage;
 import ru.tutor.page.devProduct;
 
 import java.util.Date;
@@ -53,7 +54,7 @@ public class tp5345 extends BaseUiTest {
             Assertions.assertEquals(expected, title());
         });
         step("регистрируемся", () -> {
-            devProduct.login();
+            AdminLoginPage.login();
         });
 //        step("открываем стр продукта №525", () -> {
 //            sleep(3000);
@@ -91,7 +92,7 @@ public class tp5345 extends BaseUiTest {
             Assertions.assertEquals(expected, title());
         });
         step("регистрируемся", () -> {
-            devProduct.login();
+            AdminLoginPage.login();
         });
 //        step("открываем стр продукта №525", () -> {
 //            sleep(3000);

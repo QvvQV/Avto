@@ -25,6 +25,7 @@ public class PremiumUnsubscribePage {
     private static final String DEACTIVATE_ACCESS_TEXT = "Деактивировать доступ";
     private static final String DEACTIVATE_TEXT = "Деактивировать";
     private static final String MISS_CHANCE_TEXT = "Упустить свой шанс";
+    private static final String RESTORE_ACCESS_TEXT = "Возобновить доступ";
 
 
     // Локаторы Premium подписки
@@ -33,6 +34,7 @@ public class PremiumUnsubscribePage {
     private static final SelenideElement CANCEL_BUTTON = $$("button").find(exactText(CANCEL_TEXT));
     private static final SelenideElement REVOKE_FULL_ACCESS_BUTTON = $$("button").find(exactText(REVOKE_FULL_ACCESS_TEXT));
     private static final SelenideElement H3_TEXT = $("h3");
+    private static final SelenideElement RESTORE_ACCESS_BUTTON = $$("button").find(exactText(RESTORE_ACCESS_TEXT));
 
     // Универсальные методы
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
@@ -159,6 +161,7 @@ public class PremiumUnsubscribePage {
     public static void verifyTariffPlanDisabled() {
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
+        RESTORE_ACCESS_BUTTON.shouldBe(visible);
         verifyTariffPlanState("отключен");
     }
 

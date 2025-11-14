@@ -30,6 +30,7 @@ class RegisterTest extends BaseApiTest {
     private static final Faker faker = new Faker(new Locale("en"));
 
     @Test
+//    @RepeatedTest(3)
     @AllureId("73")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("✅ Успешная регистрация нового пользователя")

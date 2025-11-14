@@ -31,15 +31,15 @@ public class TestConfig {
     }
 
     public static String getTestEmail() {
-        return properties.getProperty("test.email", "tp5052_2@test.ru");
+        return properties.getProperty("test.email");
     }
 
     public static String getTestPassword() {
-        return properties.getProperty("test.password", "12345678");
+        return properties.getProperty("test.password");
     }
 
     public static boolean isHeadless() {
-        return Boolean.parseBoolean(properties.getProperty("headless", "true"));
+        return Boolean.parseBoolean(properties.getProperty("headless"));
     }
 
     // Тестовые карты Sber

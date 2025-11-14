@@ -1,8 +1,11 @@
-package ru.tutor.test;
+package ru.tutor.test.orders;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.*;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.SberPage;
@@ -17,30 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Epic("Платежи через Сбер")
 @Feature("Тестирование различных сценариев оплаты")
 @DisplayName("🧪 Тестирование платежной системы Сбер")
-public class SberTester extends BaseUiTest {
+public class AdminSberTester extends BaseUiTest {
 
-    @AfterAll
-    public static void quitDriver() {
+    @AfterEach
+    public void quitDriver() {
         closeWebDriver();
         SelenideLogger.removeListener("AllureSelenide");
     }
 
     @Test
-    @AllureId("7")
-    @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("✅ Успешная оплата валидной картой с продукта Excel")
-    @Tag("positive")
-    void payWithValidCardFromProduct() {
-        PaymentTestFlow testFlow = new PaymentTestFlow();
-
-        testFlow.openProductPage()
-                .startOrder()
-                .payWithApprovedCard()
-                .verifySuccess();
-    }
-
-    @Test
-    @AllureId("9")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Успешная оплата Пожизненного доступа с главной страницы")
     @Tag("positive")
@@ -56,7 +44,6 @@ public class SberTester extends BaseUiTest {
     }
 
     @Test
-    @AllureId("8")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("⚠️ Оплата картой с фиксированным балансом 100р")
     @Tag("negative/positive")
@@ -74,7 +61,6 @@ public class SberTester extends BaseUiTest {
 
     @Test
 //    @RepeatedTest(3)
-    @AllureId("10")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Успешная оплата Премиум тарифа с главной страницы")
     @Tag("positive")
@@ -90,7 +76,6 @@ public class SberTester extends BaseUiTest {
     }
 
     @Test
-    @AllureId("11")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Успешная оплата Лайт тарифа с главной страницы")
     @Tag("positive")
@@ -105,39 +90,6 @@ public class SberTester extends BaseUiTest {
                 .verifySuccess();
     }
 
-@Test
-@AllureId("6")
-@Severity(SeverityLevel.NORMAL)
-@DisplayName("❌ Оплата картой с недостаточными средствами")
-@Tag("negative")
-void payWithInsufficientFundsCard() {
-        PaymentTestFlow testFlow = new PaymentTestFlow();
-
-        testFlow.openMainPage()
-                .verifyMainPage()
-                .selectPremiumTariff()
-                .processModalAndPay()
-                .payWithInsufficientFundsCard()
-                .virifyErrorMessage(TestConfig.Texts.ERROR_MESSAGE)
-                .captureScreenshot();
-}
-
-@Test
-@AllureId("5")
-@Severity(SeverityLevel.NORMAL)
-@DisplayName("❌ Оплата просроченной картой")
-@Tag("negative")
-void payWithExpireCard(){
-        PaymentTestFlow testFlow = new PaymentTestFlow();
-
-        testFlow.openMainPage()
-                .verifyMainPage()
-                .selectLifetimeAccess()
-                .processModalAndPay()
-                .payWithExpiredCard()
-                .virifyErrorMessage(TestConfig.Texts.ERROR_MESSAGE)
-                .captureScreenshot();
-}
 
     private class PaymentTestFlow {
         public PaymentTestFlow openProductPage() {
@@ -255,3 +207,5 @@ void payWithExpireCard(){
     //https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5S - Гибрид
 //    https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EN5Q - RevShare
 }
+
+//https://dev.tutorplace.ru/catalog/product/excel?aff_rid=1012_EPqz

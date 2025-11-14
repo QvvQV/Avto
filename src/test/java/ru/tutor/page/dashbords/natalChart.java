@@ -69,6 +69,7 @@ public class natalChart {
                     .shouldBe(clickable)
                     .click();
             WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
             AllureAttachments.attachScreenshot("Старница 'Info'");
         });
         step("2. Проверка точного текста", () -> {
@@ -85,6 +86,7 @@ public class natalChart {
                     .shouldBe(interactable)
                     .click();
             WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
             AllureAttachments.attachScreenshot("Результат после клика");
         });
         step("4. Редирект через кнопку 'Подробнее о натальной карте'", () -> {
@@ -92,6 +94,7 @@ public class natalChart {
                     .shouldBe(clickable)
                     .click();
             WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
             AllureAttachments.attachScreenshot("Старница 'Info'");
         });
         step("5. Возвращаемся на страницу Астрологии", () -> {
@@ -99,6 +102,7 @@ public class natalChart {
                     .shouldBe(interactable)
                     .click();
             WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
         });
         step("6. Редирект на главную страницу", () -> {
             Home.clickMainlink();

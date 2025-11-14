@@ -13,6 +13,7 @@ import ru.tutor.page.PersonalAccount.Catalog;
 import ru.tutor.page.PersonalAccount.Home;
 import ru.tutor.page.dashbords.*;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.RewardHelper;
 import ru.tutor.utils.WaitHelper;
 
 import java.util.Map;
@@ -64,10 +65,13 @@ public class DashbordsTest extends BaseUiTest {
         step("2. Заполнение валидными данными", () -> {
             Registration.validPerson();
         });
-        step("3. Добавляем продукт", () -> {
+        step("3. Проверяем модальное окно ежедневной награды", ()->{
+            RewardHelper.safeClickCollectReward();
+        });
+        step("4. Добавляем продукт", () -> {
             Home.walkthroughtAddingACourse(productName);
         });
-        step("4. Обновляем страницу", () -> {
+        step("5. Обновляем страницу", () -> {
 //            refresh();
 //            WaitHelper.waitForPageLoad();
             allDashbords.testSingleProduct(productName, dashboard);
@@ -199,6 +203,7 @@ public class DashbordsTest extends BaseUiTest {
         step("8. Фиксация финального состояния", () -> {
             refresh();
             WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
 
             AllureAttachments.attachScreenshot("Финальное состояние после onboarding");
         });
@@ -213,17 +218,17 @@ public class DashbordsTest extends BaseUiTest {
         String dashboard = "Трекер питания";
         chekingInsideTheDashboard(productName, dashboard);
 
-        step("5. переходим в дашборд питания", () -> {
+        step("6. переходим в дашборд питания", () -> {
             nutritionTracker.clickFromNutritionTracker();
         });
-        step("6. Начинаем программу диет", () -> {
+        step("7. Начинаем программу диет", () -> {
             nutritionTracker.startProgramm();
             refresh();
         });
-        step("7. Проверяем редирект по страницам приёма пищи", () -> {
+        step("8. Проверяем редирект по страницам приёма пищи", () -> {
             nutritionTracker.mealNavigationWithCollection();
         });
-        step("8. Удаляем курс", () -> {
+        step("9. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }
@@ -237,16 +242,16 @@ public class DashbordsTest extends BaseUiTest {
         String dashboard = "Натальная карта";
         chekingInsideTheDashboard(productName, dashboard);
 
-        step("5. Переходим в дашборд 'Натальная карта'", () -> {
+        step("6. Переходим в дашборд 'Натальная карта'", () -> {
             natalChart.clickFromNatalChar();
         });
-        step("6. Проверяем кнопки персонального календаря", () -> {
+        step("7. Проверяем кнопки персонального календаря", () -> {
             natalChart.personaleCalendar();
         });
-        step("7. проверяем страницу 'Info'", () -> {
+        step("8. проверяем страницу 'Info'", () -> {
             natalChart.redirectToTheInfoPage();
         });
-        step("8. Удаляем курс", () -> {
+        step("9. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }
@@ -259,16 +264,16 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "spyHeart";
         String dashboard = "SpyHeart";
         chekingInsideTheDashboard(productName, dashboard);
-        step("5. Переходим в дашборд 'SpyHeart'", () -> {
+        step("6. Переходим в дашборд 'SpyHeart'", () -> {
             spyHeart.clickFromSpyHeart();
         });
-        step("6. Проверка функционала", () -> {
+        step("7. Проверка функционала", () -> {
             spyHeart.ckeckVisionElement();
         });
-        step("7. Редирект на главную страницу", () -> {
+        step("8. Редирект на главную страницу", () -> {
             Home.clickMainlink();
         });
-        step("8. Удаляем курс", () -> {
+        step("9. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }
@@ -281,13 +286,13 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "тренировка памяти";
         String dashboard = "Тренажер памяти";
         chekingInsideTheDashboard(productName, dashboard);
-        step("5. Переходим в дашборд 'Тренажер памяти'", () -> {
+        step("6. Переходим в дашборд 'Тренажер памяти'", () -> {
             memoryTrainer.clickFromMemoryTrainer();
         });
-        step("6. Проверяем редирект по страницам Игр", () -> {
+        step("7. Проверяем редирект по страницам Игр", () -> {
             memoryTrainer.gameNavigationWithCollection();
         });
-        step("7. Удаляем курс", () -> {
+        step("8. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }
@@ -301,13 +306,13 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "матрица судьбы";
         String dashboard = "Расчет матрицы";
         chekingInsideTheDashboard(productName, dashboard);
-        step("5. Переходим в дашборд 'Расчёт матрицы'", () -> {
+        step("6. Переходим в дашборд 'Расчёт матрицы'", () -> {
             matrixCalculation.clickFromMatrixCalculation();
         });
-        step("6. Проверяем работу внутри дашборда", () -> {
+        step("7. Проверяем работу внутри дашборда", () -> {
             matrixCalculation.openModalWindowInTheDashboard();
         });
-        step("7. Удаляем курс", () -> {
+        step("8. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }
@@ -320,13 +325,13 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "таргетолог";
         String dashboard = "Учет каналов";
         chekingInsideTheDashboard(productName, dashboard);
-        step("5. Переходим в дашборд 'Учет каналов'", () -> {
+        step("6. Переходим в дашборд 'Учет каналов'", () -> {
             channelAccounting.clickFromChannelAccounting();
         });
-        step("6. Проверяем работу внутри дашборда", () -> {
+        step("7. Проверяем работу внутри дашборда", () -> {
             channelAccounting.fillForm();
         });
-        step("7. Удаляем курс", () -> {
+        step("8. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }
@@ -339,13 +344,13 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "таро";
         String dashboard = "Таро";
         chekingInsideTheDashboard(productName, dashboard);
-        step("5. Переходим в дашборд 'Таро'", () -> {
+        step("6. Переходим в дашборд 'Таро'", () -> {
             taro.clickFromTaro();
         });
-        step("6. Проверяем работу внутри дашборда", () -> {
+        step("7. Проверяем работу внутри дашборда", () -> {
             taro.mealNavigationWithCollection();
         });
-        step("7. Удаляем курс", () -> {
+        step("8. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }
@@ -358,13 +363,13 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "авито";
         String dashboard = "Редактор карточек товара";
         chekingInsideTheDashboard(productName, dashboard);
-        step("5. Переходим в дашборд 'Редактор карточек товара'", () -> {
+        step("6. Переходим в дашборд 'Редактор карточек товара'", () -> {
             productCardEditor.clickFromProductCardEdition();
         });
-        step("6. Проверяем работу внутри дашборда", () -> {
+        step("7. Проверяем работу внутри дашборда", () -> {
             productCardEditor.workDashboard();
         });
-        step("7. Удаляем курс", () -> {
+        step("8. Удаляем курс", () -> {
             Home.deleteProduct(productName);
         });
     }

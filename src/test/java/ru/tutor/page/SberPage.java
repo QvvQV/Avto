@@ -32,6 +32,8 @@ public class SberPage {
     private static final SelenideElement TEXT_ERROR = $$("span").find(exactText("Операция отклонена. Проверьте введенные данные, достаточность средств на карте и повторите операцию"));
     private static final SelenideElement GO_SHOP = $$("button").find(exactText("Перейти в магазин"));
 
+    private static String email;
+
     @Step("Переключение на новое окно браузера")
     public static void switchToNewWindow() {
         String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
@@ -51,7 +53,7 @@ public class SberPage {
     @Step("Заполнение email и обработка модального окна")
     public static void fillEmailAndProcessModal() {
         step("Ввод email и проверка отсутствия ошибок", () -> {
-            String email = faker.internet().emailAddress();
+            email = faker.internet().emailAddress();
             EMAIL_INPUT.setValue(email);
 
             // Логика определения типа продукта
@@ -65,6 +67,10 @@ public class SberPage {
             AllureAttachments.attachText("Email в модалке", email);
             System.out.println(modalText + ": " + email);
         });
+    }
+
+    public static String getLastUsedEmail() {
+        return email;
     }
 
     public static void logModalType(String modalText, String email) {
@@ -105,7 +111,7 @@ public class SberPage {
 
     private static void fillCardData(String cardNumber, String expiry, String cvc) {
         step("Заполнение данных карты: " + maskCardNumber(cardNumber), () -> {
-            CARD_NUMBER.shouldBe(visible, Duration.ofSeconds(10)).setValue(cardNumber);
+            CARD_NUMBER.shouldBe(visible, Duration.ofSeconds(20)).setValue(cardNumber);
             EXPIRY_DATE.setValue(expiry);
             CVC.setValue(cvc);
             SUCCESS_BUTTON.shouldBe(visible).click();
@@ -183,49 +189,4 @@ public class SberPage {
     public static String getErrorText() {
         return TEXT_ERROR.shouldBe(visible, Duration.ofSeconds(10)).getText().trim();
     }
-
-    //    public static void changeWindowHandle(){
-//        String a = "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”";
-//        String b = "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”";
-//        String c = "ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ";
-//        String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
-//        step("Ввод email. Отсутствие ошибки под полем mail", () ->{
-//        EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
-//        if (ttPage.setTextFromModal().equals(a)){
-//            System.out.println("Оплата продукта с главной Лайт: " + atrEmail());
-//        } else if (ttPage.setTextFromModal().equals(b)) {
-//            System.out.println("Оплата продукта с главной Премиум: " + atrEmail());
-//        } else if (ttPage.setTextFromModal().equals(c)){
-//            System.out.println("Оплата продукта с главной Пожизненный: " + atrEmail());
-//        }
-//        CloudPage.FULL_OPTION.shouldBe(visible).click();
-//        sleep(9000);
-//        ERROR_MESSAGE.shouldNot(visible);});
-//        Set<String> windowHandles = webdriver().driver().getWebDriver().getWindowHandles();
-//        for (String windowHandle : windowHandles) {
-//            if (!windowHandle.equals(currentWindowHandle)) {
-//                webdriver().driver().getWebDriver().switchTo().window(windowHandle);
-//                break;
-//            }
-//        }
-//    }
-//
-//    public static void clickBtnStart() {
-//        step("клик по кнопке оплатить", () ->{
-//        BUY_BUTTON.shouldBe(visible).click();});
-//        String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
-//        step("Ввод email. Отсутствие ошибки под полем mail", () ->{
-//        EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
-//        System.out.println("Оплата с продукта Excel за 1 руб: " + atrEmail());
-//        ACCESS_BUTTON.shouldBe(visible).click();
-//        sleep(9000);
-//        ERROR_MESSAGE.shouldNot(visible);});
-//        Set<String> windowHandles = webdriver().driver().getWebDriver().getWindowHandles();
-//        for (String windowHandle : windowHandles) {
-//            if (!windowHandle.equals(currentWindowHandle)) {
-//                webdriver().driver().getWebDriver().switchTo().window(windowHandle);
-//                break;
-//            }
-//        }
-//    }
 }

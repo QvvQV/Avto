@@ -13,15 +13,16 @@ import java.time.Duration;
 import java.util.Locale;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class helloDash {
 
     private static final Faker faker = new Faker(new Locale("en"));
 
     // Локаторы модального окна приветствия
+    private static final SelenideElement ACCESS_DATA_TITLE_FIRST = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));
     private static final SelenideElement ACCESS_DATA_TITLE = $$("h2").find(exactText("Укажите данные для доступа к платформе"));
     private static final SelenideElement NAME_INPUT = $("[name=\"name\"]");
     private static final SelenideElement PASSWORD_INPUT = $("[name=\"newPassword\"]");
@@ -37,6 +38,11 @@ public class helloDash {
     @Step("Заполенение приветственного модального окна")
     private static void completeWelcomeModal() {
         step("Ожидание загрузки модального окна", () -> {
+//            ACCESS_DATA_TITLE_FIRST.shouldBe(visible, Duration.ofSeconds(10));
+//            step("переход к следующему шагу", () -> {
+//                BUTTON_NEXT_STEP.shouldBe(interactable, Duration.ofSeconds(5)).click();
+//                WaitHelper.waitForAnimationComplete();
+//            });
             ACCESS_DATA_TITLE.shouldBe(visible, Duration.ofSeconds(10));
             AllureAttachments.attachScreenshot("Модальное окно приветствия");
         });
@@ -130,7 +136,7 @@ public class helloDash {
     }
 
     @Step("Проверка навигации по платформе")
-    private static void verifyPlatformNavigation(){
+    private static void verifyPlatformNavigation() {
         Catalog.verifyCatalogPresence();
         Home.verifyHomeLinkPresence();
         AllureAttachments.attachText("Навигация", "Основные элементы навигации доступны");

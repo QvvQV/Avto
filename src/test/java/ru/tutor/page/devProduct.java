@@ -10,12 +10,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Keys;
+import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.WaitHelper;
 
+import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
@@ -25,31 +27,34 @@ public class devProduct {
     private static final Faker faker = new Faker(new Locale("en"));
     private static SelenideElement btnSave = $$("button").find(exactText("Сохранить"));
     private static SelenideElement h2 = $$("h2").find(exactText("Редактирование продукта"));
-    private static SelenideElement password = $("[name=\"password\"]");
+//    private static SelenideElement password = $("[name=\"password\"]");
     //    private static SelenideElement email = $("[name=\"email\"]");
-    private static SelenideElement email = $("#root > div > div > div > form > div:nth-child(1) > div.input__wrapper > input");
+//    private static SelenideElement email = $("#root > div > div > div > form > div:nth-child(1) > div.input__wrapper > input");
     private static SelenideElement h1 = $("h1");
     private static SelenideElement card1Title = $("div:nth-child(2) > div:nth-child(2) > div.input__wrapper > input");
     private static SelenideElement card2Title = $("div:nth-child(2) > div:nth-child(4) > div.input__wrapper > input");
     private static SelenideElement card3Title = $("div:nth-child(2) > div:nth-child(6) > div.input__wrapper > input");
-    private static SelenideElement successBtn = $$("button").find(exactText("войти"));
+//    private static SelenideElement successBtn = $$("button").find(exactText("войти"));
     private static SelenideElement label = $$("label").find(exactText("Навык 1"));
     private static SelenideElement description = $$("[name=\"description\"]").get(3);
     private static SelenideElement sideBArProduct = $$("span").find(exactText("Продукты"));
     private static SelenideElement pencil = $(".table__inner > div:nth-child(3) > div.tableRow__item.tableRow__item--svg.tableRow__item--m > a > svg > path:nth-child(3)");
 
 
-    public static void login() {
-        step("вводим валидный email", () -> {
-            email.sendKeys("admin");
-        });
-        step("вводим валидный пароль", () -> {
-            password.sendKeys("admin");
-        });
-        step("кликаем по кнопке войти", () -> {
-            successBtn.click();
-        });
-    }
+
+//    public static void login() {
+//        step("вводим валидный email", () -> {
+//            email.sendKeys("admin");
+//        });
+//        step("вводим валидный пароль", () -> {
+//            password.sendKeys("admin");
+//        });
+//        step("кликаем по кнопке войти", () -> {
+//            successBtn.click();
+//            WaitHelper.waitForPageLoad();
+//            WaitHelper.waitForAnimationComplete();
+//        });
+//    }
 
     public static void textH2() {
         step("проверяем, что попали в редактор", () -> {

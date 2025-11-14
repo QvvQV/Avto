@@ -31,8 +31,8 @@ public class Home {
     private static final SelenideElement STAY_BUTTON = $$("button").find(exactText("Остаться"));
 
     // Локаторы в под-меню продукта
-    private static final SelenideElement ELLIPSES_BUTTON = $("._control_uynht_17");
-    private static final SelenideElement GARBAGE_BUTTON = $("button._control_uynht_17 + button + button");
+    private static final SelenideElement ELLIPSES_BUTTON = $("._control_sjghz_30");
+    private static final SelenideElement GARBAGE_BUTTON = $("button._bin_sjghz_90");
 
     // Локаторы продукта в модальном окне
     private static final SelenideElement DELETE_BUTTON = $$("button").find(exactText("Удалить"));
@@ -169,7 +169,30 @@ public class Home {
         });
     }
 
-//    @Step("Вводим наименования курсов для проверки карусели приложения")
+    @Step("Удаляем продукт")
+    public static void deleteProduct(String productName) {
+        step("Удаляем продукт", () -> {
+            refresh();
+            allDashbords.safeCarouselClick(ELLIPSES_BUTTON);
+
+            GARBAGE_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
+                    .shouldBe(interactable)
+                    .click();
+            WaitHelper.waitForAnimationComplete();
+            AllureAttachments.attachScreenshot("Появление модального окна");
+        });
+        step("Появление мод окна и завершение удаления", () -> {
+            DELETE_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
+                    .shouldBe(enabled)
+                    .click();
+            WaitHelper.waitForAnimationComplete();
+        });
+        AllureAttachments.attachText("Курс удалён", "✅ " + productName);
+        AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
+    }
+
+
+    //    @Step("Вводим наименования курсов для проверки карусели приложения")
 //    public static void enterCourseNames() {
 //        step("Вводим в поисковик курс", () -> {
 //            SEARCH.shouldBe(visible, Duration.ofSeconds(3))
@@ -193,27 +216,4 @@ public class Home {
 //                    .click();
 //        });
 //    }
-
-    @Step("Удаляем продукт")
-    public static void deleteProduct(String productName) {
-        step("Удаляем продукт", () -> {
-            refresh();
-            allDashbords.safeCarouselClick(ELLIPSES_BUTTON);
-
-            GARBAGE_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(interactable)
-                    .click();
-            WaitHelper.waitForAnimationComplete();
-            AllureAttachments.attachScreenshot("Появление модального окна");
-        });
-        step("Появление мод окна и завершение удаления", () -> {
-            DELETE_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(enabled)
-                    .click();
-            WaitHelper.waitForAnimationComplete();
-        });
-        AllureAttachments.attachText("Курс удалён", "✅ " + productName);
-        AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
-    }
-
 }
