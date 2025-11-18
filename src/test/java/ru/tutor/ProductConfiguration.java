@@ -6,7 +6,7 @@ public class ProductConfiguration {
     private static final Map<String, ProductSettings> PRODUCTS_SETTINGS = Map.of(
             "231", new ProductSettings(14, 44, 74, "299"),
             "135", new ProductSettings(7,14,21, "294"),
-            "180", new ProductSettings(7, 30, 60, "99")
+            "180", new ProductSettings(7, 37, 67, "99")
     );
 
     public static ProductSettings getSettings(String productId) {

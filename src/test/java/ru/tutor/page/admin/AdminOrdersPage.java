@@ -1,5 +1,6 @@
 package ru.tutor.page.admin;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
@@ -29,6 +30,13 @@ public class AdminOrdersPage {
     private static SelenideElement EMAIL_INPUT_SEARCH = $("input[placeholder='Email']");
     private static SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
     private static SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
+
+
+    // Селектор для поиска Лайт продуктов
+    private static ElementsCollection ALL_ORDER_LINKS = $$("a[data-discover='true'][href*='/order/']");
+    private static SelenideElement getLiteOrderLink() {
+        return ALL_ORDER_LINKS.findBy(text("Лайт").or(text("Lite")));
+    }
 
 
     // Универсальные методы
@@ -139,4 +147,24 @@ public class AdminOrdersPage {
         "Рекуррентный платеж успешно проведен. ID продукта: " + productId + ", цена: " + price);
     }
 
+//        @Step("Автоматический переход в подходящий заказ для рекуррента")
+//    public void processRecurrentPaymentAuto() {
+//        step("поиск Лайт заказа внутри основного заказа", () -> {
+//            SelenideElement liteOrderLink = findLiteOrderInCurrentOrder();
+//
+//            if (liteOrderLink.exists()) {
+//                AllureAttachments.attachText("Автовыбор", "Найден Лайт заказ внутри основного заказа - переходим в него");
+//                processRecurrentPaymentForElement(liteOrderLink, "Лайт");
+//            } else {
+//                AllureAttachments.attachText("Автовыбор", "Лайт заказ не найден - работаем с текущим заказом");
+//                AllureAttachments.attachText("Текущий заказ", "Работаем с основным заказом");
+//            }
+//        });
+//    }
+
+    @Step("Поиск Лайт заказа внутри текущего заказа")
+    private SelenideElement findLiteOrderInCurrentOrder() {
+        return $$("a[href*='/order/']")
+            .findBy(text("Лайт").or(text("Lite")).or(text("лайт")).or(text("lite")));
+    }
 }

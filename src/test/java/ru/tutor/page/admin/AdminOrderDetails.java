@@ -5,13 +5,14 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.model.ProductResponse;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.sleep;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.*;
 
 public class AdminOrderDetails {
 
@@ -51,6 +52,7 @@ public class AdminOrderDetails {
     @Step("Получение даты '{dateType}'")
     private String getDate(OrderDateType dateType) {
         return getDateElement(dateType)
+                .shouldBe(visible,Duration.ofSeconds(10))
                 .getText()
                 .trim();
     }
