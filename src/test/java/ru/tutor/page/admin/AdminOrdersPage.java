@@ -31,6 +31,8 @@ public class AdminOrdersPage {
     private static SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
     private static SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
 
+    private String lastSearchedEmail; // Добавляем поле для хранения email
+
 
     // Селектор для поиска Лайт продуктов
     private static ElementsCollection ALL_ORDER_LINKS = $$("a[data-discover='true'][href*='/order/']");
@@ -99,6 +101,9 @@ public class AdminOrdersPage {
     @Step("Поиск заказа по email: {email}")
     public AdminOrdersPage findOrderByEmail(String email) {
         return step("Поиск заказа по email", ()->{
+
+            this.lastSearchedEmail = email;
+
                EMAIL_INPUT_SEARCH.shouldBe(visible, DEFAULT_TIMEOUT)
                 .setValue(email);
         clickButton(APPLY_BUTTON, APPLY_TEXT);
@@ -109,6 +114,10 @@ public class AdminOrdersPage {
 
         return this;
         });
+    }
+
+    public String getLastSearchedEmail() {
+        return lastSearchedEmail;
     }
 
     @Step("Переход в заказ для рекуррентного платежа")
@@ -146,21 +155,6 @@ public class AdminOrdersPage {
         AllureAttachments.attachText("Рекуррент",
         "Рекуррентный платеж успешно проведен. ID продукта: " + productId + ", цена: " + price);
     }
-
-//        @Step("Автоматический переход в подходящий заказ для рекуррента")
-//    public void processRecurrentPaymentAuto() {
-//        step("поиск Лайт заказа внутри основного заказа", () -> {
-//            SelenideElement liteOrderLink = findLiteOrderInCurrentOrder();
-//
-//            if (liteOrderLink.exists()) {
-//                AllureAttachments.attachText("Автовыбор", "Найден Лайт заказ внутри основного заказа - переходим в него");
-//                processRecurrentPaymentForElement(liteOrderLink, "Лайт");
-//            } else {
-//                AllureAttachments.attachText("Автовыбор", "Лайт заказ не найден - работаем с текущим заказом");
-//                AllureAttachments.attachText("Текущий заказ", "Работаем с основным заказом");
-//            }
-//        });
-//    }
 
     @Step("Поиск Лайт заказа внутри текущего заказа")
     private SelenideElement findLiteOrderInCurrentOrder() {

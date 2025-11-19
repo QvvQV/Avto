@@ -46,12 +46,13 @@ public class SubscriptionTestFlow {
 
     // Короткие методы-обертки для различных сценариев покупки
     public SubscriptionTestFlow purchasePremiumSubscription() {
-        purchaseSubscription(
+        SubscriptionPurchaseResult result = purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forPremium()
                         .viaCloud()
                         .withStandardPayment()
         );
+        this.userEmail = result.getUserEmail();
         return this;
     }
 
@@ -219,15 +220,12 @@ public class SubscriptionTestFlow {
 
     public void logTestCompletion() {
         step("Завершение теста", () -> {
+            String userEmail = adminOrdersPage.getLastSearchedEmail();
             AllureAttachments.attachText("Тест завершен",
                     "✅ Все проверки рекуррентных платежей выполнены успешно\n" +
                             "📧 Email: " + userEmail + "\n" +
                             "⏱️ Время выполнения: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         });
-    }
-
-    public String getUserEmail() {
-        return userEmail;
     }
 
     public SubscriptionTestFlow verifyErrorMessage(String expectedError) {

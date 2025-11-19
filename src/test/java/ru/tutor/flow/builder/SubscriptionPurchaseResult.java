@@ -8,7 +8,7 @@ public class SubscriptionPurchaseResult {
     }
 
     public String getUserEmail() {
-        return userEmail;
+        return userEmail != null ? userEmail : "не установлен";
     }
 
     public boolean hasEmail() {

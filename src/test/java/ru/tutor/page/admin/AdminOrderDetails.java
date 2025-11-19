@@ -52,7 +52,7 @@ public class AdminOrderDetails {
     @Step("Получение даты '{dateType}'")
     private String getDate(OrderDateType dateType) {
         return getDateElement(dateType)
-                .shouldBe(visible,Duration.ofSeconds(10))
+                .shouldBe(visible, Duration.ofSeconds(10))
                 .getText()
                 .trim();
     }
@@ -143,7 +143,7 @@ public class AdminOrderDetails {
     }
 
     @Step("Получение названия первого продукта")
-    public String getFirstProductName(){
+    public String getFirstProductName() {
         String productText = getProductElement()
                 .$$("a")
                 .first()
@@ -208,8 +208,8 @@ public class AdminOrderDetails {
                 .map(element -> {
                     String productText = element.getText().trim();
                     return new ProductInfo(
-                        extractProductId(productText),
-                        extractProductName(productText)
+                            extractProductId(productText),
+                            extractProductName(productText)
                     );
                 })
                 .collect(java.util.stream.Collectors.toList());
@@ -268,14 +268,14 @@ public class AdminOrderDetails {
 
     private String extractProductName(String productText) {
         // Извлекаем название из текста "135 - Премиум подписка"
-        if (productText != null && productText.contains(" - ")){
+        if (productText != null && productText.contains(" - ")) {
             String[] parts = productText.split(" - ", 2);
             return parts.length > 1 ? parts[1].trim() : productText;
         }
         return productText;
     }
 
-//    DTO класс для хранения информации о продукте
+    //    DTO класс для хранения информации о продукте
     public static class ProductInfo {
         private final String id;
         private final String name;
@@ -306,12 +306,12 @@ public class AdminOrderDetails {
         }
 
         @Override
-    public String toString() {
+        public String toString() {
             return String.format("%s - %s", id, name);
         }
-}
+    }
 
-// DTO класс для полной информации о заказе
+    // DTO класс для полной информации о заказе
     public static class OrderFullInfo {
         private final OrderDates dates;
         private final ProductInfo firstProduct;
@@ -336,11 +336,11 @@ public class AdminOrderDetails {
         }
 
         @Override
-    public String toString() {
+        public String toString() {
             return String.format(
                     "Даты: %s, Первый продукт: %s, Всего продуктов: %d",
                     dates.toString(), firstProduct.toString(), allProducts.size()
             );
         }
-}
+    }
 }

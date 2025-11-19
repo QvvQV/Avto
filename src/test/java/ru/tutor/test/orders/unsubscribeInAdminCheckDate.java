@@ -204,34 +204,6 @@ public class unsubscribeInAdminCheckDate extends BaseUiTest {
         TestExecutionContext context = new TestExecutionContext();
         SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
 
-//        try {
-//            purchaseMethod.get().processRecurrentInAdmin();
-//
-//            refresh();
-//            WaitHelper.waitForPageLoad();
-//            WaitHelper.waitForAnimationComplete();
-//
-//            String productId = adminOrderDetails.getFirstProductId();
-//            String productName = adminOrderDetails.getFirstProductName();
-//
-//                    AllureAttachments.attachText("Найденный продукт", productId + " - " + productName);
-//        AllureAttachments.attachText("Тип заказа", productName.toLowerCase().contains("лайт") ||
-//                productName.toLowerCase().contains("lite") ? "Lite" : "Premium");
-//
-//
-//            ProductConfiguration.ProductSettings settings = ProductConfiguration.getSettings(productId);
-//            context.setOriginalCreatedDate(orderDatesPage.extractCreationDate());
-//
-//            performPaymentCycle("первый", settings.getInitialExpiresDays(), settings.getAfterFirstPaymentDays(), context);
-//            performPaymentCycle("второй", settings.getAfterFirstPaymentDays(), settings.getAfterSecondPaymentDays(), context);
-//
-//            performFinalComprehensiveCheck();
-//            flow.logTestCompletion();
-//        } catch (Exception e) {
-////        captureFailureState(context);
-////        throw e;
-//        }
-
         try {
             // Выполняем покупку с переданным методом
             purchaseMethod.get().processRecurrentInAdmin();
