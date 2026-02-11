@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RegisterTest extends BaseApiTest {
     private final RegisterSteps registerSteps = new RegisterSteps(API_BASE_URL);
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test
 //    @RepeatedTest(3)

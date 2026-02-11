@@ -4,7 +4,7 @@ import net.datafaker.Faker;
 import java.util.Locale;
 
 public class DataGenerator {
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     private DataGenerator() {}
 

@@ -19,7 +19,7 @@ import static io.qameta.allure.Allure.step;
 
 public class Registration {
 
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     // // Название кнопок
     private static final String LOGIN_TEXT = "Войти";
@@ -30,10 +30,10 @@ public class Registration {
     private static final String REGISTER_TEXT = "Зарегистрироваться";
 
 //    // Селекторы
-    private static SelenideElement EMAIL_INPUT = $("[name=\"email\"]");
-    private static SelenideElement PASSWORD_INPUT = $("[name=\"password\"]");
+    private static SelenideElement EMAIL_INPUT = $("[name='email']");
+    private static SelenideElement PASSWORD_INPUT = $("[name='password']");
     private static SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
-    private static SelenideElement btnYandex = $("[data-t=\"personal-button:text\"]");
+    private static SelenideElement btnYandex = $("[data-t='personal-button:text']");
 
     private static SelenideElement RECOVER_PASS = $$("a").find(exactText(RECOVER_PASS_TEXT));
     private static SelenideElement REGISTRATION = $$("a").find(exactText(REGISTRATION_TEXT));
@@ -51,15 +51,15 @@ public class Registration {
     private static SelenideElement BACK_BUTTON = $("._goBackBtn_5y16r_104");
 
     //    Страница Регистрации
-    private static SelenideElement NAME_INPUT = $("[name=\"name\"]");
+    private static SelenideElement NAME_INPUT = $("[name='name']");
     private static SelenideElement HEAD2_TEXT_REGISTER = $$("h2").find(exactText("Регистрация"));
     private static SelenideElement NEXT_BUTTON = $$("button").find(exactText("Далее"));
     private static SelenideElement REGISTER_BUTTON = $$("button").find(exactText(REGISTER_TEXT));
     private static SelenideElement NUMBER_INPUT = $$("input").get(1);
-    private static SelenideElement TELEGRAMM_INPUT = $("[name=\"telegram\"]");
+    private static SelenideElement TELEGRAMM_INPUT = $("[name='telegram']");
     private static SelenideElement BACK_BUTTON_REGISTER = $("._goBackBtn_cj1gp_140");
     private static SelenideElement LOGIN_BUTTON_FROM_REGISTER = $$("a").find(exactText(LOGIN_TEXT));
-    private static SelenideElement REPEAT_PASSWORD_INPUT = $("[name=\"repeatPassword\"]");
+    private static SelenideElement REPEAT_PASSWORD_INPUT = $("[name='repeatPassword']");
 
     //ЛК
     private static SelenideElement HEAD2_TEXTMod = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));

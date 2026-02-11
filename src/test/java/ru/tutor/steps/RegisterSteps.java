@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterSteps {
     private final RegisterApi registerApi;
-    private final Faker faker = new Faker(new Locale("en"));
+    private final Faker faker = new Faker(Locale.ENGLISH);
 
     public RegisterSteps(String baseUrl) {
         this.registerApi = new RegisterApi(baseUrl);

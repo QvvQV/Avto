@@ -14,7 +14,7 @@ public class SendEmailApi extends BaseApi {
 
     public SendEmailApi(String baseUrl){
         super(baseUrl);
-        this.faker = new Faker(new Locale("en"));
+        this.faker = new Faker(Locale.ENGLISH);
     }
 
     public Response sendEmail(String name, String email, String content){

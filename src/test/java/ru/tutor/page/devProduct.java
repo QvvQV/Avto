@@ -24,7 +24,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItems;
 
 public class devProduct {
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
     private static SelenideElement btnSave = $$("button").find(exactText("Сохранить"));
     private static SelenideElement h2 = $$("h2").find(exactText("Редактирование продукта"));
 //    private static SelenideElement password = $("[name=\"password\"]");

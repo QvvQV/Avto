@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LoginResponseTest {
 
     private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test
     @AllureId("58")

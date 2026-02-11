@@ -19,7 +19,7 @@ import static io.qameta.allure.Allure.step;
 
 public class helloDash {
 
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     // Локаторы модального окна приветствия
     private static final SelenideElement ACCESS_DATA_TITLE_FIRST = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));

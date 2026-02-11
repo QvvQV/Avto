@@ -22,7 +22,7 @@ import static io.qameta.allure.Allure.step;
  */
 
 public class SberPage {
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     //Локаторы
     private static final SelenideElement BUY_BUTTON = $$("button").find(exactText("начать обучение за 1 ₽*"));

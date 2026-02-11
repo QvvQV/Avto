@@ -1,6 +1,6 @@
 package ru.tutor.page;
 
-/**
+/*
  * Логика и кнопки связанные с Cloud/Тинькофф. Оплата
  */
 
@@ -24,7 +24,7 @@ import static ru.tutor.page.SberPage.logModalType;
 public class CloudPage {
 
     // Константы
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
     //Тестовые данные
@@ -44,13 +44,13 @@ public class CloudPage {
     private static SelenideElement ERROR_MESSAGE = $$("p").find(exactText(ERROR_MESSAGE_TEXT));
     private static SelenideElement ACCESS_BUTTON = $(By.id("access-button"));
     private static SelenideElement ACCESS_BUTTON_PROD = $(By.id("mainFormaSubmitBtn"));
-    private static SelenideElement EMAIL_INPUT = $("[name=\"email\"]");
-    private static SelenideElement EMAIL_INPUT_PROD = $("[name=\"order[email]\"]");
-    private static SelenideElement CARD_PAGE_BUTTON = $("[data-test=\"cardpay-page-button\"]");
-    private static SelenideElement CARD_INPUT = $("[automation-id=\"tui-input-card-group__card\"]");
-    private static SelenideElement CARD_PAY_BUTTON = $("[data-test=\"cardpay-button\"]");
-    public static SelenideElement FULL_OPTION = $("[name=\"full\"]");
-    private static SelenideElement INSTALLMENTS_OPTION = $("[name=\"installments\"]");
+    private static SelenideElement EMAIL_INPUT = $("[name='email']");
+    private static SelenideElement EMAIL_INPUT_PROD = $("[name='order[email]']");
+    private static SelenideElement CARD_PAGE_BUTTON = $("[data-test='cardpay-page-button']");
+    private static SelenideElement CARD_INPUT = $("[automation-id='tui-input-card-group__card']");
+    private static SelenideElement CARD_PAY_BUTTON = $("[data-test='cardpay-button']");
+    public static SelenideElement FULL_OPTION = $("[name='full']");
+    private static SelenideElement INSTALLMENTS_OPTION = $("[name='installments']");
 
     //Локаторы отдельного окна оплаты
     private static SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));

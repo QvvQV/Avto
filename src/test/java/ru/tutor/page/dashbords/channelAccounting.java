@@ -18,7 +18,7 @@ import static io.qameta.allure.Allure.step;
 
 public class channelAccounting {
 
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     // Локтоары
     private static final SelenideElement CHANNEL_ACCOUNTING = $$("p").find(exactText("Учет каналов"));
