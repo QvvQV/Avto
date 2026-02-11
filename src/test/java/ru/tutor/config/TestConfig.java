@@ -6,7 +6,9 @@ import java.util.Properties;
 public class TestConfig {
     private static final Properties properties = new Properties();
 
-    // Домены и Url
+    /**
+     * Домены, url, тестовые данные для Sber/Сбер
+     */
 
     static {
         try (InputStream input = TestConfig.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -22,6 +24,10 @@ public class TestConfig {
         return properties.getProperty("api.base.url", "https://api.dev.tutorplace.ru");
     }
 
+    public static String getApiProdUrl() {
+        return properties.getProperty("api.prod.url", "https://api.tutorplace.ru");
+    }
+
     public static String getClientBaseUrl() {
         return properties.getProperty("client.base.url", "https://client.ttplace.ru");
     }
@@ -32,6 +38,10 @@ public class TestConfig {
 
     public static String getTestEmail() {
         return properties.getProperty("test.email");
+    }
+
+    public static String getTestEmailFortune() {
+        return properties.getProperty("test.email_for_fortune");
     }
 
     public static String getTestPassword() {

@@ -1,11 +1,8 @@
 package ru.tutor.utils;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -13,6 +10,10 @@ import java.time.Duration;
 import static com.codeborne.selenide.Selenide.Wait;
 import static com.codeborne.selenide.Selenide.sleep;
 import static io.qameta.allure.Allure.step;
+
+/**
+ * Универсальные методы для ожидания элементов на странице
+ */
 
 public class WaitHelper {
 

@@ -2,17 +2,14 @@ package ru.tutor.test;
 
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.*;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.OrderStepsRedirect;
 import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.UrlRedirectHelper;
 
 import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("Order Processing")
 @Feature("Order Redirect Handling")
@@ -20,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("🛒 Тесты обработки редиректов при заказе")
 class OrderRedirectTest extends BaseUiTest {
 
-    private final OrderSteps orderSteps = new OrderSteps();
+    private final OrderStepsRedirect orderStepsRedirect = new OrderStepsRedirect();
 
     @Test
 //    @RepeatedTest(5)
@@ -36,7 +33,7 @@ class OrderRedirectTest extends BaseUiTest {
         ttPage.clickPremium();});
 
         // 2. Заполнение данных и оплата
-        step("Заполнение данных и оплата", () -> {
+        step("2. Заполнение данных и оплата", () -> {
         CloudPage.setDateModal();
         AllureAttachments.attachText("Email пользователя", CloudPage.atrEmail());
 

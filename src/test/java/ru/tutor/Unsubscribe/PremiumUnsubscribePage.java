@@ -5,6 +5,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 
@@ -40,62 +41,6 @@ public class PremiumUnsubscribePage {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
     /**
-     * Универсальный метод для клика по кнопке с проверками
-     */
-    @Step("Клик по кнопке: {buttonName}")
-    private static void clickButton(SelenideElement button, String buttonName) {
-        step("Клик по кнопке '" + buttonName + "'", () -> {
-            button.scrollTo()
-                    .shouldBe(visible, DEFAULT_TIMEOUT)
-                    .shouldBe(interactable, DEFAULT_TIMEOUT)
-                    .click();
-
-            WaitHelper.waitForAnimationComplete();
-            AllureAttachments.attachText("Кнопка нажата", "✅ " + buttonName);
-        });
-    }
-
-    /**
-     * Универсальный метод для клика по кнопке с ожиданием загрузки страницы
-     */
-    @Step("Клик по кнопке с переходом: {buttonName}")
-    private static void clickButtonWithPageLoad(SelenideElement button, String buttonName) {
-        step("Клик по кнопке '" + buttonName + "' с переходом", () -> {
-            String originalUrl = WebDriverRunner.url();
-
-            button.scrollTo()
-                    .shouldBe(visible, DEFAULT_TIMEOUT)
-                    .shouldBe(interactable, DEFAULT_TIMEOUT)
-                    .click();
-
-            WaitHelper.waitForPageLoad();
-            WaitHelper.waitForAnimationComplete();
-
-            if (!WebDriverRunner.url().equals(originalUrl)) {
-                AllureAttachments.attachText("Переход",
-                        "Успешный переход после клика на: " + buttonName);
-            }
-
-            AllureAttachments.attachText("Кнопка нажата", "✅ " + buttonName + " - переход выполнен");
-        });
-    }
-
-    /**
-     * Универсальная проверка что кнопка enabled
-     */
-
-    private static void verifyButtonIsEnabled(SelenideElement button, String buttonName) {
-        step("Проверка что кнопка '" + buttonName + "' enabled", () -> {
-            button.shouldBe(visible, DEFAULT_TIMEOUT)
-                    .shouldNotHave(attribute("disabled"))
-                    .shouldBe(interactable)
-                    .shouldHave(exactText(buttonName));
-
-            AllureAttachments.attachText("Валидация", "✅ Кнопка '" + buttonName + "' доступна для клика");
-        });
-    }
-
-    /**
      * Получение и логирование текста заголовка
      */
     @Step("Получение текста заголовка")
@@ -112,7 +57,7 @@ public class PremiumUnsubscribePage {
     // Premium подписка методы
     @Step("Клик по кнопке 'Активна'")
     public static void clickActiveButton() {
-        clickButton(ACTIVE_BUTTON, ACTIVE_TEXT);
+        universalMethod.clickButton(ACTIVE_BUTTON, ACTIVE_TEXT);
 
         // Дополнительная проверка для disabled состояния
 //        step("Проверка состояния кнопки 'Активна'", () -> {
@@ -123,7 +68,7 @@ public class PremiumUnsubscribePage {
 
     @Step("Клик по кнопке 'Изменить'")
     public static void clickChangeButton() {
-        clickButtonWithPageLoad(CHANGE_BUTTON, CHANGE_TEXT);
+        universalMethod.clickButtonWithPageLoad(CHANGE_BUTTON, CHANGE_TEXT);
 
         // Получаем и логируем заголовок
         String headerText = getHeaderText();
@@ -132,7 +77,7 @@ public class PremiumUnsubscribePage {
 
     @Step("Клик по кнопке 'Отменить'")
     public static void clickCancelButton() {
-        clickButtonWithPageLoad(CANCEL_BUTTON, CANCEL_TEXT);
+        universalMethod.clickButtonWithPageLoad(CANCEL_BUTTON, CANCEL_TEXT);
 
         String headerText = getHeaderText();
         AllureAttachments.attachScreenshot("После клика на 'Отменить' - " + headerText);
@@ -140,7 +85,7 @@ public class PremiumUnsubscribePage {
 
     @Step("Клик по кнопке 'Отменить полный доступ'")
     public static void clickRevokeFullAccessButton() {
-        clickButtonWithPageLoad(REVOKE_FULL_ACCESS_BUTTON, REVOKE_FULL_ACCESS_TEXT);
+        universalMethod.clickButtonWithPageLoad(REVOKE_FULL_ACCESS_BUTTON, REVOKE_FULL_ACCESS_TEXT);
     }
 
     @Step("Проверка состояния тарифного плана")
@@ -185,12 +130,12 @@ public class PremiumUnsubscribePage {
 
     @Step("Проверка что кнопка 'Изменить' доступна")
     public static void verifyChangeButtonIsEnabled() {
-        verifyButtonIsEnabled(CHANGE_BUTTON, CHANGE_TEXT);
+        universalMethod.verifyButtonIsEnabled(CHANGE_BUTTON, CHANGE_TEXT);
     }
 
     @Step("Проверка что кнопка 'Отменить' доступна")
     public static void verifyCancelButtonIsEnabled() {
-        verifyButtonIsEnabled(CANCEL_BUTTON, CANCEL_TEXT);
+        universalMethod.verifyButtonIsEnabled(CANCEL_BUTTON, CANCEL_TEXT);
     }
 
     // Flow методы для комплексных сценариев

@@ -5,16 +5,21 @@ import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.config.TestConfig;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 import java.util.Locale;
-import java.util.Set;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
+
+/**
+ * Класс для локаторов и логики по платёжной системе Sber
+ */
 
 public class SberPage {
     private static final Faker faker = new Faker(new Locale("en"));
@@ -34,22 +39,6 @@ public class SberPage {
 
     private static String email;
 
-    @Step("Переключение на новое окно браузера")
-    public static void switchToNewWindow() {
-        String currentWindowHandle = webdriver().driver().getWebDriver().getWindowHandle();
-        Set<String> windowHandles = webdriver().driver().getWebDriver().getWindowHandles();
-
-        for (String windowHandle : windowHandles) {
-
-            if (!windowHandle.equals(currentWindowHandle)) {
-                webdriver().driver().getWebDriver().switchTo().window(windowHandle);
-                AllureAttachments.attachText("Переключение окна",
-                        "Переключено на окно: " + windowHandle);
-                break;
-            }
-        }
-    }
-
     @Step("Заполнение email и обработка модального окна")
     public static void fillEmailAndProcessModal() {
         step("Ввод email и проверка отсутствия ошибок", () -> {
@@ -60,7 +49,7 @@ public class SberPage {
             String modalText = ttPage.setTextFromModal();
             logModalType(modalText, email);
 
-            CloudPage.FULL_OPTION.shouldBe(visible).click();
+            universalMethod.safeClick(CloudPage.FULL_OPTION, "Оплата");
             sleep(9000);
             ERROR_MESSAGE.shouldNotBe(visible);
 
@@ -92,13 +81,13 @@ public class SberPage {
     @Step("Начало оформления заказа с продукта Excel")
     public static void startOrderFromProduct() {
         step("Клик по кнопке оплатить", () -> {
-            BUY_BUTTON.shouldBe(visible, Duration.ofSeconds(10)).click();
+            universalMethod.safeClick(BUY_BUTTON, "Оплатить");
         });
 
         step("Заполнение email", () -> {
             String email = faker.internet().emailAddress();
             EMAIL_INPUT.setValue(email);
-            ACCESS_BUTTON.shouldBe(visible).click();
+            universalMethod.safeClick(ACCESS_BUTTON, "Подтверждение");
             sleep(9000);
 
             ERROR_MESSAGE.shouldNotBe(visible);
@@ -106,7 +95,7 @@ public class SberPage {
             System.out.println("Оплата продукта с Excel: " + email);
         });
 
-        switchToNewWindow();
+        TabManager.switchToNewWindow();
     }
 
     private static void fillCardData(String cardNumber, String expiry, String cvc) {
@@ -114,7 +103,7 @@ public class SberPage {
             CARD_NUMBER.shouldBe(visible, Duration.ofSeconds(20)).setValue(cardNumber);
             EXPIRY_DATE.setValue(expiry);
             CVC.setValue(cvc);
-            SUCCESS_BUTTON.shouldBe(visible).click();
+            universalMethod.safeClick(SUCCESS_BUTTON, "Оплатить");
 
             AllureAttachments.attachText("Данные карты",
                     "Карта: " + maskCardNumber(cardNumber) + "\nСрок: " + expiry + "\nCVC: " + cvc);
@@ -144,7 +133,7 @@ public class SberPage {
                 TestConfig.Cards.Approved.CVC
         );
         step("Переход в магазин", () -> {
-            GO_SHOP.shouldBe(visible, Duration.ofSeconds(15)).click();
+            universalMethod.safeClick(GO_SHOP, "Перейти в магазин");
             AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
         });
     }
@@ -181,7 +170,7 @@ public class SberPage {
         handleDeclinePayment();
 
         step("Переход в магазин", () -> {
-            GO_SHOP.shouldBe(visible, Duration.ofSeconds(15)).click();
+            universalMethod.safeClick(GO_SHOP, "Перейти в магазин");
             AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
         });
     }

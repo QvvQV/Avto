@@ -47,10 +47,7 @@ public class RewardHelper {
 
     private static void collectRewardIfVisible() {
         step("Клик на кнопку 'Забрать награду'", () -> {
-            COLLECT_YOUR_REWARD_BUTTON
-                    .shouldBe(visible, Duration.ofSeconds(7))
-                    .shouldBe(enabled)
-                    .click();
+            universalMethod.safeClick(COLLECT_YOUR_REWARD_BUTTON, "Забрать награду");
 
             // Ждем исчезновения кнопки или модального окна
             WaitHelper.waitForModalToClose();

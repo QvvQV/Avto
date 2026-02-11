@@ -4,12 +4,21 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.ProductConfiguration;
+import ru.tutor.steps.AdminToUserLoginSteps;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -19,26 +28,39 @@ public class AdminOrdersPage {
 
     private final AdminOrderDetails adminOrderDetails = new AdminOrderDetails();
 
+    // Названия кнопок
     private static final String APPLY_TEXT = "Применить";
     private static final String MAKE_A_PAYMENT_TEXT = "Провести платеж";
     private static final String SAVE_TEXT = "Сохранить";
+    private static final String LOGIN_TEXT = "Войти";
+    private static final String CANCEL_YOUR_SUBSCRIPTION_TEXT = "Отмена подписки";
+    private static final String YES_TEXT = "Да";
+    private static final String UNDERSTAND_TEXT = "Понятно";
 
+    // Локаторы
     private static SelenideElement ORDERS_BUTTON = $("a[href*='orders']");
     private static SelenideElement APPLY_BUTTON = $$("button").find(exactText(APPLY_TEXT));
     private static SelenideElement MAKE_A_PAYMENT = $(".button-modal");
     private static SelenideElement SAVE_BUTTON = $$("button").find(exactText(SAVE_TEXT));
+    private static SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
+    private static SelenideElement CANSEL_SUBSCRIPTION_BUTTON = $$("button").find(exactText(CANCEL_YOUR_SUBSCRIPTION_TEXT));
+    private static SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
+    private static SelenideElement UNDERSTAND_BUTTON = $$("button").find(exactText(UNDERSTAND_TEXT));
     private static SelenideElement EMAIL_INPUT_SEARCH = $("input[placeholder='Email']");
     private static SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
     private static SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
 
     private String lastSearchedEmail; // Добавляем поле для хранения email
 
-
     // Селектор для поиска Лайт продуктов
     private static ElementsCollection ALL_ORDER_LINKS = $$("a[data-discover='true'][href*='/order/']");
+
     private static SelenideElement getLiteOrderLink() {
         return ALL_ORDER_LINKS.findBy(text("Лайт").or(text("Lite")));
     }
+
+    // Селектор для поиска UTM метки
+    private static SelenideElement UTM_TEXT = $x("//div[contains(@class, 'order-info-entry')][.//div[text()='UTM']]/div[2]");
 
 
     // Универсальные методы
@@ -47,18 +69,18 @@ public class AdminOrdersPage {
     /**
      * Универсальный метод для клика по кнопке с проверками
      */
-    @Step("Клик по кнопке: {buttonName}")
-    private static void clickButton(SelenideElement button, String buttonName) {
-        step("Клик по кнопке '" + buttonName + "'", () -> {
-            button.scrollTo()
-                    .shouldBe(visible, DEFAULT_TIMEOUT)
-                    .shouldBe(interactable, DEFAULT_TIMEOUT)
-                    .click();
-
-            WaitHelper.waitForAnimationComplete();
-            AllureAttachments.attachText("Кнопка нажата", "✅ " + buttonName);
-        });
-    }
+//    @Step("Клик по кнопке: {buttonName}")
+//    private static void clickButton(SelenideElement button, String buttonName) {
+//        step("Клик по кнопке '" + buttonName + "'", () -> {
+//            button.scrollTo()
+//                    .shouldBe(visible, DEFAULT_TIMEOUT)
+//                    .shouldBe(interactable, DEFAULT_TIMEOUT)
+//                    .click();
+//
+//            WaitHelper.waitForAnimationComplete();
+//            AllureAttachments.attachText("Кнопка нажата", "✅ " + buttonName);
+//        });
+//    }
 
     /**
      * Универсальный метод для клика по кнопке с ожиданием загрузки страницы
@@ -87,32 +109,32 @@ public class AdminOrdersPage {
 
     @Step("Переход в раздел заказов")
     public AdminOrdersPage navigateToOrders() {
-       return step("Переход в раздел заказов", ()-> {
-           ORDERS_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT)
-                .shouldBe(interactable)
-                .click();
-        WaitHelper.waitForPageLoad();
-        WaitHelper.waitForAnimationComplete();
-        return this;
-       });
+        return step("Переход в раздел заказов", () -> {
+            ORDERS_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT)
+                    .shouldBe(interactable)
+                    .click();
+            WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
+            return this;
+        });
     }
 
 
     @Step("Поиск заказа по email: {email}")
     public AdminOrdersPage findOrderByEmail(String email) {
-        return step("Поиск заказа по email", ()->{
+        return step("Поиск заказа по email", () -> {
 
             this.lastSearchedEmail = email;
 
-               EMAIL_INPUT_SEARCH.shouldBe(visible, DEFAULT_TIMEOUT)
-                .setValue(email);
-        clickButton(APPLY_BUTTON, APPLY_TEXT);
-        WaitHelper.waitForAnimationComplete();
+            EMAIL_INPUT_SEARCH.shouldBe(visible, DEFAULT_TIMEOUT)
+                    .setValue(email);
+            universalMethod.clickButton(APPLY_BUTTON, APPLY_TEXT);
+            WaitHelper.waitForAnimationComplete();
 
-        ORDER_NUMBER.shouldBe(visible, DEFAULT_TIMEOUT);
-        AllureAttachments.attachText("Поиск заказа", "Заказ для email " + email + " найден");
+            ORDER_NUMBER.shouldBe(visible, DEFAULT_TIMEOUT);
+            AllureAttachments.attachText("Поиск заказа", "Заказ для email " + email + " найден");
 
-        return this;
+            return this;
         });
     }
 
@@ -124,8 +146,10 @@ public class AdminOrdersPage {
     public void processRecurrentPayment() {
         int originalWindowCount = WebDriverRunner.getWebDriver().getWindowHandles().size();
 
-        ORDER_NUMBER.click();
-        WaitHelper.waitForAnimationComplete();
+        step("Кликаем по заказу: ", () -> {
+            ORDER_NUMBER.click();
+            WaitHelper.waitForAnimationComplete();
+        });
 
         Selenide.Wait().until(driver -> driver.getWindowHandles().size() > originalWindowCount);
 
@@ -145,20 +169,96 @@ public class AdminOrdersPage {
 
     @Step("Проводим оплату")
     public void makePayment(String productId) {
-        clickButton(MAKE_A_PAYMENT, MAKE_A_PAYMENT_TEXT);
+        universalMethod.clickButton(MAKE_A_PAYMENT, MAKE_A_PAYMENT_TEXT);
 
         String price = ProductConfiguration.getSettings(productId).getPrice();
 
         SUM_INPUT.shouldBe(visible, DEFAULT_TIMEOUT).setValue(price);
-        clickButton(SAVE_BUTTON, SAVE_TEXT);
+        universalMethod.clickButton(SAVE_BUTTON, SAVE_TEXT);
 
         AllureAttachments.attachText("Рекуррент",
-        "Рекуррентный платеж успешно проведен. ID продукта: " + productId + ", цена: " + price);
+                "Рекуррентный платеж успешно проведен. ID продукта: " + productId + ", цена: " + price);
     }
 
     @Step("Поиск Лайт заказа внутри текущего заказа")
     private SelenideElement findLiteOrderInCurrentOrder() {
         return $$("a[href*='/order/']")
-            .findBy(text("Лайт").or(text("Lite")).or(text("лайт")).or(text("lite")));
+                .findBy(text("Лайт").or(text("Lite")).or(text("лайт")).or(text("lite")));
+    }
+
+    @Step("Переходим в Личный кабинет пользователя")
+    public void goToUserPersonalAccount() {
+
+        // Запоминаем текущую вкладку
+
+        String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
+        step("Сравнием utm_medium с эталоном - '1012_966574': ", () -> {
+            processUtm("1012_966574");
+        });
+
+        // Кликаем на кнопку Войти
+        universalMethod.clickButton(LOGIN_BUTTON, LOGIN_TEXT);
+
+        // Переход на другую страницу
+        List<String> handles = new ArrayList<>(WebDriverRunner.getWebDriver().getWindowHandles());
+        WebDriverRunner.getWebDriver().switchTo().window(handles.get(3));
+
+        // Проверяем, что переключились успешно
+        String newWindow = WebDriverRunner.getWebDriver().getWindowHandle();
+        if (!newWindow.equals(originalWindow)) {
+            Set<String> originalHandles1 = WebDriverRunner.getWebDriver().getWindowHandles();
+            String originalWindow1 = WebDriverRunner.getWebDriver().getWindowHandle();
+            Allure.addAttachment("✅ Успешно переключились на новую вкладку: ", originalWindow1);
+        } else {
+            Allure.addAttachment("Не удалось переключиться", originalWindow);
+        }
+    }
+
+    @Step("Проверяем наличие UTM метки определённого значения")
+    private void processUtm(String expectedValue) {
+        String utmText = UTM_TEXT.shouldBe(visible, DEFAULT_TIMEOUT)
+                .getText();
+
+        assert utmText.contains("utm_medium:") : "Параметр utm_medium не найден";
+
+        // Извлекаем значение
+        Pattern pattern = Pattern.compile("utm_medium:\\s*([^,\\s]+)");
+        Matcher matcher = pattern.matcher(utmText);
+
+        if (matcher.find()) {
+            String actualValue = matcher.group(1);
+            assert actualValue.equals(expectedValue) :
+                    String.format("UTM medium не совпадает. Ожидалось: %s, Фактически: %s", expectedValue, actualValue);
+        } else {
+            throw new AssertionError("не удалось извлечь значение utm_medium");
+        }
+    }
+
+    /**
+     * Переключиться на последнюю вкладку (самую правую)
+     */
+
+    @Step("Поиск заказа Renewal, работа с ним")
+    public void renewal() {
+        step("Закрываем ненужные вкладки и переходим на вкладку Orders: ", () -> {
+            TabManager.goToTheOrderTab();
+        });
+
+        universalMethod.clickButton(APPLY_BUTTON, APPLY_TEXT);
+        WaitHelper.waitForAnimationComplete();
+        processRecurrentPayment();
+        step("Сравнием utm_medium с эталоном - '1012_966574': ", () -> {
+            processUtm("1012_966574");
+        });
+        step("Проведение рекурента:", () -> makePayment("755"));
+    }
+
+    @Step("Отменяем подписку пользователю через админку")
+    public void cancelOrderWithAdmin() {
+        universalMethod.clickButton(CANSEL_SUBSCRIPTION_BUTTON, CANCEL_YOUR_SUBSCRIPTION_TEXT);
+        universalMethod.clickButton(YES_BUTTON, YES_TEXT);
+        universalMethod.clickButton(UNDERSTAND_BUTTON, UNDERSTAND_TEXT);
+        WaitHelper.waitForAnimationComplete();
+        goToUserPersonalAccount();
     }
 }

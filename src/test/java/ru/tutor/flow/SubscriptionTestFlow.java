@@ -2,6 +2,7 @@ package ru.tutor.flow;
 
 
 import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.builder.SubscriptionPurchaseBuilder;
 import ru.tutor.flow.builder.SubscriptionPurchaseResult;
@@ -12,6 +13,7 @@ import ru.tutor.page.admin.AdminLoginPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.ttPage;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
@@ -44,9 +46,28 @@ public class SubscriptionTestFlow {
         return result;
     }
 
+    private SubscriptionPurchaseResult purchaseSubscriptionAffRid(SubscriptionPurchaseBuilder builder) {
+        SubscriptionPurchaseResult result = builder.executeAffRid();
+        this.userEmail = result.getUserEmail();
+        return result;
+    }
+
     // Короткие методы-обертки для различных сценариев покупки
     public SubscriptionTestFlow purchasePremiumSubscription() {
         SubscriptionPurchaseResult result = purchaseSubscription(
+                SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
+                        .forPremium()
+                        .viaCloud()
+                        .withStandardPayment()
+        );
+        this.userEmail = result.getUserEmail();
+        return this;
+    }
+
+    // Оплата для aff_rid ссылок
+
+    public SubscriptionTestFlow purchasePremiumSubscriptionAffRid() {
+        SubscriptionPurchaseResult result = purchaseSubscriptionAffRid(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forPremium()
                         .viaCloud()
@@ -86,6 +107,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
+    @Step("Оплата Премиум по карте Сбер")
     public SubscriptionTestFlow purchasePremiumSubscriptionSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
@@ -96,6 +118,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
+    @Step("Оплата Лайт по карте Сбер")
     public SubscriptionTestFlow purchaseLiteSubscriptionSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
@@ -106,6 +129,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
+    @Step("Оплата Пожизненного по карте Сбер")
     public SubscriptionTestFlow purchaseLifeSubscriptionSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
@@ -116,6 +140,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
+    @Step("Оплата Премиум по карте Сбер с фиксированным остатком = 100р")
     public SubscriptionTestFlow purchasePremiumSubscriptionFixSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
@@ -126,6 +151,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
+    @Step("Ошибка 'Недостаточно средств' по карте Сбер")
     public SubscriptionTestFlow purchasePremiumSubscriptionInsufficientFundsSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
@@ -137,6 +163,7 @@ public class SubscriptionTestFlow {
         return this.captureScreenshot();
     }
 
+    @Step("Ошибка 'Невалидная карта' по карте Сбер")
     public SubscriptionTestFlow purchasePremiumSubscriptionExpireSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
@@ -148,13 +175,15 @@ public class SubscriptionTestFlow {
         return this.captureScreenshot();
     }
 
-    // Методы для работы с админкой (без изменений)
+    // Методы для работы с админкой
+
+    @Step("Рекурент по тарифу Премиум")
     public SubscriptionTestFlow processRecurrentInAdmin() {
         step("Проведение рекуррентного платежа через админку", () -> {
             String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
 
             try {
-                openAdminInNewWindow(originalWindow);
+                TabManager.openAdminInNewWindow(originalWindow);
                 loginToAdmin();
                 processRecurrentPayment();
                 WaitHelper.waitForAnimationComplete();
@@ -165,6 +194,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
+    @Step("Рекуррент по тарифу Лайт")
     public SubscriptionTestFlow processRecurrentInAdminLite() {
         processRecurrentInAdmin();
         step("Проведение рекуррентного платежа Lite через админку", () -> {
@@ -173,22 +203,33 @@ public class SubscriptionTestFlow {
             refresh();
             WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
-            AllureAttachments.attachScreenshot("Заказ найден в него перешли");
+//            AllureAttachments.attachScreenshot("Заказ найден в него перешли");
         });
         return this;
     }
 
-    private void openAdminInNewWindow(String originalWindow) {
-        step("Открытие админки в новом окне", () -> {
-            int originalWindowCount = WebDriverRunner.getWebDriver().getWindowHandles().size();
+    @Step("Переход в Заказ по Тарифу Пожизненный доступ")
+    public SubscriptionTestFlow processUnlimitedInAdmin() {
+        step("Переход в заказ для пожизненного доступа через админку", () -> {
+            String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
 
-            executeJavaScript("window.open('" + addressPage.devAdmin + "', '_blank');");
-            WaitHelper.waitForNewWindow(originalWindowCount + 1, Duration.ofSeconds(5));
-            switchToNewWindow(originalWindow);
-            AllureAttachments.attachScreenshot("Админка открыта");
+            try {
+                TabManager.openAdminInNewWindow(originalWindow);
+                loginToAdmin();
+                adminOrdersPage
+                        .navigateToOrders()
+                        .findOrderByEmail(userEmail)
+                        .processRecurrentPayment();
+                WaitHelper.waitForAnimationComplete();
+                WaitHelper.waitForPageLoad();
+            } finally {
+                // Можно добавить закрытие окна админки если нужно
+            }
         });
+        return this;
     }
 
+    @Step("Авторизация в админке")
     private void loginToAdmin() {
         step("Авторизация в админке", () -> {
             AdminLoginPage.login();
@@ -196,6 +237,7 @@ public class SubscriptionTestFlow {
         });
     }
 
+    @Step("Поиск заказа для проведения рекурентного платежа")
     private void processRecurrentPayment() {
         step("Поиск заказа", () -> {
             adminOrdersPage
@@ -206,16 +248,6 @@ public class SubscriptionTestFlow {
             WaitHelper.waitForPageLoad();
 //            AllureAttachments.attachScreenshot("Заказ найден в него перешли");
         });
-    }
-
-    private void switchToNewWindow(String originalWindow) {
-        for (String windowHandle : WebDriverRunner.getWebDriver().getWindowHandles()) {
-            if (!windowHandle.equals(originalWindow)) {
-                switchTo().window(windowHandle);
-                WaitHelper.waitForPageLoad();
-                break;
-            }
-        }
     }
 
     public void logTestCompletion() {

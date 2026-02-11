@@ -1,15 +1,19 @@
 package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
-
-import java.time.Duration;
+import ru.tutor.utils.universalMethod;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.sleep;
 import static io.qameta.allure.Allure.step;
 
+/**
+ * Локаторы для кнопок на главной странице Премиум/Лайт/Пожизненный доступ
+ */
+
 public class ttPage {
+
+    // Локаторы кнопок
     private static SelenideElement btnOpenFor = $("[data-btn-scroll=\"subscribe\"]");
     private static SelenideElement lite99 = $("[data-subscription-type=\"litenew\"]");
     private static SelenideElement life = $("[data-subscription-type=\"lifetime\"]");
@@ -19,25 +23,25 @@ public class ttPage {
 
     public static void clickBtnOpenFor() {
         step("Кликаем по кнопке на главной за 1 руб", () -> {
-            btnOpenFor.shouldBe(visible).click();
+            universalMethod.clickButton(btnOpenFor, "Открыть за 1Р");
         });
     }
 
     public static void clickLite99() {
         step("Кликаем по кнопке Лайт 99", () ->{
-        lite99.shouldBe(visible, Duration.ofSeconds(1)).click();
+            universalMethod.safeClick(lite99, "Офрмить доступ Лайт 99Р/Мес");
     });
     }
 
     public static void clickLife() {
         step("Кликаем по кнопке Пожизненный доступ", () ->{
-        life.shouldBe(visible, Duration.ofSeconds(1)).click();
+            universalMethod.safeClick(life, "Оформить доступ Пожизненный 3999Р/Мес");
     });
     }
 
     public static void clickPremium() {
         step("Кликаем по кнопке Премиум", () ->{
-        premium.shouldBe(visible, Duration.ofSeconds(1)).click();
+            universalMethod.safeClick(premium, "Оформить доступ Премиум 399/Мес");
     });
     }
 
@@ -47,7 +51,7 @@ public class ttPage {
 
     public static void clickBtnClose() {
         step("Закрываем мод окно", () ->{
-        closeModal.click();
+            universalMethod.clickButton(closeModal, "Закрытие модального окна");
     });
     }
 

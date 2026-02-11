@@ -130,13 +130,13 @@ public class AdminOrderDetails {
     @Step("Получение ID первого продукта")
     public String getFirstProductId() {
         String productText = getProductElement()
-                .$$("a")
+                .$$("a[href^='/product/edit/']")
                 .first()
                 .shouldBe(visible, Duration.ofSeconds(10))
                 .getText()
                 .trim();
 
-        // Извлекаем ID из текста "135 - Премиум подписка"
+        // Извлекаем ID из текста "247 - Премиум подписка"
         String productId = extractProductId(productText);
         AllureAttachments.attachText("ID первого продукта", productId);
         return productId;
@@ -173,32 +173,32 @@ public class AdminOrderDetails {
         return productInfo;
     }
 
-    @Step("Проверка что первый продукт имеет ID {expectedProductId}")
-    public void verifyFirstProductId(String expectedProductId) {
-        String actualProductId = getFirstProductId();
-        if (!actualProductId.equals(expectedProductId)) {
-            throw new AssertionError(String.format(
-                    "Неверный ID родукта. Ожидалось: %s, Фактически: %s",
-                    expectedProductId, actualProductId
-            ));
-        }
-        AllureAttachments.attachText("Проверка ID продукта", String.format("ID продукта корректен: %s", actualProductId));
-    }
-
-    @Step("Проверка что первый продукт является Premium подпиской")
-    public void verifyFirstProductIsPremium() {
-        String productName = getFirstProductName().toLowerCase();
-        boolean isPremium = productName.contains("премиум") || productName.contains("premium");
-
-        if (!isPremium) {
-            throw new AssertionError(String.format("Продукт не является Premium подпиской. Название: %s",
-                    getFirstProductName()
-            ));
-        }
-
-        AllureAttachments.attachText("Проверка типа продукта", String.format("Продукт является Premium подпиской: %s", getFirstProductName()
-        ));
-    }
+//    @Step("Проверка что первый продукт имеет ID {expectedProductId}")
+//    public void verifyFirstProductId(String expectedProductId) {
+//        String actualProductId = getFirstProductId();
+//        if (!actualProductId.equals(expectedProductId)) {
+//            throw new AssertionError(String.format(
+//                    "Неверный ID родукта. Ожидалось: %s, Фактически: %s",
+//                    expectedProductId, actualProductId
+//            ));
+//        }
+//        AllureAttachments.attachText("Проверка ID продукта", String.format("ID продукта корректен: %s", actualProductId));
+//    }
+//
+//    @Step("Проверка что первый продукт является Premium подпиской")
+//    public void verifyFirstProductIsPremium() {
+//        String productName = getFirstProductName().toLowerCase();
+//        boolean isPremium = productName.contains("премиум") || productName.contains("premium");
+//
+//        if (!isPremium) {
+//            throw new AssertionError(String.format("Продукт не является Premium подпиской. Название: %s",
+//                    getFirstProductName()
+//            ));
+//        }
+//
+//        AllureAttachments.attachText("Проверка типа продукта", String.format("Продукт является Premium подпиской: %s", getFirstProductName()
+//        ));
+//    }
 
     @Step("Получение всех продуктов")
     public java.util.List<ProductInfo> getAllProducts() {
@@ -267,7 +267,7 @@ public class AdminOrderDetails {
     }
 
     private String extractProductName(String productText) {
-        // Извлекаем название из текста "135 - Премиум подписка"
+        // Извлекаем название из текста "247 - Премиум подписка"
         if (productText != null && productText.contains(" - ")) {
             String[] parts = productText.split(" - ", 2);
             return parts.length > 1 ? parts[1].trim() : productText;

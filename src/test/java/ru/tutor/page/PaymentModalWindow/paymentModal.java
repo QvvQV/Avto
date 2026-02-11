@@ -4,7 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.page.CloudPage;
 import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.PaymentPageHelper;
+import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
@@ -34,7 +34,7 @@ public class paymentModal {
             OPEN_ACCESS_BUTTON.shouldBe(visible)
                     .shouldBe(interactable)
                     .click();
-            PaymentPageHelper.switchToPaymentPageAndVerify();
+            TabManager.switchToPaymentPageAndVerify();
         });
 
         step("Заполнение данных карты", ()->

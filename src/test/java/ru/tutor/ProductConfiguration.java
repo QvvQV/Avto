@@ -2,11 +2,18 @@ package ru.tutor;
 
 import java.util.Map;
 
+/**
+ * Конфигурация продуктов для проведения рекуррентов и проверки дат по ним
+ */
+
 public class ProductConfiguration {
     private static final Map<String, ProductSettings> PRODUCTS_SETTINGS = Map.of(
             "231", new ProductSettings(14, 44, 74, "299"),
+            "247", new ProductSettings(7, 37, 67, "399"),
+            "258", new ProductSettings(7, 37, 67, "399"),
             "135", new ProductSettings(7,14,21, "294"),
-            "180", new ProductSettings(7, 37, 67, "99")
+            "180", new ProductSettings(7, 37, 67, "99"),
+            "755", new ProductSettings(30, 37, 67, "399")
     );
 
     public static ProductSettings getSettings(String productId) {

@@ -2,6 +2,7 @@ package ru.tutor.page.admin;
 
 import com.codeborne.selenide.SelenideElement;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
@@ -25,7 +26,7 @@ public class AdminLoginPage {
             PASSWORD.setValue(adminPassword);
         });
         step("кликаем по кнопке войти", () -> {
-            LOGIN_BUTTON.click();
+            universalMethod.safeClick(LOGIN_BUTTON, "Войти");
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
         });

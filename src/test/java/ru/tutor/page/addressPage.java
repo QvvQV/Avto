@@ -1,13 +1,22 @@
 package ru.tutor.page;
 
-// здесь указываются все ссылки на платформе
+/**
+ * Указание основных адресов платформы
+ */
 public class addressPage {
 
+    public static String param = "aff_rid";
+    public static String value = "1012_EUeg";
+    public static String recovery_from_email = "recovery_from_email_pitanie_v1";
+    public static String utm_source = "&utm_source=customutm";
+
     // eхcel продукт
-    public static String urlExcel = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel";
+    public static String urlExcel = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel?aff_rid=1012_ESVn";
 
     // главная страница
     public static String urlMain = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru";
+
+    public static String urlMainRev = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/?" + param + "=" + value;
 
 //    public static final String URL_MAIN = AUTH_BASE_URL;
 
@@ -32,4 +41,6 @@ public class addressPage {
     // стр отписки от Lite
     public static final String PAYMENTS_SETTINGS = "https://client.ttplace.ru/user/settings/payments";
 
+    // ссылка на Revshare Prod
+    public static final String PAY_WITH_REVSHARE = "https://tester.tutorplace.ru/?aff_rid=1012_ESVn";
 }

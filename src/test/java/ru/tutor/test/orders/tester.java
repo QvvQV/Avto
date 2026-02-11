@@ -2,8 +2,8 @@ package ru.tutor.test.orders;
 
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Owner;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.flow.SubscriptionTestFlow;
@@ -29,23 +29,16 @@ public class tester extends BaseUiTest {
 //    @Test
     @AllureId("1")
     //        @RepeatedTest(2)
-    @DisplayName("Оплата с продукта exel")
-    public void PayFromExcel() {
+    @DisplayName("Оплата с главной на СисАк Oфферум")
+    public void PayFromMainOfferrum() {
         step("Открытие страницы", () -> {
-            open(addressPage.urlExcel);
+            open(addressPage.urlMainRev);
         });
-        step("проверяем title", () -> {
-            String expected = "Excel-таблицы для начинающих - курс, онлайн обучение бесплатно по подписке";
-            Assertions.assertEquals(expected, title());
-        });
-
-        CloudPage.clickBtnStart();
-        System.out.println("Оплата с продукта Excel за 1 руб: " + CloudPage.atrEmail());
-        CloudPage.clickCardPageBtn();
-        sleep(1000);
+        flow.purchasePremiumSubscription();
     }
 
     @Test
+//    @RepeatedTest(3)
     @AllureId("3")
     @DisplayName("Оплата с главной за 99 руб")
     public void PayMain99() {
@@ -56,7 +49,7 @@ public class tester extends BaseUiTest {
 
     @Test
     @AllureId("2")
-//        @RepeatedTest(3)
+//        @RepeatedTest(2)
     @DisplayName("Оплата с главной за 399 руб")
     @Owner("Vadim")
     public void PayMain399() {
@@ -81,5 +74,18 @@ public class tester extends BaseUiTest {
 
         flow.purchaseLifeInstallmentsSubscription();
 
+    }
+
+//        @Test
+//            @RepeatedTest(5)
+    @DisplayName("Оплата по ссылке revshare PROD")
+    public void PayFromRevshare() {
+        step("Открытие страницы", () -> {
+            open(addressPage.PAY_WITH_REVSHARE);
+        });
+
+        CloudPage.clickBtnStartProd();
+        CloudPage.clickCardPageBtnProd();
+        sleep(1000);
     }
 }

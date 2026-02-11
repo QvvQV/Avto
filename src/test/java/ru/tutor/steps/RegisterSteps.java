@@ -12,6 +12,10 @@ import java.util.Locale;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Шаги для тестов по ручке /register
+ */
+
 public class RegisterSteps {
     private final RegisterApi registerApi;
     private final Faker faker = new Faker(new Locale("en"));

@@ -1,15 +1,19 @@
 package ru.tutor.page;
 
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.OrderStepsRedirect;
 import ru.tutor.utils.WaitHelper;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Редирект для deva. Попасть после заказа в ЛК пользователя UI
+ */
+
 public class RedirectPage {
 
-    private static final OrderSteps orderSteps = new OrderSteps();
+    private static final OrderStepsRedirect ORDER_STEPS_REDIRECT = new OrderStepsRedirect();
 
-    public static void redirectPage() throws InterruptedException {
+    public static void redirectPage() {
         WaitHelper.waitForPaymentProcessing();
 //        CloudPage.waitForPaymentProcessing();
 
@@ -18,7 +22,7 @@ public class RedirectPage {
         String expectedRedirectUrl = "https://dev.tutorplace.ru/success/";
 
         // 4. Обрабатываем редирект используя исправленные методы
-        SuccessOrderPage successPage = orderSteps.simpleRedirectHandling(expectedRedirectUrl);
+        SuccessOrderPage successPage = ORDER_STEPS_REDIRECT.simpleRedirectHandling(expectedRedirectUrl);
 
         WaitHelper.waitForPageLoad();
 
@@ -34,7 +38,7 @@ public class RedirectPage {
         }
 
         // 7. Переходим в ЛК
-        orderSteps.navigateToPersonalAccount(successPage);
+        ORDER_STEPS_REDIRECT.navigateToPersonalAccount(successPage);
 
         // 8. Проверяем, что попали в ЛК
         String finalUrl = com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl();

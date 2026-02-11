@@ -8,6 +8,10 @@ import java.time.temporal.ChronoUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Класс для сравнения дат `Истекает` и `Следующий платёж` в заказе
+ */
+
 public class DateValidator {
 
     private final int allowedTimeDifferenceMinutes;

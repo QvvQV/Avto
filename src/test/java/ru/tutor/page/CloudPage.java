@@ -1,11 +1,16 @@
 package ru.tutor.page;
 
+/**
+ * Логика и кнопки связанные с Cloud/Тинькофф. Оплата
+ */
+
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.By;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -17,26 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.tutor.page.SberPage.logModalType;
 
 public class CloudPage {
+
+    // Константы
     private static final Faker faker = new Faker(new Locale("en"));
-
-    //Локаторы в модальном окне
-    private static SelenideElement BUY_BUTTON = $$("button").find(exactText("начать обучение за 1 ₽*"));
-    private static SelenideElement ACCESS_BUTTON = $(By.id("access-button"));
-    private static SelenideElement ERROR_MESSAGE = $$("p").find(exactText("Произошла ошибка. Пожалуйста, попробуйте ещё раз."));
-    private static SelenideElement EMAIL_INPUT = $("[name=\"email\"]");
-    private static SelenideElement CARD_PAGE_BUTTON = $("[data-test=\"cardpay-page-button\"]");
-    private static SelenideElement CARD_INPUT = $("[automation-id=\"tui-input-card-group__card\"]");
-    private static SelenideElement CARD_PAY_BUTTON = $("[data-test=\"cardpay-button\"]");
-    private static SelenideElement SUCCESS_BUTTON = $$("button").find(exactText("Успех"));
-    public static SelenideElement FULL_OPTION = $("[name=\"full\"]");
-    private static SelenideElement INSTALLMENTS_OPTION = $("[name=\"installments\"]");
-
-    //Локаторы в отдельном окне
-    private static SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));
-    private static SelenideElement DATE_INPUT = $(By.id("date"));
-    private static SelenideElement CVV_INPUT = $(By.id("cvv"));
-    private static SelenideElement CONFIRM_BUTTON = $("button[data-v-59c9a1ad]");
-    private static SelenideElement BACK_TO_SHOP_BUTTON = $("button[data-v-c1ac6fa4]");
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
     //Тестовые данные
     private static final String TEST_CARD_NUMBER = "42424242424242420745555";
@@ -44,103 +33,218 @@ public class CloudPage {
     private static final String TEST_DATE = "0745";
     private static final String TEST_CVV = "555";
 
-    @Step("Заполнение данных модального окна")
-    public static void clickBtnStart() {
-        step("Ввод email и выбор тарифа", () -> {
-            BUY_BUTTON.shouldBe(visible).click();
-            EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
-            ACCESS_BUTTON.shouldBe(visible).click();
+    // Названия кнопок
+    private static final String BUY_TEXT = "начать обучение за 1 ₽*";
+    private static final String ERROR_MESSAGE_TEXT = "Произошла ошибка. Пожалуйста, попробуйте ещё раз.";
+    private static final String SUCCESS_TEXT = "Успех";
+
+    //Локаторы в модальном окне
+    private static SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
+    private static SelenideElement SUCCESS_BUTTON = $$("button").find(exactText(SUCCESS_TEXT));
+    private static SelenideElement ERROR_MESSAGE = $$("p").find(exactText(ERROR_MESSAGE_TEXT));
+    private static SelenideElement ACCESS_BUTTON = $(By.id("access-button"));
+    private static SelenideElement ACCESS_BUTTON_PROD = $(By.id("mainFormaSubmitBtn"));
+    private static SelenideElement EMAIL_INPUT = $("[name=\"email\"]");
+    private static SelenideElement EMAIL_INPUT_PROD = $("[name=\"order[email]\"]");
+    private static SelenideElement CARD_PAGE_BUTTON = $("[data-test=\"cardpay-page-button\"]");
+    private static SelenideElement CARD_INPUT = $("[automation-id=\"tui-input-card-group__card\"]");
+    private static SelenideElement CARD_PAY_BUTTON = $("[data-test=\"cardpay-button\"]");
+    public static SelenideElement FULL_OPTION = $("[name=\"full\"]");
+    private static SelenideElement INSTALLMENTS_OPTION = $("[name=\"installments\"]");
+
+    //Локаторы отдельного окна оплаты
+    private static SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));
+    private static SelenideElement DATE_INPUT = $(By.id("date"));
+    private static SelenideElement CVV_INPUT = $(By.id("cvv"));
+    private static SelenideElement CONFIRM_BUTTON = $("button[data-v-59c9a1ad]");
+    private static SelenideElement BACK_TO_SHOP_BUTTON = $("button[data-v-c1ac6fa4]");
+
+    // Внутренние состояния
+    private String currentEmail;
+
+    /**
+     * Универсальный метод для переключенения на iframe
+     */
+    @Step("Переключение на iframe #{frameIndex}")
+    private static void switchToFrame(int frameIndex) {
+        switchTo().frame(frameIndex);
+        WaitHelper.waitForPageLoad();
+        AllureAttachments.attachText("Переключение iframe",
+                "✓ Успешно переключились на iframe #" + frameIndex);
+    }
+
+//    @Step("Заполнение данных модального окна")
+//    public static void clickBtnStart() {
+//        step("Ввод email и выбор тарифа", () -> {
+////            BUY_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT).click();
+//            universalMethod.safeClick(BUY_BUTTON, BUY_TEXT);
+//            EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
+//            ACCESS_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT).click();
+//            ERROR_MESSAGE.shouldNot(visible);
+//        });
+//    }
+
+    @Step("Заполнение данных модального окна Prod")
+    public static void clickBtnStartProd() {
+        step("Ввод email", () -> {
+            String email = faker.internet().emailAddress(); // сохраняем email
+            EMAIL_INPUT_PROD.sendKeys(email);
+            System.out.println("Оплата с Прода за 1 руб: " + email);
+            universalMethod.clickButton(ACCESS_BUTTON_PROD, "Кнопка подтверждения");
             ERROR_MESSAGE.shouldNot(visible);
         });
     }
 
     public static String atrEmail() {
-        return EMAIL_INPUT.getDomAttribute("value");
+        return EMAIL_INPUT.shouldBe(visible).getValue();
+    }
+
+    public String getCurrentEmail() {
+        return currentEmail;
     }
 
     // ввод банковских данных в модалку Cloud
     @Step("Заполнение данных модального окна")
     public static void clickCardPageBtn() {
-        step("ввод валидных банковских данных", () -> {
+        step("Ввод валидных банковских данных", () -> {
             sleep(2000);
-            switchTo().frame(0);
+            switchToFrame(0);
             WaitHelper.waitForPageLoad();
-            CARD_PAGE_BUTTON.shouldBe(visible).click();
-            CARD_INPUT.shouldBe(visible, Duration.ofSeconds(10)).sendKeys(TEST_CARD_NUMBER);
-            CARD_PAY_BUTTON.click();
-            switchTo().frame(0);
-            SUCCESS_BUTTON.shouldBe(visible).click();
+            universalMethod.clickButton(CARD_PAGE_BUTTON, "Банковская карта");
+            CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT).sendKeys(TEST_CARD_NUMBER);
+            universalMethod.clickButton(CARD_PAY_BUTTON, "Кнопка Оплатить");
+            switchToFrame(0);
+            universalMethod.safeClick(SUCCESS_BUTTON,SUCCESS_TEXT);
+            sleep(500);
         });
     }
 
+    @Step("Заполнение данных модального окна ЛК")
+    public static void clickCardPageBtnLK() {
+        step("Ввод валидных банковских данных", () -> {
+
+            WaitHelper.waitForAnimationComplete();
+            switchToFrame(1);
+            WaitHelper.waitForPageLoad();
+            universalMethod.safeClick(CARD_PAGE_BUTTON,"Перейти к оплате картой");
+            universalMethod.safeSetValue(CARD_INPUT,TEST_CARD_NUMBER, "Номер карты");
+            universalMethod.safeClick(CARD_PAY_BUTTON, "Оплата картой в ЛК");
+
+            switchToFrame(0);
+            universalMethod.safeClick(SUCCESS_BUTTON,SUCCESS_TEXT);
+            WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
+            switchTo().defaultContent();
+        });
+    }
+
+    @Step("Заполнение данных модального окна")
+    public static void clickCardPageBtnProd() {
+        step("Ввод валидных банковских данных", () -> {
+            sleep(2000);
+            switchToFrame(0);
+            WaitHelper.waitForPageLoad();
+            universalMethod.safeSetValue(CARD_INPUT, TEST_CARD_NUMBER, "Номер карты");
+            universalMethod.safeClick(CARD_PAY_BUTTON, "Оплата картой");
+            switchToFrame(0);
+            universalMethod.safeClick(SUCCESS_BUTTON,SUCCESS_TEXT);
+        });
+    }
+
+    @Step("Выбор опции 'Рассрочка' в модальном окне")
     public static void setDateModal() {
         step("Ввод email и проверка отсутствия ошибок", () -> {
             String email = faker.internet().emailAddress();
-            EMAIL_INPUT.setValue(email);
 
+            // Заполнение email
+            universalMethod.safeSetValue(EMAIL_INPUT, email, "Email");
+
+            // Логирование
             String modalText = ttPage.setTextFromModal();
             logModalType(modalText, email);
-            FULL_OPTION.shouldBe(visible).click();
+
+            // Опция
+            universalMethod.safeClick(FULL_OPTION, "Оплата");
+
+            // Проверка отсутсвия ошибок
             ERROR_MESSAGE.shouldNot(visible);
 
+            // Логирование
             AllureAttachments.attachText("Email в модалке", email);
             System.out.println(modalText + ": " + email);
         });
     }
 
-    public static void setDateModalInstallments() {
-        step("Ввод email и проверка отсутствия ошибок", () -> {
-            String email = faker.internet().emailAddress();
-            EMAIL_INPUT.setValue(email);
+    @Step("Выбор опции 'Полная оплата' в модальном окне")
+    public String setDateModalInstallments(){
+        return step("Выбор полной оплаты и заполнение email", () -> {
+            currentEmail = faker.internet().emailAddress();
 
+            // Заполнение email
+            universalMethod.safeSetValue(EMAIL_INPUT, currentEmail, "Email (полная оплата)");
+
+            // Логирование типа модалки
             String modalText = ttPage.setTextFromModal();
-            logModalType(modalText, email);
-            INSTALLMENTS_OPTION.shouldBe(visible).click();
+            logModalType(modalText, currentEmail);
+
+            // Выбор опции полной оплаты
+            universalMethod.safeClick(INSTALLMENTS_OPTION, "Полная оплата");
+
+            // Проверка отсутствия ошибок
             ERROR_MESSAGE.shouldNot(visible);
 
-            AllureAttachments.attachText("Email в модалке", email);
-            System.out.println(modalText + ": " + email);
+            // Логирование
+            AllureAttachments.attachText("Email в модалке", currentEmail);
+            System.out.println(modalText + ": " + currentEmail);
+
+            return currentEmail;
         });
     }
 
-    @Step("Наполнение тестовыми данными")
+    @Step("Наполнение тестовыми данными в новом окне")
     public static void fillingWithTestData() {
         step("Ввод номера карты", () ->
-                CARD_INPUT_NEW_WINDOW.shouldBe(visible, Duration.ofSeconds(5)).setValue(TEST_CARD));
+                universalMethod.safeSetValue(CARD_INPUT_NEW_WINDOW, TEST_CARD, "Номер карты (новое окно)"));
         step("Ввод срока действия:", () ->
-                DATE_INPUT.shouldBe(visible, Duration.ofSeconds(5)).setValue(TEST_DATE));
+                universalMethod.safeSetValue(DATE_INPUT, TEST_DATE, "Срок действия карты"));
         step("Ввод CVV:", () ->
-            CVV_INPUT.setValue(TEST_CVV));
+                universalMethod.safeSetValue(CVV_INPUT, TEST_CVV, "CVV код"));
 
         step("Отправка формы оплаты", () ->
-                CONFIRM_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                        .shouldBe(enabled)
-                        .click());
+                universalMethod.safeClick(CONFIRM_BUTTON, "Подтвердить оплату"));
 
         AllureAttachments.attachText("Введённые банковские данные: ", "\nНомер: " + TEST_CARD +
-                    "\nСрок действия: " + TEST_DATE + "\nCVV: " + TEST_CVV);
+                "\nСрок действия: " + TEST_DATE + "\nCVV: " + TEST_CVV);
 
         WaitHelper.waitForAnimationComplete();
-        step("Подтверждение заказа", () -> {
-            switchTo().frame(0);
-            CONFIRM_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .click();
+        step("Подтверждение заказа и проверка результата", () -> {
+
+            switchToFrame(0);
+            universalMethod.safeClick(CONFIRM_BUTTON, "Подтвердить заказ");
 
             WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
 
             switchTo().defaultContent();
 
-            String actualText = BACK_TO_SHOP_BUTTON.getText().trim();
-            String expectedText = "Вернуться в магазин";
-
-            assertEquals(expectedText, actualText,
-                    String.format("Текст кнопки не совпадает. Ожидалось: '%s', Фактически: '%s'",
-                            expectedText, actualText));
-
-            AllureAttachments.attachText("Проверка текста кнопки",
-                    "✓ Текст кнопки корректен: " + actualText);
-            AllureAttachments.attachScreenshot("Страница после оплаты");
+            // Проверка успешного завершения
+            verifyPaymentSuccess();
         });
+    }
+
+    @Step("Проверка успешной оплаты")
+    private static void verifyPaymentSuccess() {
+        String expectedText = "Вернуться в магазин";
+        String actualText = BACK_TO_SHOP_BUTTON
+                .shouldBe(visible, DEFAULT_TIMEOUT)
+                .getText().trim();
+
+        assertEquals(expectedText, actualText,
+                String.format("Текст кнопки не совпадает. Ожидалось: '%s', Фактически: '%s'",
+                        expectedText, actualText));
+
+        AllureAttachments.attachText("Проверка текста кнопки",
+                "✓ Текст кнопки корректен: " + actualText);
+        AllureAttachments.attachScreenshot("Страница после оплаты");
     }
 }

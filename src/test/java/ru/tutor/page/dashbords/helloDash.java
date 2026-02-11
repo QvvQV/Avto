@@ -38,11 +38,12 @@ public class helloDash {
     @Step("Заполенение приветственного модального окна")
     private static void completeWelcomeModal() {
         step("Ожидание загрузки модального окна", () -> {
-//            ACCESS_DATA_TITLE_FIRST.shouldBe(visible, Duration.ofSeconds(10));
-//            step("переход к следующему шагу", () -> {
-//                BUTTON_NEXT_STEP.shouldBe(interactable, Duration.ofSeconds(5)).click();
-//                WaitHelper.waitForAnimationComplete();
-//            });
+
+            ACCESS_DATA_TITLE_FIRST.shouldBe(visible, Duration.ofSeconds(10));
+            step("переход к следующему шагу", () -> {
+                BUTTON_NEXT_STEP.shouldBe(interactable, Duration.ofSeconds(5)).click();
+                WaitHelper.waitForAnimationComplete();
+            });
             ACCESS_DATA_TITLE.shouldBe(visible, Duration.ofSeconds(10));
             AllureAttachments.attachScreenshot("Модальное окно приветствия");
         });

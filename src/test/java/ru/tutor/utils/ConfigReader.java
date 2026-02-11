@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Класс для передачи переменных из config в baseAPI
+ */
 public class ConfigReader {
     private static final Properties properties = new Properties();
 

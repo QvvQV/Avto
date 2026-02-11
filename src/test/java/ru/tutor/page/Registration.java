@@ -3,8 +3,8 @@ package ru.tutor.page;
 import com.codeborne.selenide.SelenideElement;
 import net.datafaker.Faker;
 import org.openqa.selenium.Keys;
-import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -13,53 +13,78 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
+/**
+ * Класс для страницы логина/регистрации в UI
+ */
+
 public class Registration {
 
     private static final Faker faker = new Faker(new Locale("en"));
 
+    // // Название кнопок
+    private static final String LOGIN_TEXT = "Войти";
+    private static final String RECOVER_PASS_TEXT = "Восстановить пароль";
+    private static final String REGISTRATION_TEXT = "Зарегистрироваться";
+    private static final String HEAD2_TEXT = "Восстановление пароля";
+    private static final String RECOVER_TEXT = "Я понял(а)";
+    private static final String REGISTER_TEXT = "Зарегистрироваться";
+
 //    // Селекторы
     private static SelenideElement EMAIL_INPUT = $("[name=\"email\"]");
     private static SelenideElement PASSWORD_INPUT = $("[name=\"password\"]");
-    private static SelenideElement LOGIN_BUTTON = $$("button").find(exactText("Войти"));
+    private static SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
     private static SelenideElement btnYandex = $("[data-t=\"personal-button:text\"]");
 
-    private static SelenideElement RECOVER_PASS = $$("a").find(exactText("Восстановить пароль"));
-    private static SelenideElement REGISTRATION = $$("a").find(exactText("Зарегистрироваться"));
-//    private static SelenideElement LOGIN_ERROR = $$("span").find(exactText("Это поле обязательное"));
-    private static SelenideElement LOGIN_ERROR = $$(".sc-uVWWZ.bBKkoe").get(0);
-//    private static SelenideElement PASSWORD_ERROR = $$("span").find(exactText("Это поле обязательное"));
+    private static SelenideElement RECOVER_PASS = $$("a").find(exactText(RECOVER_PASS_TEXT));
+    private static SelenideElement REGISTRATION = $$("a").find(exactText(REGISTRATION_TEXT));
     private static SelenideElement PASSWORD_ERROR = $$(".sc-uVWWZ.bBKkoe").get(1);
     private static SelenideElement REPEAT_PASSWORD_ERROR = $$(".sc-uVWWZ.bBKkoe").get(2);
-    private static SelenideElement LOGIN_ERROR1 = $(".sc-hCPjZK.gODAEi");
+    private static SelenideElement LOGIN_ERROR1 = $x("//p[contains(@class, '_errorMessage_') and contains(text(), 'Не подходит адрес почты?')]");
 
     //    Страница Восстановление пароля
-    private static SelenideElement HEAD2_TEXT = $$("h2").find(exactText("Восстановление пароля"));
-    private static SelenideElement P_TEXT = $("._subtitle_12k9l_33");
+    private static SelenideElement HEAD2_BUTTON = $$("h2").find(exactText(HEAD2_TEXT));
+    private static SelenideElement P_TEXT = $("._subtitle_i0xzq_34");
     private static SelenideElement P_TEXT1 = $$("._subtitle_12k9l_33").get(1);
     private static SelenideElement P_TEXT2 = $$("._subtitle_12k9l_33").get(2);
     private static SelenideElement RECOVER_BUTTON = $("button");
-    private static SelenideElement RECOVER_BUTTON1 = $$("button").find(exactText("Я понял(а)"));
-    private static SelenideElement BACK_BUTTON = $("._goBackBtn_i0xzq_92");
+    private static SelenideElement RECOVER_BUTTON1 = $$("button").find(exactText(RECOVER_TEXT));
+    private static SelenideElement BACK_BUTTON = $("._goBackBtn_5y16r_104");
 
     //    Страница Регистрации
     private static SelenideElement NAME_INPUT = $("[name=\"name\"]");
-    private static SelenideElement HEAD2_TEXT_REGISTER = $$("h2").find(exactText("Регистрация профиля"));
+    private static SelenideElement HEAD2_TEXT_REGISTER = $$("h2").find(exactText("Регистрация"));
     private static SelenideElement NEXT_BUTTON = $$("button").find(exactText("Далее"));
-    private static SelenideElement REGISTER_BUTTON = $$("button").find(exactText("Зарегистрироваться"));
+    private static SelenideElement REGISTER_BUTTON = $$("button").find(exactText(REGISTER_TEXT));
     private static SelenideElement NUMBER_INPUT = $$("input").get(1);
     private static SelenideElement TELEGRAMM_INPUT = $("[name=\"telegram\"]");
-    private static SelenideElement BACK_BUTTON_REGISTER = $("._goBackBtn_1aggk_169");
-    private static SelenideElement LOGIN_BUTTON_FROM_REGISTER = $$("a").find(exactText("Войти"));
+    private static SelenideElement BACK_BUTTON_REGISTER = $("._goBackBtn_cj1gp_140");
+    private static SelenideElement LOGIN_BUTTON_FROM_REGISTER = $$("a").find(exactText(LOGIN_TEXT));
     private static SelenideElement REPEAT_PASSWORD_INPUT = $("[name=\"repeatPassword\"]");
 
     //ЛК
     private static SelenideElement HEAD2_TEXTMod = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));
     private static SelenideElement HEAD2_ADD_KURS = $$("h2").find(exactText("Добавленное"));
 
+    private static String email =  "tp5052_4@test.ru";
+    private static String valid_password = "12345678";
+    private static String invalid_password = "123";
+
     public static void randomEmail() {
         step("вводим рандомный адрес", () -> {
             EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
         });
+    }
+
+    // Метод для получения элемента ошибки по тексту
+    public static SelenideElement getErrorElement(String errorText) {
+        return $x("//p[contains(@class, '_errorMessage_') and contains(text(), '" + errorText + "')]");
+    }
+
+    // Метод для получения текста ошибки
+    public static String getErrorMessageText(String expectedError) {
+        return getErrorElement(expectedError)
+                .shouldBe(visible)
+                .getText();
     }
 
     public static void notKorrectEmail() {
@@ -70,50 +95,38 @@ public class Registration {
 
     public static void validEmail() {
         step("вводим ранее зарегистрированный адрес", () -> {
-            EMAIL_INPUT.sendKeys("tp5052_4@test.ru");
+            EMAIL_INPUT.sendKeys(email);
         });
     }
 
     public static void validPass() {
         step("вводим стандартный пароль", () -> {
-            PASSWORD_INPUT.sendKeys("12345678");
+            PASSWORD_INPUT.sendKeys(valid_password);
         });
     }
 
     public static void validRepeatPass() {
         step("поле Повторить Пароль заполняем валидным паролем", () -> {
-            REPEAT_PASSWORD_INPUT.sendKeys("12345678");
+            REPEAT_PASSWORD_INPUT.sendKeys(valid_password);
         });
     }
 
     public static void PassThreeNumber() {
         step("поле Пароль заполнено менее 8 символов", () -> {
-            PASSWORD_INPUT.sendKeys("123");
+            PASSWORD_INPUT.sendKeys(invalid_password);
         });
     }
 
     public static void NotEquelRepeatPass() {
         step("поле Повторить Пароль не совпадает с Паролем", () -> {
-            REPEAT_PASSWORD_INPUT.sendKeys("123");
+            REPEAT_PASSWORD_INPUT.sendKeys(invalid_password);
         });
     }
 
     public static void clickBtnLogin() {
         step("кликаем по кнопке 'Войти'", () -> {
-            LOGIN_BUTTON.shouldBe(visible).click();
+            universalMethod.clickButton(LOGIN_BUTTON, LOGIN_TEXT);
         });
-    }
-
-    public static String showErrorLogin() {
-        return LOGIN_ERROR.shouldBe(visible).getText();
-    }
-
-    public static String showErrorLoginTwo() {
-        return LOGIN_ERROR1.shouldBe(visible).getText();
-    }
-
-    public static String showErrorPass() {
-        return PASSWORD_ERROR.shouldBe(visible).getText();
     }
 
     public static SelenideElement notShowErrorPass() {
@@ -124,13 +137,9 @@ public class Registration {
         return REPEAT_PASSWORD_ERROR.shouldNot(visible);
     }
 
-    public static SelenideElement notShowErrorLoginTwo() {
-        return LOGIN_ERROR1.shouldNot(visible);
-    }
-
     public static void clickRecoverPass() {
         step("нажимаем на кнопку восстановить пароль", () -> {
-            RECOVER_PASS.click();
+            universalMethod.clickButton(RECOVER_PASS, RECOVER_PASS_TEXT);
         });
     }
 
@@ -139,13 +148,13 @@ public class Registration {
     }
 
     public static void clickRegistr() {
-        REGISTRATION.click();
+        universalMethod.clickButton(REGISTRATION, REGISTRATION_TEXT);
     }
 
 //    Страница восстановления пароля
 
     public static String showH2() {
-        return HEAD2_TEXT.shouldBe(visible).getText();
+        return HEAD2_BUTTON.shouldBe(visible).getText();
     }
 
     public static String showP() {
@@ -154,20 +163,8 @@ public class Registration {
 
     public static void clickBtnRecover() {
         step("кликаем по кнопке восстановить пароль", () -> {
-            RECOVER_BUTTON.click();
+            universalMethod.clickButton(RECOVER_BUTTON, RECOVER_PASS_TEXT );
         });
-    }
-
-    public static String showP1() {
-        return P_TEXT1.shouldBe(visible).getText();
-    }
-
-    public static String showP2() {
-        return P_TEXT2.shouldBe(visible).getText();
-    }
-
-    public static String textBtnRecover() {
-        return RECOVER_BUTTON1.getText();
     }
 
     public static void clickBtnBack() {
@@ -207,18 +204,10 @@ public class Registration {
         });
     }
 
-    public static String valueTelephone() {
-        return NUMBER_INPUT.getAttribute("value");
-    }
-
     public static void inputTelegramm() {
         step("Заполняем графу телеграмм", () -> {
             TELEGRAMM_INPUT.sendKeys(faker.internet().emailAddress());
         });
-    }
-
-    public static String valueTelegramm() {
-        return TELEGRAMM_INPUT.getAttribute("value");
     }
 
     public static String emptyValue() {
@@ -235,13 +224,13 @@ public class Registration {
 
     public static void clickBtnRegistr() {
         step("Кликаем по кнопке далее", () -> {
-            NEXT_BUTTON.shouldBe(visible).click();
+            universalMethod.clickButton(NEXT_BUTTON, "Следующий шаг");
         });
     }
 
     public static void clickBtnRegister() {
         step("Кликаем по кнопке Зарегистироваться", () -> {
-            REGISTER_BUTTON.shouldBe(visible).click();
+            universalMethod.clickButton(REGISTER_BUTTON, REGISTER_TEXT);
         });
     }
 
@@ -255,23 +244,14 @@ public class Registration {
 
     public static void clickBtnBackFromRegistr() {
         step("Кликаем по кнопке назад на стр Зарегистироваться", () -> {
-            BACK_BUTTON_REGISTER.shouldBe(visible).click();
+            universalMethod.clickButton(BACK_BUTTON_REGISTER, "Назад");
         });
     }
 
     public static void clickBtnEnter() {
         step("Кликаем по кнопке Войти на стр зарегистрироваться", () -> {
-            LOGIN_BUTTON_FROM_REGISTER.shouldBe(visible).click();
+            universalMethod.clickButton(LOGIN_BUTTON_FROM_REGISTER, LOGIN_TEXT);
         });
-    }
-
-    //ЛК
-    public static String showH2Mod() {
-        return HEAD2_TEXTMod.shouldBe(visible).getText();
-    }
-
-    public static String showH2AddKurs() {
-        return HEAD2_ADD_KURS.shouldBe(visible).getText();
     }
 
     public static void validPerson() {
@@ -280,7 +260,5 @@ public class Registration {
         clickBtnLogin();
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
-//        AllureAttachments.attachScreenshot("Главная страница");
     }
-
 }

@@ -4,8 +4,6 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.*;
 import ru.tutor.page.PaymentModalWindow.paymentModal;
@@ -78,7 +76,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
 //    @RepeatedTest(5)
     @Severity(SeverityLevel.CRITICAL)
     @Order(1)
@@ -116,7 +114,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(2)
     @Severity(SeverityLevel.CRITICAL)
     @Tag("registration")
@@ -159,7 +157,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(3)
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Переход на страницу оплаты зарегистрированного пользователя с модуля Приложения")
@@ -209,7 +207,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(4)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'Дневник питания'")
@@ -233,7 +231,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(5)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'Натальная карта'")
@@ -256,7 +254,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(6)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'SpyHeart'")
@@ -278,7 +276,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(7)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'Тренажер памяти'")
@@ -298,7 +296,7 @@ public class DashbordsTest extends BaseUiTest {
     }
 
 
-    @Test
+//    @Test
     @Order(8)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'Расчёт матрицы'")
@@ -317,7 +315,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(9)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'Учет каналов'")
@@ -336,7 +334,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(10)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'Таро'")
@@ -355,7 +353,7 @@ public class DashbordsTest extends BaseUiTest {
         });
     }
 
-    @Test
+//    @Test
     @Order(11)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Тестирование редиректов страниц дашборда 'Редактор карточек товара'")

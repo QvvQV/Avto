@@ -22,7 +22,7 @@ public class SendEmailTest {
     }
 
     @Test
-    @DisplayName("Отправка пиьсма с длинным контентом")
+    @DisplayName("Отправка письма с длинным контентом")
     void testEmailWithLongContent(){
         Response resp = sendEmailSteps.sendEmailWithLongContent();
         assertEquals(200, resp.statusCode());

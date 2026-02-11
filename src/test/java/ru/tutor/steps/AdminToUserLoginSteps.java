@@ -1,0 +1,155 @@
+package ru.tutor.steps;
+
+/**
+ * Модальное окно для Создания Реневалла по email-рассылке
+ */
+
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
+import org.openqa.selenium.*;
+import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
+
+import java.time.Duration;
+
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$$;
+
+public class AdminToUserLoginSteps {
+
+    // Локатор
+    private static final String YES_TEXT = "Да!";
+    private static SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
+
+    @Step("Получить токен из ЛК пользователя")
+    public static String extractTokenFromCurrentPage() {
+        Selenide.sleep(3000);
+        WaitHelper.waitForAnimationComplete();
+        WaitHelper.waitForPageLoad();
+
+        String token = extractFromLocalStorage();
+        if(isValidToken(token)) {
+            Allure.addAttachment("✓ Токен найден в localStorage: ", token);
+            return token;
+        }
+
+        throw new RuntimeException("Токен не найден на странице");
+    }
+
+//    @Step("Получить aff_rid из ЛК пользователя")
+//    public static String extractAffRidFromCurrentPage() {
+//
+//        String affRid = extractFromLocalStorageAffRid();
+//        if(isValidToken(affRid)) {
+//            System.out.println("✓ aff_rid найден в localStorage: " +  affRid);
+//            return affRid;
+//        }
+//
+//        throw new RuntimeException("aff_rid не найден на странице");
+//    }
+
+    @Step("Извлечь токен из localStorage")
+    public static String extractFromLocalStorage() {
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+
+            // Сначала проверяем, доступен ли localStorage
+            Boolean isLocalStorageAvailable = (Boolean) js.executeScript(
+                    "try { return typeof window.localStorage !== 'undefined'; } catch(e) { return false; }");
+
+            if (Boolean.FALSE.equals(isLocalStorageAvailable)) {
+                System.out.println("⚠️ localStorage недоступен");
+                return null;
+            }
+
+            // Пробуем получить токен
+            String[] tokenKeys = {
+                    "access_token", "token", "auth_token", "jwt",
+                    "bearer", "user_token", "session_token"
+            };
+
+            for (String key : tokenKeys) {
+                try {
+                    String token = (String) js.executeScript(
+                            "try { return window.localStorage.getItem('" + key + "'); } " +
+                                    "catch(e) { return null; }");
+
+                    if (isValidToken(token)) {
+                        return token;
+                    }
+                } catch (Exception e) {
+                    // Игнорируем ошибки для конкретного ключа
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("Ошибка при доступе к localStorage: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static boolean isValidToken(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Step("Переключиться на вкладку и получить токен")
+    public static String switchToTabAndGetToken() {
+//        System.out.println(extractTokenFromCurrentPage());
+        return extractTokenFromCurrentPage();
+    }
+
+    @Step("Проводим оплату подписки из письма email-рассылки")
+    public static void sendEmailPay() {
+        WaitHelper.waitForAnimationComplete();
+        universalMethod.clickButton(YES_BUTTON,YES_TEXT);
+        WaitHelper.waitForAnimationComplete();
+    }
+
+
+//    @Step("Извлечь аff_rid из localStorage")
+//    public static String extractFromLocalStorageAffRid() {
+//        try {
+//            JavascriptExecutor js = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+//
+//            // Сначала проверяем, доступен ли localStorage
+//            Boolean isLocalStorageAvailable = (Boolean) js.executeScript(
+//                    "try { return typeof window.localStorage !== 'undefined'; } catch(e) { return false; }");
+//
+//            if (Boolean.FALSE.equals(isLocalStorageAvailable)) {
+//                System.out.println("⚠️ localStorage недоступен");
+//                return null;
+//            }
+//
+//            // Пробуем получить aff_rid
+//            String[] affridKeys = {
+//                    "aff_rid"
+//            };
+//
+//            for (String key : affridKeys) {
+//                try {
+//                    String affrid = (String) js.executeScript(
+//                            "try { return window.localStorage.getItem('" + key + "'); } " +
+//                                    "catch(e) { return null; }");
+//
+//                    if (isValidToken(affrid)) {
+//                        return affrid;
+//                    }
+//                } catch (Exception e) {
+//                    // Игнорируем ошибки для конкретного ключа
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            System.err.println("Ошибка при доступе к localStorage: " + e.getMessage());
+//        }
+//
+//        return null;
+//    }
+}

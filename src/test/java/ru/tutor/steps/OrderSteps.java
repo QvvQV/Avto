@@ -1,44 +1,42 @@
 package ru.tutor.steps;
 
 import io.qameta.allure.Step;
-import org.openqa.selenium.support.ui.Wait;
-import static com.codeborne.selenide.Selenide.Wait;
-import ru.tutor.page.SuccessOrderPage;
-import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.UrlRedirectHelper;
-
-import static io.qameta.allure.Allure.step;
-import static java.time.Duration.ofSeconds;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import ru.tutor.api.PaymentApi;
+import ru.tutor.model.order.OrderRequest;
 
 public class OrderSteps {
 
-    @Step("Завершить заказ и обработать редирект")
-    public SuccessOrderPage completeOrderWithRedirectHandling(String orderPageUrl) {
-        // Настраиваем перехват редиректов
-        UrlRedirectHelper.interceptAndModifyRedirect(
-            ".*tutorplace\\.ru.*",
-            "ttplace.ru"
-        );
+    private final PaymentApi paymentApi;
 
-        // Используем упрощенный метод для обработки редиректа
-        return SuccessOrderPage.waitForRedirectAndOpen(orderPageUrl, 10000);
+    public OrderSteps(String baseUrl) {
+        this.paymentApi = new PaymentApi(baseUrl);
     }
 
-    @Step("Перейти в ЛК через модифицированную кнопку")
-    public void navigateToPersonalAccount(SuccessOrderPage successPage) {
-        // Проверяем и исправляем href перед кликом
-        String originalHref = successPage.getLoginButtonHref();
+    @Step("Создать заказ и получить ответ")
+    public Response createOrder(OrderRequest orderRequest) {
+        validateOrderRequest(orderRequest);
+        return paymentApi.createOrderWithoutAuth(orderRequest);
+    }
 
-        if (originalHref != null && originalHref.contains("client.tutorplace.ru")) {
-            successPage.fixLoginButtonHref();
+    @Step("Проверить валидность запроса на заказ")
+    public void validateOrderRequest(OrderRequest orderRequest) {
+        if (!orderRequest.hasAccountId()){
+            throw new IllegalArgumentException("AccountId обязателен");
         }
-
-        successPage.clickLoginButton();
+        if (!orderRequest.hasValidAmount()) {
+            throw new IllegalArgumentException("Amount олжен быть положительным числом");
+        }
+        if (!orderRequest.hasEmail()) {
+            throw new IllegalArgumentException("Email обязателен");
+        }
     }
 
-    @Step("Простая обработка редиректа")
-    public SuccessOrderPage simpleRedirectHandling(String redirectUrl) {
-        // Просто открываем модифицированную страницу
-        return SuccessOrderPage.openAndFixPage(redirectUrl);
+    @Step("Проверить успешное создание заказа")
+    public void verifyOrderCreatedSuccessfully(Response response) {
+        response.then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
     }
 }

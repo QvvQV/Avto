@@ -7,6 +7,10 @@ import org.openqa.selenium.OutputType;
 
 import java.io.ByteArrayInputStream;
 
+/**
+ * Класс для Отчётов
+ */
+
 public class AllureAttachments {
 
     private AllureAttachments() {

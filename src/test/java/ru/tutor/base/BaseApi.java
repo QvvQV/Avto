@@ -8,6 +8,9 @@ import ru.tutor.utils.AllureAttachments;
 
 import static io.restassured.RestAssured.given;
 
+/**
+ * Базовые ручки для API ручек
+ */
 public abstract class BaseApi {
     protected final String baseUrl;
 
@@ -27,6 +30,8 @@ public abstract class BaseApi {
                 .header("Accept", "application/json, text/plain, */*")
                 .header("Origin", "https://client.ttplace.ru")
                 .header("Referer", "https://client.ttplace.ru/")
+//                .header("Origin", "https://client.tutorplace.ru/")
+//                .header("Referer", "https://client.tutorplace.ru/")
                 .body(body)
                 .log().all() // Логирование запроса
                 .when()

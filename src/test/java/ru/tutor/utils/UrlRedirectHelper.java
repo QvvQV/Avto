@@ -11,7 +11,7 @@ public class UrlRedirectHelper {
     private UrlRedirectHelper() {}
 
     /**
-     * Заменяет домен в URL (исправленная версия)
+     * Заменяет домен в URL
      */
     public static String replaceDomain(String originalUrl, String newDomain) {
         try {

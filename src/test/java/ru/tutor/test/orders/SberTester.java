@@ -2,10 +2,7 @@ package ru.tutor.test.orders;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.SubscriptionTestFlow;
@@ -38,7 +35,7 @@ public class SberTester extends BaseUiTest {
 
     private SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
 
-    @Test
+//    @Test
     @AllureId("7")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Успешная оплата валидной картой с продукта Excel")

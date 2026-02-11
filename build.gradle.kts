@@ -41,7 +41,7 @@ dependencies {
 
     // Utils
     implementation("commons-io:commons-io:2.20.0")
-    implementation("net.datafaker:datafaker:2.4.4")
+    implementation("net.datafaker:datafaker:2.5.2")
     implementation("org.json:json:20250517")
     implementation("org.jsoup:jsoup:1.21.2")
 

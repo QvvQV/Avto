@@ -12,9 +12,9 @@ public class DataGenerator {
         return faker.internet().emailAddress();
     }
 
-    public static String randomPassword() {
-        return faker.internet().password(8, 16, true, true, true);
-    }
+//    public static String randomPassword() {
+//        return faker.internet().password(8, 16, true, true, true);
+//    }
 
     public static String randomInvalidEmail() {
         return faker.lorem().word() + "@invalid";

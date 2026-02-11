@@ -8,22 +8,27 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.File;
 
+/**
+ * Класс для выставления параметров по разным сценариям
+ */
 public abstract class BaseUiTest {
 
-    static {
-
-        // Явно указываем путь к драйверу 142.x
-        String driverPath = "C:\\Users\\user445\\.cache\\selenium\\chromedriver\\win64\\142.0.7444.60\\chromedriver.exe";
-        System.setProperty("webdriver.chrome.driver", driverPath);
-    }
+//    static {
+//
+//        // Явно указываем путь к драйверу 142.x
+//        String driverPath = "C:\\Users\\user445\\.cache\\selenium\\chromedriver\\win64\\142.0.7444.60\\chromedriver.exe";
+//        System.setProperty("webdriver.chrome.driver", driverPath);
+//    }
 
 
     @BeforeAll
     public static void setupSelenide() {
-        verifyDriverAvailable();
+//        verifyDriverAvailable();
         setupBrowserWithIncognito(); // По умолчанию с incognito
     }
 
+
+    // Установка параметров для браузера с Инкогнито для UI тестов
     protected static void setupBrowserWithIncognito() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments(
@@ -35,10 +40,11 @@ public abstract class BaseUiTest {
                 "--disable-extensions",
                 "--disable-background-timer-throttling");
 
-        options.addArguments("--headless");
+//        options.addArguments("--headless=new");
         applyCommonConfig(options);
     }
 
+    // Установка параметров для браузера без Инкогнито для тестов связанных с админкой
     protected static void setupBrowserWithoutIncognito() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments(
@@ -46,7 +52,7 @@ public abstract class BaseUiTest {
                 "--no-sandbox",
                 "--disable-gpu",
                 "--log-level=3");
-        options.addArguments("--headless");
+//        options.addArguments("--headless=new");
         applyCommonConfig(options);
     }
 
@@ -63,17 +69,17 @@ public abstract class BaseUiTest {
                 .includeSelenideSteps(true));
     }
 
-    private static void verifyDriverAvailable() {
-        String driverPath = System.getProperty("webdriver.chrome.driver");
-        File driver = new File(driverPath);
-
-        if (driver.exists()) {
-            System.out.println("✅ ChromeDriver 142.x доступен: " + driverPath);
-        } else {
-            System.err.println("❌ ChromeDriver не найден: " + driverPath);
-            System.err.println("Скачайте вручную и распакуйте:");
-            System.err.println("https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.60/win64/chromedriver-win64.zip");
-        }
+//    private static void verifyDriverAvailable() {
+//        String driverPath = System.getProperty("webdriver.chrome.driver");
+//        File driver = new File(driverPath);
+//
+//        if (driver.exists()) {
+//            System.out.println("✅ ChromeDriver 142.x доступен: " + driverPath);
+//        } else {
+//            System.err.println("❌ ChromeDriver не найден: " + driverPath);
+//            System.err.println("Скачайте вручную и распакуйте:");
+//            System.err.println("https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.60/win64/chromedriver-win64.zip");
+//        }
     }
 
 //    static
@@ -96,4 +102,4 @@ public abstract class BaseUiTest {
         // Отключаем логирование на уровне JUL
 //        java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(java.util.logging.Level.OFF);
 //        java.util.logging.Logger.getLogger("com.codeborne.selenide").setLevel(java.util.logging.Level.OFF);
-}
+//}

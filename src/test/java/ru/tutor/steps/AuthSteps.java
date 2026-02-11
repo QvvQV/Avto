@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthSteps {
     private final AuthApi authApi;
+    private String currentAuthToken;
 
     public AuthSteps(String baseUrl) {
         this.authApi = new AuthApi(baseUrl);
@@ -195,5 +196,18 @@ public class AuthSteps {
                 .header("Content-Type", equalTo("application/json"))
                 .header("Server", notNullValue())
                 .header("Date", notNullValue());
+    }
+
+    public String loginAndGetToken(String email, String password) {
+        Response response = getLoginResponse(email, password);
+        this.currentAuthToken = response.jsonPath().getString("token");
+        return currentAuthToken;
+    }
+
+    public String getCurrentAuthToken() {
+        if(currentAuthToken == null) {
+            throw new IllegalStateException("Токен не получен. Сначала выполните логин.");
+        }
+        return currentAuthToken;
     }
 }
