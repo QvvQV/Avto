@@ -6,16 +6,16 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.io.File;
 
 /**
  * Класс для выставления параметров по разным сценариям
  */
 public abstract class BaseUiTest {
 
-//    static {
-//
-//        // Явно указываем путь к драйверу 142.x
+//    TODO: может пригодится если сама не сможет найти драйвер
+//     static {
+// TODO:
+//        Явно указываем путь к драйверу 142.x
 //        String driverPath = "C:\\Users\\user445\\.cache\\selenium\\chromedriver\\win64\\142.0.7444.60\\chromedriver.exe";
 //        System.setProperty("webdriver.chrome.driver", driverPath);
 //    }
