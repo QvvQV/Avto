@@ -4,7 +4,6 @@ package ru.tutor.test;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import io.qameta.allure.Story;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,13 +34,6 @@ public class SplitTest {
     private final Faker faker = new Faker();
     private final Map<String, TestResult> testResults = new HashMap<>();
 
-//    @BeforeAll
-//    static void setupBrowser() {
-//        configuration.timeout = 15000;
-//        configuration.browser = "chrome";
-//        configuration.headless = false; // Для визуальной проверки
-//    }
-
     @BeforeEach
     void setUp() {
         formPage = new FormPage();
@@ -65,13 +57,13 @@ public class SplitTest {
 
                 AllureAttachments.attachJson("AB Test Config",
                         String.format("{\"landingId\": 252, \"isActive\": %s, \"chanceA\": %d, \"chanceB\": %d, \"version\": %d}",
-                                config.isActive(), config.getChanceA(), config.getChanceB(), config.getVersion()));
+                                config.isActive(), config.chanceA(), config.chanceB(), config.version()));
 
                 result.setConfig(config);
 
 //                assertTrue(config.isActive(), "A/B тест должен быть активен");
-                assertEquals(100, config.getChanceA(), "Шанс версии A должен быть 50%");
-                assertEquals(0, config.getChanceB(), "Шанс версии B должен быть 50%");
+                assertEquals(100, config.chanceA(), "Шанс версии A должен быть 50%");
+                assertEquals(0, config.chanceB(), "Шанс версии B должен быть 50%");
             });
 
             Allure.step("2. Открыть и заполнить форму расчета", () -> {
@@ -163,9 +155,9 @@ public class SplitTest {
             statistics.addTestResult(result.getDetectedVersion(), true);
 
             // Выводим итог
-            Allure.step("Итог теста", () -> {
-                AllureAttachments.attachText("Test Result Summary", result.toString());
-            });
+            Allure.step("Итог теста", () ->
+                AllureAttachments.attachText("Test Result Summary", result.toString())
+            );
         }
     }
 
@@ -294,53 +286,6 @@ public class SplitTest {
         });
     }
 
-//    @Test
-//    @DisplayName("Детальная проверка различий между версиями")
-//    void testVersionDifferences() {
-//        Allure.step("Изучение различий между версиями 0 и 1", () -> {
-//            // Создаем карту различий
-//            Map<String, String> version0Features = new HashMap<>();
-//            Map<String, String> version1Features = new HashMap<>();
-//
-//            version0Features.put("Иконка карандаша", "Отсутствует");
-//            version1Features.put("Иконка карандаша", "Присутствует");
-//
-//            // Дополнительные возможные различия
-//            version0Features.put("Описание", "Базовая версия формы");
-//            version1Features.put("Описание", "Улучшенная версия с иконкой");
-//
-//            AllureAttachments.attachText("Version 0 Features",
-//                    formatFeatures(version0Features));
-//            AllureAttachments.attachText("Version 1 Features",
-//                    formatFeatures(version1Features));
-//
-//            // Проверяем обе версии на практике
-//            for (int expectedVersion = 0; expectedVersion <= 1; expectedVersion++) {
-//                Allure.step("Проверка версии " + expectedVersion, () -> {
-//                    clearBrowserCookies();
-//                    clearBrowserLocalStorage();
-//                    refresh();
-//
-//                    formPage.openMainPage();
-//                    formPage.fillCalculationForm("VersionTest_" + expectedVersion, "1990-01-01");
-//                    formPage.clickCalculateButton();
-//                    sleep(3000);
-//
-//                    formPage.waitForModal();
-//                    int detectedVersion = formPage.determineABVersion();
-//
-//                    AllureAttachments.attachText("Version Check Result",
-//                            "Expected to see version: " + expectedVersion + "\n" +
-//                                    "Actually detected version: " + detectedVersion + "\n" +
-//                                    "Match: " + (detectedVersion == expectedVersion));
-//
-//                    // Делаем скриншот для сравнения
-//                    formPage.takeScreenshot("version_" + detectedVersion + "_example");
-//                });
-//            }
-//        });
-//    }
-
     private String generateBirthDate() {
         // Генерируем случайную дату рождения (18-60 лет)
         int year = 1965 + (int)(Math.random() * 42); // 1965-2006
@@ -352,25 +297,27 @@ public class SplitTest {
 
     private String formatFeatures(Map<String, String> features) {
         StringBuilder sb = new StringBuilder();
-        features.forEach((key, value) -> {
-            sb.append("• ").append(key).append(": ").append(value).append("\n");
-        });
+        features.forEach((key, value) ->
+            sb.append("• ").append(key).append(": ").append(value).append("\n")
+        );
         return sb.toString();
     }
 
     private void analyzeVersionFeatures() {
         Allure.step("Анализ особенностей каждой версии", () -> {
-            String analysis = "Версия 0 (без иконки карандаша):\n" +
-                    "• Более чистый дизайн\n" +
-                    "• Меньше отвлекающих элементов\n" +
-                    "• Фокус на контенте\n\n" +
-                    "Версия 1 (с иконкой карандаша):\n" +
-                    "• Визуальный акцент на поле email\n" +
-                    "• Интерактивный элемент\n" +
-                    "• Возможно повышает конверсию\n\n" +
-                    "Гипотеза A/B теста:\n" +
-                    "Проверяет, увеличивает ли иконка карандаша\n" +
-                    "количество заполненных email и конверсию.";
+            String analysis =
+                    """
+                    Версия 0 (без иконки карандаша):
+                    • Более чистый дизайн
+                    • Меньше отвлекающих элементов
+                    • Фокус на контенте
+                    Версия 1 (с иконкой карандаша):
+                    • Визуальный акцент на поле email
+                    • Интерактивный элемент
+                    • Возможно повышает конверсию
+                    Гипотеза A/B теста:
+                    Проверяет, увеличивает ли иконка карандаша
+                    количество заполненных email и конверсию.""";
 
             AllureAttachments.attachText("Version Analysis", analysis);
         });
@@ -408,7 +355,6 @@ public class SplitTest {
         private final String sessionId;
         private final String timestamp;
 
-        private ABTestApiClient.ABTestConfig config;
         private String birthDate;
         private int detectedVersion = -1;
         private String finalUrl;
@@ -426,7 +372,8 @@ public class SplitTest {
         }
 
         // Геттеры и сеттеры
-        public void setConfig(ABTestApiClient.ABTestConfig config) { this.config = config; }
+        public void setConfig(ABTestApiClient.ABTestConfig config) {
+        }
         public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
         public void setDetectedVersion(int detectedVersion) { this.detectedVersion = detectedVersion; }
         public void setFinalUrl(String finalUrl) { this.finalUrl = finalUrl; }
@@ -440,18 +387,19 @@ public class SplitTest {
         @Override
         public String toString() {
             return String.format(
-                    "Test ID: %s\n" +
-                            "Time: %s\n" +
-                            "User: %s\n" +
-                            "Email: %s\n" +
-                            "Session: %s\n" +
-                            "Birth Date: %s\n" +
-                            "Detected AB Version: %d (%s)\n" +
-                            "Final URL: %s\n" +
-                            "Has Errors: %s\n" +
-                            "Success: %s\n" +
-                            "API Response Status: %d\n" +
-                            "Error Message: %s",
+                    """
+                            Test ID: %s\
+                            Time: %s
+                            User: %s
+                            Email: %s
+                            Session: %s
+                            Birth Date: %s
+                            Detected AB Version: %d (%s)
+                            Final URL: %s
+                            Has Errors: %s
+                            Success: %s
+                            API Response Status: %d
+                            Error Message: %s""",
                     testId, timestamp, userName, userEmail,
                     sessionId.substring(0, Math.min(10, sessionId.length())),
                     birthDate != null ? birthDate : "N/A",

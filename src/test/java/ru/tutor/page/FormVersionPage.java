@@ -4,9 +4,6 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
-import java.time.Duration;
-
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
@@ -46,14 +43,14 @@ public class FormVersionPage {
         modalSubmitButton.shouldBe(Condition.visible, java.time.Duration.ofSeconds(10));
 
         // Дополнительная проверка через JavaScript
-        boolean isVisible = executeJavaScript(
+        boolean isVisible = Boolean.TRUE.equals(executeJavaScript(
                 "return arguments[0].offsetParent !== null && " +
                         "arguments[0].style.display !== 'none' && " +
                         "arguments[0].style.visibility !== 'hidden' && " +
                         "arguments[0].getBoundingClientRect().width > 0 && " +
                         "arguments[0].getBoundingClientRect().height > 0",
                 modalSubmitButton
-        );
+        ));
 
         if (!isVisible) {
             throw new AssertionError("Элемент #mainFormaSubmitBtn не видим на странице");

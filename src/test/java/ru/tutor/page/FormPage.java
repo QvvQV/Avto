@@ -12,6 +12,8 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class FormPage {
 
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
+
     private final Faker faker = new Faker();
 
     // Локаторы для первой формы
@@ -27,14 +29,13 @@ public class FormPage {
     private final SelenideElement pencilIcon = $("img[alt='pen']");
 
     @Step("Открыть главную страницу")
-    public FormPage openMainPage() {
+    public void openMainPage() {
         com.codeborne.selenide.Selenide.open("https://matrixbf5.tutorplace.ru/");
-        return this;
     }
 
     @Step("Заполнить форму расчета: имя и дата рождения")
-    public FormPage fillCalculationForm(String name, String birthDate) {
-        nameInput.shouldBe(Condition.visible, Duration.ofSeconds(10))
+    public void fillCalculationForm(String name, String birthDate) {
+        nameInput.shouldBe(Condition.visible, DEFAULT_TIMEOUT)
                 .setValue(name);
 
         // Для поля даты используем JavaScript
@@ -43,21 +44,18 @@ public class FormPage {
                 dateInput, birthDate
         );
 
-        return this;
     }
 
     @Step("Нажать кнопку 'Рассчитать матрицу'")
-    public FormPage clickCalculateButton() {
-        calculateButton.shouldBe(Condition.enabled, Duration.ofSeconds(10))
+    public void clickCalculateButton() {
+        calculateButton.shouldBe(Condition.enabled, DEFAULT_TIMEOUT)
                 .click();
-        return this;
     }
 
     @Step("Дождаться появления модального окна с email полем")
-    public FormPage waitForModal() {
-        emailInput.shouldBe(Condition.visible, Duration.ofSeconds(15));
-        submitButton.shouldBe(Condition.exist, Duration.ofSeconds(10));
-        return this;
+    public void waitForModal() {
+        emailInput.shouldBe(Condition.visible, DEFAULT_TIMEOUT);
+        submitButton.shouldBe(Condition.exist, DEFAULT_TIMEOUT);
     }
 
     @Step("Определить версию A/B теста по наличию иконки карандаша")
@@ -76,10 +74,9 @@ public class FormPage {
     }
 
     @Step("Заполнить email")
-    public FormPage fillEmail(String email) {
-        emailInput.shouldBe(Condition.visible, Duration.ofSeconds(5))
+    public void fillEmail(String email) {
+        emailInput.shouldBe(Condition.visible, DEFAULT_TIMEOUT)
                 .setValue(email);
-        return this;
     }
 
     @Step("Сгенерировать случайный email")
@@ -88,10 +85,9 @@ public class FormPage {
     }
 
     @Step("Нажать кнопку 'Получить доступ'")
-    public FormPage clickSubmitButton() {
-        submitButton.shouldBe(Condition.enabled, Duration.ofSeconds(5))
+    public void clickSubmitButton() {
+        submitButton.shouldBe(Condition.enabled, DEFAULT_TIMEOUT)
                 .click();
-        return this;
     }
 
     @Step("Сделать скриншот текущего состояния")

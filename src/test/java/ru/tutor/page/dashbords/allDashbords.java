@@ -2,7 +2,6 @@ package ru.tutor.page.dashbords;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import ru.tutor.page.PersonalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
@@ -99,8 +98,7 @@ public class allDashbords {
             verifyDashboardVisibility("SpyHeart", SPY_HEART);
         });
 
-        step("Навигация по карусели дашбордов", () ->
-                navigateThroughDashboards());
+        step("Навигация по карусели дашбордов", allDashbords::navigateThroughDashboards);
 
         step("Проверка навигации назад", () -> {
             BUTTON_PREVIOUS_SLIDE.shouldBe(visible).click();
@@ -168,9 +166,9 @@ public class allDashbords {
     @Step("проверка начального состояния карусели")
     private static void checkCarouselInitialState() {
         System.out.println("H2: ");
-        $$("h2").forEach(element -> {
-            System.out.println(" - " + element.getText());
-        });
+        $$("h2").forEach(element ->
+            System.out.println(" - " + element.getText())
+        );
     }
 
     @Step("Проверка видимости дашборда на первом слайде")
@@ -192,13 +190,13 @@ public class allDashbords {
                 refresh();
                 WaitHelper.waitForPageLoad();
             });
-            step("2. Проверяем что в карусели на первой позиции дашборд: " + dashboardName, ()->{
-                verifyFirstDashboard(dashboardName);
-            });
+            step("2. Проверяем что в карусели на первой позиции дашборд: " + dashboardName, ()->
+                verifyFirstDashboard(dashboardName)
+            );
 //            step("4. Удаляем курс", ()->{
 //                Home.deleteProduct(productName);
-////                AllureAttachments.attachText("Продукт удален", "✅ " + productName);
-////                AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
+//                AllureAttachments.attachText("Продукт удален", "✅ " + productName);
+//               AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
 //            });
 //            step("5. Подготовка к следующему продукту", ()->{
 //                WaitHelper.waitFor(Duration.ofSeconds(1));

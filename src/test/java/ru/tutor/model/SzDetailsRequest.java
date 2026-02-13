@@ -66,13 +66,12 @@ public class SzDetailsRequest {
     private String phone;
 
     @JsonProperty("userId")
-    private Integer userId;
+    private final Integer userId;
 
     @JsonProperty("ogrnip")
     private String ogrnip;
 
     // Конструкторы
-    public SzDetailsRequest() {}
 
     public SzDetailsRequest(String email, Integer userId) {
         this.email = email;

@@ -3,27 +3,17 @@ package ru.tutor.test.api;
 
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
-import io.restassured.RestAssured;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.constants.GameWheelRewardsConstants;
-import ru.tutor.model.OrderToggleSubscriptionResponse;
-import ru.tutor.model.fortune.GameWheelRewardResponse;
-import ru.tutor.model.fortune.GameWheelStartGameResponse;
-import ru.tutor.model.fortune.UserRewardResponse;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderToggleSubscriptionSteps;
-import ru.tutor.steps.fortune.GameWheelStartGameSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
-import ru.tutor.steps.fortune.UserRewardSteps;
-
 
 import java.util.*;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -33,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderToggleSubscriptionTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
-    private final GameWheelRewardsSteps gameWheelRewardsSteps = new GameWheelRewardsSteps(TestConfig.getApiBaseUrl());
-    private final OrderToggleSubscriptionSteps orderSteps = new OrderToggleSubscriptionSteps(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getApiBaseUrl());
 
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -83,8 +73,8 @@ public class OrderToggleSubscriptionTest {
                 orderSteps.toggleOrderSubscription("", TEST_ORDER_ID)
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            gameWheelRewardsSteps.validateUnauthorizedResponse(response);;
-        });
+        step("Проверка ошибки авторизации", () ->
+                gameWheelRewardsSteps.validateUnauthorizedResponse(response)
+        );
     }
 }

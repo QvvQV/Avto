@@ -3,7 +3,7 @@ package ru.tutor.page.dashbords;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import org.openqa.selenium.Keys;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
@@ -45,23 +45,16 @@ public class matrixCalculation {
                     .shouldBe(visible, Duration.ofSeconds(3));
             AllureAttachments.attachScreenshot("Страница после скролла");
         });
-        step("Кликаем по кнопке", () -> {
-            personaleCalendar();
-//            MATRIX_FORECAST_FOR_DAY_BUTTON.shouldBe(visible)
-//                    .shouldBe(clickable)
-//                    .click();
-//            WaitHelper.waitForAnimationComplete();
-//
-//            AllureAttachments.attachScreenshot("");
-        });
+        step("Кликаем по кнопке", matrixCalculation::personaleCalendar
+        );
         step("Открываем скрытое меню", () -> {
             openSecretMenu();
             OPEN_ALL_BUTTON.sendKeys(Keys.HOME);
             WaitHelper.waitForAnimationComplete();
         });
-        step("Переходим на главную страницу", () -> {
-            Home.clickMainlink();
-        });
+        step("Переходим на главную страницу",
+            Home::clickMainlink
+        );
     }
 
     @Step("Закрытие модального окна")
@@ -78,13 +71,6 @@ public class matrixCalculation {
                 COMPATIBILITY_MATRIX_BUTTON, "Матрица совместимости",
                 CALCULATE_BUTTON, "Рассчитать"
         );
-
-//            // Map для ожидаемых текстов после клика
-//    Map<String, String> expectedTexts = Map.of(
-//        "Прогноз по матрице на день", "Прогноз на день",
-//        "Матрица совместимости", "Совместимость с партнером",
-//        "Рассчитать", "Введите данные "
-//    );
 
         for (Map.Entry<SelenideElement, String> entry : categoryButtons.entrySet()) {
             testCategory(entry.getKey(), entry.getValue());

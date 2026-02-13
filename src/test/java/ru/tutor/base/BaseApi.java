@@ -4,7 +4,6 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import ru.tutor.utils.AllureAttachments;
 
 import static io.restassured.RestAssured.given;
 

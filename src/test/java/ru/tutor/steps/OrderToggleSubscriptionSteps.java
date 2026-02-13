@@ -12,22 +12,19 @@ import java.util.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
+/*
  * Класс для переключения на Лайт по API
  */
 
-public class OrderToggleSubscriptionSteps {
+public record OrderToggleSubscriptionSteps(OrderApi orderApi) {
 
-    private final OrderApi orderApi;
-
-    public OrderToggleSubscriptionSteps(String baseUrl) {
-        this.orderApi = new OrderApi(baseUrl);
+    public static OrderToggleSubscriptionSteps withBaseUrl(String baseUrl) {
+        return new OrderToggleSubscriptionSteps(new OrderApi(baseUrl));
     }
 
     @Step("Переключение подписки на заказ ID: {orderId}")
     public Response toggleOrderSubscription(String authToken, Integer orderId) {
-        Response response = this.orderApi.toggleOrderSubscription(authToken, orderId);
-        return response;
+        return this.orderApi.toggleOrderSubscription(authToken, orderId);
     }
 
     @Step("Валидация успешного ответа при переключении подписки")
@@ -47,33 +44,16 @@ public class OrderToggleSubscriptionSteps {
         return items;
     }
 
-//    @Step("Валидация ответа как объекта (если API овзращает объект)")
-//    public OrderToggleSubscriptionResponse validateToggleSubscriptionResponseAsObject(Response response) {
-//        response.then()
-//                .statusCode(200)
-//                .contentType(ContentType.JSON);
-//
-//        // Пробуем десериализовать как объект
-//        try {
-//            OrderToggleSubscriptionResponse item = response.as(OrderToggleSubscriptionResponse.class);
-//            validateToggleSubscriptionResponse(item);
-//            return item;
-//        } catch (Exception e) {
-//            // Пробуем как массив с одним элементом
-//            List<OrderToggleSubscriptionItem> items = response.jsonPath().getList("$", OrderToggleSubscriptionItem.class);
-//            if (!items.isEmpty()) {
-//                return items.get(0);
-//            }
-//            throw new RuntimeException("Не удалось десериализовать ответ", e);
-//        }
-//    }
-
     @Step("Детальная валидация полей подписки")
-    public void validateSubscriptionFields (OrderToggleSubscriptionResponse subscription) {
+    public void validateSubscriptionFields(OrderToggleSubscriptionResponse subscription) {
         assertAll(
                 () -> assertNotNull(subscription.getId(), "orderId должен быть не null"),
                 () -> assertTrue(subscription.getId() > 0, "orderId должен быть положительным числом"),
-                () -> assertNotNull(subscription.getIsSubscribed(), "isSubscribed должен быть не null"),
+                () ->
+                {
+                    Boolean isSubscribed = subscription.getIsSubscribed();
+                    assertNotNull(isSubscribed, "isSubscribed должен быть не null");
+                },
                 () -> assertTrue(subscription.isValid(), "Ответ должен быть валидным")
         );
     }
@@ -95,10 +75,6 @@ public class OrderToggleSubscriptionSteps {
         } else {
             analysis.append("✅ Массив содержит элементы\n");
         }
-
-//        analysis.append("\nПервые 500 символов ответа:\n");
-//        analysis.append("-".repeat(50)).append("\n");
-//        analysis.append(responseBody.length() > 500 ? responseBody.substring(0, 500) + "..." : responseBody);
 
         Allure.addAttachment("Анализ формата", "text/plain", analysis.toString());
     }

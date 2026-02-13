@@ -4,7 +4,7 @@ import io.qameta.allure.Step;
 import ru.tutor.page.SuccessOrderPage;
 import ru.tutor.utils.UrlRedirectHelper;
 
-/**
+/*
  * Шаги для редиректа страницы после оплаты DEV
  */
 

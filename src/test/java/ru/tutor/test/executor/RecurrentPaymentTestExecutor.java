@@ -19,7 +19,6 @@ public class RecurrentPaymentTestExecutor {
 
     private final OrderDatesPage orderDatesPage;
     private final AdminOrderDetails adminOrderDetails;
-    private final AdminOrdersPage adminOrdersPage;
     private final PaymentCycleExecutor paymentCycleExecutor;
     private final ComprehensiveCheckExecutor comprehensiveChechExecutor;
 
@@ -29,9 +28,8 @@ public class RecurrentPaymentTestExecutor {
                                         PaymentCycleExecutor paymentCycleExecutor) {
         this.orderDatesPage = orderDatesPage;
         this.adminOrderDetails = adminOrderDetails;
-        this.adminOrdersPage = adminOrdersPage;
         this.paymentCycleExecutor = paymentCycleExecutor;
-        this.comprehensiveChechExecutor = new ComprehensiveCheckExecutor(orderDatesPage, adminOrderDetails);
+        this.comprehensiveChechExecutor = new ComprehensiveCheckExecutor(orderDatesPage);
     }
 
     /**
@@ -61,14 +59,14 @@ public class RecurrentPaymentTestExecutor {
 
             // Выполняем первый платежный цикл
             paymentCycleExecutor.performPaymentCycle("первый",
-                    settings.getInitialExpiresDays(),
-                    settings.getAfterFirstPaymentDays(),
+                    settings.initialExpiresDays(),
+                    settings.afterFirstPaymentDays(),
                     context);
 
             // Выполняем второй платежный цикл
             paymentCycleExecutor.performPaymentCycle("второй",
-                    settings.getAfterFirstPaymentDays(),
-                    settings.getAfterSecondPaymentDays(),
+                    settings.afterFirstPaymentDays(),
+                    settings.afterSecondPaymentDays(),
                     context);
 
             // Выполняем финальную проверку
@@ -109,8 +107,8 @@ public class RecurrentPaymentTestExecutor {
 
             // Выполняем первый платежный цикл
             paymentCycleExecutor.performPaymentCycle("первый",
-                    settings.getInitialExpiresDays(),
-                    settings.getAfterFirstPaymentDays(),
+                    settings.initialExpiresDays(),
+                    settings.afterFirstPaymentDays(),
                     context);
 
             // Логируем завершение теста
@@ -143,33 +141,33 @@ public class RecurrentPaymentTestExecutor {
      * Получение имени платежа по номеру.
      */
     private String getPaymentNameByNumber(int number) {
-        switch (number) {
-            case 1: return "первый";
-            case 2: return "второй";
-            default: return "платеж " + number;
-        }
+        return switch (number) {
+            case 1 -> "первый";
+            case 2 -> "второй";
+            default -> "платеж " + number;
+        };
     }
 
     /**
      * Получение ожидаемых дней до платежа.
      */
     private int getExpectedDaysBefore(ProductConfiguration.ProductSettings settings, int paymentNumber) {
-        switch (paymentNumber) {
-            case 1: return settings.getInitialExpiresDays();
-            case 2: return settings.getAfterFirstPaymentDays();
-            default: return settings.getAfterSecondPaymentDays();
-        }
+        return switch (paymentNumber) {
+            case 1 -> settings.initialExpiresDays();
+            case 2 -> settings.afterFirstPaymentDays();
+            default -> settings.afterSecondPaymentDays();
+        };
     }
 
     /**
      * Получение ожидаемых дней после платежа.
      */
     private int getExpectedDaysAfter(ProductConfiguration.ProductSettings settings, int paymentNumber) {
-        switch (paymentNumber) {
-            case 1: return settings.getInitialExpiresDays();
-            case 2: return settings.getAfterFirstPaymentDays();
-            default: return settings.getAfterSecondPaymentDays();
-        }
+        return switch (paymentNumber) {
+            case 1 -> settings.initialExpiresDays();
+            case 2 -> settings.afterFirstPaymentDays();
+            default -> settings.afterSecondPaymentDays();
+        };
     }
 
     /**

@@ -60,7 +60,7 @@ public class ABTestStatistics {
 
             stats.append(String.format("\nActual split: %.1f%% / %.1f%%\n",
                     version0Percent, version1Percent));
-            stats.append(String.format("Expected split: 50%% / 50%%\n"));
+            stats.append("Expected split: 50%% / 50%%\n");
 
             double deviation = Math.abs(version0Percent - 50);
             stats.append(String.format("Deviation from 50/50: ±%.1f%%\n", deviation));
@@ -78,10 +78,11 @@ public class ABTestStatistics {
             double actualPercentage0 = (version0Count * 100.0) / total;
             double actualPercentage1 = (version1Count * 100.0) / total;
 
-            String distributionInfo = String.format(
-                    "Expected distribution: %d%% / %d%%\n" +
-                            "Actual distribution: %.1f%% / %.1f%%\n" +
-                            "Tolerance: ±%.1f%%",
+            String distributionInfo = String.format("""
+                            Expected distribution: %d%% / %d%%\s
+                            Actual distribution: %.1f%% / %.1f%%
+                            Tolerance: ±%.1f%%
+                           \s""",
                     expectedA, expectedB, actualPercentage0, actualPercentage1, tolerancePercent
             );
 

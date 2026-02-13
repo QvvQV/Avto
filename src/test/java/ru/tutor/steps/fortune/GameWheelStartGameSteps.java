@@ -19,18 +19,17 @@ import java.util.stream.Collectors;
 /**
  * Шаги для запуска колеса, с отчётом
  */
-public class GameWheelStartGameSteps {
-    private final GameWheelApi gameWheelApi;
-    private Long lastUserRewardId = null;
 
-    public GameWheelStartGameSteps(String baseUrl) {
-        this.gameWheelApi = new GameWheelApi(baseUrl);
+public record  GameWheelStartGameSteps(GameWheelApi gameWheelApi) {
+
+    public static GameWheelStartGameSteps withBaseUrl(String baseUrl) {
+        return new GameWheelStartGameSteps(new GameWheelApi(baseUrl));
     }
+
 
     @Step("Запуск игры на колесе")
     public Response startGame(String authToken) {
-        Response response = this.gameWheelApi.startGame(authToken);
-        return response;
+        return this.gameWheelApi.startGame(authToken);
     }
 
     @Step("Валидация успешного ответа при запуске игры")
@@ -94,7 +93,7 @@ public class GameWheelStartGameSteps {
         );
 
         // Сохраняем userRewardId для проверки уникальности
-        lastUserRewardId = prize.getUserRewardId();
+        Long lastUserRewardId = prize.getUserRewardId();
     }
 
     @Step("Проверка соответствия приза эталонным данным")
@@ -115,48 +114,48 @@ public class GameWheelStartGameSteps {
             result.setStatus(PrizeValidationResult.Status.UNKNOWN);
         } else {
             result.setFound(true);
-            result.setExpectedName(expectedPrize.getName());
-            result.setExpectedType(expectedPrize.getType());
-            result.setExpectedMinValue(expectedPrize.getMinValue());
-            result.setExpectedMaxValue(expectedPrize.getMaxValue());
+            result.setExpectedName(expectedPrize.name());
+            result.setExpectedType(expectedPrize.type());
+            result.setExpectedMinValue(expectedPrize.minValue());
+            result.setExpectedMaxValue(expectedPrize.maxValue());
 
             // Проверяем соответствие каждого поля
             boolean allMatches = true;
             StringBuilder validationDetails = new StringBuilder();
 
             // Проверка названия
-            if (expectedPrize.getName().equals(prize.getName())) {
+            if (expectedPrize.name().equals(prize.getName())) {
                 result.setNameMatches(true);
                 validationDetails.append("✅ Название совпадает\n");
             } else {
                 result.setNameMatches(false);
                 allMatches = false;
                 validationDetails.append(String.format("❌ Название не совпадает:\n  Ожидалось: '%s'\n  Получено:  '%s'\n",
-                        expectedPrize.getName(), prize.getName()));
+                        expectedPrize.name(), prize.getName()));
             }
 
             // Проверка типа
-            if (expectedPrize.getType().equals(prize.getType())) {
+            if (expectedPrize.type().equals(prize.getType())) {
                 result.setTypeMatches(true);
                 validationDetails.append("✅ Тип совпадает\n");
             } else {
                 result.setTypeMatches(false);
                 allMatches = false;
                 validationDetails.append(String.format("❌ Тип не совпадает:\n  Ожидался: '%s'\n  Получен:  '%s'\n",
-                        expectedPrize.getType(), prize.getType()));
+                        expectedPrize.type(), prize.getType()));
             }
 
             // Проверка значения
-            if (prize.getValue() >= expectedPrize.getMinValue() &&
-                    prize.getValue() <= expectedPrize.getMaxValue()) {
+            if (prize.getValue() >= expectedPrize.minValue() &&
+                    prize.getValue() <= expectedPrize.maxValue()) {
                 result.setValueMatches(true);
                 validationDetails.append(String.format("✅ Значение в диапазоне: %d (ожидалось %d-%d)\n",
-                        prize.getValue(), expectedPrize.getMinValue(), expectedPrize.getMaxValue()));
+                        prize.getValue(), expectedPrize.minValue(), expectedPrize.maxValue()));
             } else {
                 result.setValueMatches(false);
                 allMatches = false;
                 validationDetails.append(String.format("❌ Значение вне диапазона:\n  Получено: %d\n  Ожидалось: %d-%d\n",
-                        prize.getValue(), expectedPrize.getMinValue(), expectedPrize.getMaxValue()));
+                        prize.getValue(), expectedPrize.minValue(), expectedPrize.maxValue()));
             }
 
             // Устанавливаем статус
@@ -238,24 +237,24 @@ public class GameWheelStartGameSteps {
         report.append("-".repeat(40)).append("\n");
 
         if (expectedPrize != null) {
-            boolean nameMatch = expectedPrize.getName().equals(prize.getName());
-            boolean typeMatch = expectedPrize.getType().equals(prize.getType());
-            boolean valueInRange = prize.getValue() >= expectedPrize.getMinValue() &&
-                    prize.getValue() <= expectedPrize.getMaxValue();
+            boolean nameMatch = expectedPrize.name().equals(prize.getName());
+            boolean typeMatch = expectedPrize.type().equals(prize.getType());
+            boolean valueInRange = prize.getValue() >= expectedPrize.minValue() &&
+                    prize.getValue() <= expectedPrize.maxValue();
 
             report.append(String.format("📝 Название: %s (%s)\n",
                     nameMatch ? "✅ Совпадает" : "❌ Не совпадает",
-                    nameMatch ? "OK" : String.format("ожидалось: %s", expectedPrize.getName())));
+                    nameMatch ? "OK" : String.format("ожидалось: %s", expectedPrize.name())));
 
             report.append(String.format("🏷️ Тип:      %s (%s)\n",
                     typeMatch ? "✅ Совпадает" : "❌ Не совпадает",
-                    typeMatch ? "OK" : String.format("ожидался: %s", expectedPrize.getType())));
+                    typeMatch ? "OK" : String.format("ожидался: %s", expectedPrize.type())));
 
             report.append(String.format("💰 Значение: %s (%s)\n",
                     valueInRange ? "✅ В диапазоне" : "❌ Вне диапазона",
                     valueInRange ? String.format("%d", prize.getValue()) :
                             String.format("%d, ожидалось %d-%d",
-                                    prize.getValue(), expectedPrize.getMinValue(), expectedPrize.getMaxValue())));
+                                    prize.getValue(), expectedPrize.minValue(), expectedPrize.maxValue())));
 
             // Общая оценка
             if (nameMatch && typeMatch && valueInRange) {

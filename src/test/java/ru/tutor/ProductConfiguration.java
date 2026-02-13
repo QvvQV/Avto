@@ -2,7 +2,7 @@ package ru.tutor;
 
 import java.util.Map;
 
-/**
+/*
  * Конфигурация продуктов для проведения рекуррентов и проверки дат по ним
  */
 
@@ -23,34 +23,7 @@ public class ProductConfiguration {
         }     return settings;
     }
 
-    public static class ProductSettings {
-        private final int initialExpiresDays;
-        private final int afterFirstPaymentDays;
-        private final int afterSecondPaymentDays;
-        private final String price;
-
-        public ProductSettings(int initialExpiresDays, int afterFirstPaymentDays, int afterSecondPaymentDays, String price) {
-            this.initialExpiresDays = initialExpiresDays;
-            this.afterFirstPaymentDays = afterFirstPaymentDays;
-            this.afterSecondPaymentDays = afterSecondPaymentDays;
-            this.price = price;
-        }
-
-        // Геттеры
-        public int getInitialExpiresDays(){
-            return initialExpiresDays;
-        }
-
-        public int getAfterFirstPaymentDays() {
-            return afterFirstPaymentDays;
-        }
-
-        public int getAfterSecondPaymentDays() {
-            return afterSecondPaymentDays;
-        }
-
-        public String getPrice() {
-            return price;
-        }
+    public record ProductSettings(int initialExpiresDays, int afterFirstPaymentDays, int afterSecondPaymentDays,
+                                  String price) {
     }
 }

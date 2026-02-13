@@ -3,9 +3,10 @@ package ru.tutor.page.dashbords;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 
@@ -16,6 +17,9 @@ import static io.qameta.allure.Allure.step;
 
 public class productCardEditor {
 
+    // Константа
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+
     // Локаторы
     private static final SelenideElement PRODUCT_CARD_EDITION = $$("p").find(exactText("Редактор карточек товара"));
     private static final SelenideElement SHOOTING_TIPS_BUTTON = $("a[href*='tips']");
@@ -25,10 +29,7 @@ public class productCardEditor {
 
     @Step("Кликаем по Редактор карточек товара")
     public static void clickFromProductCardEdition() {
-        PRODUCT_CARD_EDITION.shouldBe(visible, Duration.ofSeconds(5))
-                .shouldBe(interactable)
-                .click();
-        WaitHelper.waitForAnimationComplete();
+        universalMethod.safeClick(PRODUCT_CARD_EDITION,"Редактор карточек товара");
         AllureAttachments.attachScreenshot("Результат после клика");
     }
 
@@ -36,9 +37,7 @@ public class productCardEditor {
     private static void clickShootingTips() {
         step("Кликаем по кнопке 'Советы по съемке'", () -> {
             textButton();
-            SHOOTING_TIPS_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(interactable)
-                    .click();
+            universalMethod.safeClick(SHOOTING_TIPS_BUTTON, "Тип");
         });
     }
 
@@ -53,11 +52,11 @@ public class productCardEditor {
             String originalUrl = WebDriverRunner.url();
             clickShootingTips();
 
-            WaitHelper.waitForUrlContains(originalUrl, Duration.ofSeconds(5));
+            WaitHelper.waitForUrlContains(originalUrl, DEFAULT_TIMEOUT);
             WaitHelper.waitForPageLoad();
 
             //Проверяем что мы на правильной странице
-            TITLE.shouldBe(visible, Duration.ofSeconds(5));
+            TITLE.shouldBe(visible, DEFAULT_TIMEOUT);
             String titleText = TITLE.getText().trim();
 
             AllureAttachments.attachText("Заголовок страницы", titleText);
@@ -69,10 +68,8 @@ public class productCardEditor {
     public static void workDashboard() {
         redirectPage();
         step("Возвращаемся на страницу редактирования", () -> {
-            REDIRECT_TIPS_DASHBOARD.shouldBe(visible, Duration.ofSeconds(3))
-                    .click();
+            universalMethod.safeClick(REDIRECT_TIPS_DASHBOARD, "Тип");
 
-            WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
 
             String originalUrl = WebDriverRunner.url();
@@ -81,9 +78,9 @@ public class productCardEditor {
             AllureAttachments.attachScreenshot("Редирект страницы" + originalUrl);
         });
 
-        step("Переход на главную страницу", () -> {
-            Home.clickMainlink();
-        });
+        step("Переход на главную страницу",
+            Home::clickMainlink
+        );
     }
 
 }

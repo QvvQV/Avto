@@ -12,33 +12,33 @@ import static io.qameta.allure.Allure.step;
 public class footer {
 
     //футер-информация
-    private static SelenideElement AntyPolicy = $$("a").find(exactText("Антикоррупционная политика"));
-    private static SelenideElement study = $$("a").find(exactText("Образовательная лицензия"));
-    private static SelenideElement policy = $$("a").find(exactText("Политика конфиденциальности"));
-    private static SelenideElement userAgreement = $$("a").find(exactText("Пользовательское соглашение"));
-    private static SelenideElement offer = $$("a").find(exactText("Публичная оферта"));
-    private static SelenideElement manual = $$("a").find(exactText("Руководство пользователя"));
-    private static SelenideElement personalDate = $$("a").find(exactText("Согласие на обработку персональных данных"));
+    private static final SelenideElement AntyPolicy = $$("a").find(exactText("Антикоррупционная политика"));
+    private static final SelenideElement study = $$("a").find(exactText("Образовательная лицензия"));
+    private static final SelenideElement policy = $$("a").find(exactText("Политика конфиденциальности"));
+    private static final SelenideElement userAgreement = $$("a").find(exactText("Пользовательское соглашение"));
+    private static final SelenideElement offer = $$("a").find(exactText("Публичная оферта"));
+    private static final SelenideElement manual = $$("a").find(exactText("Руководство пользователя"));
+    private static final SelenideElement personalDate = $$("a").find(exactText("Согласие на обработку персональных данных"));
 
     //футер- о нас
-    private static SelenideElement aboutCompany = $$("a").find(exactText("О компании"));
-    private static SelenideElement aboutSubscription = $$("a").find(exactText("О подписке"));
-    private static SelenideElement contacts = $$("a").find(exactText("Контакты"));
-    private static SelenideElement newHorizons = $$("a").find(exactText("Новые горизонты"));
+    private static final SelenideElement aboutCompany = $$("a").find(exactText("О компании"));
+    private static final SelenideElement aboutSubscription = $$("a").find(exactText("О подписке"));
+    private static final SelenideElement contacts = $$("a").find(exactText("Контакты"));
+    private static final SelenideElement newHorizons = $$("a").find(exactText("Новые горизонты"));
 
     // футтер - дополнительно
-    private static SelenideElement webmasters = $$("a").find(exactText("Вебмастерам"));
-    private static SelenideElement forAuthors = $$("a").find(exactText("Для авторов"));
-    private static SelenideElement install = $$("a").find(exactText("Установка ПО"));
-    private static SelenideElement career = $$("a").find(exactText("Карьера"));
+    private static final SelenideElement webmasters = $$("a").find(exactText("Вебмастерам"));
+    private static final SelenideElement forAuthors = $$("a").find(exactText("Для авторов"));
+    private static final SelenideElement install = $$("a").find(exactText("Установка ПО"));
+    private static final SelenideElement career = $$("a").find(exactText("Карьера"));
 
     // первый блок
-    private static SelenideElement number = $$("a").find(exactText("8 (800) 555 32 82"));
-    private static SelenideElement information = $$("span").find(exactText("Автоинформатор"));
-    private static SelenideElement emailSupport = $$("a").find(exactText("support@tutorplace.ru"));
-    private static SelenideElement quastions = $$("span").find(exactText("По общим вопросам"));
-    private static SelenideElement online = $$("p").find(exactText("Все обращения принимаются только в электронном виде на почту support@tutorplace.ru или онлайн - чат на сайте"));
-    private static SelenideElement didgital = $$("p").find(exactText("© OOO «ДИДЖИТАЛ КОНТЕНТ» 2022–2025"));
+    private static final SelenideElement number = $$("a").find(exactText("8 (800) 555 32 82"));
+    private static final SelenideElement information = $$("span").find(exactText("Автоинформатор"));
+    private static final SelenideElement emailSupport = $$("a").find(exactText("support@tutorplace.ru"));
+    private static final SelenideElement quastions = $$("span").find(exactText("По общим вопросам"));
+    private static final SelenideElement online = $$("p").find(exactText("Все обращения принимаются только в электронном виде на почту support@tutorplace.ru или онлайн - чат на сайте"));
+    private static final SelenideElement didgital = $$("p").find(exactText("© OOO «ДИДЖИТАЛ КОНТЕНТ» 2022–2025"));
     
     public static String setAntyPolicy() {
         return AntyPolicy.getText().trim();

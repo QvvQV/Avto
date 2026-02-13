@@ -25,7 +25,7 @@ public class UserLoginProfileTest {
     private ru.tutor.steps.UserSteps userSteps;
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
 
     @BeforeEach
     void setUp() {
@@ -66,7 +66,7 @@ public class UserLoginProfileTest {
                     .body("isYtSubscribed", equalTo(false));
         });
 
-        step("Проверка флага isVkSubscribed = false", () ->{
+        step("Проверка флага isVkSubscribed = false", () -> {
             profileResponse.then()
                     .body("isVkSubscribed", equalTo(false));
         });

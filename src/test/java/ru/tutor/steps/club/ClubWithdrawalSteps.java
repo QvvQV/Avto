@@ -14,11 +14,10 @@ import java.util.Map;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClubWithdrawalSteps {
-    private final ClubApi withdrawalApi;
+public record ClubWithdrawalSteps(ClubApi withdrawalApi) {
 
-    public ClubWithdrawalSteps(String baseUrl) {
-        this.withdrawalApi = new ClubApi(baseUrl);
+    public static ClubWithdrawalSteps withBaseUrl(String baseUrl) {
+        return new ClubWithdrawalSteps(new ClubApi(baseUrl));
     }
 
     @Step("POST /user/club/request-withdrawal - запрос на вывод средств")
@@ -76,64 +75,6 @@ public class ClubWithdrawalSteps {
             return null;
         }
     }
-
-//    @Step("Валидация ошибки валидации (422)")
-//    public ErrorResponse validateValidationErrorResponse(Response response) {
-//        int statusCode = response.getStatusCode();
-//        assertEquals(422,  statusCode, "Ожидался статус 422");
-//
-//        // Проверяем структуру ошибки
-//        response.then()
-//                .contentType(ContentType.JSON)
-//                .body("error", notNullValue())
-//                .body("error.messages", notNullValue());
-//
-//        // Парсим ошибку
-//        ErrorResponse errorResponse = response.as(ErrorResponse.class);
-//        assertNotNull(errorResponse, "ErrorResponse should not be null");
-//        assertTrue(errorResponse.hasValidationErrors(), "Should have validation errors");
-//
-////        // Добавляем информацию об ошибках в отчёт
-////        StringBuilder errorInfo = new StringBuilder("Ошибки валидации вывода:\n");
-////        if (errorResponse.getError() != null && errorResponse.getError().getMessage() != null) {
-////            errorResponse.getError().getMessage().forEach((field, message) -> {
-////                errorInfo.append("• ").append(field).append(": ").append(message).append("\n");
-////            });
-////        }
-////
-////        AllureAttachments.attachText("Валидационные ошибки вывода", errorInfo.toString());
-////        return errorResponse;
-//    }
-
-//    @Step("Проверка лимитов вывода")
-//    public void validateWithdrawalLimits(Response response, Integer requestedAmount) {
-//        int statusCode = response.getStatusCode();
-//
-//        if (statusCode == 422) {
-//            ErrorResponse errorResponse = response.as(ErrorResponse.class);
-//            if (errorResponse.getError() != null && errorResponse.getError().getMessages() !=null) {
-//                // Проверяем есть ли ошибки связанные с лимитами
-//                boolean hasLimitError = errorResponse.getError().getMessages().entrySet().stream()
-//                        .anyMatch(entry -> entry.getKey().contains("amount") &&
-//                                (entry.getValue().contains("мало") ||
-//                                        entry.getValue().contains("много") ||
-//                                        entry.getValue().contains("limit") ||
-//                                        entry.getValue().contains("лимит")));
-//
-//                if (hasLimitError) {
-//                    AllureAttachments.attachText("Лимиты сработали",
-//                            "✅ Валидация лимитов работает: " +
-//                                    errorResponse.getError().getMessages());
-//                }
-//            }
-//        } else if (statusCode == 201) {
-//            WithdrawalResponse withdrawalResponse = response.as(WithdrawalResponse.class);
-//            if (withdrawalResponse != null && withdrawalResponse.isSuccessful()) {
-//                AllureAttachments.attachText("Лимиты пройдены",
-//                        "✅ Запрос на вывод " + requestedAmount + " прошел лимиты");
-//            }
-//        }
-//    }
 
     @Step("Проверка валидации полей при создании заявки")
     public void validateFieldValidation(Response response) {

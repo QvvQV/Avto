@@ -1,6 +1,6 @@
 package ru.tutor.steps;
 
-/**
+/*
  * Модальное окно для Создания Реневалла по email-рассылке
  */
 
@@ -13,7 +13,6 @@ import org.openqa.selenium.*;
 import ru.tutor.utils.WaitHelper;
 import ru.tutor.utils.universalMethod;
 
-import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$$;
@@ -21,8 +20,8 @@ import static com.codeborne.selenide.Selenide.$$;
 public class AdminToUserLoginSteps {
 
     // Локатор
-    private static final String YES_TEXT = "Да!";
-    private static SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
+    private final String YES_TEXT = "Да!";
+    private final SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
 
     @Step("Получить токен из ЛК пользователя")
     public static String extractTokenFromCurrentPage() {
@@ -38,18 +37,6 @@ public class AdminToUserLoginSteps {
 
         throw new RuntimeException("Токен не найден на странице");
     }
-
-//    @Step("Получить aff_rid из ЛК пользователя")
-//    public static String extractAffRidFromCurrentPage() {
-//
-//        String affRid = extractFromLocalStorageAffRid();
-//        if(isValidToken(affRid)) {
-//            System.out.println("✓ aff_rid найден в localStorage: " +  affRid);
-//            return affRid;
-//        }
-//
-//        throw new RuntimeException("aff_rid не найден на странице");
-//    }
 
     @Step("Извлечь токен из localStorage")
     public static String extractFromLocalStorage() {
@@ -93,10 +80,7 @@ public class AdminToUserLoginSteps {
     }
 
     public static boolean isValidToken(String token) {
-        if (token == null || token.trim().isEmpty()) {
-            return false;
-        }
-        return true;
+        return token != null && !token.trim().isEmpty();
     }
 
     @Step("Переключиться на вкладку и получить токен")
@@ -106,38 +90,49 @@ public class AdminToUserLoginSteps {
     }
 
     @Step("Проводим оплату подписки из письма email-рассылки")
-    public static void sendEmailPay() {
+    public void sendEmailPay() {
         WaitHelper.waitForAnimationComplete();
         universalMethod.clickButton(YES_BUTTON,YES_TEXT);
         WaitHelper.waitForAnimationComplete();
     }
 
-
+//  TODO: в будущем может пригодится
+//   @Step("Получить aff_rid из ЛК пользователя")
+//    public static String extractAffRidFromCurrentPage() {
+// TODO
+//        String affRid = extractFromLocalStorageAffRid();
+//        if(isValidToken(affRid)) {
+//            System.out.println("✓ aff_rid найден в localStorage: " +  affRid);
+//            return affRid;
+//        }
+// TODO
+//        throw new RuntimeException("aff_rid не найден на странице");
+//    }
 //    @Step("Извлечь аff_rid из localStorage")
 //    public static String extractFromLocalStorageAffRid() {
 //        try {
 //            JavascriptExecutor js = (JavascriptExecutor) WebDriverRunner.getWebDriver();
-//
+// TODO:
 //            // Сначала проверяем, доступен ли localStorage
 //            Boolean isLocalStorageAvailable = (Boolean) js.executeScript(
 //                    "try { return typeof window.localStorage !== 'undefined'; } catch(e) { return false; }");
-//
+// TODO:
 //            if (Boolean.FALSE.equals(isLocalStorageAvailable)) {
 //                System.out.println("⚠️ localStorage недоступен");
 //                return null;
 //            }
-//
+// TODO:
 //            // Пробуем получить aff_rid
 //            String[] affridKeys = {
 //                    "aff_rid"
 //            };
-//
+// TODO:
 //            for (String key : affridKeys) {
 //                try {
 //                    String affrid = (String) js.executeScript(
 //                            "try { return window.localStorage.getItem('" + key + "'); } " +
 //                                    "catch(e) { return null; }");
-//
+// TODO:
 //                    if (isValidToken(affrid)) {
 //                        return affrid;
 //                    }
@@ -145,11 +140,11 @@ public class AdminToUserLoginSteps {
 //                    // Игнорируем ошибки для конкретного ключа
 //                }
 //            }
-//
+// TODO:
 //        } catch (Exception e) {
 //            System.err.println("Ошибка при доступе к localStorage: " + e.getMessage());
 //        }
-//
+// TODO:
 //        return null;
 //    }
 }

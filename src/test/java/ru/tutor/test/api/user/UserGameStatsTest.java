@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты эндпоинта /user/game-stats")
 public class UserGameStatsTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private ru.tutor.steps.UserSteps userSteps;
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -63,14 +63,14 @@ public class UserGameStatsTest {
         Response response = userSteps.getGameStats(token);
         GameStatsResponse stats = userSteps.validateGameStatsResponse(response);
 
-        step("Проверка конкретных значений", () -> {
-            assertAll("Game stats specific values",
-                    () -> assertEquals(500, stats.getLevelUpLimit(), "LevelUpLimit should be 500"),
-                    () -> assertEquals(15, stats.getSeason(), "Season should be 15"),
-                    () -> assertNotNull(stats.getSeasonEnd(), "SeasonEnd should not be null"),
-                    () -> assertTrue(stats.getSeasonEnd().contains("2026"), "SeasonEnd should be in 2026"),
-                    () -> assertNotNull(stats.getShowModal(), "showModal should not be null"));
-        });
+        step("Проверка конкретных значений", () ->
+                assertAll("Game stats specific values",
+                        () -> assertEquals(500, stats.getLevelUpLimit(), "LevelUpLimit should be 500"),
+                        () -> assertEquals(15, stats.getSeason(), "Season should be 15"),
+                        () -> assertNotNull(stats.getSeasonEnd(), "SeasonEnd should not be null"),
+                        () -> assertTrue(stats.getSeasonEnd().contains("2026"), "SeasonEnd should be in 2026"),
+                        () -> assertNotNull(stats.getShowModal(), "showModal should not be null"))
+        );
     }
 
     @Test
@@ -82,19 +82,19 @@ public class UserGameStatsTest {
         response.then()
                 .body("days.size()", equalTo(31))
                 .body("days[0].item", equalTo("experience"))
-                .body("days[0].score", equalTo(Integer.valueOf(15)))
+                .body("days[0].score", equalTo(15))
                 .body("days[0].done", equalTo(true))
                 .body("days[1].item", equalTo("diamond"))
-                .body("days[1].score", equalTo(Integer.valueOf(15)))
+                .body("days[1].score", equalTo(15))
                 .body("days[1].done", equalTo(true))
                 .body("days[2].item", equalTo("diamond"))
-                .body("days[2].score", equalTo(Integer.valueOf(15)))
+                .body("days[2].score", equalTo(15))
                 .body("days[2].done", equalTo(true))
                 .body("days[3].item", equalTo("experience"));
 //                .body("days[3].score", equalTo(Integer.valueOf(30)))
 //                .body("days[3].done", equalTo(true));
 
-        for (int i =0; i < 31; i++) {
+        for (int i = 0; i < 31; i++) {
 //            final int index = i;
             response.then()
                     .body("days[" + i + "].item", anyOf(equalTo("experience"), equalTo("diamond")))
@@ -126,8 +126,8 @@ public class UserGameStatsTest {
 
         Allure.addAttachment("Согласованность данных", "text/plain",
                 "Профиль - hasLoginToday: " + hasLoginTodayProfile + "\n" +
-                "Game Stats - hasGameStatsResponse: " + hasGameStatsResponse + "\n" +
-                "Совпадают: " + (hasLoginTodayProfile.equals(hasGameStatsResponse) ? "✅" : "❌")
+                        "Game Stats - hasGameStatsResponse: " + hasGameStatsResponse + "\n" +
+                        "Совпадают: " + (hasLoginTodayProfile.equals(hasGameStatsResponse) ? "✅" : "❌")
         );
     }
 }

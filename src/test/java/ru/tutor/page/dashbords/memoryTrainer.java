@@ -5,11 +5,12 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -43,9 +44,9 @@ public class memoryTrainer {
         for (int i = 0; i < START_BUTTONS.size(); i++){
             startButtonByIndex(i);
         }
-        step("Переход на главную страницу", ()->{
-            Home.clickMainlink();
-        });
+        step("Переход на главную страницу",
+            Home::clickMainlink
+        );
     }
 
         private static void startButtonByIndex(int index) {
@@ -55,7 +56,7 @@ public class memoryTrainer {
         step("Тестирование кнопки: " + trainerName, ()->{
             SelenideElement startButton = START_BUTTONS.get(index);
 
-            step("Проверка видимости - " + trainerNames, ()->{
+            step("Проверка видимости - " + Arrays.toString(trainerNames), ()->{
                 startButton.shouldBe(visible, Duration.ofSeconds(5))
                         .shouldBe(interactable, Duration.ofSeconds(3));
             });

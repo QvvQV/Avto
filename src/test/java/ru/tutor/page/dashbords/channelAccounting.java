@@ -4,9 +4,10 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.Keys;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -26,11 +27,11 @@ public class channelAccounting {
     private static final SelenideElement BISNESS_PLACEHOLDER = $("[id=\"react-select-2-placeholder\"]");
     private static final SelenideElement BISNESS_INPUT = $("[id=\"react-select-2-input\"]");
     private static final SelenideElement DATE_INPUT = $("input[placeholder='Дата создания']");
-    private static final SelenideElement NAME_INPUT = $("[name=\"name\"");
-    private static final SelenideElement COVERAGE_INPUT = $("[name=\"coverage\"");
-    private static final SelenideElement SUBSCRIBERS_INPUT = $("[name=\"subscribers\"");
+    private static final SelenideElement NAME_INPUT = $("[name='name'");
+    private static final SelenideElement COVERAGE_INPUT = $("[name='coverage'");
+    private static final SelenideElement SUBSCRIBERS_INPUT = $("[name='subscribers'");
     private static final SelenideElement ADD_BUTTON = $$("button").find(exactText("Добавить"));
-    private static final SelenideElement CLOSE_BUTTON = $("._tool_1uxgp_1");
+    private static final SelenideElement DELETE_BUTTON = $("._tool_1uxgp_1");
 
 
     @Step("Кликаем по Учет каналов")
@@ -110,11 +111,9 @@ public class channelAccounting {
 
     @Step("Удаление каналов")
     private static void deleteCannel() {
-        step("Удаляем канал", () -> {
-            CLOSE_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
-        });
+        step("Удаляем канал", () ->
+            universalMethod.safeClick(DELETE_BUTTON, "Удалить канал")
+        );
     }
 
 
@@ -138,6 +137,6 @@ public class channelAccounting {
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
         AllureAttachments.attachScreenshot("Дашборд после удаления");
-        step("переход на главную", ()->{Home.clickMainlink();});
+        step("переход на главную", Home::clickMainlink);
     }
 }

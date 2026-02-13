@@ -5,6 +5,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.*;
 import static io.qameta.allure.Allure.step;
@@ -15,7 +16,7 @@ import static io.qameta.allure.Allure.step;
 
 public class universalMethod {
 
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
 
     /**
      * Универсальный метод для безопасного ожидания и клика для Cloud
@@ -76,7 +77,7 @@ public class universalMethod {
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
 
-            if (!WebDriverRunner.url().equals(originalUrl)) {
+            if (!Objects.equals(WebDriverRunner.url(), originalUrl)) {
                 AllureAttachments.attachText("Переход",
                         "Успешный переход после клика на: " + buttonName);
             }

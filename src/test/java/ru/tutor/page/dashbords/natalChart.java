@@ -2,9 +2,10 @@ package ru.tutor.page.dashbords;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 import java.util.Map;
@@ -17,24 +18,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class natalChart {
 
+    // Текст кнопок
+    private static final String NATAL_CHAR_TEXT = "Натальная карта";
+    private static final String PLANS_TEXT = "Планы";
+    private static final String LOVE_TEXT = "Любовь";
+    private static final String FINANCES_TEXT = "Финансы";
+    private static final String NATALCHART_INFO_TEXT = "Подробнее о натальной карте";
+    private static final String PLANET_TEXT = "Выберите планету";
+
     // Локаторы
-    private static final SelenideElement NATAL_CHAR = $$("p").find(exactText("Натальная карта"));
-    private static final SelenideElement PLANS = $$("button").find(exactText("Планы"));
-    private static final SelenideElement LOVE = $$("button").find(exactText("Любовь"));
-    private static final SelenideElement FINANCES = $$("button").find(exactText("Финансы"));
+    private static final SelenideElement NATAL_CHAR = $$("p").find(exactText(NATAL_CHAR_TEXT));
+    private static final SelenideElement PLANS = $$("button").find(exactText(PLANS_TEXT));
+    private static final SelenideElement LOVE = $$("button").find(exactText(LOVE_TEXT));
+    private static final SelenideElement FINANCES = $$("button").find(exactText(FINANCES_TEXT));
 
     // Локаторы страницы Info
     private static final SelenideElement REDIRECT_NATALCHART_INFO = $("a._natalChartButton_11m8o_19[href$='natal-chart-info']");
-    private static final SelenideElement REDIRECT_NATALCHART_INFO_DOWN = $$("a").find(exactText("Подробнее о натальной карте"));
+    private static final SelenideElement REDIRECT_NATALCHART_INFO_DOWN = $$("a").find(exactText(NATALCHART_INFO_TEXT));
     private static final SelenideElement REDIRECT_ASTROLOGY_DASHBOARD = $("a[href*='dashboard']");
-    private static final SelenideElement SELECT_A_PLANET = $$("p").find(exactText("Выберите планету"));
+    private static final SelenideElement SELECT_A_PLANET = $$("p").find(exactText(PLANET_TEXT));
 
 
     @Step("Кликаем по Натальная карта")
     public static void clickFromNatalChar() {
-        NATAL_CHAR.shouldBe(visible, Duration.ofSeconds(5))
-                .shouldBe(interactable)
-                .click();
+        universalMethod.safeClick(NATAL_CHAR, NATAL_CHAR_TEXT);
         WaitHelper.waitForAnimationComplete();
         AllureAttachments.attachScreenshot("Результат после клика");
     }
@@ -65,15 +72,13 @@ public class natalChart {
     public static void redirectToTheInfoPage() {
 
         step("1. Редирект через стрелку", () -> {
-            REDIRECT_NATALCHART_INFO.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
+            universalMethod.safeClick(REDIRECT_NATALCHART_INFO, NATAL_CHAR_TEXT);
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
             AllureAttachments.attachScreenshot("Старница 'Info'");
         });
         step("2. Проверка точного текста", () -> {
-            String expectedText = "Выберите планету";
+            String expectedText = PLANET_TEXT;
         String actualText = SELECT_A_PLANET.getText().trim();
             SELECT_A_PLANET.shouldBe(visible, Duration.ofSeconds(3));
             assertEquals(expectedText, actualText,
@@ -82,30 +87,24 @@ public class natalChart {
             AllureAttachments.attachText("Проверка текста", "✓ Текст корректен: " + actualText);
         });
         step("3. Возвращаемся на страницу Астрологии", () -> {
-            REDIRECT_ASTROLOGY_DASHBOARD.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(interactable)
-                    .click();
+            universalMethod.safeClick(REDIRECT_ASTROLOGY_DASHBOARD, "Переход в астрологический даш");
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
             AllureAttachments.attachScreenshot("Результат после клика");
         });
         step("4. Редирект через кнопку 'Подробнее о натальной карте'", () -> {
-            REDIRECT_NATALCHART_INFO_DOWN.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
+            universalMethod.safeClick(REDIRECT_NATALCHART_INFO_DOWN, NATALCHART_INFO_TEXT );
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
             AllureAttachments.attachScreenshot("Старница 'Info'");
         });
         step("5. Возвращаемся на страницу Астрологии", () -> {
-            REDIRECT_ASTROLOGY_DASHBOARD.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(interactable)
-                    .click();
+            universalMethod.safeClick(REDIRECT_ASTROLOGY_DASHBOARD, "Переход к астрологическому даш");
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
         });
-        step("6. Редирект на главную страницу", () -> {
-            Home.clickMainlink();
-        });
+        step("6. Редирект на главную страницу",
+            Home::clickMainlink
+        );
     }
 }

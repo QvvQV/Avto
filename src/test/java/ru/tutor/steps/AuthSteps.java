@@ -4,7 +4,6 @@ package ru.tutor.steps;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.AuthApi;
-import ru.tutor.model.LoginRequest;
 import ru.tutor.model.LoginResponse;
 import ru.tutor.model.ErrorResponse;
 import ru.tutor.utils.AllureAttachments;
@@ -12,12 +11,9 @@ import ru.tutor.utils.AllureAttachments;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AuthSteps {
-    private final AuthApi authApi;
-    private String currentAuthToken;
-
-    public AuthSteps(String baseUrl) {
-        this.authApi = new AuthApi(baseUrl);
+public record AuthSteps(AuthApi authApi) {
+    public static AuthSteps withBaseUrl(String baseUrl) {
+        return new AuthSteps(new AuthApi(baseUrl));
     }
 
     @Step("Логин с валидными credentials: {email}")
@@ -200,14 +196,6 @@ public class AuthSteps {
 
     public String loginAndGetToken(String email, String password) {
         Response response = getLoginResponse(email, password);
-        this.currentAuthToken = response.jsonPath().getString("token");
-        return currentAuthToken;
-    }
-
-    public String getCurrentAuthToken() {
-        if(currentAuthToken == null) {
-            throw new IllegalStateException("Токен не получен. Сначала выполните логин.");
-        }
-        return currentAuthToken;
+        return response.jsonPath().getString("token");
     }
 }

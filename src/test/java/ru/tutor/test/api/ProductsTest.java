@@ -6,7 +6,7 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.api.Steps.ProductsSteps;
+import ru.tutor.api.steps.ProductsSteps;
 
 
 @ExtendWith(AllureJunit5.class)

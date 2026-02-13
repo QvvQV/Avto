@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.api.Steps.ConfigSteps;
+import ru.tutor.api.steps.ConfigSteps;
 import ru.tutor.model.ConfigResponse;
 
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -22,41 +22,6 @@ public class ConfigTest {
             "https://ttplace.ru",
             "YWRtaW46Sld3cHBzRUE4NEI0Qm96SmdFNDRzTmlaWg==" // твой токен в base64
     );
-
-//    @Test
-//    @AllureId("45")
-//    @DisplayName("GET /api/config - успешное получение конфигурации")
-//    void getConfigSuccess() {
-//        Response response = configSteps.getConfig();
-//        assertEquals(200, response.statusCode());
-//        assertNotNull(response.jsonPath().getString("requestPath"));
-//    }
-//
-//    @Test
-//    @AllureId("44")
-//    @DisplayName("POST /api/config - попытка создать (ожидаем 405)")
-//    void createConfigNotAllowed() {
-//        String body = "{\"requestPath\":\"https://fake.ru\"}";
-//        Response response = configSteps.createConfig(body);
-//        assertEquals(405, response.statusCode());
-//    }
-//
-//    @Test
-//    @AllureId("43")
-//    @DisplayName("PUT /api/config - попытка обновить (ожидаем 405)")
-//    void updateConfigNotAllowed() {
-//        String body = "{\"requestPath\":\"https://new.dev.ru\"}";
-//        Response response = configSteps.updateConfig(body);
-//        assertEquals(405, response.statusCode());
-//    }
-//
-//    @Test
-//    @AllureId("42")
-//    @DisplayName("DELETE /api/config - попытка удалить (ожидаем 405)")
-//    void deleteConfigNotAllowed() {
-//        Response response = configSteps.deleteConfig();
-//        assertEquals(405, response.statusCode());
-//    }
 
     @Test
     @AllureId("45")

@@ -1,6 +1,5 @@
 package ru.tutor.page;
 
-import io.qameta.allure.Allure;
 import ru.tutor.page.dto.OrderDates;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.page.admin.AdminOrderDetails;
@@ -8,17 +7,16 @@ import ru.tutor.utils.WaitHelper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 import static io.qameta.allure.Allure.step;
 
-public class OrderDatesPage {
+public record OrderDatesPage(AdminOrderDetails adminOrderDetails) {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
-    private final AdminOrderDetails adminOrderDetails;
-
-    public OrderDatesPage(AdminOrderDetails adminOrderDetails) {
-        this.adminOrderDetails = adminOrderDetails;
+    public OrderDatesPage {
+        Objects.requireNonNull(adminOrderDetails, "adminOrderDetails must not be null");
     }
 
     public LocalDateTime extractCreationDate() {
@@ -53,9 +51,9 @@ public class OrderDatesPage {
     public void logOrderState(String description, OrderDates dates) {
         AllureAttachments.attachText(description,
                 String.format("Создан: %s\nИстекает: %s\nСлед. платеж: %s",
-                        formatDateTime(dates.getCreated()),
-                        formatDateTime(dates.getExpires()),
-                        formatDateTime(dates.getNextPayment())));
+                        formatDateTime(dates.created()),
+                        formatDateTime(dates.expires()),
+                        formatDateTime(dates.nextPayment())));
     }
 
     private LocalDateTime parseDateTime(String dateTimeString) {

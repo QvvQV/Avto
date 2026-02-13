@@ -61,8 +61,8 @@ public class PaymentCycleExecutor {
     private void verifyInitialOrderState(int expectedDays) {
         step("Проверка начального состояния заказа", () -> {
             OrderDates dates = orderDatesPage.extractAllOrderDates();
-            dateValidator.verifyDateDifference(dates.getCreated(), dates.getExpires(), expectedDays, "начальное состояние Истекает");
-            dateValidator.verifyTimeOfDayDifference(dates.getCreated(), dates.getExpires(), "начальное состояние времени Истекает");
+            dateValidator.verifyDateDifference(dates.created(), dates.expires(), expectedDays, "начальное состояние Истекает");
+            dateValidator.verifyTimeOfDayDifference(dates.created(), dates.expires(), "начальное состояние времени Истекает");
             orderDatesPage.logOrderState("Начальное состояние заказа", dates);
         });
     }
@@ -91,13 +91,13 @@ public class PaymentCycleExecutor {
             ProductConfiguration.ProductSettings settings = ProductConfiguration.getSettings(productId);
 
             OrderDates dates = orderDatesPage.extractAllOrderDates();
-            dateValidator.verifyDateDifference(dates.getCreated(), dates.getExpires(), expectedDays, "истекает после " + paymentName + " оплаты");
-            dateValidator.verifyTimeOfDayDifference(dates.getCreated(), dates.getExpires(), "Истекает после " + paymentName + " оплаты");
+            dateValidator.verifyDateDifference(dates.created(), dates.expires(), expectedDays, "истекает после " + paymentName + " оплаты");
+            dateValidator.verifyTimeOfDayDifference(dates.created(), dates.expires(), "Истекает после " + paymentName + " оплаты");
 
             if ("второй".equals(paymentName)) {
                 // Используем разницу между настройками для второго платежа
-                int betweenPaymentsDays = settings.getAfterSecondPaymentDays() - settings.getAfterFirstPaymentDays();
-                dateValidator.verifyDateDifference(context.getExpiresBeforePayment(), dates.getExpires(), betweenPaymentsDays, "Увеличение Истекает после второй оплаты");
+                int betweenPaymentsDays = settings.afterSecondPaymentDays() - settings.afterFirstPaymentDays();
+                dateValidator.verifyDateDifference(context.getExpiresBeforePayment(), dates.expires(), betweenPaymentsDays, "Увеличение Истекает после второй оплаты");
             }
             orderDatesPage.logOrderState("Состояние после " + paymentName + " оплаты", dates);
         });
@@ -106,9 +106,9 @@ public class PaymentCycleExecutor {
     private void verifyNextPaymentEqualsExpires(String paymentName) {
         step("Проверка соответствия 'След. платеж' и 'Истекает' после " + paymentName + " оплаты", () -> {
             OrderDates dates = orderDatesPage.extractAllOrderDates();
-            assertEquals(dates.getExpires().toLocalDate(), dates.getNextPayment().toLocalDate(),
+            assertEquals(dates.expires().toLocalDate(), dates.nextPayment().toLocalDate(),
                     "После " + paymentName + " оплаты дата 'След. платеж' должна быть равна дате 'Истекает'");
-            dateValidator.verifyTimeOfDayDifference(dates.getExpires(), dates.getNextPayment(), "След. платеж от Истекает после " + paymentName + " оплаты");
+            dateValidator.verifyTimeOfDayDifference(dates.expires(), dates.nextPayment(), "След. платеж от Истекает после " + paymentName + " оплаты");
         });
     }
 }

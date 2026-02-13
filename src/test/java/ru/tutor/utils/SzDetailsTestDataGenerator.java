@@ -4,10 +4,6 @@ package ru.tutor.utils;
 import net.datafaker.Faker;
 import ru.tutor.model.SzDetailsRequest;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
@@ -185,7 +181,7 @@ public class SzDetailsTestDataGenerator {
         return faker.regexify("[0-9]{15}");
     }
 
-    /**
+    /*
      * Конвертация объекта в Map для передачи в API
      */
 }

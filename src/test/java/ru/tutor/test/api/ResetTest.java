@@ -8,6 +8,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import ru.tutor.config.TestConfig;
 import ru.tutor.steps.ResetSteps;
 import ru.tutor.base.BaseApiTest;
 import ru.tutor.utils.AllureAttachments;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 public class ResetTest extends BaseApiTest {
-    private final ResetSteps resetSteps = new ResetSteps(API_BASE_URL);
+    private final ResetSteps resetSteps = ResetSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test
@@ -100,12 +101,6 @@ public class ResetTest extends BaseApiTest {
                 response.then().body("$", not(hasKey("error")));
             }
         });
-
-//        step("Проверить время ответа", () -> {
-//            long responseTime = response.getTime();
-//            assertTrue(responseTime < 5000, "Время ответа должно быть меньше 5 секунд");
-//            Allure.step("Время ответа: " + responseTime + "ms", () -> {});
-//        });
     }
 
     @Test

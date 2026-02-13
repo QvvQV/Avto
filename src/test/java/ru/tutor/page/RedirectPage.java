@@ -5,7 +5,7 @@ import ru.tutor.utils.WaitHelper;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
+/*
  * Редирект для deva. Попасть после заказа в ЛК пользователя UI
  */
 
@@ -15,7 +15,6 @@ public class RedirectPage {
 
     public static void redirectPage() {
         WaitHelper.waitForPaymentProcessing();
-//        CloudPage.waitForPaymentProcessing();
 
         // 3. Ожидаемый URL редиректа после оформления
         // начиная с этого момента нужно переиспользовать код
@@ -28,6 +27,7 @@ public class RedirectPage {
 
         // 5. Проверяем, что мы на правильном домене
         String currentUrl = com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl();
+        assert currentUrl != null;
         assertTrue(currentUrl.contains("ttplace.ru"),
             "Должны быть на домене ttplace.ru, а текущий URL: " + currentUrl);
 

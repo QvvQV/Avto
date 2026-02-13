@@ -3,13 +3,10 @@ package ru.tutor.page.admin;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import ru.tutor.model.ProductResponse;
 import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -173,33 +170,6 @@ public class AdminOrderDetails {
         return productInfo;
     }
 
-//    @Step("Проверка что первый продукт имеет ID {expectedProductId}")
-//    public void verifyFirstProductId(String expectedProductId) {
-//        String actualProductId = getFirstProductId();
-//        if (!actualProductId.equals(expectedProductId)) {
-//            throw new AssertionError(String.format(
-//                    "Неверный ID родукта. Ожидалось: %s, Фактически: %s",
-//                    expectedProductId, actualProductId
-//            ));
-//        }
-//        AllureAttachments.attachText("Проверка ID продукта", String.format("ID продукта корректен: %s", actualProductId));
-//    }
-//
-//    @Step("Проверка что первый продукт является Premium подпиской")
-//    public void verifyFirstProductIsPremium() {
-//        String productName = getFirstProductName().toLowerCase();
-//        boolean isPremium = productName.contains("премиум") || productName.contains("premium");
-//
-//        if (!isPremium) {
-//            throw new AssertionError(String.format("Продукт не является Premium подпиской. Название: %s",
-//                    getFirstProductName()
-//            ));
-//        }
-//
-//        AllureAttachments.attachText("Проверка типа продукта", String.format("Продукт является Premium подпиской: %s", getFirstProductName()
-//        ));
-//    }
-
     @Step("Получение всех продуктов")
     public java.util.List<ProductInfo> getAllProducts() {
         return getProductElement()
@@ -225,37 +195,16 @@ public class AdminOrderDetails {
     }
 
     // DTO класс для хранения всех дат заказа
-    public static class OrderDates {
-        private final String created;
-        private final String expires;
-        private final String nextPayment;
-
-        public OrderDates(String created, String expires, String nextPayment) {
-            this.created = created;
-            this.expires = expires;
-            this.nextPayment = nextPayment;
-        }
-
-        public String getCreated() {
-            return created;
-        }
-
-        public String getExpires() {
-            return expires;
-        }
-
-        public String getNextPayment() {
-            return nextPayment;
-        }
+        public record OrderDates(String created, String expires, String nextPayment) {
 
         @Override
-        public String toString() {
-            return String.format(
-                    "Создан: %s, Истекает: %s, След. платеж: %s",
-                    created, expires, nextPayment
-            );
+            public String toString() {
+                return String.format(
+                        "Создан: %s, Истекает: %s, След. платеж: %s",
+                        created, expires, nextPayment
+                );
+            }
         }
-    }
 
     // Вспомогательные методы для извлечения ID и названия продукта
     private String extractProductId(String productText) {
@@ -276,71 +225,35 @@ public class AdminOrderDetails {
     }
 
     //    DTO класс для хранения информации о продукте
-    public static class ProductInfo {
-        private final String id;
-        private final String name;
-
-        public ProductInfo(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
+        public record ProductInfo(String id, String name) {
 
         public boolean isPremium() {
-            return name.toLowerCase().contains("премиум") || name.toLowerCase().contains("premium");
-        }
+                return name.toLowerCase().contains("премиум") || name.toLowerCase().contains("premium");
+            }
 
-        public boolean isLite() {
-            return name.toLowerCase().contains("лайт") || name.toLowerCase().contains("lite");
-        }
+            public boolean isLite() {
+                return name.toLowerCase().contains("лайт") || name.toLowerCase().contains("lite");
+            }
 
-        public boolean isLifetime() {
-            return name.toLowerCase().contains("пожизненный") || name.toLowerCase().contains("lifetime");
-        }
+            public boolean isLifetime() {
+                return name.toLowerCase().contains("пожизненный") || name.toLowerCase().contains("lifetime");
+            }
 
-        @Override
-        public String toString() {
-            return String.format("%s - %s", id, name);
+            @Override
+            public String toString() {
+                return String.format("%s - %s", id, name);
+            }
         }
-    }
 
     // DTO класс для полной информации о заказе
-    public static class OrderFullInfo {
-        private final OrderDates dates;
-        private final ProductInfo firstProduct;
-        private final java.util.List<ProductInfo> allProducts;
-
-        public OrderFullInfo(OrderDates dates, ProductInfo firstProduct, java.util.List<ProductInfo> allProducts) {
-            this.dates = dates;
-            this.firstProduct = firstProduct;
-            this.allProducts = allProducts;
-        }
-
-        public OrderDates getDates() {
-            return dates;
-        }
-
-        public ProductInfo getFirstProduct() {
-            return firstProduct;
-        }
-
-        public java.util.List<ProductInfo> getAllProducts() {
-            return allProducts;
-        }
+        public record OrderFullInfo(OrderDates dates, ProductInfo firstProduct, List<ProductInfo> allProducts) {
 
         @Override
-        public String toString() {
-            return String.format(
-                    "Даты: %s, Первый продукт: %s, Всего продуктов: %d",
-                    dates.toString(), firstProduct.toString(), allProducts.size()
-            );
+            public String toString() {
+                return String.format(
+                        "Даты: %s, Первый продукт: %s, Всего продуктов: %d",
+                        dates.toString(), firstProduct.toString(), allProducts.size()
+                );
+            }
         }
-    }
 }

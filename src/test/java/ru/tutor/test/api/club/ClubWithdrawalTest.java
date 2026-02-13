@@ -10,7 +10,6 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.model.*;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.club.ClubWithdrawalSteps;
-import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,32 +22,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("club")
 public class ClubWithdrawalTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
-    private final ClubWithdrawalSteps withdrawalSteps = new ClubWithdrawalSteps(TestConfig.getApiBaseUrl());
-    private UserSteps userSteps;
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final ClubWithdrawalSteps withdrawalSteps = ClubWithdrawalSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String authToken;
-    private static Integer currentUserId;
-    private static SzDetailsRequest testRequest;
-    private static Integer testUserId = 42225;
-    private static Integer lastWithdrawalId;
-    private static Integer savedSzDetailsId;
 
     @BeforeEach
     public void setup() {
         authToken = step("Логин", () ->
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
-
-        // Получаем реальный ID пользователя из профиля
-//       step("Получение ID пользователя", () -> {
-//             Response profileResponse = userSteps.getProfile(authToken);
-//             currentUserId = profileResponse.jsonPath().getInt("id");
-//             Allure.addAttachment("ID пользователя", "text/plain",
-//                     "Текущий userId: " + currentUserId);
-//        });
     }
 
     @Test
@@ -78,7 +63,5 @@ public class ClubWithdrawalTest {
 
             }
         });
-
-
 }
 }

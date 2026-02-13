@@ -14,11 +14,10 @@ import java.time.LocalDate;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClubSteps {
-    private final ClubApi clubApi;
+public record ClubSteps(ClubApi clubApi){
 
-    public ClubSteps(String baseUrl) {
-        this.clubApi = new ClubApi(baseUrl);
+    public static ClubSteps  withBaseUrl(String baseUrl){
+        return new ClubSteps(new ClubApi(baseUrl));
     }
 
     @Step("GET /user/club/statistics - получить статистику клуба")

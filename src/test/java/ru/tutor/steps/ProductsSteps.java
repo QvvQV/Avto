@@ -13,17 +13,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Collectors;
 
-public class ProductsSteps {
-    private final ProductsApi productsApi;
+public record ProductsSteps(ProductsApi productsApi) {
 
-    public ProductsSteps(String baseUrl) {
-        this.productsApi = new ProductsApi(baseUrl);
+    public static ProductsSteps withBaseUrl(String baseUrl) {
+        return new ProductsSteps(new ProductsApi(baseUrl));
     }
 
     @Step("Получение списка продуктов")
     public Response addProduct(String authToken) {
-        Response response = this.productsApi.getUserProducts(authToken);
-        return response;
+        return this.productsApi.getUserProducts(authToken);
     }
 
     @Step("Валидация ответа списка продуктов")
@@ -88,6 +86,8 @@ public class ProductsSteps {
         report.append(String.format("• Доступно: %d (%.1f%%)\n",
                 availableProducts, (availableProducts * 100.0) / totalProducts));
 
+        Allure.addAttachment("Product Report", report.toString());
+
         // Статистика по категориям
 
     }
@@ -107,7 +107,7 @@ public class ProductsSteps {
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(responseBody);
 
-            if (root.isArray() && root.size() > 0) {
+            if (root.isArray() && !root.isEmpty()) {
                 com.fasterxml.jackson.databind.JsonNode firstProduct = root.get(0);
 
                 StringBuilder structure = new StringBuilder();

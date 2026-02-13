@@ -26,7 +26,7 @@ public class ReactivatePremiumApi extends BaseApi {
     @Step("POST /user/orders/reactivate-premium - Реактивация пользователя Лайт по внутренней почте")
     public Response reactivatePremium(String authToken) {
 
-        String aff_rid = (String) executeJavaScript (
+        String aff_rid = executeJavaScript (
                 "return localStorage.getItem('aff_rid') || 'default_aff_rid';"
         );
 
@@ -47,7 +47,7 @@ public class ReactivatePremiumApi extends BaseApi {
     @Step("POST /user/orders/reactivate-premium-by-email - Восстановление премиума по ссылке из email-рассылки")
     public Response reactivatePremiumByEmail(String authToken) {
 
-        String aff_rid = (String) executeJavaScript (
+        String aff_rid = executeJavaScript (
                 "return localStorage.getItem('aff_rid') || 'default_aff_rid';"
         );
 

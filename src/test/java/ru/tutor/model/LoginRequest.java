@@ -2,22 +2,17 @@ package ru.tutor.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class LoginRequest {
-    private final String email;
-    private final String password;
+public record LoginRequest(String email, String password) {
 
-    public LoginRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
+    @Override
     @JsonProperty("email")
-    public String getEmail() {
+    public String email() {
         return email;
     }
 
+    @Override
     @JsonProperty("password")
-    public String getPassword() {
+    public String password() {
         return password;
     }
 }

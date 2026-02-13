@@ -18,15 +18,16 @@ import static io.qameta.allure.Allure.step;
 class OrderRedirectTest extends BaseUiTest {
 
     private final OrderStepsRedirect orderStepsRedirect = new OrderStepsRedirect();
+    private static final TtPage ttPage = new TtPage();
 
     @Test
 //    @RepeatedTest(5)
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Успешное оформление заказа с коррекцией редиректа")
-    void successfulOrderWithRedirectCorrection() throws InterruptedException {
+    void successfulOrderWithRedirectCorrection() {
         // 1. Выполняем оформление заказа
         step("1. Начало оформления заказа", () -> {
-        open(addressPage.urlMain);
+        open(AddressPage.urlMain);
 
 
         ttPage.clickBtnOpenFor();
@@ -41,8 +42,7 @@ class OrderRedirectTest extends BaseUiTest {
         });
 
         // 3. Обработка редиректа после оплаты
-        step("3. Обработка редиректа после оплаты", () -> {
-
-        RedirectPage.redirectPage();});
+        step("3. Обработка редиректа после оплаты", RedirectPage::redirectPage
+        );
         }
     }

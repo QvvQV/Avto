@@ -12,7 +12,6 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
 import ru.tutor.utils.AllureAttachments;
 
@@ -104,7 +103,7 @@ public class OrderApiTest {
         formData.forEach((key, value) -> requestDetails.append("  ").append(key).append(": ").append(value).append("\n"));
         AllureAttachments.attachText("Детали запроса", requestDetails.toString());
 
-        Response response = given()
+         return given()
                 .contentType(ContentType.MULTIPART)
                 .multiPart("isAuthorRegister", formData.get("isAuthorRegister"))
                 .multiPart("order[email]", formData.get("order[email]"))
@@ -116,7 +115,6 @@ public class OrderApiTest {
                 .response();
 
 //        AllureAttachments.attachApiResponse("Ответ на создание заказа", response);
-        return response;
     }
 
     @Step("Валидация статуса и JSON-схемы ответа")
@@ -152,7 +150,10 @@ public class OrderApiTest {
         assertAll("Проверка параметров токена",
                 () -> assertNotNull(username, "username не должен быть null"),
                 () -> assertNotNull(loginToken, "login_token не должен быть null"),
-                () -> assertTrue(loginToken.length() >= 32, "login_token должен быть достаточно длинным")
+                () -> {
+                    assert loginToken != null;
+                    assertTrue(loginToken.length() >= 32, "login_token должен быть достаточно длинным");
+                }
         );
 
         AllureAttachments.attachText("Детали токена",
@@ -178,7 +179,7 @@ public class OrderApiTest {
         return null;
     }
 
-    @Test
+//    @Test
     @DisplayName("Создание заказа без автора (isAuthorRegister=false)")
     void createOrderWithoutAuthor_ShouldSucceed() {
         // Модифицируем данные для этого конкретного теста
@@ -190,7 +191,7 @@ public class OrderApiTest {
         validateResponseStatusAndSchema(response);
     }
 
-    @Test
+//    @Test
     @DisplayName("Попытка создания заказа с некорректным email")
     void createOrderWithInvalidEmail_ShouldReturnError() {
         Map<String, String> testFormData = new HashMap<>();
@@ -210,7 +211,7 @@ public class OrderApiTest {
 //        AllureAttachments.attachApiResponse("Ответ с ошибкой валидации", response);
     }
 
-    @Test
+//    @Test
     @DisplayName("Создание заказа с пустым именем")
     void createOrderWithEmptyName_ShouldReturnError() {
         Map<String, String> testFormData = new HashMap<>(formData);

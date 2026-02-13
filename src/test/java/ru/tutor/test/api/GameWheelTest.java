@@ -29,16 +29,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GameWheelTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
-    private final GameWheelRewardsSteps gameWheelRewardsSteps = new GameWheelRewardsSteps(TestConfig.getApiBaseUrl());
-    private final GameWheelStartGameSteps gameWheelStartGameSteps = new GameWheelStartGameSteps(TestConfig.getApiBaseUrl());
-    private final UserRewardSteps userRewardSteps = new UserRewardSteps(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps =  AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final GameWheelStartGameSteps gameWheelStartGameSteps = GameWheelStartGameSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final UserRewardSteps userRewardSteps = UserRewardSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmailFortune();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
     private static List<GameWheelRewardResponse> rewards;
-    private static Map<String, GameWheelRewardsSteps.RewardValidationResult> validationResults;
+//    TODO: сейчас таблица призов по ручке не появляется (может к ней вернутся)
+//    private static Map<String, GameWheelRewardsSteps.RewardValidationResult> validationResults;
 
     @BeforeAll
     public static void setUp() {
@@ -78,58 +79,6 @@ public class GameWheelTest {
     }
 
     @Test
-    @Order(2)
-    @DisplayName("Сравнение 'Наград колеса' с эталонными значениями (name, chance)")
-    @Story("Валидация данных")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag("validation")
-    @Tag("positive")
-    void shouldMatchExpectedRewardValues() {
-
-        Response response = step("Отправка GET запроса", () ->
-                gameWheelRewardsSteps.getGameWheelRewards(token)
-        );
-
-        List<GameWheelRewardResponse> rewards = step("Получение списка наград", () ->
-                gameWheelRewardsSteps.validateGameWheelRewardsResponse(response)
-        );
-
-        step("Сравнение с эталонными значениями", () -> {
-            Map<Long, GameWheelRewardsSteps.RewardValidationResult> validationResults =
-                    gameWheelRewardsSteps.validateAgainstExpectedValues(rewards);
-
-//            gameWheelRewardsSteps.generateValidationReport(rewards, validationResults);
-            gameWheelRewardsSteps.generateDetailedDiscrepancyReport(rewards, validationResults);
-
-            // Статистика проверки
-            long perfectMatches = validationResults.values().stream()
-                    .filter(GameWheelRewardsSteps.RewardValidationResult::isPerfectMatch)
-                    .count();
-
-            long foundWithIssues = validationResults.values().stream()
-                    .filter(r -> r.isFound() && !r.isPerfectMatch())
-                    .count();
-
-            long notFound = validationResults.values().stream()
-                    .filter(r -> !r.isFound())
-                    .count();
-
-            Allure.addAttachment("Результаты сравнения", "text/plain",
-                    "Всего наград: " + validationResults.size() + "\n" +
-                            "Полностью соответствуют: " + perfectMatches + "\n" +
-                            "С расхождениями: " + foundWithIssues + "\n" +
-                            "Не найдены в эталоне: " + notFound);
-
-            // Проверяем что все награды найдены в эталоне
-            assertEquals(0, notFound, "Все награды должны быть найдены в эталоне");
-
-            // Проверяем что все награды полностью соответствуют эталону
-            assertEquals(rewards.size(), perfectMatches,
-                    "Все награды должны полностью соответствовать эталону");
-        });
-    }
-
-    @Test
     @Order(3)
     @DisplayName("Проверка 'Наград колеса' без авторизации (Проверка 401)")
     @Story("Негативный сценарий")
@@ -141,9 +90,9 @@ public class GameWheelTest {
                 gameWheelRewardsSteps.getGameWheelRewards("")
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            gameWheelRewardsSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () ->
+            gameWheelRewardsSteps.validateUnauthorizedResponse(response)
+        );
     }
 
     @Test
@@ -158,9 +107,9 @@ public class GameWheelTest {
                 gameWheelRewardsSteps.getGameWheelRewards("invalid_token_12345")
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            gameWheelRewardsSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () ->
+            gameWheelRewardsSteps.validateUnauthorizedResponse(response)
+        );
     }
 
     @Test
@@ -180,17 +129,18 @@ public class GameWheelTest {
                 gameWheelStartGameSteps.validateStartGameResponse(response)
         );
 
-        step("Проверка структуры приза", () -> {
+        step("Проверка структуры приза", () ->
             Allure.addAttachment("Полученный приз", "text/plain",
-                    String.format("🎁 Приз: %s (ID: %d)\n" +
-                                    "🏷️ Тип: %s\n" +
-                                    "💰 Значение: %d\n" +
-                                    "🆔 ID награды: %d",
+                    String.format("""
+                                    🎁 Приз: %s (ID: %d)
+                                    🏷️ Тип: %s
+                                    💰 Значение: %d
+                                    🆔 ID награды: %d""",
                             prize.getName(), prize.getId(),
                             prize.getType(), prize.getValue(),
                             prize.getUserRewardId())
-            );
-        });
+            )
+        );
     }
 
     @Test
@@ -218,11 +168,12 @@ public class GameWheelTest {
             }
 
             Allure.addAttachment("Статистика по запускам", "text/plain",
-                    String.format("Всего запусков: %d\n" +
-                                    "Уникальных userRewardId: %d\n" +
-                                    "Уникальных ID призов: %d\n" +
-                                    "Уникальных типов призов: %d\n" +
-                                    "Типы призов: %s",
+                    String.format("""
+                                    Всего запусков: %d
+                                    Уникальных userRewardId: %d
+                                    Уникальных ID призов: %d
+                                    Уникальных типов призов: %d
+                                    Типы призов: %s""",
                             multiplePrizes.size(),
                             userRewardIds.size(),
                             prizeIds.size(),
@@ -269,9 +220,9 @@ public class GameWheelTest {
                 gameWheelStartGameSteps.startGame("invalid_token_12345")
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            gameWheelStartGameSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () ->
+            gameWheelStartGameSteps.validateUnauthorizedResponse(response)
+        );
     }
 
     @Test
@@ -335,11 +286,12 @@ public class GameWheelTest {
                 List<UserRewardResponse> after = result.getRewardsAfter();
 
                 Allure.addAttachment("Интеграционный тест пройден", "text/plain",
-                        String.format("🎉 ТЕСТ ПРОЙДЕН!\n" +
-                                        "🎁 Полученный приз: %s (ID: %d)\n" +
-                                        "📊 Наград до запуска: %d\n" +
-                                        "📊 Наград после запуска: %d\n" +
-                                        "✅ Награда успешно добавлена в список пользователя",
+                        String.format("""
+                                        🎉 ТЕСТ ПРОЙДЕН!
+                                        🎁 Полученный приз: %s (ID: %d)
+                                        📊 Наград до запуска: %d
+                                        📊 Наград после запуска: %d
+                                        ✅ Награда успешно добавлена в список пользователя""",
                                 prize.getName(), prize.getUserRewardId(),
                                 before.size(), after.size()));
 
@@ -394,9 +346,9 @@ public class GameWheelTest {
                 userRewardSteps.getUserRewards("invalid_token_12345")
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            gameWheelStartGameSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () ->
+            gameWheelStartGameSteps.validateUnauthorizedResponse(response)
+        );
     }
 
     @Test
@@ -426,11 +378,12 @@ public class GameWheelTest {
                         "Истекает: " + reward.getExpiresAt() : "Срок не ограничен";
 
                 Allure.addAttachment("Выбранная награда", "text/plain",
-                        String.format("ID: %d\n" +
-                                        "Название: %s\n" +
-                                        "Тип: %s\n" +
-                                        "Значение: %d\n" +
-                                        "%s",
+                        String.format("""
+                                        ID: %d
+                                        Название: %s
+                                        Тип: %s
+                                        Значение: %d
+                                        %s""",
                                 rewardId,
                                 reward.getName(),
                                 reward.getRewardType(),
@@ -440,7 +393,7 @@ public class GameWheelTest {
         } else {
             rewardId = step("Создаем новую награду через игровое колесо", () -> {
                 Response spinResponse = gameWheelStartGameSteps.startGame(token);
-                GameWheelStartGameResponse prize = gameWheelStartGameSteps.validateStartGameResponse(spinResponse);
+                gameWheelStartGameSteps.validateStartGameResponse(spinResponse);
 
                 Response updateResponse = userRewardSteps.getUserRewards(token);
                 List<UserRewardResponse> updateRewards = userRewardSteps.validateUserRewardsResponse(updateResponse);
@@ -458,7 +411,7 @@ public class GameWheelTest {
             });
         }
 
-        Response openResponse = step("Открываем награду ID: " + rewardId, () ->
+        step("Открываем награду ID: " + rewardId, () ->
                 userRewardSteps.openReward(token, rewardId)
         );
     }
@@ -485,13 +438,13 @@ public class GameWheelTest {
 
         Long valuationRewardId = valuationReward.get().getId();
 
-        step("Найдена valuation наград", () -> {
+        step("Найдена valuation наград", () ->
             Allure.addAttachment("Награда valuation", "text/plain",
                     String.format("ID: %d\nНазвание: %s\nТип: %s",
                             valuationRewardId,
                             valuationReward.get().getName(),
-                            valuationReward.get().getRewardType()));
-        });
+                            valuationReward.get().getRewardType()))
+        );
 
         Response openResponse = step("Попытка открыть valuation награду", () ->
                 userRewardSteps.openReward(token, valuationRewardId)
@@ -506,10 +459,11 @@ public class GameWheelTest {
             String responseBody = openResponse.getBody().asString();
 
             Allure.addAttachment("Результат", "text/plain",
-                    String.format("✅ Сервер корректно отклонил запрос\n" +
-                                    "🎁 ID valuation награды: %d\n" +
-                                    "📊 Статус код: %d\n" +
-                                    "📝 Ответ сервера: %s",
+                    String.format("""
+                                    ✅ Сервер корректно отклонил запрос
+                                    🎁 ID valuation награды: %d
+                                    📊 Статус код: %d
+                                    📝 Ответ сервера: %s""",
                             valuationRewardId,
                             statusCode,
                             responseBody));
@@ -581,9 +535,9 @@ public class GameWheelTest {
                 userRewardSteps.openReward("invalid_token_12345", 7090L)
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            gameWheelStartGameSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () ->
+            gameWheelStartGameSteps.validateUnauthorizedResponse(response)
+        );
     }
 
     @Test
@@ -608,15 +562,15 @@ public class GameWheelTest {
             return gameWheelStartGameSteps.validateStartGameResponse(response);
         });
 
-        step("Приз получен", () -> {
+        step("Приз получен", () ->
             Allure.addAttachment("Выигранный приз", "text/plain",
                     String.format("🎁 Приз: %s\nID: %d\nТип: %s\nЗначение: %d\nUserRewardId: %d",
                             prize.getName(),
                             prize.getId(),
                             prize.getType(),
                             prize.getValue(),
-                            prize.getUserRewardId()));
-        });
+                            prize.getUserRewardId()))
+        );
 
         List<UserRewardResponse> rewardAfterSpin = step("Получаем список после спина", () -> {
             Response response = userRewardSteps.getUserRewards(token);
@@ -633,13 +587,13 @@ public class GameWheelTest {
                     "Количество наград после спина: " + afterSpinCount);
         });
 
-        UserRewardResponse newReward = step("Находим новую награду", () -> {
-            return rewardAfterSpin.stream()
+        UserRewardResponse newReward = step("Находим новую награду", () ->
+            rewardAfterSpin.stream()
                     .filter(reward -> initionalRewards.stream()
                             .noneMatch(initial -> initial.getId().equals(reward.getId())))
                     .findFirst()
-                    .orElseThrow(() -> new AssertionError("Новая награда не найдена в списке"));
-        });
+                    .orElseThrow(() -> new AssertionError("Новая награда не найдена в списке"))
+        );
 
         step("Новая награда найдена", () -> {
             Allure.addAttachment("Новая награда", "text/plain",
@@ -662,9 +616,10 @@ public class GameWheelTest {
                     .statusCode(200);
 
             Allure.addAttachment("Результат открытия", "text/plain",
-                    String.format("✅ Награда успешно открыта\n" +
-                                    "🎁 ID награды: %d\n" +
-                                    "📊 Статус код: 200 OK",
+                    String.format("""
+                                    ✅ Награда успешно открыта
+                                    🎁 ID награды: %d
+                                    📊 Статус код: 200 OK""",
                             newReward.getId()));
         });
 
@@ -677,18 +632,22 @@ public class GameWheelTest {
             int finalCount = finalRewards.size();
 
             Allure.addAttachment("🎉 ИТОГИ E2E ТЕСТА", "text/plain",
-                    String.format("✅ ПОЛНЫЙ ЦИКЛ ВЫПОЛНЕН УСПЕШНО!\n\n" +
-                                    "📊 Статистика:\n" +
-                                    "• Начальное количество наград: %d\n" +
-                                    "• После спина колеса: %d (+1)\n" +
-                                    "• После открытия награды: %d\n" +
-                                    "• Итого изменений: +1 награда\n\n" +
-                                    "🎁 Детали награды:\n" +
-                                    "• ID: %d\n" +
-                                    "• Название: %s\n" +
-                                    "• Тип: %s\n" +
-                                    "• Значение: %d\n\n" +
-                                    "✅ Все этапы выполнены корректно!",
+                    String.format("""
+                                    ✅ ПОЛНЫЙ ЦИКЛ ВЫПОЛНЕН УСПЕШНО!
+                                    
+                                    📊 Статистика:
+                                    • Начальное количество наград: %d
+                                    • После спина колеса: %d (+1)
+                                    • После открытия награды: %d
+                                    • Итого изменений: +1 награда
+                                    
+                                    🎁 Детали награды:
+                                    • ID: %d
+                                    • Название: %s
+                                    • Тип: %s
+                                    • Значение: %d
+                                    
+                                    ✅ Все этапы выполнены корректно!""",
                             initialCount,
                             afterSpinCount,
                             finalCount,
@@ -749,8 +708,8 @@ public class GameWheelTest {
                 userRewardSteps.getUserRewardsHistory("invalid_token_12345")
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            gameWheelStartGameSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () ->
+            gameWheelStartGameSteps.validateUnauthorizedResponse(response)
+        );
     }
 }

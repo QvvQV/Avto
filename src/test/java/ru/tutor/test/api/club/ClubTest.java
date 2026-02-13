@@ -22,13 +22,11 @@ import static org.hamcrest.Matchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ClubTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
-    private final ClubSteps clubSteps = new ClubSteps(TestConfig.getApiBaseUrl());
-    private ru.tutor.steps.UserSteps userSteps;
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
-    private static String authToken;
     private static ClubMemberResponse memberInfo;
     private static ClubStatisticsResponse statisticsInfo;
 
@@ -135,9 +133,7 @@ public class ClubTest {
                 clubSteps.getClubStatictics("invalid")
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            clubSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () -> clubSteps.validateUnauthorizedResponse(response));
     }
 
     @Test
@@ -150,8 +146,8 @@ public class ClubTest {
                 clubSteps.getClubMember("invalid")
         );
 
-        step("Проверка ошибки авторизации", () -> {
-            clubSteps.validateUnauthorizedResponse(response);
-        });
+        step("Проверка ошибки авторизации", () ->
+            clubSteps.validateUnauthorizedResponse(response)
+        );
     }
 }

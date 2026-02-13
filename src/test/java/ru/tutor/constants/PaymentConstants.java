@@ -50,23 +50,7 @@ public class PaymentConstants {
     public static final Integer[] ALLOWED_AUTO_CLOSE = {0, 1, 2, 3, 5, 10};
 
     // Эталонные данные для валидации
-    public static class ExpectedPayment {
-        private final String description;
-        private final Double amount;
-        private final String currency;
-        private final Integer paymentType;
-
-        public ExpectedPayment(String description, Double amount, String currency, Integer paymentType) {
-            this.description = description;
-            this.amount = amount;
-            this.currency = currency;
-            this.paymentType = paymentType;
-        }
-
-        public String getDescription() { return description; }
-        public Double getAmount() { return amount; }
-        public String getCurrency() { return currency; }
-        public Integer getPaymentType() { return paymentType; }
+        public record ExpectedPayment(String description, Double amount, String currency, Integer paymentType) {
     }
 
     // Эталонные значения для разных типов платежей
@@ -80,16 +64,12 @@ public class PaymentConstants {
             new ExpectedPayment("Подписка на месяц", 490.0, "RUB", 0);
 
     public static ExpectedPayment getExpectedPaymentByDescription(String description) {
-        switch (description) {
-            case "Покупка доступа TutorPlace":
-                return ACCESS_PURCHASE;
-            case "Покупка курса":
-                return COURSE_PURCHASE;
-            case "Подписка на месяц":
-                return SUBSCRIPTION_PURCHASE;
-            default:
-                return null;
-        }
+        return switch (description) {
+            case "Покупка доступа TutorPlace" -> ACCESS_PURCHASE;
+            case "Покупка курса" -> COURSE_PURCHASE;
+            case "Подписка на месяц" -> SUBSCRIPTION_PURCHASE;
+            default -> null;
+        };
     }
 
     // Валидация типов

@@ -7,10 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class WithdrawalRequest {
 
     @JsonProperty("amount")
-    private Integer amount;
+    private final Integer amount;
 
     // Конструктор
-//    public WithdrawalRequest() {}
 
     public WithdrawalRequest(Integer amount) {
         this.amount = amount;
@@ -20,16 +19,4 @@ public class WithdrawalRequest {
         return amount;
     }
 
-//    public void setAmount(Integer amount) {
-//        this.amount = amount;
-//    }
-//
-//    // Дополнительные методы
-//    public boolean isValidAmount() {
-//        return amount != null && amount > 0;
-//    }
-//
-//    public boolean isAmountInRange(Integer min, Integer max) {
-//        return amount != null && amount >= min && amount <= max;
-//    }
 }

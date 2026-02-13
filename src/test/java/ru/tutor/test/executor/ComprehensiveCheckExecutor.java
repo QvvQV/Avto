@@ -3,7 +3,6 @@ package ru.tutor.test.executor;
 import io.qameta.allure.Allure;
 import ru.tutor.ProductConfiguration;
 import ru.tutor.page.OrderDatesPage;
-import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.dto.OrderDates;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.DateValidator;
@@ -17,13 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ComprehensiveCheckExecutor {
 
     private final OrderDatesPage orderDatesPage;
-    private final AdminOrderDetails  adminOrderDetails;
     private final DateValidator  dateValidator;
 
-    public ComprehensiveCheckExecutor(OrderDatesPage  orderDatesPage,
-                                      AdminOrderDetails adminOrderDetails) {
+    public ComprehensiveCheckExecutor(OrderDatesPage  orderDatesPage) {
         this.orderDatesPage = orderDatesPage;
-        this.adminOrderDetails = adminOrderDetails;
         this.dateValidator = new DateValidator(1); // 1 минута допустимой разницы
     }
 
@@ -32,20 +28,20 @@ public class ComprehensiveCheckExecutor {
             // Получаем ID продукта для определения финальных настроек
 //            String productId = adminOrderDetails.getFirstProductId();
             ProductConfiguration.ProductSettings settings = ProductConfiguration.getSettings(productId);
-            int finalExpectedDays = settings.getAfterSecondPaymentDays();
+            int finalExpectedDays = settings.afterSecondPaymentDays();
 
             OrderDates dates = orderDatesPage.extractAllOrderDates();
             assertAll("Финальная проверка всех условий",
-                    () -> assertNotNull(dates.getCreated(), "Дата создания не должна быть null"),
-                    () -> assertNotNull(dates.getExpires(), "Дата истечения не должна быть null"),
-                    () -> assertNotNull(dates.getNextPayment(), "Дата следующего платежа не должна быть null"),
-                    () -> dateValidator.verifyDateDifference(dates.getCreated(), dates.getExpires(), finalExpectedDays,
+                    () -> assertNotNull(dates.created(), "Дата создания не должна быть null"),
+                    () -> assertNotNull(dates.expires(), "Дата истечения не должна быть null"),
+                    () -> assertNotNull(dates.nextPayment(), "Дата следующего платежа не должна быть null"),
+                    () -> dateValidator.verifyDateDifference(dates.created(), dates.expires(), finalExpectedDays,
                             "финальная проверка Истекает"),
-                    () -> dateValidator.verifyTimeOfDayDifference(dates.getCreated(), dates.getExpires(),
+                    () -> dateValidator.verifyTimeOfDayDifference(dates.created(), dates.expires(),
                             "финальная проверка времени Истекает"),
-                    () -> assertEquals(dates.getExpires().toLocalDate(), dates.getNextPayment().toLocalDate(),
+                    () -> assertEquals(dates.expires().toLocalDate(), dates.nextPayment().toLocalDate(),
                             "Финальная проверка: даты Истекает и След. платеж должны совпадать"),
-                    () -> dateValidator.verifyTimeOfDayDifference(dates.getExpires(), dates.getNextPayment(),
+                    () -> dateValidator.verifyTimeOfDayDifference(dates.expires(), dates.nextPayment(),
                             "финальная проверка времени След. платеж"));
             orderDatesPage.logOrderState("Финальное состояние заказа", dates);
 

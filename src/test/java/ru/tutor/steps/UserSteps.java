@@ -44,7 +44,7 @@ public class UserSteps {
                 .statusCode(200)
                 .body("$", hasKey("token"))
                 .body("token", instanceOf(String.class))
-                .body("token", not(isEmptyOrNullString()));
+                .body("token", not(emptyOrNullString()));
 
         // Извлекаем токен
         String token = response.jsonPath().getString("token");
@@ -79,7 +79,7 @@ public class UserSteps {
         response.then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("token", not(isEmptyOrNullString()))
+                .body("token", not(emptyOrNullString()))
                 .body("username", not(emptyOrNullString()));
 
         LoginResponse loginResponse = response.as(LoginResponse.class);
@@ -165,9 +165,7 @@ public class UserSteps {
         profileResponse.then()
                 .statusCode(200);
 
-        Response logoutResponse = userApi.logout(token);
-
-        return logoutResponse;
+        return userApi.logout(token);
     }
 
     @Step("GET /user/game-stats - получить игровую статистику")

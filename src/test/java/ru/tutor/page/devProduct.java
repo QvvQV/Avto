@@ -1,7 +1,6 @@
 package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
-import io.qameta.allure.internal.shadowed.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -10,10 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Keys;
-import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.WaitHelper;
 
-import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;
 
@@ -25,83 +21,63 @@ import static org.hamcrest.Matchers.hasItems;
 
 public class devProduct {
     private static final Faker faker = new Faker(Locale.ENGLISH);
-    private static SelenideElement btnSave = $$("button").find(exactText("Сохранить"));
-    private static SelenideElement h2 = $$("h2").find(exactText("Редактирование продукта"));
-//    private static SelenideElement password = $("[name=\"password\"]");
-    //    private static SelenideElement email = $("[name=\"email\"]");
-//    private static SelenideElement email = $("#root > div > div > div > form > div:nth-child(1) > div.input__wrapper > input");
-    private static SelenideElement h1 = $("h1");
-    private static SelenideElement card1Title = $("div:nth-child(2) > div:nth-child(2) > div.input__wrapper > input");
-    private static SelenideElement card2Title = $("div:nth-child(2) > div:nth-child(4) > div.input__wrapper > input");
-    private static SelenideElement card3Title = $("div:nth-child(2) > div:nth-child(6) > div.input__wrapper > input");
-//    private static SelenideElement successBtn = $$("button").find(exactText("войти"));
-    private static SelenideElement label = $$("label").find(exactText("Навык 1"));
-    private static SelenideElement description = $$("[name=\"description\"]").get(3);
-    private static SelenideElement sideBArProduct = $$("span").find(exactText("Продукты"));
-    private static SelenideElement pencil = $(".table__inner > div:nth-child(3) > div.tableRow__item.tableRow__item--svg.tableRow__item--m > a > svg > path:nth-child(3)");
-
-
-
-//    public static void login() {
-//        step("вводим валидный email", () -> {
-//            email.sendKeys("admin");
-//        });
-//        step("вводим валидный пароль", () -> {
-//            password.sendKeys("admin");
-//        });
-//        step("кликаем по кнопке войти", () -> {
-//            successBtn.click();
-//            WaitHelper.waitForPageLoad();
-//            WaitHelper.waitForAnimationComplete();
-//        });
-//    }
+    private static final SelenideElement btnSave = $$("button").find(exactText("Сохранить"));
+    private static final SelenideElement h2 = $$("h2").find(exactText("Редактирование продукта"));
+    private static final SelenideElement h1 = $("h1");
+    private static final SelenideElement card1Title = $("div:nth-child(2) > div:nth-child(2) > div.input__wrapper > input");
+    private static final SelenideElement card2Title = $("div:nth-child(2) > div:nth-child(4) > div.input__wrapper > input");
+    private static final SelenideElement card3Title = $("div:nth-child(2) > div:nth-child(6) > div.input__wrapper > input");
+    private static final SelenideElement label = $$("label").find(exactText("Навык 1"));
+    private static final SelenideElement description = $$("[name=\"description\"]").get(3);
+    private static final SelenideElement sideBArProduct = $$("span").find(exactText("Продукты"));
+    private static final SelenideElement pencil = $(".table__inner > div:nth-child(3) > div.tableRow__item.tableRow__item--svg.tableRow__item--m > a > svg > path:nth-child(3)");
 
     public static void textH2() {
-        step("проверяем, что попали в редактор", () -> {
-            Assertions.assertEquals("Редактирование продукта", h2.getText().trim());
-        });
+        step("проверяем, что попали в редактор", () ->
+            Assertions.assertEquals("Редактирование продукта", h2.getText().trim())
+        );
     }
 
     public static void textH1() {
-        step("проверяем текст заголовка Н1", () -> {
-            Assertions.assertEquals("Продукты", h1.getText().trim());
-        });
+        step("проверяем текст заголовка Н1", () ->
+            Assertions.assertEquals("Продукты", h1.getText().trim())
+        );
     }
 
     public static void scrollToElement() {
-        step("прокручиваем до элемента", () -> {
-            executeJavaScript("arguments[0].scrollIntoView(true);", label);
-        });
+        step("прокручиваем до элемента", () ->
+            executeJavaScript("arguments[0].scrollIntoView(true);", label)
+        );
     }
 
     public static void inputText() {
-        step("вводим текст в первый модуль", () -> {
-            description.sendKeys("навык-приветствия");
-        });
+        step("вводим текст в первый модуль", () ->
+            description.sendKeys("навык-приветствия")
+        );
     }
 
     public static void assertionsText() {
-        step("проверяем ранее набранный текст", () -> {
-            Assertions.assertEquals("навык-приветствия", description.getText().trim());
-        });
+        step("проверяем ранее набранный текст", () ->
+            Assertions.assertEquals("навык-приветствия", description.getText().trim())
+        );
     }
 
     public static void deleteText() {
-        step("удаляем текст в поле", () -> {
-            description.sendKeys(Keys.CONTROL + "A" + Keys.DELETE);
-        });
+        step("удаляем текст в поле", () ->
+            description.sendKeys(Keys.CONTROL + "A" + Keys.DELETE)
+        );
     }
 
     public static void cleanText() {
-        step("проверяем что поле пустое", () -> {
-            Assertions.assertEquals("", description.getText().trim());
-        });
+        step("проверяем что поле пустое", () ->
+            Assertions.assertEquals("", description.getText().trim())
+        );
     }
 
     public static void scrollToBtnSave() {
-        step("прокручиваем до элемента", () -> {
-            executeJavaScript("arguments[0].scrollIntoView(true);", btnSave);
-        });
+        step("прокручиваем до элемента", () ->
+            executeJavaScript("arguments[0].scrollIntoView(true);", btnSave)
+        );
         step("кликаем по кнопке", () -> {
             btnSave.click();
             sleep(2000);
@@ -110,33 +86,23 @@ public class devProduct {
 
     public static void visibleCardTitle() {
         step("видимость заголовков", () -> {
-            step("заголовок1", () -> {
-                card1Title.shouldBe(visible);
-            });
-            step("заголовок2", () -> {
-                card2Title.shouldBe(visible);
-            });
-            step("заголовок3", () -> {
-                card3Title.shouldBe(visible);
-            });
+            step("заголовок1", () ->
+                card1Title.shouldBe(visible)
+            );
+            step("заголовок2", () ->
+                card2Title.shouldBe(visible)
+            );
+            step("заголовок3", () ->
+                card3Title.shouldBe(visible)
+            );
         });
     }
 
-    public static void clickPencil() throws JsonProcessingException {
+    public static void clickPencil() {
         doGet();
-//        step("переходим во вкладку продукты", () -> {
-//            sideBArProduct.click();
-//        });
-//        step("проверяем что попали на стр Продукты", () -> {
-//            Assertions.assertEquals("Продукты", h1.getText().trim());
-//        });
-//        get525();
-//        step("кликаем по редактировать продукт 525", () -> {
-//            pencil.click();
-//        });
     }
 
-    public static void doGet() throws JsonProcessingException {
+    public static void doGet() {
         step("получаем токен", () -> {
         });
         String requestBody = "{\"username\": \"admin\", \"password\": \"admin\"}";
@@ -158,28 +124,6 @@ public class devProduct {
 
         Map<String, String> token = response.getCookies();
         System.out.println("Это ваш токен " + token);
-
-//        given()
-//                .baseUri("https://api.dev.tutorplace.ru/admin")
-//                .cookies(token)
-////                .log().all()
-//
-//                .when()
-//                .get("/products?filter[status]=1&limit=50&page=1")
-//                .then()
-//                .statusCode(200)
-//
-//                .extract().response();
-//        Response response1 =
-//                given()
-//                        .baseUri("https://api.dev.tutorplace.ru/admin")
-//                        .cookies(token)
-//                        .when()
-//                        .get("/products/525")
-//                        .then()
-//                        .statusCode(200)
-////                .log().all()
-//                        .extract().response();
 
         step("Вносим изменения в существующий продукт, добавляем навыки", () -> {
             JSONObject body = new JSONObject();

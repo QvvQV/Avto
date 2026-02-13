@@ -1,6 +1,5 @@
 package ru.tutor.flow;
 
-
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
@@ -8,15 +7,13 @@ import ru.tutor.flow.builder.SubscriptionPurchaseBuilder;
 import ru.tutor.flow.builder.SubscriptionPurchaseResult;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.SberPage;
-import ru.tutor.page.addressPage;
 import ru.tutor.page.admin.AdminLoginPage;
 import ru.tutor.page.admin.AdminOrdersPage;
-import ru.tutor.page.ttPage;
+import ru.tutor.page.TtPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -27,12 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SubscriptionTestFlow {
 
     private String userEmail;
-    private final ttPage ttPage;
+    private final TtPage ttPage;
     private final CloudPage cloudPage;
     private final SberPage sberPage;
     private final AdminOrdersPage adminOrdersPage;
 
-    public SubscriptionTestFlow(ttPage ttPage, CloudPage cloudPage, SberPage sberPage, AdminOrdersPage adminOrdersPage) {
+    public SubscriptionTestFlow(TtPage ttPage, CloudPage cloudPage, SberPage sberPage, AdminOrdersPage adminOrdersPage) {
         this.ttPage = ttPage;
         this.cloudPage = cloudPage;
         this.sberPage = sberPage;
@@ -42,13 +39,13 @@ public class SubscriptionTestFlow {
     // Основной метод для создания покупок через Builder
     private SubscriptionPurchaseResult purchaseSubscription(SubscriptionPurchaseBuilder builder) {
         SubscriptionPurchaseResult result = builder.execute();
-        this.userEmail = result.getUserEmail();
+        this.userEmail = result.userEmail();
         return result;
     }
 
     private SubscriptionPurchaseResult purchaseSubscriptionAffRid(SubscriptionPurchaseBuilder builder) {
         SubscriptionPurchaseResult result = builder.executeAffRid();
-        this.userEmail = result.getUserEmail();
+        this.userEmail = result.userEmail();
         return result;
     }
 
@@ -60,7 +57,7 @@ public class SubscriptionTestFlow {
                         .viaCloud()
                         .withStandardPayment()
         );
-        this.userEmail = result.getUserEmail();
+        this.userEmail = result.userEmail();
         return this;
     }
 
@@ -73,28 +70,26 @@ public class SubscriptionTestFlow {
                         .viaCloud()
                         .withStandardPayment()
         );
-        this.userEmail = result.getUserEmail();
+        this.userEmail = result.userEmail();
         return this;
     }
 
-    public SubscriptionTestFlow purchaseLifeSubscription() {
+    public void purchaseLifeSubscription() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forLife()
                         .viaCloud()
                         .withStandardPayment()
         );
-        return this;
     }
 
-    public SubscriptionTestFlow purchaseLifeInstallmentsSubscription() {
+    public void purchaseLifeInstallmentsSubscription() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forLife()
                         .viaCloud()
                         .withInstallments()
         );
-        return this;
     }
 
     public SubscriptionTestFlow purchaseLiteSubscription() {
@@ -130,29 +125,27 @@ public class SubscriptionTestFlow {
     }
 
     @Step("Оплата Пожизненного по карте Сбер")
-    public SubscriptionTestFlow purchaseLifeSubscriptionSber() {
+    public void purchaseLifeSubscriptionSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forLife()
                         .viaSber()
                         .withApprovedCard()
         );
-        return this;
     }
 
     @Step("Оплата Премиум по карте Сбер с фиксированным остатком = 100р")
-    public SubscriptionTestFlow purchasePremiumSubscriptionFixSber() {
+    public void purchasePremiumSubscriptionFixSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forPremium()
                         .viaSber()
                         .withFixedBalanceCard()
         );
-        return this;
     }
 
     @Step("Ошибка 'Недостаточно средств' по карте Сбер")
-    public SubscriptionTestFlow purchasePremiumSubscriptionInsufficientFundsSber() {
+    public void purchasePremiumSubscriptionInsufficientFundsSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forPremium()
@@ -160,11 +153,11 @@ public class SubscriptionTestFlow {
                         .withInsufficientFundsCard()
                         .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
         );
-        return this.captureScreenshot();
+        this.captureScreenshot();
     }
 
     @Step("Ошибка 'Невалидная карта' по карте Сбер")
-    public SubscriptionTestFlow purchasePremiumSubscriptionExpireSber() {
+    public void purchasePremiumSubscriptionExpireSber() {
         purchaseSubscription(
                 SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                         .forPremium()
@@ -172,13 +165,13 @@ public class SubscriptionTestFlow {
                         .withExpiredCard()
                         .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
         );
-        return this.captureScreenshot();
+        this.captureScreenshot();
     }
 
     // Методы для работы с админкой
 
     @Step("Рекурент по тарифу Премиум")
-    public SubscriptionTestFlow processRecurrentInAdmin() {
+    public void processRecurrentInAdmin() {
         step("Проведение рекуррентного платежа через админку", () -> {
             String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
 
@@ -191,11 +184,10 @@ public class SubscriptionTestFlow {
                 // Можно добавить закрытие окна админки если нужно
             }
         });
-        return this;
     }
 
     @Step("Рекуррент по тарифу Лайт")
-    public SubscriptionTestFlow processRecurrentInAdminLite() {
+    public void processRecurrentInAdminLite() {
         processRecurrentInAdmin();
         step("Проведение рекуррентного платежа Lite через админку", () -> {
             sleep(2000);
@@ -205,11 +197,10 @@ public class SubscriptionTestFlow {
             WaitHelper.waitForPageLoad();
 //            AllureAttachments.attachScreenshot("Заказ найден в него перешли");
         });
-        return this;
     }
 
     @Step("Переход в Заказ по Тарифу Пожизненный доступ")
-    public SubscriptionTestFlow processUnlimitedInAdmin() {
+    public void processUnlimitedInAdmin() {
         step("Переход в заказ для пожизненного доступа через админку", () -> {
             String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
 
@@ -226,7 +217,6 @@ public class SubscriptionTestFlow {
                 // Можно добавить закрытие окна админки если нужно
             }
         });
-        return this;
     }
 
     @Step("Авторизация в админке")
@@ -270,8 +260,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
-    public SubscriptionTestFlow captureScreenshot() {
+    public void captureScreenshot() {
         AllureAttachments.attachScreenshot("Скриншот после теста");
-        return this;
     }
 }

@@ -22,25 +22,24 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UserRewardSteps {
-    private final GameWheelApi gameWheelApi;
+public record UserRewardSteps(GameWheelApi gameWheelApi) {
+
     private static final DateTimeFormatter ISO_FORMATTER =
             DateTimeFormatter.ISO_DATE;
 
-    public UserRewardSteps(String baseUrl) {
-        this.gameWheelApi = new GameWheelApi(baseUrl);
+    public static UserRewardSteps withBaseUrl(String baseUrl) {
+        return new UserRewardSteps(new GameWheelApi(baseUrl));
     }
+
 
     @Step("GET /user/reward/list - получение списка наград пользователя")
     public Response getUserRewards(String authToken) {
-        Response response = this.gameWheelApi.getUserRewards(authToken);
-        return response;
+        return this.gameWheelApi.getUserRewards(authToken);
     }
 
     @Step("GET /user/reward/history - получение истории забранных наград пользователя")
     public Response getUserRewardsHistory(String authToken) {
-        Response response = this.gameWheelApi.getUserRewardHistory(authToken);
-        return response;
+        return this.gameWheelApi.getUserRewardHistory(authToken);
     }
 
     @Step("Валидация успешного ответа со списком наград пользователя")
@@ -66,8 +65,7 @@ public class UserRewardSteps {
 
     @Step("POST /user/reward/opеn/{id} - удаление подарка из списка призов")
     public Response openReward(String authToken, Long rewardId) {
-                Response response = this.gameWheelApi.openReward(authToken, rewardId);
-                return response;
+                return this.gameWheelApi.openReward(authToken, rewardId);
             }
 
     @Step("Валидация структуры каждой награды")
@@ -151,10 +149,11 @@ public class UserRewardSteps {
             );
 
             Allure.addAttachment("Награда найдена в списке пользователя", "text/plain," +
-                    String.format("✅ Награда ID %d успешно добавлена в список пользователя\n" +
-                                    "Название: %s\n" +
-                                    "Тип: %s\n" +
-                                    "Значение: %d",
+                    String.format("""
+                                    ✅ Награда ID %d успешно добавлена в список пользователя
+                                    Название: %s
+                                    Тип: %s
+                                    Значение: %d""",
                             expectedUserRewardId, expectedName, expectedType, expectedValue));
         } else {
             fail(String.format("Награда с ID %d не найдена в списке пользователя. \" +\n" +
@@ -184,7 +183,7 @@ public class UserRewardSteps {
 
         Allure.addAttachment("Уникальность ID", "text/plain",
                 String.format("Всего наград: %d\nУникальных ID: %d\nДубликатов: %d",
-                        userRewards.size(), uniqueIds.size(), duplicatedIds.size()));
+                        userRewards.size(), uniqueIds.size(), 0));
     }
 
     @Step("Проверка сортировки наград по ID")
@@ -206,8 +205,8 @@ public class UserRewardSteps {
         }
 
         Allure.addAttachment("Сортировка наград", "text/plain",
-                String.format("Отсортировано по ID:",
-                        sortedById ? "✅ Да" : "❌ Нет"));
+                "Отсортировано по ID:" +
+                (sortedById ? "✅ Да" : "❌ Нет"));
 
         assertTrue(sortedById, "Награды должен быть отсортированы по ID");
     }
@@ -292,27 +291,6 @@ public class UserRewardSteps {
                 .limit(5)
                 .toList();
 
-//        if (!sortedByExpiry.isEmpty()) {
-//            report.append("\n⏰ БЛИЖАЙШИЕ ИСТЕЧЕНИЯ:\n");
-//            report.append("-".repeat(40)).append("\n");
-//            for (UserRewardResponse reward : sortedByExpiry) {
-//                try {
-//                    LocalDate expiryDate = LocalDate.parse(reward.getExpiresAt());
-//                    long daysLeft = expiryDate.toEpochDay() - LocalDate.now().toEpochDay();
-//                    report.append(String.format("%s (ID: %d) - %s, осталось %d дн.\n",
-//                            reward.getName() != null ? reward.getName() : "Без названия",
-//                            reward.getId(),
-//                            reward.getExpiresAt(),
-//                            daysLeft));
-//                } catch (Exception e) {
-//                    report.append(String.format("%s (ID: %d) - некорректная дата: %s\n",
-//                            reward.getName() != null ? reward.getName() : "Без названия",
-//                            reward.getId(),
-//                            reward.getExpiresAt()));
-//                }
-//            }
-//        }
-
         Allure.addAttachment("Детальный отчет о наградах", "text/plain", report.toString());
     }
 
@@ -334,7 +312,7 @@ public class UserRewardSteps {
 
         if (!unexpectedTypes.isEmpty()) {
             Allure.addAttachment("Неожиданные типы наград",  "text/plain",
-                    "Найдены типыб не указанные в константах: " + unexpectedTypes.toString());
+                    "Найдены типыб не указанные в константах: " + unexpectedTypes);
         }
 
         assertTrue(unexpectedTypes.isEmpty(),
@@ -420,7 +398,7 @@ public class UserRewardSteps {
     @Step("Найти подходящую награду для открытия")
     public Optional<UserRewardResponse> findSuitableRewardToOpen(List<UserRewardResponse> rewards) {
         return rewards.stream()
-                .filter(reward -> reward != null)
+                .filter(Objects::nonNull)
                 .filter(reward -> reward.getId() != null)
                 .filter(reward -> !isValuationReward(reward))
                 .filter(this::isRewardNotExpired)
@@ -430,7 +408,7 @@ public class UserRewardSteps {
     @Step("Найти награду типа valuation")
     public Optional<UserRewardResponse> findValuationReward(List<UserRewardResponse> rewards) {
         return rewards.stream()
-                .filter(reward -> reward != null)
+                .filter(Objects::nonNull)
                 .filter(this::isValuationReward)
                 .findFirst();
     }
@@ -438,7 +416,7 @@ public class UserRewardSteps {
     @Step("Найти награду с истёкшим сроком")
     public Optional<UserRewardResponse> findExpiredReward(List<UserRewardResponse> rewards) {
         return rewards.stream()
-                .filter(reward -> reward != null)
+                .filter(Objects::nonNull)
                 .filter(reward -> reward.getExpiresAt() != null && !reward.getExpiresAt().isEmpty())
                 .filter(this::isRewardExpired)
                 .findFirst();

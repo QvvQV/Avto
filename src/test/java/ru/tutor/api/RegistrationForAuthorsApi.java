@@ -21,7 +21,7 @@ public class RegistrationForAuthorsApi extends BaseApi {
     @Step("POST https://api.dev.tutorplace.ru/order")
     public Response registrationAuthor() {
 
-        Boolean isAuthorRegister = true;
+        boolean isAuthorRegister = true;
         String email = "tbgesta22322@as.qq";
         String name = "bulka";
 

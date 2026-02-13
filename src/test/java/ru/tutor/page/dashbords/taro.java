@@ -5,11 +5,13 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -17,6 +19,9 @@ import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 
 public class taro {
+
+    // Константа
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
     private static final SelenideElement TARO = $$("p").find(exactText("Таро"));
 
@@ -28,11 +33,9 @@ public class taro {
 
     @Step("Кликаем по Таро")
     public static void clickFromTaro() {
+
         step("Кликаем по Таро", () -> {
-            TARO.shouldBe(visible, Duration.ofSeconds(5))
-                    .shouldBe(interactable)
-                    .click();
-            WaitHelper.waitForAnimationComplete();
+            universalMethod.safeClick(TARO, "Таро");
             AllureAttachments.attachScreenshot("Результат после клика");
         });
     }
@@ -43,7 +46,7 @@ public class taro {
     };
 
     public static void mealNavigationWithCollection() {
-        TARO_BUTTONS.shouldHave(CollectionCondition.size(8), Duration.ofSeconds(7));
+        TARO_BUTTONS.shouldHave(CollectionCondition.size(8), DEFAULT_TIMEOUT);
 
         for (int i = 0; i < TARO_BUTTONS.size(); i++) {
             // Прокручиваем к нужной кнопке
@@ -54,9 +57,9 @@ public class taro {
 
         }
 
-        step("Переход на главную страницу", () -> {
-            Home.clickMainlink();
-        });
+        step("Переход на главную страницу",
+            Home::clickMainlink
+        );
     }
 
     private static void navigateToButtonByIndex(int targetIndex) {
@@ -74,10 +77,10 @@ public class taro {
             for (int i = 0; i < scrollsNeeded; i++) {
                 if (isRightButtonEnabled()) {
                     RIGHT_BUTTON.scrollTo()
-                            .shouldBe(interactable, Duration.ofSeconds(3))
+                            .shouldBe(interactable, DEFAULT_TIMEOUT)
                             .click();
                     WaitHelper.waitForAnimationComplete();
-                    WaitHelper.waitFor(Duration.ofSeconds(1));
+                    WaitHelper.waitFor(DEFAULT_TIMEOUT);
                 } else {
                     AllureAttachments.attachText("Предупреждение",
                             "Не удалось прокрутить к кнопке #" + targetIndex +
@@ -88,7 +91,7 @@ public class taro {
 
             // Проверяем что нужная кнопка теперь видима (или хотя бы существует)
             TARO_BUTTONS.get(targetIndex)
-                    .shouldBe(visible, Duration.ofSeconds(5));
+                    .shouldBe(visible, DEFAULT_TIMEOUT);
 
             AllureAttachments.attachText("Навигация завершена",
                     "Успешно перешли к кнопке: " + TAROS_NAMES[targetIndex]);
@@ -115,7 +118,7 @@ public class taro {
             return RIGHT_BUTTON.exists() &&
                     RIGHT_BUTTON.isDisplayed() &&
                     !RIGHT_BUTTON.has(attribute("disabled")) &&
-                    !RIGHT_BUTTON.getAttribute("class").contains("swiper-button-disabled");
+                    !Objects.requireNonNull(RIGHT_BUTTON.getAttribute("class")).contains("swiper-button-disabled");
         } catch (Exception e) {
             return false;
         }
@@ -129,8 +132,8 @@ public class taro {
             SelenideElement mealButton = TARO_BUTTONS.get(index);
 
             step("Проверка видимости - " + taroName, () -> {
-                mealButton.shouldBe(visible, Duration.ofSeconds(5))
-                        .shouldBe(interactable, Duration.ofSeconds(3));
+                mealButton.shouldBe(visible, DEFAULT_TIMEOUT)
+                        .shouldBe(interactable, DEFAULT_TIMEOUT);
 
                 AllureAttachments.attachScreenshot("Кнопка " + taroName + " видима");
             });
@@ -139,11 +142,11 @@ public class taro {
                 String originalUrl = WebDriverRunner.url();
                 mealButton.click();
 
-                WaitHelper.waitForUrlContains(originalUrl, Duration.ofSeconds(5));
+                WaitHelper.waitForUrlContains(originalUrl, DEFAULT_TIMEOUT);
                 WaitHelper.waitForPageLoad();
 
                 //Проверяем что мы на правильной странице
-                TITLE.shouldBe(visible, Duration.ofSeconds(5));
+                TITLE.shouldBe(visible, DEFAULT_TIMEOUT);
                 String titleText = TITLE.getText().trim();
 
                 AllureAttachments.attachText("Заголовок страницы", titleText);
@@ -151,13 +154,11 @@ public class taro {
             });
 
             step("Возвращаемся на страницу 'Таро'", () -> {
-                DASHBOARDS_BUTTON.shouldBe(visible, Duration.ofSeconds(5))
-                        .shouldBe(interactable)
-                        .click();
+                universalMethod.safeClick(DASHBOARDS_BUTTON, "Назад на страницу 'Таро'");
 
                 WaitHelper.waitForPageLoad();
 
-                TARO_BUTTONS.shouldHave(CollectionCondition.size(8), Duration.ofSeconds(10));
+                TARO_BUTTONS.shouldHave(CollectionCondition.size(8), DEFAULT_TIMEOUT);
 
                 AllureAttachments.attachText("Тест завершен",
                         "✅ " + taroName + " - навигация работает корректно");

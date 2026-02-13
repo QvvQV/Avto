@@ -1,36 +1,35 @@
 package ru.tutor.test.orders;
 
 import io.qameta.allure.Epic;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.tutor.Unsubscribe.LiteUnsubscribePage;
+import ru.tutor.unsubscribe.LiteUnsubscribePage;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.SubscriptionTestFlow;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.RedirectPage;
-import ru.tutor.page.addressPage;
+import ru.tutor.page.AddressPage;
 import ru.tutor.page.modals.*;
 import ru.tutor.steps.AdminToUserLoginSteps;
 import ru.tutor.steps.ReactivatePremiumSteps;
 import ru.tutor.steps.OrderToggleSubscriptionSteps;
+import ru.tutor.steps.UrlModificationSteps;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
 import ru.tutor.utils.WaitHelper;
 
 import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
-import static ru.tutor.steps.UrlModificationSteps.*;
-
 
 // TP-6415 (Реализовать работу ссылок типа affrid в личном кабинете) и TP-6417 (Переработать восстановление премиума по кнопке)
 public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
     private RecurrentPaymentTestExecutor testExecutor;
-    private final OrderToggleSubscriptionSteps orderSteps = new OrderToggleSubscriptionSteps(TestConfig.getApiBaseUrl());
-    private final ReactivatePremiumSteps reactivatePremiumSteps = new ReactivatePremiumSteps(TestConfig.getApiBaseUrl());
+    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private final Integer TEST_ORDER_ID = 180;
-    private SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
+    private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
+    private final AdminToUserLoginSteps adminToUserLoginSteps = new AdminToUserLoginSteps();
 
     @Epic("Отписка от подписки")
     @Override
@@ -51,7 +50,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         testExecutor.executePaymentTestAffRid(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
-                (flow) -> flow.processRecurrentInAdmin(),
+                SubscriptionTestFlow::processRecurrentInAdmin,
                 context
         );
         step("Перейти в ЛК пользователя", () -> {
@@ -59,13 +58,12 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
             adminOrdersPage.goToUserPersonalAccount();
         });
 
-        step("Добавить аффилейт-параметр", () -> {
-            addAffiliateParameter();
-        });
+        step("Добавить аффилейт-параметр", UrlModificationSteps::addAffiliateParameter
+        );
 
         step("Выполнить отписку до тарифа Лайт", () -> {
             String token = AdminToUserLoginSteps.switchToTabAndGetToken();
-            Response response = step("Отписка до Лайта: POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
+            step("Отписка до Лайта: POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
                     orderSteps.toggleOrderSubscription(token, TEST_ORDER_ID)
             );
             step("Реактивация подписки по внутренней почте: POST /user/orders/reactivate-premium", () ->
@@ -82,7 +80,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         testExecutor.executePaymentTestAffRid(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
-                (flow) -> flow.processRecurrentInAdmin(),
+                SubscriptionTestFlow::processRecurrentInAdmin,
                 context
         );
         step("Перейти в ЛК пользователя", () -> {
@@ -92,11 +90,10 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
         step("Выполнить отписку до тарифа Лайт", () -> {
             String token = AdminToUserLoginSteps.switchToTabAndGetToken();
-            Response response = step("Отписка до Лайта: POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
+            step("Отписка до Лайта: POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
                     orderSteps.toggleOrderSubscription(token, TEST_ORDER_ID)
             );
-            step("Добавить аффилейт-параметр + ссылки из email-рассылки", () ->
-                    addAffiliateParameterByEmail());
+            step("Добавить аффилейт-параметр + ссылки из email-рассылки", UrlModificationSteps::addAffiliateParameterByEmail);
             step("Реактивация подписки по внутренней почте: POST /user/orders/reactivate-premium", () ->
                     reactivatePremiumSteps.reactivatePremiumByEmail(token)
             );
@@ -111,15 +108,14 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         testExecutor.executePaymentTestAffRid(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
-                (flow) -> flow.processRecurrentInAdmin(),
+                SubscriptionTestFlow::processRecurrentInAdmin,
                 context
         );
         step("Перейти в ЛК пользователя после отмены заказа через Админку", () ->
                 adminOrdersPage.cancelOrderWithAdmin()
         );
-        step("Добавить аффилейт-параметр + ссылки из email-рассылки", () ->
-                addAffiliateParameterByEmail());
-        step("Проводим оплату подписки из письма email-рассылки", () -> AdminToUserLoginSteps.sendEmailPay());
+        step("Добавить аффилейт-параметр + ссылки из email-рассылки", UrlModificationSteps::addAffiliateParameterByEmail);
+        step("Проводим оплату подписки из письма email-рассылки", adminToUserLoginSteps::sendEmailPay);
         CloudPage.clickCardPageBtnLK();
         step("Проверяем aff_rid метку созданного заказа", () -> adminOrdersPage.renewal()
         );
@@ -130,10 +126,9 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     void restorePremiumLifetimeAccess() {
         flow.purchasePremiumSubscriptionAffRid();
 
-        step("Обработка редиректа после оплаты", () ->
-                RedirectPage.redirectPage()
+        step("Обработка редиректа после оплаты", RedirectPage::redirectPage
         );
-        step("Заполнение модального окна", () -> greetings.fillAccessInput()
+        step("Заполнение модального окна", greetings::fillAccessInput
         );
         product.beginProduct();
         unlockNextWeek.openUnlimitedAccess();
@@ -151,7 +146,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         testExecutor.executePaymentTestAffRid(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
-                (flow) -> flow.processRecurrentInAdmin(),
+                SubscriptionTestFlow::processRecurrentInAdmin,
                 context
         );
         step("Перейти в ЛК пользователя", () -> {
@@ -159,21 +154,20 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
             adminOrdersPage.goToUserPersonalAccount();
         });
 
-        step("Добавить аффилейт-параметр", () -> {
-            addAffiliateParameter();
-        });
+        step("Добавить аффилейт-параметр", UrlModificationSteps::addAffiliateParameter
+        );
 
         step("Выполнить отписку до тарифа Лайт", () -> {
                     String token = AdminToUserLoginSteps.switchToTabAndGetToken();
-                    Response response = step("Отписка до Лайта: POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
+                    step("Отписка до Лайта: POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
                             orderSteps.toggleOrderSubscription(token, TEST_ORDER_ID)
                     );
         });
-        step("Заполнение приветсвенного модального окна", () -> greetings.fillOutTwoFieldsWelcomeModal());
+        step("Заполнение приветсвенного модального окна", greetings::fillOutTwoFieldsWelcomeModal);
         step("Переход к отпискам", () -> {
-                    open(addressPage.PAYMENTS_SETTINGS);
+                    open(AddressPage.PAYMENTS_SETTINGS);
                     WaitHelper.waitForPageLoad();
-                     step("Вызов модального окна оплаты", ()-> LiteUnsubscribePage.clickSubscribe()
+                     step("Вызов модального окна оплаты", LiteUnsubscribePage::clickSubscribe
                      );
         });
         CloudPage.clickCardPageBtnLK();
@@ -189,7 +183,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 //        "/user/orders/pay-lifetime-tariff"
 //        + пропихнуть в каждую aff_rid ссылку
 
-    /**
+    /*
      * Сценарии
      *
      * А) Пользователь "Восстановление премиума по ссылке из письма внутренней почты"

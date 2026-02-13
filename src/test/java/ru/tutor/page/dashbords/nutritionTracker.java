@@ -5,9 +5,10 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 
@@ -17,17 +18,30 @@ import static io.qameta.allure.Allure.step;
 
 public class nutritionTracker {
 
-    // Локаторы
-    private static final SelenideElement NUTRITION_TRACKER = $$("p").find(exactText("Трекер питания"));
-    private static final SelenideElement START_BUTTON = $$("button").find(exactText("Начать программу"));
-    private static final SelenideElement START_A_FASTING_PERIOD_BUTTON = $$("button").find(exactText("Начать период голодания"));
-    private static final SelenideElement START_THE_EATING_PERIOD_BUTTON = $$("button").find(exactText("Начать период приема пищи"));
-    private static final SelenideElement ABORT_THE_PROGRAM_BUTTON = $$("button").find(exactText("Прервать программу"));
-    private static final SelenideElement INTERRUPT_BUTTON = $$("button").find(exactText("Да, прервать"));
+    // Константа
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
+
+    // Текст кнопок
+    private static final String NUTRITION_TEXT = "Трекер питания";
+    private static final String START_TEXT = "Начать программу";
+    private static final String START_A_FASTING_PERIOD_TEXT = "Начать период голодания";
+    private static final String START_THE_EATING_PERIOD_TEXT = "Начать период приема пищи";
+    private static final String ABORT_THE_PROGRAM_TEXT = "Прервать программу";
+    private static final String INTERRUPT_TEXT = "Да, прервать";
+    private static final String MY_RECIPES_TEXT = "Мои рецепты";
+    private static final String RESULTS_TEXT = "Результаты";
+
+    // Локаторы кнопок
+    private static final SelenideElement NUTRITION_TRACKER = $$("p").find(exactText(NUTRITION_TEXT));
+    private static final SelenideElement START_BUTTON = $$("button").find(exactText(START_TEXT));
+    private static final SelenideElement START_A_FASTING_PERIOD_BUTTON = $$("button").find(exactText(START_A_FASTING_PERIOD_TEXT));
+    private static final SelenideElement START_THE_EATING_PERIOD_BUTTON = $$("button").find(exactText(START_THE_EATING_PERIOD_TEXT));
+    private static final SelenideElement ABORT_THE_PROGRAM_BUTTON = $$("button").find(exactText(ABORT_THE_PROGRAM_TEXT));
+    private static final SelenideElement INTERRUPT_BUTTON = $$("button").find(exactText(INTERRUPT_TEXT));
 
     // Локаторы для проверки страниц
-    private static final SelenideElement MY_RECIPES = $$("h2").find(exactText("Мои рецепты"));
-    private static final SelenideElement RESULTS_BUTTON = $$("a").find(exactText("Результаты"));
+    private static final SelenideElement MY_RECIPES = $$("h2").find(exactText(MY_RECIPES_TEXT));
+    private static final SelenideElement RESULTS_BUTTON = $$("a").find(exactText(RESULTS_TEXT));
 
     // Локаторы приёма пищи
     private static final ElementsCollection MEAL_BUTTONS = $$("a._addButton_1y9xd_102");
@@ -35,10 +49,7 @@ public class nutritionTracker {
 
     @Step("Кликаем по трекеру питания")
     public static void clickFromNutritionTracker() {
-        NUTRITION_TRACKER.shouldBe(visible, Duration.ofSeconds(5))
-                .shouldBe(interactable)
-                .click();
-        WaitHelper.waitForAnimationComplete();
+        universalMethod.safeClick(NUTRITION_TRACKER, NUTRITION_TEXT);
         AllureAttachments.attachScreenshot("Дашборд питания");
     }
 
@@ -53,61 +64,44 @@ public class nutritionTracker {
 
     @Step("Кликаем по кнопке 'Начать период голодания'")
     private static void clickStartFastingPeriod() {
-        step("Кликаем по кнопке 'Начать период голодания'", () -> {
-
-            START_A_FASTING_PERIOD_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
-        });
+        step("Кликаем по кнопке 'Начать период голодания'", () ->
+                universalMethod.safeClick(START_A_FASTING_PERIOD_BUTTON, START_TEXT)
+        );
     }
 
     @Step("Кликаем по кнопке 'Начать программу'")
     private static void clickStartProgram() {
         step("Кликаем по кнопке 'Начать программу'", () ->
-        {
-            START_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
-            WaitHelper.waitForAnimationComplete();
-        });
+        universalMethod.safeClick(START_BUTTON, START_TEXT)
+        );
     }
 
     @Step("Кликаем по кнопке 'Прервать программу'")
     private static void clickAbortProgramm() {
         step("Кликаем по кнопке 'Прервать программу'", () ->
-        {
-            ABORT_THE_PROGRAM_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
-            WaitHelper.waitForAnimationComplete();
-        });
+        universalMethod.safeClick(ABORT_THE_PROGRAM_BUTTON, ABORT_THE_PROGRAM_TEXT)
+        );
         step("Прерываем программу", () -> {
-            INTERRUPT_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
-            WaitHelper.waitForAnimationComplete();
+            universalMethod.safeClick(INTERRUPT_BUTTON, INTERRUPT_TEXT);
             AllureAttachments.attachText("✅ ", "Программа прервана");
         });
     }
 
     @Step("Кликаем по кнопке 'Начать период приёма пищи'")
     private static void clickStartEatingPeriod() {
-        step("Кликаем по кнопке 'Начать период приёма пищи'", () -> {
-
-            START_THE_EATING_PERIOD_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                    .shouldBe(clickable)
-                    .click();
-        });
+        step("Кликаем по кнопке 'Начать период приёма пищи'", () ->
+                universalMethod.safeClick(START_THE_EATING_PERIOD_BUTTON , START_THE_EATING_PERIOD_TEXT)
+        );
     }
 
     public static void mealNavigationWithCollection(){
-        MEAL_BUTTONS.shouldHave(CollectionCondition.size(4), Duration.ofSeconds(7));
+        MEAL_BUTTONS.shouldHave(CollectionCondition.size(4), DEFAULT_TIMEOUT);
         for (int i = 0; i < MEAL_BUTTONS.size(); i++){
             mealButtonByIndex(i);
         }
-        step("Переход на главную страницу", ()->{
-            Home.clickMainlink();
-        });
+        step("Переход на главную страницу",
+            Home::clickMainlink
+        );
     }
 
         private static void mealButtonByIndex(int index) {
@@ -118,24 +112,23 @@ public class nutritionTracker {
             SelenideElement mealButton = MEAL_BUTTONS.get(index);
 
             step("Проверка видимости - " + mealName, ()->{
-                mealButton.shouldBe(visible, Duration.ofSeconds(5))
-                        .shouldBe(interactable, Duration.ofSeconds(3));
+                mealButton.shouldBe(visible, DEFAULT_TIMEOUT)
+                        .shouldBe(interactable, DEFAULT_TIMEOUT);
             });
 
             step("Проверка редиректа", ()->{
                 String originalUrl = WebDriverRunner.url();
                 mealButton.click();
 
-                WaitHelper.waitForUrlContains(originalUrl, Duration.ofSeconds(3));
+                WaitHelper.waitForUrlContains(originalUrl, DEFAULT_TIMEOUT);
                 WaitHelper.waitForPageLoad();
 
-                MY_RECIPES.shouldBe(visible, Duration.ofSeconds(5));
+                MY_RECIPES.shouldBe(visible, DEFAULT_TIMEOUT);
                 AllureAttachments.attachScreenshot("После " + mealName);
             });
 
             step("Возвращаемся на страницу 'Результаты'", ()->{
-                RESULTS_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
-                        .click();
+                universalMethod.safeClick(RESULTS_BUTTON, RESULTS_TEXT);
 
                 WaitHelper.waitForPageLoad();
 

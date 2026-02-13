@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.tutor.config.ProductConfig;
 import ru.tutor.model.ProductResponse;
-import ru.tutor.api.Steps.ProductSteps;
+import ru.tutor.api.steps.ProductSteps;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.List;
@@ -64,17 +64,17 @@ class ProductNameTest {
             List<ProductResponse.Product> products = domainResponse.getProducts();
             assertFalse(products.isEmpty(), "Products array should not be empty");
             
-            ProductResponse.Product mainProduct = products.get(0);
+            ProductResponse.Product mainProduct = products.getFirst();
             assertEquals("Как бороться с выгоранием", mainProduct.getName(), 
                 "Основной продукт должен называться 'Как бороться с выгоранием'");
         });
         
         step("Проверить авторов Burnout продукта", () -> {
-            ProductResponse.Product mainProduct = domainResponse.getProducts().get(0);
+            ProductResponse.Product mainProduct = domainResponse.getProducts().getFirst();
             assertNotNull(mainProduct.getAuthors(), "Authors should not be null");
             assertFalse(mainProduct.getAuthors().isEmpty(), "Authors should not be empty");
             
-            ProductResponse.Author firstAuthor = mainProduct.getAuthors().get(0);
+            ProductResponse.Author firstAuthor = mainProduct.getAuthors().getFirst();
             assertEquals("Игорь Свенторжецкий", firstAuthor.getName(), 
                 "First author should be 'Игорь Свенторжецкий'");
             assertEquals("Психолог", firstAuthor.getProfession(),
@@ -82,8 +82,8 @@ class ProductNameTest {
         });
         
         step("Зафиксировать результат Burnout", () -> {
-            ProductResponse.Product mainProduct = domainResponse.getProducts().get(0);
-            ProductResponse.Author firstAuthor = mainProduct.getAuthors().get(0);
+            ProductResponse.Product mainProduct = domainResponse.getProducts().getFirst();
+            ProductResponse.Author firstAuthor = mainProduct.getAuthors().getFirst();
             
             AllureAttachments.attachText("Burnout Product Details",
                 "Name: " + mainProduct.getName() + "\n" +
@@ -149,12 +149,12 @@ class ProductNameTest {
             summary.append("Всего продуктов: ").append(totalProducts).append("\n\n");
             
             summary.append("СПИСОК ПРОДУКТОВ:\n");
-            ProductConfig.PRODUCT_DOMAINS.forEach((productId, info) -> {
+            ProductConfig.PRODUCT_DOMAINS.forEach((productId, info) ->
                 summary.append("  - ").append(productId)
-                       .append(" -> ").append(info.getExpectedProductName())
-                       .append(" (").append(info.getSubdomain()).append(".tutorplace.ru)")
-                       .append("\n");
-            });
+                       .append(" -> ").append(info.expectedProductName())
+                       .append(" (").append(info.subdomain()).append(".tutorplace.ru)")
+                       .append("\n")
+            );
             
             AllureAttachments.attachText("Products Domain Summary", summary.toString());
         });

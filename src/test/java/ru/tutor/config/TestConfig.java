@@ -6,7 +6,7 @@ import java.util.Properties;
 public class TestConfig {
     private static final Properties properties = new Properties();
 
-    /**
+    /*
      * Домены, url, тестовые данные для Sber/Сбер
      */
 

@@ -5,7 +5,7 @@ import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.api.Steps.CatalogSteps;
+import ru.tutor.api.steps.CatalogSteps;
 
 import java.util.List;
 

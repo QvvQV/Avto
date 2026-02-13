@@ -35,11 +35,4 @@ public class AuthApi extends ApiClient {
             .when()
                 .post(LOGIN_PATH);
     }
-
-    @Step("API: Получить токен после успешного логина")
-    public String getAuthToken(String email, String password) {
-        Response response = login(email, password);
-        response.then().statusCode(200);
-        return response.jsonPath().getString("token");
-    }
 }

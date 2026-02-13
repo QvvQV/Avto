@@ -4,8 +4,8 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.Keys;
-import ru.tutor.page.PersonalAccount.Catalog;
-import ru.tutor.page.PersonalAccount.Home;
+import ru.tutor.page.personalAccount.Catalog;
+import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
@@ -24,9 +24,9 @@ public class helloDash {
     // Локаторы модального окна приветствия
     private static final SelenideElement ACCESS_DATA_TITLE_FIRST = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));
     private static final SelenideElement ACCESS_DATA_TITLE = $$("h2").find(exactText("Укажите данные для доступа к платформе"));
-    private static final SelenideElement NAME_INPUT = $("[name=\"name\"]");
-    private static final SelenideElement PASSWORD_INPUT = $("[name=\"newPassword\"]");
-    private static final SelenideElement REPEAT_PASSWORD_INPUT = $("[name=\"repeatPassword\"]");
+    private static final SelenideElement NAME_INPUT = $("[name='name']");
+    private static final SelenideElement PASSWORD_INPUT = $("[name='newPassword']");
+    private static final SelenideElement REPEAT_PASSWORD_INPUT = $("[name='repeatPassword']");
     private static final SelenideElement GENDER_PLACEHOLDER = $("[id=\"react-select-2-placeholder\"]");
     private static final SelenideElement GENDER_INPUT = $("[id=\"react-select-2-input\"]");
     private static final SelenideElement BUTTON_NEXT_STEP = $$("button").find(exactText("Следующий шаг"));

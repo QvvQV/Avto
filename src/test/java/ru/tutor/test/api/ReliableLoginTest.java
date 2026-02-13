@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("🟢 Надежные тесты логина")
 class ReliableLoginTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
 
     @Test
     @AllureId("86")
@@ -25,8 +25,8 @@ class ReliableLoginTest {
     @DisplayName("✅ Успешный логин - минимальные проверки")
     void successfulLogin_MinimalChecks() {
         Response response = authSteps.getLoginResponse(
-            TestConfig.getTestEmail(),
-            TestConfig.getTestPassword()
+                TestConfig.getTestEmail(),
+                TestConfig.getTestPassword()
         );
 
         step("Проверить статус код", () -> {
@@ -50,8 +50,8 @@ class ReliableLoginTest {
     @DisplayName("🚫 Неуспешный логин - минимальные проверки")
     void unsuccessfulLogin_MinimalChecks() {
         Response response = authSteps.getLoginResponse(
-            TestConfig.getTestEmail(),
-            "wrong_password"
+                TestConfig.getTestEmail(),
+                "wrong_password"
         );
 
         ResponseAnalyzer.analyzeAndAttachResponse(response, "Unsuccessful Login");
@@ -75,16 +75,16 @@ class ReliableLoginTest {
     void analyzeActualResponseStructure() {
         step("Анализ успешного ответа", () -> {
             Response successResponse = authSteps.getLoginResponse(
-                TestConfig.getTestEmail(),
-                TestConfig.getTestPassword()
+                    TestConfig.getTestEmail(),
+                    TestConfig.getTestPassword()
             );
             ResponseAnalyzer.analyzeAndAttachResponse(successResponse, "Successful Login Analysis");
         });
 
         step("Анализ ошибочного ответа", () -> {
             Response errorResponse = authSteps.getLoginResponse(
-                TestConfig.getTestEmail(),
-                "wrong_password"
+                    TestConfig.getTestEmail(),
+                    "wrong_password"
             );
             ResponseAnalyzer.analyzeAndAttachResponse(errorResponse, "Error Login Analysis");
         });

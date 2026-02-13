@@ -3,8 +3,8 @@ package ru.tutor.flow.builder;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.SberPage;
-import ru.tutor.page.addressPage;
-import ru.tutor.page.ttPage;
+import ru.tutor.page.AddressPage;
+import ru.tutor.page.TtPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 
@@ -20,7 +20,7 @@ public class SubscriptionPurchaseBuilder {
     private boolean verifyError = false;
     private String expectedError;
 
-    private final ttPage ttPage;
+    private final TtPage ttPage;
     private final CloudPage cloudPage;
     private final SberPage sberPage;
     private String userEmail;
@@ -38,13 +38,13 @@ public class SubscriptionPurchaseBuilder {
         EXPIRED_CARD
     }
 
-    private SubscriptionPurchaseBuilder(ttPage ttPage, CloudPage cloudPage, SberPage sberPage) {
+    private SubscriptionPurchaseBuilder(TtPage ttPage, CloudPage cloudPage, SberPage sberPage) {
         this.ttPage = ttPage;
         this.cloudPage = cloudPage;
         this.sberPage = sberPage;
     }
 
-    public static SubscriptionPurchaseBuilder create(ttPage ttPage, CloudPage cloudPage, SberPage sberPage) {
+    public static SubscriptionPurchaseBuilder create(TtPage ttPage, CloudPage cloudPage, SberPage sberPage) {
         return new SubscriptionPurchaseBuilder(ttPage, cloudPage, sberPage);
     }
 
@@ -183,9 +183,9 @@ public class SubscriptionPurchaseBuilder {
     // Метод для оплаты без aff_rid ссылки
 
     private void openMainPageAndCheckTitle() {
-        step("Открытие страницы", () -> {
-            open(addressPage.urlMain);
-        });
+        step("Открытие страницы", () ->
+            open(AddressPage.urlMain)
+        );
         step("Проверка заголовка главной страницы", () -> {
             assertEquals(TestConfig.Texts.MAIN_PAGE_TITLE, title());
             AllureAttachments.attachText("Проверка страницы", "Главная страница загружена корректно");
@@ -195,9 +195,9 @@ public class SubscriptionPurchaseBuilder {
     // Метод для оплаты с главной страницы, но с aff_rid ссылкой
 
     private void openMainPageAndCheckTitleAffRid() {
-        step("Открытие страницы", () -> {
-            open(addressPage.urlMainRev);
-        });
+        step("Открытие страницы", () ->
+            open(AddressPage.urlMainRev)
+        );
         step("Проверка заголовка главной страницы", () -> {
             assertEquals(TestConfig.Texts.MAIN_PAGE_TITLE, title());
             AllureAttachments.attachText("Проверка страницы", "Главная страница загружена корректно");
@@ -230,14 +230,14 @@ public class SubscriptionPurchaseBuilder {
         if (paymentMethod == PaymentMethod.INSTALLMENTS) {
             cloudPage.setDateModalInstallments();
         } else {
-            cloudPage.setDateModal();
+            CloudPage.setDateModal();
         }
 
         if (captureEmail) {
-            userEmail = cloudPage.atrEmail();
+            userEmail = CloudPage.atrEmail();
         }
 
-        cloudPage.clickCardPageBtn();
+        CloudPage.clickCardPageBtn();
     }
 
     private void processSberPayment() {
@@ -250,9 +250,6 @@ public class SubscriptionPurchaseBuilder {
         TabManager.switchToNewWindow();
 
         switch (paymentMethod) {
-            case APPROVED_CARD:
-                sberPage.payWithApprovedCard();
-                break;
             case FIXED_BALANCE_CARD:
                 sberPage.payWithFixedBalanceCard();
                 break;
@@ -262,8 +259,10 @@ public class SubscriptionPurchaseBuilder {
             case EXPIRED_CARD:
                 sberPage.payWithExpiredCard();
                 break;
-            default:
+            case APPROVED_CARD:
+                default:
                 sberPage.payWithApprovedCard();
+                break;
         }
     }
 

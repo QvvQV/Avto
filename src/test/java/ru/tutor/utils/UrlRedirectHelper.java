@@ -74,7 +74,6 @@ public class UrlRedirectHelper {
             "   }" +
             "   return window.originalOpen(url, target, features);" +
             "};" +
-            "" +
             "window.originalLocationAssign = window.location.assign;" +
             "window.location.assign = function(url) {" +
             "   if (url && url.match('" + expectedRedirectPattern + "')) {" +
@@ -120,7 +119,7 @@ public class UrlRedirectHelper {
             Allure.addAttachment("Модификация href",
                 "text/plain",
                 "Селектор: " + cssSelector + "\n" +
-                "Результат: " + result.toString());
+                "Результат: " + result);
         }
     }
 
@@ -155,7 +154,7 @@ public class UrlRedirectHelper {
             Allure.addAttachment("Модификация href по XPath",
                 "text/plain",
                 "XPath: " + xpath + "\n" +
-                "Результат: " + result.toString());
+                "Результат: " + result);
         }
     }
 
@@ -168,6 +167,7 @@ public class UrlRedirectHelper {
         while (System.currentTimeMillis() - startTime < timeoutMs) {
             String currentUrl = WebDriverRunner.getWebDriver().getCurrentUrl();
 
+            assert currentUrl != null;
             if (!currentUrl.equals(originalUrl)) {
                 // Произошел редирект - модифицируем URL
                 String modifiedUrl = simpleReplaceDomain(currentUrl, newDomain);
@@ -241,7 +241,7 @@ public class UrlRedirectHelper {
             Allure.addAttachment("Модификация всех ссылок",
                 "text/plain",
                 "Селектор: " + cssSelector + "\n" +
-                "Результаты: " + result.toString());
+                "Результаты: " + result);
         }
     }
 }

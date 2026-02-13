@@ -137,11 +137,4 @@ public class SzDetailsResponse {
         return Boolean.TRUE.equals(success);
     }
 
-    public boolean hasData() {
-        return data != null;
-    }
-
-    public Integer getSavedId(){
-        return hasData() ? data.getId() : null;
-    }
 }

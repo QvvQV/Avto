@@ -12,13 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Класс для сравнения дат `Истекает` и `Следующий платёж` в заказе
  */
 
-public class DateValidator {
+public record DateValidator(int allowedTimeDifferenceMinutes) {
 
-    private final int allowedTimeDifferenceMinutes;
-
-    public DateValidator(int allowedTimeDifferenceMinutes) {
-        this.allowedTimeDifferenceMinutes = allowedTimeDifferenceMinutes;
+    public DateValidator {
+        if (allowedTimeDifferenceMinutes <= 0) {
+            throw new IllegalArgumentException("allowed Time Difference Minutes must be positive");
+        }
     }
+
 
     public void verifyTimeOfDayDifference(LocalDateTime dateTime1, LocalDateTime dateTime2,
                                          String description) {

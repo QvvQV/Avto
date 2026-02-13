@@ -22,25 +22,33 @@ import static io.qameta.allure.Allure.step;
  */
 
 public class SberPage {
-    private static final Faker faker = new Faker(Locale.ENGLISH);
+    private final Faker faker = new Faker(Locale.ENGLISH);
+
+    // Текст Локаторов
+    private final String BUY_TEXT = "начать обучение за 1 ₽*";
+    private final String ERROR_MESSAGE_TEXT = "Произошла ошибка. Пожалуйста, попробуйте ещё раз.";
+    private final String PAY_TEXT = "Оплатить";
+    private final String SHOP_TEXT = "Перейти в магазин";
+    private final String ERROR_TEXT = "Операция отклонена. Проверьте введенные данные, достаточность средств на карте и повторите операцию";
 
     //Локаторы
-    private static final SelenideElement BUY_BUTTON = $$("button").find(exactText("начать обучение за 1 ₽*"));
-    private static final SelenideElement ACCESS_BUTTON = $("#access-button");
-    private static final SelenideElement ERROR_MESSAGE = $$("p").find(exactText("Произошла ошибка. Пожалуйста, попробуйте ещё раз."));
-    private static final SelenideElement EMAIL_INPUT = $("[name=\"email\"]");
-    private static final SelenideElement CARD_NUMBER = $("#cardNumber");
-    private static final SelenideElement EXPIRY_DATE = $("#expiryDate");
-    private static final SelenideElement CVC = $("#cvc");
-    private static final SelenideElement SUCCESS_BUTTON = $$("button").find(exactText("Оплатить"));
-    private static final SelenideElement PASSWORD_EDIT = $("#passwordEdit");
-    private static final SelenideElement TEXT_ERROR = $$("span").find(exactText("Операция отклонена. Проверьте введенные данные, достаточность средств на карте и повторите операцию"));
-    private static final SelenideElement GO_SHOP = $$("button").find(exactText("Перейти в магазин"));
+    private final SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
+    private final SelenideElement ACCESS_BUTTON = $("#access-button");
+    private final SelenideElement ERROR_MESSAGE = $$("p").find(exactText(ERROR_MESSAGE_TEXT));
+    private final SelenideElement EMAIL_INPUT = $("[name='email']");
+    private final SelenideElement CARD_NUMBER = $("#cardNumber");
+    private final SelenideElement EXPIRY_DATE = $("#expiryDate");
+    private final SelenideElement CVC = $("#cvc");
+    private final SelenideElement SUCCESS_BUTTON = $$("button").find(exactText(PAY_TEXT));
+    private final SelenideElement PASSWORD_EDIT = $("#passwordEdit");
+    private final SelenideElement TEXT_ERROR = $$("span").find(exactText(ERROR_TEXT));
+    private final SelenideElement GO_SHOP = $$("button").find(exactText(SHOP_TEXT));
+    private final TtPage ttPage = new TtPage();
 
-    private static String email;
+    private String email;
 
     @Step("Заполнение email и обработка модального окна")
-    public static void fillEmailAndProcessModal() {
+    public void fillEmailAndProcessModal() {
         step("Ввод email и проверка отсутствия ошибок", () -> {
             email = faker.internet().emailAddress();
             EMAIL_INPUT.setValue(email);
@@ -58,7 +66,7 @@ public class SberPage {
         });
     }
 
-    public static String getLastUsedEmail() {
+    public String getLastUsedEmail() {
         return email;
     }
 
@@ -79,10 +87,10 @@ public class SberPage {
     }
 
     @Step("Начало оформления заказа с продукта Excel")
-    public static void startOrderFromProduct() {
-        step("Клик по кнопке оплатить", () -> {
-            universalMethod.safeClick(BUY_BUTTON, "Оплатить");
-        });
+    public void startOrderFromProduct() {
+        step("Клик по кнопке оплатить", () ->
+            universalMethod.safeClick(BUY_BUTTON, BUY_TEXT)
+        );
 
         step("Заполнение email", () -> {
             String email = faker.internet().emailAddress();
@@ -98,26 +106,26 @@ public class SberPage {
         TabManager.switchToNewWindow();
     }
 
-    private static void fillCardData(String cardNumber, String expiry, String cvc) {
+    private void fillCardData(String cardNumber, String expiry, String cvc) {
         step("Заполнение данных карты: " + maskCardNumber(cardNumber), () -> {
             CARD_NUMBER.shouldBe(visible, Duration.ofSeconds(20)).setValue(cardNumber);
             EXPIRY_DATE.setValue(expiry);
             CVC.setValue(cvc);
-            universalMethod.safeClick(SUCCESS_BUTTON, "Оплатить");
+            universalMethod.safeClick(SUCCESS_BUTTON, PAY_TEXT);
 
             AllureAttachments.attachText("Данные карты",
                     "Карта: " + maskCardNumber(cardNumber) + "\nСрок: " + expiry + "\nCVC: " + cvc);
         });
     }
 
-    private static String maskCardNumber(String cardNumber) {
+    private String maskCardNumber(String cardNumber) {
         if (cardNumber.length() > 8) {
             return cardNumber.substring(0, 4) + "********" + cardNumber.substring(cardNumber.length() - 4);
         }
         return cardNumber;
     }
 
-    private static void handleDeclinePayment() {
+    private void handleDeclinePayment() {
         step("Заполнение ACS кода", () -> {
             PASSWORD_EDIT.shouldBe(visible, Duration.ofSeconds(10)).setValue("111111");
             WaitHelper.waitForPageLoad();
@@ -126,20 +134,20 @@ public class SberPage {
     }
 
     @Step("Оплата одобренной картой")
-    public static void payWithApprovedCard() {
+    public void payWithApprovedCard() {
         fillCardData(
                 TestConfig.Cards.APPROVED,
                 TestConfig.Cards.Approved.EXPIRY,
                 TestConfig.Cards.Approved.CVC
         );
         step("Переход в магазин", () -> {
-            universalMethod.safeClick(GO_SHOP, "Перейти в магазин");
+            universalMethod.safeClick(GO_SHOP, SHOP_TEXT);
             AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
         });
     }
 
     @Step("Оплата картой с недостаточными средствами")
-    public static void payWithInsufficientFundsCard() {
+    public void payWithInsufficientFundsCard() {
         fillCardData(
                 TestConfig.Cards.INSUFFICIENT_FUNDS,
                 TestConfig.Cards.InsufficientFunds.EXPIRY,
@@ -150,7 +158,7 @@ public class SberPage {
     }
 
     @Step("Оплата просроченной картой")
-    public static void payWithExpiredCard() {
+    public void payWithExpiredCard() {
         fillCardData(
                 TestConfig.Cards.EXPIRED,
                 TestConfig.Cards.Expired.EXPIRY,
@@ -161,7 +169,7 @@ public class SberPage {
     }
 
     @Step("Оплата картой с фиксированным балансом")
-    public static void payWithFixedBalanceCard() {
+    public void payWithFixedBalanceCard() {
         fillCardData(
                 TestConfig.Cards.FIXED_BALANCE,
                 TestConfig.Cards.FixBalance.EXPIRY,
@@ -170,12 +178,12 @@ public class SberPage {
         handleDeclinePayment();
 
         step("Переход в магазин", () -> {
-            universalMethod.safeClick(GO_SHOP, "Перейти в магазин");
+            universalMethod.safeClick(GO_SHOP, SHOP_TEXT);
             AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
         });
     }
 
-    public static String getErrorText() {
+    public String getErrorText() {
         return TEXT_ERROR.shouldBe(visible, Duration.ofSeconds(10)).getText().trim();
     }
 }

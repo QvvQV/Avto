@@ -14,14 +14,14 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
-/**
+/*
  * Кнопки и логика модалки приветствия
  */
 
 public class greetings {
 
     // Константы
-    private static final Faker faker = new Faker(new Locale("en"));
+    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     // Названия кнопок
     private static final String NEXT_STEP_TEXT = "Следующий шаг";
@@ -86,7 +86,7 @@ public class greetings {
         universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         WaitHelper.waitForAnimationComplete();
-        step("Выбрать интересы", () -> randomInterest()
+        step("Выбрать интересы", greetings::randomInterest
         );
         universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         step("Ввод номер телефона", () -> enterRussianPhone(faker.phoneNumber().cellPhone())

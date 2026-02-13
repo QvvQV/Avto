@@ -2,7 +2,7 @@ package ru.tutor.utils;
 
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import ru.tutor.page.addressPage;
+import ru.tutor.page.AddressPage;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class TabManager {
     @Step("Переключиться на предыдущую вкладку")
     private static void switchToLastTab() {
         List<String> tabs = getAllTabs();
-        WebDriverRunner.getWebDriver().switchTo().window(tabs.get(tabs.size() - 1));
+        WebDriverRunner.getWebDriver().switchTo().window(tabs.getLast());
     }
 
     @Step("Переходим к вкладке Order в админке")
@@ -61,7 +61,7 @@ public class TabManager {
         step("Открытие админки в новом окне", () -> {
             int originalWindowCount = WebDriverRunner.getWebDriver().getWindowHandles().size();
 
-            executeJavaScript("window.open('" + addressPage.devAdmin + "', '_blank');");
+            executeJavaScript("window.open('" + AddressPage.devAdmin + "', '_blank');");
             WaitHelper.waitForNewWindow(originalWindowCount + 1, Duration.ofSeconds(5));
             switchToNewWindow(originalWindow);
             AllureAttachments.attachScreenshot("Админка открыта");
@@ -109,6 +109,7 @@ public class TabManager {
         String currentUrl = url();
 
         //Проверяем различные возможные платежные системы
+        assert currentUrl != null;
         boolean isPaymentPage = currentUrl.contains("sber") ||
                 currentUrl.contains("tinkoff") ||
                 currentUrl.contains("cloudpayments") ||

@@ -1,6 +1,5 @@
 package ru.tutor.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,9 +11,9 @@ import java.util.Map;
 public class ErrorResponse {
     private String error;
     private String message;
-    private String path;
+    private final String path;
     private Integer status;
-    private Long timestamp;
+    private final Long timestamp;
     private Boolean success;
     private ErrorDetails errorDetails;
 
@@ -49,15 +48,6 @@ public class ErrorResponse {
         this.message = message;
     }
 
-//    @JsonProperty("path")
-//    public String getPath() {
-//        return path;
-//    }
-//
-//    public void setPath(String path) {
-//        this.path = path;
-//    }
-
     @JsonProperty("status")
     public Integer getStatus() {
         return status;
@@ -72,10 +62,6 @@ public class ErrorResponse {
         return timestamp;
     }
 
-//    public void setTimestamp(Long timestamp) {
-//        this.timestamp = timestamp;
-//    }
-
     @JsonProperty("success")
     public Boolean getSuccess() {
         return success;
@@ -85,28 +71,10 @@ public class ErrorResponse {
         this.success = success;
     }
 
-//    @JsonAlias({"error.messages"})
-//    @JsonProperty("messages")
-//    public Map<String, String> getMessages() {
-//        return messages;
-//    }
-//
-//    public void setMessages(Map<String, String> messages) {
-//        this.messages = messages;
-//    }
-
     // Cтатический метод
     public static ErrorResponse of(String error, String message, String path, Integer status, Long timestamp) {
         return new ErrorResponse(error, message, path, status, timestamp);
     }
-
-//    public boolean hasValidationErrors() {
-//        return errorDetails != null && errorDetails.getMessages() != null && !errorDetails.getMessages().isEmpty();
-//    }
-//
-//    public Map<String, String> getValidationMessages() {
-//        return errorDetails != null ? errorDetails.getMessages() : null;
-//    }
 
     @Override
     public String toString() {
@@ -126,20 +94,10 @@ public class ErrorResponse {
     public static class ErrorDetails {
         private Map<String, String> messages;
 
-//        public ErrorDetails() {}
-//
-//        public ErrorDetails(Map<String, String> messages) {
-//            this.messages = messages;
-//        }
-
         @JsonProperty("messages")
         public Map<String, String> getMessages() {
             return messages;
         }
-
-//        public void setMessages(Map<String, String> messages) {
-//            this.messages = messages;
-//        }
 
         @Override
         public String toString() {

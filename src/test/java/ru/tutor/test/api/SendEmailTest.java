@@ -5,14 +5,14 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.api.Steps.SendEmailSteps;
-import ru.tutor.page.addressPage;
+import ru.tutor.api.steps.SendEmailSteps;
+import ru.tutor.config.TestConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(AllureJunit5.class)
 public class SendEmailTest {
-    private final SendEmailSteps sendEmailSteps = new SendEmailSteps(addressPage.apiDevAdress);
+    private final SendEmailSteps sendEmailSteps = SendEmailSteps.withBaseUrl(TestConfig.getApiBaseUrl());
 
     @Test
     @DisplayName("Успешная отправка письма")

@@ -61,7 +61,7 @@ public class GameWheelApi extends BaseApi {
                 .extract().response();
     }
 
-    @Step("POST /user/reward/opеn/{id} - удаление подарка из списка призов")
+    @Step("POST /user/reward/open/{id} - удаление подарка из списка призов")
     public Response openReward(String authToken, Long rewardId) {
         return given()
                 .filter(new AllureRestAssured())

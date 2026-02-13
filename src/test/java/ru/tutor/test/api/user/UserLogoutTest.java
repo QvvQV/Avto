@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты эндпоинта /user/logout")
 public class UserLogoutTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private ru.tutor.steps.UserSteps userSteps;
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -48,10 +48,6 @@ public class UserLogoutTest {
                     .contentType(ContentType.JSON)
                     .body(equalTo("[]"));
         });
-
-//        step("Проверка что токен больше не работает", () -> {
-//            userSteps.verifyTokenInvalidAfterLogout(token);
-//        });
     }
 
     @Test
@@ -69,7 +65,7 @@ public class UserLogoutTest {
     void logoutWithInvalidToken() {
         Response response = userSteps.logout("invalid");
 
-        assertTrue(response.getStatusCode() == 401, "С невалидным токеном должен быть 401 или 403. Получено: " + response.getStatusCode());
+        assertEquals(401, response.getStatusCode(), "С невалидным токеном должен быть 401 или 403. Получено: " + response.getStatusCode());
     }
 
     @Test
@@ -94,11 +90,11 @@ public class UserLogoutTest {
 
     @AfterEach
     void tearDown() {
-        step("Завершение теста", () -> {
-            Allure.addAttachment("Тест завершён", "text/plain",
-                    "тест " + this.getClass().getSimpleName() + " выполнен в " +
-                    java.time.LocalDateTime.now()
-            );
-        });
+        step("Завершение теста", () ->
+                Allure.addAttachment("Тест завершён", "text/plain",
+                        "тест " + this.getClass().getSimpleName() + " выполнен в " +
+                                java.time.LocalDateTime.now()
+                )
+        );
     }
 }

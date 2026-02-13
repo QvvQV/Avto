@@ -7,7 +7,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.ProductConfiguration;
-import ru.tutor.steps.AdminToUserLoginSteps;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
@@ -16,7 +15,7 @@ import ru.tutor.utils.universalMethod;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +25,8 @@ import static io.qameta.allure.Allure.step;
 
 public class AdminOrdersPage {
 
-    private final AdminOrderDetails adminOrderDetails = new AdminOrderDetails();
+    // Константа UTM-метки
+    private static final String EXPECTED_REWARD_ID = "1012_966574";
 
     // Названия кнопок
     private static final String APPLY_TEXT = "Применить";
@@ -38,74 +38,33 @@ public class AdminOrdersPage {
     private static final String UNDERSTAND_TEXT = "Понятно";
 
     // Локаторы
-    private static SelenideElement ORDERS_BUTTON = $("a[href*='orders']");
-    private static SelenideElement APPLY_BUTTON = $$("button").find(exactText(APPLY_TEXT));
-    private static SelenideElement MAKE_A_PAYMENT = $(".button-modal");
-    private static SelenideElement SAVE_BUTTON = $$("button").find(exactText(SAVE_TEXT));
-    private static SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
-    private static SelenideElement CANSEL_SUBSCRIPTION_BUTTON = $$("button").find(exactText(CANCEL_YOUR_SUBSCRIPTION_TEXT));
-    private static SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
-    private static SelenideElement UNDERSTAND_BUTTON = $$("button").find(exactText(UNDERSTAND_TEXT));
-    private static SelenideElement EMAIL_INPUT_SEARCH = $("input[placeholder='Email']");
-    private static SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
-    private static SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
+    private static final SelenideElement ORDERS_BUTTON = $("a[href*='orders']");
+    private static final SelenideElement APPLY_BUTTON = $$("button").find(exactText(APPLY_TEXT));
+    private static final SelenideElement MAKE_A_PAYMENT = $(".button-modal");
+    private static final SelenideElement SAVE_BUTTON = $$("button").find(exactText(SAVE_TEXT));
+    private static final SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
+    private static final SelenideElement CANSEL_SUBSCRIPTION_BUTTON = $$("button").find(exactText(CANCEL_YOUR_SUBSCRIPTION_TEXT));
+    private static final SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
+    private static final SelenideElement UNDERSTAND_BUTTON = $$("button").find(exactText(UNDERSTAND_TEXT));
+    private static final SelenideElement EMAIL_INPUT_SEARCH = $("input[placeholder='Email']");
+    private static final SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
+    private static final SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
 
     private String lastSearchedEmail; // Добавляем поле для хранения email
 
     // Селектор для поиска Лайт продуктов
-    private static ElementsCollection ALL_ORDER_LINKS = $$("a[data-discover='true'][href*='/order/']");
+    private static final ElementsCollection ALL_ORDER_LINKS = $$("a[data-discover='true'][href*='/order/']");
 
     private static SelenideElement getLiteOrderLink() {
         return ALL_ORDER_LINKS.findBy(text("Лайт").or(text("Lite")));
     }
 
     // Селектор для поиска UTM метки
-    private static SelenideElement UTM_TEXT = $x("//div[contains(@class, 'order-info-entry')][.//div[text()='UTM']]/div[2]");
+    private static final SelenideElement UTM_TEXT = $x("//div[contains(@class, 'order-info-entry')][.//div[text()='UTM']]/div[2]");
 
 
     // Универсальные методы
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
-
-    /**
-     * Универсальный метод для клика по кнопке с проверками
-     */
-//    @Step("Клик по кнопке: {buttonName}")
-//    private static void clickButton(SelenideElement button, String buttonName) {
-//        step("Клик по кнопке '" + buttonName + "'", () -> {
-//            button.scrollTo()
-//                    .shouldBe(visible, DEFAULT_TIMEOUT)
-//                    .shouldBe(interactable, DEFAULT_TIMEOUT)
-//                    .click();
-//
-//            WaitHelper.waitForAnimationComplete();
-//            AllureAttachments.attachText("Кнопка нажата", "✅ " + buttonName);
-//        });
-//    }
-
-    /**
-     * Универсальный метод для клика по кнопке с ожиданием загрузки страницы
-     */
-    @Step("Клик по кнопке с переходом: {buttonName}")
-    private static void clickButtonWithPageLoad(SelenideElement button, String buttonName) {
-        step("Клик по кнопке '" + buttonName + "' с переходом", () -> {
-//            String originalUrl = WebDriverRunner.url();
-
-            button.scrollTo()
-                    .shouldBe(visible, DEFAULT_TIMEOUT)
-                    .shouldBe(interactable, DEFAULT_TIMEOUT)
-                    .click();
-
-            WaitHelper.waitForPageLoad();
-            WaitHelper.waitForAnimationComplete();
-
-//            if (!WebDriverRunner.url().equals(originalUrl)) {
-//                AllureAttachments.attachText("Переход",
-//                        "Успешный переход после клика на: " + buttonName);
-//            }
-
-            AllureAttachments.attachText("Кнопка нажата", "✅ " + buttonName + " - появилось модальное окно");
-        });
-    }
 
     @Step("Переход в раздел заказов")
     public AdminOrdersPage navigateToOrders() {
@@ -160,7 +119,7 @@ public class AdminOrdersPage {
 // переход на др страницу
         step("Проверяем что находимся на странице заказа", () -> {
             String currentUrl = WebDriverRunner.url();
-            assert currentUrl.contains("/order/") :
+            assert Objects.requireNonNull(currentUrl).contains("/order/") :
                     "Не удалось перейти на страницу заказа. Текущий URL: " + currentUrl;
             AllureAttachments.attachText("URL заказа: ", currentUrl);
         });
@@ -171,7 +130,7 @@ public class AdminOrdersPage {
     public void makePayment(String productId) {
         universalMethod.clickButton(MAKE_A_PAYMENT, MAKE_A_PAYMENT_TEXT);
 
-        String price = ProductConfiguration.getSettings(productId).getPrice();
+        String price = ProductConfiguration.getSettings(productId).price();
 
         SUM_INPUT.shouldBe(visible, DEFAULT_TIMEOUT).setValue(price);
         universalMethod.clickButton(SAVE_BUTTON, SAVE_TEXT);
@@ -192,9 +151,8 @@ public class AdminOrdersPage {
         // Запоминаем текущую вкладку
 
         String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
-        step("Сравнием utm_medium с эталоном - '1012_966574': ", () -> {
-            processUtm("1012_966574");
-        });
+        step("Сравнием utm_medium с эталоном - '1012_966574': ", this::processUtm
+        );
 
         // Кликаем на кнопку Войти
         universalMethod.clickButton(LOGIN_BUTTON, LOGIN_TEXT);
@@ -206,7 +164,7 @@ public class AdminOrdersPage {
         // Проверяем, что переключились успешно
         String newWindow = WebDriverRunner.getWebDriver().getWindowHandle();
         if (!newWindow.equals(originalWindow)) {
-            Set<String> originalHandles1 = WebDriverRunner.getWebDriver().getWindowHandles();
+            WebDriverRunner.getWebDriver().getWindowHandles();
             String originalWindow1 = WebDriverRunner.getWebDriver().getWindowHandle();
             Allure.addAttachment("✅ Успешно переключились на новую вкладку: ", originalWindow1);
         } else {
@@ -215,7 +173,7 @@ public class AdminOrdersPage {
     }
 
     @Step("Проверяем наличие UTM метки определённого значения")
-    private void processUtm(String expectedValue) {
+    private void processUtm() {
         String utmText = UTM_TEXT.shouldBe(visible, DEFAULT_TIMEOUT)
                 .getText();
 
@@ -227,8 +185,8 @@ public class AdminOrdersPage {
 
         if (matcher.find()) {
             String actualValue = matcher.group(1);
-            assert actualValue.equals(expectedValue) :
-                    String.format("UTM medium не совпадает. Ожидалось: %s, Фактически: %s", expectedValue, actualValue);
+            assert actualValue.equals(AdminOrdersPage.EXPECTED_REWARD_ID) :
+                    String.format("UTM medium не совпадает. Ожидалось: %s, Фактически: %s", AdminOrdersPage.EXPECTED_REWARD_ID, actualValue);
         } else {
             throw new AssertionError("не удалось извлечь значение utm_medium");
         }
@@ -240,16 +198,15 @@ public class AdminOrdersPage {
 
     @Step("Поиск заказа Renewal, работа с ним")
     public void renewal() {
-        step("Закрываем ненужные вкладки и переходим на вкладку Orders: ", () -> {
-            TabManager.goToTheOrderTab();
-        });
+        step("Закрываем ненужные вкладки и переходим на вкладку Orders: ", TabManager::goToTheOrderTab
+        );
 
         universalMethod.clickButton(APPLY_BUTTON, APPLY_TEXT);
         WaitHelper.waitForAnimationComplete();
         processRecurrentPayment();
-        step("Сравнием utm_medium с эталоном - '1012_966574': ", () -> {
-            processUtm("1012_966574");
-        });
+        step("Сравнием utm_medium с эталоном - '1012_966574': ",
+            this::processUtm
+        );
         step("Проведение рекурента:", () -> makePayment("755"));
     }
 

@@ -1,7 +1,6 @@
 package ru.tutor.api;
 
 import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 
@@ -27,7 +26,7 @@ public class ClubApi extends BaseApi {
                 .header("Referer", "https://client.ttplace.ru/")
                 .log().all()
                 .when()
-                .get("user/club/statistics")
+                .get("/user/club/statistics")
                 .then()
                 .log().all()
                 .extract().response();
@@ -45,7 +44,7 @@ public class ClubApi extends BaseApi {
                 .header("Referer", "https://client.ttplace.ru/")
                 .log().all()
                 .when()
-                .get("user/club/member")
+                .get("/user/club/member")
                 .then()
                 .log().all()
                 .extract().response();
@@ -64,7 +63,7 @@ public class ClubApi extends BaseApi {
                 .header("Referer", "https://client.ttplace.ru/")
                 .log().all()
                 .when()
-                .post(baseUrl + "user/club/request-withdrawal")
+                .post(baseUrl + "/user/club/request-withdrawal")
                 .then()
                 .log().all()
                 .extract().response();

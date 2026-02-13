@@ -34,21 +34,11 @@ public class ProductConfig {
         PRODUCT_DOMAINS.put("psychosomatics", new ProductDomainInfo("psychosomaticsf", "Женская психосоматика"));
     }
 
-    public static class ProductDomainInfo {
-        private final String subdomain;
-        private final String expectedProductName;
-
-        public ProductDomainInfo(String subdomain, String expectedProductName) {
-            this.subdomain = subdomain;
-            this.expectedProductName = expectedProductName;
-        }
-
-        public String getSubdomain() { return subdomain; }
-        public String getExpectedProductName() { return expectedProductName; }
+    public record ProductDomainInfo(String subdomain, String expectedProductName) {
         public String getApiUrl() {
-            return "https://" + subdomain + ".tutorplace.ru/domain";
+                return "https://" + subdomain + ".tutorplace.ru/domain";
+            }
         }
-    }
 
     public static String getProductApiUrl(String productId) {
         ProductDomainInfo info = PRODUCT_DOMAINS.get(productId);
@@ -57,11 +47,11 @@ public class ProductConfig {
 
     public static String getExpectedProductName(String productId) {
         ProductDomainInfo info = PRODUCT_DOMAINS.get(productId);
-        return info != null ? info.getExpectedProductName() : null;
+        return info != null ? info.expectedProductName() : null;
     }
 
     public static String getSubdomain(String productId) {
         ProductDomainInfo info = PRODUCT_DOMAINS.get(productId);
-        return info != null ? info.getSubdomain() : null;
+        return info != null ? info.subdomain() : null;
     }
 }

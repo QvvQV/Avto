@@ -11,9 +11,9 @@ import static io.qameta.allure.Allure.step;
 
 public class AdminLoginPage {
 
-    private static SelenideElement LOGIN = $("#root > div > div > div > form > div:nth-child(1) > div.input__wrapper > input");
-    private static SelenideElement PASSWORD= $("[name=\"password\"]");
-    private static SelenideElement LOGIN_BUTTON = $$("button").find(exactText("войти"));
+    private final static SelenideElement LOGIN = $("#root > div > div > div > form > div:nth-child(1) > div.input__wrapper > input");
+    private final static SelenideElement PASSWORD= $("[name='password']");
+    private final static SelenideElement LOGIN_BUTTON = $$("button").find(exactText("войти"));
 
         public static void login() {
 

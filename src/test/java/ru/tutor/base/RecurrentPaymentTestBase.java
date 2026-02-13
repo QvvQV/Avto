@@ -7,14 +7,10 @@ import ru.tutor.page.OrderDatesPage;
 import ru.tutor.page.SberPage;
 import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.admin.AdminOrdersPage;
-import ru.tutor.page.ttPage;
+import ru.tutor.page.TtPage;
 import ru.tutor.test.context.TestExecutionContext;
 import ru.tutor.test.executor.PaymentCycleExecutor;
 import ru.tutor.utils.DateValidator;
-
-import static com.codeborne.selenide.Selenide.refresh;
-import static ru.tutor.utils.WaitHelper.waitForAnimationComplete;
-import static ru.tutor.utils.WaitHelper.waitForPageLoad;
 
 public class RecurrentPaymentTestBase extends BaseUiTest {
 
@@ -24,7 +20,7 @@ public class RecurrentPaymentTestBase extends BaseUiTest {
     // Page Objects
     protected AdminOrderDetails adminOrderDetails = new AdminOrderDetails();
     protected AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
-    protected ttPage ttPage = new ttPage();
+    protected TtPage ttPage = new TtPage();
     protected CloudPage cloudPage = new CloudPage();
     protected SberPage sberPage = new SberPage();
 
@@ -44,7 +40,7 @@ public class RecurrentPaymentTestBase extends BaseUiTest {
     public void init() {
         adminOrderDetails = new AdminOrderDetails();
         adminOrdersPage = new AdminOrdersPage();
-        ttPage = new ttPage();
+        ttPage = new TtPage();
         cloudPage = new CloudPage();
         sberPage = new SberPage();
 
@@ -59,16 +55,4 @@ public class RecurrentPaymentTestBase extends BaseUiTest {
     protected void initializePaymentCycleExecutor() {
         paymentCycleExecutor = new PaymentCycleExecutor(orderDatesPage, dateValidator, adminOrdersPage, adminOrderDetails);
     }
-
-    protected void refreshPage() {
-        refresh();
-        waitForPageLoad();
-        waitForAnimationComplete();
-    }
-
-    protected void initializeTestContext() {
-        context.reset();
-        context.setOriginalCreatedDate(orderDatesPage.extractCreationDate());
-    }
-    
 }

@@ -25,10 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestTtPage extends BaseUiTest {
 
+    private final TtPage ttPage = new TtPage();
+
     //    @BeforeEach
     @BeforeAll
     public static void setupAll() {
-        open(addressPage.urlMain);
+        open(AddressPage.urlMain);
     }
 
     @AfterAll
@@ -45,27 +47,27 @@ public class TestTtPage extends BaseUiTest {
     public void ShowModalText() {
 
         String expected = "TutorPlace - Платформа для обучения, курсы по подписке, онлайн школа";
-        step("Проверяем что мы на нужной странице",()->{
-        assertEquals(expected, title());});
+        step("Проверяем что мы на нужной странице",()->
+        assertEquals(expected, title()));
 
         ttPage.clickBtnOpenFor();
         ttPage.clickLite99();
         step("Проверяем текст модалки на соответствие Лайту", () ->
-        {
-            assertEquals("ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”", ttPage.setTextFromModal());
-        });
+
+            assertEquals("ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”", ttPage.setTextFromModal())
+        );
         ttPage.clickBtnClose();
         ttPage.clickLife();
         step("Проверяем текст модалки на соответствие Пожизненному доступу", () ->
-        {
-            assertEquals("ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ", ttPage.setTextFromModal());
-        });
+
+            assertEquals("ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ", ttPage.setTextFromModal())
+        );
         ttPage.clickBtnClose();
         ttPage.clickPremium();
         step("Проверяем текст модалки на соответствие Премиуму", () ->
-        {
-            assertEquals("ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”", ttPage.setTextFromModal());
-        });
+
+            assertEquals("ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”", ttPage.setTextFromModal())
+        );
         ttPage.clickBtnClose();
     }
 
@@ -75,8 +77,8 @@ public class TestTtPage extends BaseUiTest {
     @DisplayName("футер главной страницы")
     public void FooterPage() {
         String expected = "TutorPlace - Платформа для обучения, курсы по подписке, онлайн школа";
-        step("Проверяем что мы на нужной странице",()->{
-        assertEquals(expected, title());});
+        step("Проверяем что мы на нужной странице",()->
+        assertEquals(expected, title()));
         executeJavaScript("window.scrollTo(0, document.body.scrollHeight)");
         step("Проверяем текст футтера", () ->{
         assertEquals("Антикоррупционная политика", footer.setAntyPolicy());
@@ -106,8 +108,8 @@ public class TestTtPage extends BaseUiTest {
     @DisplayName("ссылки в атрибуте href")
     public void linksTtPage() {
         String expected = "TutorPlace - Платформа для обучения, курсы по подписке, онлайн школа";
-        step("Проверяем что мы на нужной странице",()->{
-        assertEquals(expected, title());});
+        step("Проверяем что мы на нужной странице",()->
+        assertEquals(expected, title()));
         executeJavaScript("window.scrollTo(0, document.body.scrollHeight)");
         step("Проверяем наличие верных ссылок",()->{
 
@@ -134,35 +136,32 @@ public class TestTtPage extends BaseUiTest {
     @DisplayName("прокликивание футера")
     public void clickFooterTtpage() {
         String expected = "TutorPlace - Платформа для обучения, курсы по подписке, онлайн школа";
-        step("Проверяем что мы на нужной странице",()->{
-        assertEquals(expected, title());});
+        step("Проверяем что мы на нужной странице",()->
+        assertEquals(expected, title()));
         executeJavaScript("window.scrollTo(0, document.body.scrollHeight)");
         footer.clickAboutCompany();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("TutorPlace | О компании", title());});
+        step ("Сравниваем title стр`", ()->
+        assertEquals("TutorPlace | О компании", title()));
         footer.clickAboutSubscription();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("Подписка на курсы - онлайн обучение", title());});
+        step ("Сравниваем title стр`", ()->
+        assertEquals("Подписка на курсы - онлайн обучение", title()));
         footer.clickContacts();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("TutorPlace | Контакты", title());});
+        step ("Сравниваем title стр`", ()->
+        assertEquals("TutorPlace | Контакты", title()));
         executeJavaScript("window.scrollTo(0, document.body.scrollHeight)");
         footer.clickNewHorizon();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("TutorPlace | Новые горизонты", title());});
+        step ("Сравниваем title стр`", ()->
+        assertEquals("TutorPlace | Новые горизонты", title()));
         footer.clickWebmasters();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("TutorPlace | Веб-Мастерам", title());});
+        step ("Сравниваем title стр`", ()->
+        assertEquals("TutorPlace | Веб-Мастерам", title()));
         footer.clickForAuthors();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("TutorPlace | Для авторов", title());});
-//        footer.clickInstall();
-//        step ("Сравниваем title стр`", ()->{
-//        assertEquals("TutorPlace | Установка ПО", title());});
+        step ("Сравниваем title стр`", ()->
+        assertEquals("TutorPlace | Для авторов", title()));
         executeJavaScript("window.scrollTo(0, document.body.scrollHeight)");
         footer.clickCareer();
-        step ("Сравниваем title стр`", ()->{
-        assertEquals("TutorPlace | Вакансии", title());});
+        step ("Сравниваем title стр`", ()->
+        assertEquals("TutorPlace | Вакансии", title()));
     }
 
     @Test

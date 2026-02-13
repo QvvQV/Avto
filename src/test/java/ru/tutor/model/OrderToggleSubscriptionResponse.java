@@ -36,55 +36,9 @@ public class OrderToggleSubscriptionResponse {
         return isSubscribed;
     }
 
-    public void setIsSubscribed(boolean subscribed) {
-        this.isSubscribed = isSubscribed;
-    }
-
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public Integer getToggleCount() {
-        return toggleCount;
-    }
-
-    public void setToggleCount(Integer toggleCount) {
-        this.toggleCount = toggleCount;
-    }
-
-    public String getLastToggled() {
-        return lastToggled;
-    }
-
-    public void setLastToggled(String lastToggled) {
-        this.lastToggled = lastToggled;
-    }
-
     // Дополнительные методы
     public boolean isValid() {
         return id != null && id > 0;
-    }
-
-    public boolean isSubscribed() {
-        return Boolean.TRUE.equals(isSubscribed);
-    }
-
-    public boolean hasSubscriptionStatus() {
-        return subscriptionStatus != null && !subscriptionStatus.trim().isEmpty();
-    }
-
-    public boolean isActiveSubscription() {
-        return "active".equalsIgnoreCase(subscriptionStatus) ||
-                Boolean.TRUE.equals(isSubscribed);
-    }
-
-    public boolean hasToggledRecently() {
-        if (lastToggled == null) return false;
-        return true;
     }
 
     @Override

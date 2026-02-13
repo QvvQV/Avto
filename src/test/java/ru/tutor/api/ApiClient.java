@@ -18,16 +18,4 @@ public class ApiClient {
                 .addFilter(new AllureRestAssured())
                 .build();
     }
-
-    public ApiClient(String baseUrl, String token) {
-        this.baseRequestSpec = new RequestSpecBuilder()
-                .setBaseUri(baseUrl)
-                .setContentType(ContentType.JSON)
-                .addHeader("Accept", "application/json, text/plain, */*")
-                .addHeader("Origin", "https://client.ttplace.ru")
-                .addHeader("Referer", "https://client.ttplace.ru/")
-                .addHeader("Authorization", "Bearer " + token)
-                .addFilter(new AllureRestAssured())
-                .build();
-    }
 }

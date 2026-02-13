@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("club")
 public class ClubSzDetailsTest {
 
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getApiBaseUrl());
-    private final ClubSzDetailsSteps szDetailsSteps = new ClubSzDetailsSteps(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final ClubSzDetailsSteps szDetailsSteps = ClubSzDetailsSteps.withBaseUrl(TestConfig.getApiBaseUrl());
     private ru.tutor.steps.UserSteps userSteps;
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -35,7 +35,7 @@ public class ClubSzDetailsTest {
     private static String authToken;
     private static Integer currentUserId;
     private static SzDetailsRequest testRequest;
-    private static Integer testUserId = 42225;
+    private static final Integer testUserId = 42225;
     private static Integer savedSzDetailsId;
 
     @BeforeEach
@@ -43,14 +43,6 @@ public class ClubSzDetailsTest {
         authToken = step("Логин", () ->
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
-
-        // Получаем реальный ID пользователя из профиля
-//       step("Получение ID пользователя", () -> {
-//             Response profileResponse = userSteps.getProfile(authToken);
-//             currentUserId = profileResponse.jsonPath().getInt("id");
-//             Allure.addAttachment("ID пользователя", "text/plain",
-//                     "Текущий userId: " + currentUserId);
-//        });
     }
 
     @Test
@@ -272,17 +264,18 @@ public class ClubSzDetailsTest {
         );
     }
 
-//    @Test
-//    @Order(8)
-//    @DisplayName("Проверка идемпотентности DELETE")
-//    @Story("Функциональность")
-//    @Severity(SeverityLevel.NORMAL)
-//    void testDeleteIdempotence() {
+//    TODO: на доработке
+//     @Test
+//     @Order(8)
+//     @DisplayName("Проверка идемпотентности DELETE")
+//     @Story("Функциональность")
+//     @Severity(SeverityLevel.NORMAL)
+//     void testDeleteIdempotence() {
 //        // Первое удаление
 //        Response firstResponse = step("Первое удаление", () ->
 //                szDetailsSteps.deleteClubDetails(authToken)
 //        );
-//
+// TODO:
 //        step("Проверка первого удаления", () -> {
 //            int firstStatusCode = firstResponse.getStatusCode();
 //            Allure.addAttachment("Первое удаление", "text/plain");
@@ -395,10 +388,11 @@ public class ClubSzDetailsTest {
                 assertEquals("[]", responseBody, "Тело ответа должно быть пустым массивом");
 
                 Allure.addAttachment("Структура ответа 200", "text/plain",
-                        "✅ Статус: 200 OK\n" +
-                                "✅ Content-Type: application/json\n" +
-                                "✅ CORS заголовки корректны\n" +
-                                "✅ Тело: пустой массив []");
+                        """
+                                ✅ Статус: 200 OK
+                                ✅ Content-Type: application/json
+                                ✅ CORS заголовки корректны
+                                ✅ Тело: пустой массив []""");
             } else if (statusCode == 404) {
                 Allure.addAttachment("Структура ответа 404", "text/plain",
                         "ℹ Статус: 404 Not Found\n" +

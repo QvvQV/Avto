@@ -23,6 +23,8 @@ import static ru.tutor.page.SberPage.logModalType;
 
 public class CloudPage {
 
+    private static final TtPage ttPage = new TtPage();
+
     // Константы
     private static final Faker faker = new Faker(Locale.ENGLISH);
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
@@ -39,25 +41,25 @@ public class CloudPage {
     private static final String SUCCESS_TEXT = "Успех";
 
     //Локаторы в модальном окне
-    private static SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
-    private static SelenideElement SUCCESS_BUTTON = $$("button").find(exactText(SUCCESS_TEXT));
-    private static SelenideElement ERROR_MESSAGE = $$("p").find(exactText(ERROR_MESSAGE_TEXT));
-    private static SelenideElement ACCESS_BUTTON = $(By.id("access-button"));
-    private static SelenideElement ACCESS_BUTTON_PROD = $(By.id("mainFormaSubmitBtn"));
-    private static SelenideElement EMAIL_INPUT = $("[name='email']");
-    private static SelenideElement EMAIL_INPUT_PROD = $("[name='order[email]']");
-    private static SelenideElement CARD_PAGE_BUTTON = $("[data-test='cardpay-page-button']");
-    private static SelenideElement CARD_INPUT = $("[automation-id='tui-input-card-group__card']");
-    private static SelenideElement CARD_PAY_BUTTON = $("[data-test='cardpay-button']");
-    public static SelenideElement FULL_OPTION = $("[name='full']");
-    private static SelenideElement INSTALLMENTS_OPTION = $("[name='installments']");
+    private static final SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
+    private static final SelenideElement SUCCESS_BUTTON = $$("button").find(exactText(SUCCESS_TEXT));
+    private static final SelenideElement ERROR_MESSAGE = $$("p").find(exactText(ERROR_MESSAGE_TEXT));
+    private static final SelenideElement ACCESS_BUTTON = $(By.id("access-button"));
+    private static final SelenideElement ACCESS_BUTTON_PROD = $(By.id("mainFormaSubmitBtn"));
+    private static final SelenideElement EMAIL_INPUT = $("[name='email']");
+    private static final SelenideElement EMAIL_INPUT_PROD = $("[name='order[email]']");
+    private static final SelenideElement CARD_PAGE_BUTTON = $("[data-test='cardpay-page-button']");
+    private static final SelenideElement CARD_INPUT = $("[automation-id='tui-input-card-group__card']");
+    private static final SelenideElement CARD_PAY_BUTTON = $("[data-test='cardpay-button']");
+    public static final SelenideElement FULL_OPTION = $("[name='full']");
+    private static final SelenideElement INSTALLMENTS_OPTION = $("[name='installments']");
 
     //Локаторы отдельного окна оплаты
-    private static SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));
-    private static SelenideElement DATE_INPUT = $(By.id("date"));
-    private static SelenideElement CVV_INPUT = $(By.id("cvv"));
-    private static SelenideElement CONFIRM_BUTTON = $("button[data-v-59c9a1ad]");
-    private static SelenideElement BACK_TO_SHOP_BUTTON = $("button[data-v-c1ac6fa4]");
+    private static final SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));
+    private static final SelenideElement DATE_INPUT = $(By.id("date"));
+    private static final SelenideElement CVV_INPUT = $(By.id("cvv"));
+    private static final SelenideElement CONFIRM_BUTTON = $("button[data-v-59c9a1ad]");
+    private static final SelenideElement BACK_TO_SHOP_BUTTON = $("button[data-v-c1ac6fa4]");
 
     // Внутренние состояния
     private String currentEmail;
@@ -97,10 +99,6 @@ public class CloudPage {
 
     public static String atrEmail() {
         return EMAIL_INPUT.shouldBe(visible).getValue();
-    }
-
-    public String getCurrentEmail() {
-        return currentEmail;
     }
 
     // ввод банковских данных в модалку Cloud
@@ -176,8 +174,8 @@ public class CloudPage {
     }
 
     @Step("Выбор опции 'Полная оплата' в модальном окне")
-    public String setDateModalInstallments(){
-        return step("Выбор полной оплаты и заполнение email", () -> {
+    public void setDateModalInstallments(){
+        step("Выбор полной оплаты и заполнение email", () -> {
             currentEmail = faker.internet().emailAddress();
 
             // Заполнение email
@@ -196,8 +194,6 @@ public class CloudPage {
             // Логирование
             AllureAttachments.attachText("Email в модалке", currentEmail);
             System.out.println(modalText + ": " + currentEmail);
-
-            return currentEmail;
         });
     }
 

@@ -6,6 +6,7 @@ import io.restassured.http.Headers;
 import org.openqa.selenium.OutputType;
 
 import java.io.ByteArrayInputStream;
+import java.util.Objects;
 
 /**
  * Класс для Отчётов
@@ -34,7 +35,7 @@ public class AllureAttachments {
 
         public static void attachScreenshot(String name) {
         Allure.addAttachment(name,
-            new ByteArrayInputStream(Selenide.screenshot(OutputType.BYTES)));
+            new ByteArrayInputStream(Objects.requireNonNull(Selenide.screenshot(OutputType.BYTES))));
     }
 
     public static void attachHeaders(String name, Headers headers) {

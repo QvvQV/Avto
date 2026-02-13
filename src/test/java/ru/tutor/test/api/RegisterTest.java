@@ -40,9 +40,9 @@ class RegisterTest extends BaseApiTest {
         String name = faker.name().fullName();
         String phone = registerSteps.generateUniquePhone();
 
-        step("Подготовить данные регистрации", () -> {
-            registerSteps.attachRegistrationData(email, name, phone, true);
-        });
+        step("Подготовить данные регистрации", () ->
+            registerSteps.attachRegistrationData(email, name, phone, true)
+        );
 
         Response response = step("Выполнить регистрацию пользователя", () ->
                 registerSteps.registerUser(email, name, "12345678", phone, "@telegram", true));
@@ -52,9 +52,9 @@ class RegisterTest extends BaseApiTest {
             registerSteps.validateRequireHeaders(response);
             registerSteps.validateNoSensitiveDate(response);
         });
-        step("Проверить performance", () -> {
-            registerSteps.validateResponseTime(response, 5000);
-        });
+        step("Проверить performance", () ->
+            registerSteps.validateResponseTime(response, 5000)
+        );
     }
 
     @Test
@@ -69,9 +69,9 @@ class RegisterTest extends BaseApiTest {
         Response response = step("Регистрация с минимальными данными", () ->
                 registerSteps.registerUser(email, name, "12345678", "", "", true));
 
-        step("Проверить успешную регистрацию", () -> {
-            registerSteps.validateSuccessfulRegistration(response);
-        });
+        step("Проверить успешную регистрацию", () ->
+            registerSteps.validateSuccessfulRegistration(response)
+        );
     }
 
     @Test
@@ -100,9 +100,9 @@ class RegisterTest extends BaseApiTest {
         Response response = step("Регистрация без согласия с политикой", () ->
                 registerSteps.registerUser(email, name, "12345678", "", "", false));
 
-        step("Проверить ошибку валидации", () -> {
-            registerSteps.validateValidationError(response, 422);
-        });
+        step("Проверить ошибку валидации", () ->
+            registerSteps.validateValidationError(response, 422)
+        );
     }
 
     @Test
@@ -114,9 +114,9 @@ class RegisterTest extends BaseApiTest {
         String name = faker.name().firstName();
         Response response = step("Регистрация с пустым email", () ->
                 registerSteps.registerUser("", name, "12345678", "", "", true));
-        step("Проверить валидацию email", () -> {
-            registerSteps.validateValidationError(response, 422);
-        });
+        step("Проверить валидацию email", () ->
+            registerSteps.validateValidationError(response, 422)
+        );
     }
 
     @Test
@@ -129,9 +129,9 @@ class RegisterTest extends BaseApiTest {
 
         Response response = step("Регистрация с пустым именем", () ->
                 registerSteps.registerUser(email, "", "12345678", "", "", true));
-        step("Проверить валидацию имен", () -> {
-            registerSteps.validateValidationError(response, 422);
-        });
+        step("Проверить валидацию имен", () ->
+            registerSteps.validateValidationError(response, 422)
+        );
     }
 
     @Test
@@ -146,9 +146,9 @@ class RegisterTest extends BaseApiTest {
         Response response = step("регистрация с коротким паролем", () ->
                 registerSteps.registerUser(email, name, "12345", "", "", true));
 
-        step("Проверить валидацию пароля", () -> {
-            registerSteps.validateValidationError(response, 422);
-        });
+        step("Проверить валидацию пароля", () ->
+            registerSteps.validateValidationError(response, 422)
+        );
     }
 
     @ParameterizedTest
@@ -168,9 +168,9 @@ class RegisterTest extends BaseApiTest {
     void registrationWithInvalidEmailFormats_ValidationErrors(String invalidEmail) {
         Response response = step("регистрация с невалидным email: " + invalidEmail, () ->
                 registerSteps.registerUser(invalidEmail, "test", "12345678", "", "", true));
-        step("Проверить валидацию email формата", () -> {
-            registerSteps.validateValidationError(response, 422);
-        });
+        step("Проверить валидацию email формата", () ->
+            registerSteps.validateValidationError(response, 422)
+        );
     }
 
     @Nested

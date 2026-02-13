@@ -43,28 +43,12 @@ public class ABTestApiClient {
                 .post(BASE_URL + "/landing/event");
     }
 
-    public static class ABTestConfig {
-        private final boolean isActive;
-        private final int chanceA;
-        private final int chanceB;
-        private final int version;
-
-        public ABTestConfig(boolean isActive, int chanceA, int chanceB, int version) {
-            this.isActive = isActive;
-            this.chanceA = chanceA;
-            this.chanceB = chanceB;
-            this.version = version;
-        }
-
-        public boolean isActive() { return isActive; }
-        public int getChanceA() { return chanceA; }
-        public int getChanceB() { return chanceB; }
-        public int getVersion() { return version; }
+    public record ABTestConfig(boolean isActive, int chanceA, int chanceB, int version) {
 
         @Override
-        public String toString() {
-            return String.format("ABTestConfig{isActive=%s, chanceA=%d%%, chanceB=%d%%, version=%d}",
-                    isActive, chanceA, chanceB, version);
+            public String toString() {
+                return String.format("ABTestConfig{isActive=%s, chanceA=%d%%, chanceB=%d%%, version=%d}",
+                        isActive, chanceA, chanceB, version);
+            }
         }
-    }
 }
