@@ -18,7 +18,7 @@ public class RedirectPage {
 
         // 3. Ожидаемый URL редиректа после оформления
         // начиная с этого момента нужно переиспользовать код
-        String expectedRedirectUrl = "https://dev.tutorplace.ru/success/";
+        String expectedRedirectUrl = "https://dev.ttplace.online/success/";
 
         // 4. Обрабатываем редирект используя исправленные методы
         SuccessOrderPage successPage = ORDER_STEPS_REDIRECT.simpleRedirectHandling(expectedRedirectUrl);

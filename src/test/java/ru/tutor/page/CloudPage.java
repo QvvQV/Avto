@@ -49,7 +49,7 @@ public class CloudPage {
     private static final SelenideElement EMAIL_INPUT = $("[name='email']");
     private static final SelenideElement EMAIL_INPUT_PROD = $("[name='order[email]']");
     private static final SelenideElement CARD_PAGE_BUTTON = $("[data-test='cardpay-page-button']");
-    private static final SelenideElement CARD_INPUT = $("[automation-id='tui-input-card-group__card']");
+    private static final SelenideElement CARD_INPUT = $("input[automation-id='tui-input-card-group__card'][placeholder*='0000']");
     private static final SelenideElement CARD_PAY_BUTTON = $("[data-test='cardpay-button']");
     public static final SelenideElement FULL_OPTION = $("[name='full']");
     private static final SelenideElement INSTALLMENTS_OPTION = $("[name='installments']");
@@ -108,7 +108,7 @@ public class CloudPage {
             sleep(2000);
             switchToFrame(0);
             WaitHelper.waitForPageLoad();
-            universalMethod.clickButton(CARD_PAGE_BUTTON, "Банковская карта");
+//            universalMethod.clickButton(CARD_PAGE_BUTTON, "Банковская карта");
             CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT).sendKeys(TEST_CARD_NUMBER);
             universalMethod.clickButton(CARD_PAY_BUTTON, "Кнопка Оплатить");
             switchToFrame(0);

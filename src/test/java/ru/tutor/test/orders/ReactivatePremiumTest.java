@@ -47,11 +47,11 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты")
     void restoreYourPremiumAccountUsingAnInternalEmail() {
-        testExecutor.executePaymentTestAffRid(
+        testExecutor.executeTwoPaymentTest(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                context
+                context, 1
         );
         step("Перейти в ЛК пользователя", () -> {
             WaitHelper.waitForAnimationComplete();
@@ -77,11 +77,11 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Восстановление премиума по ссылке из email-рассылки")
     void restoreYourPremiumAccountUsingLinkFromEmailNewsletter() {
-        testExecutor.executePaymentTestAffRid(
+        testExecutor.executeTwoPaymentTest(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                context
+                context,1
         );
         step("Перейти в ЛК пользователя", () -> {
             WaitHelper.waitForAnimationComplete();
@@ -105,11 +105,11 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Восстановление Премиума по ссылке из email-рассылки отменённого заказа из Админки")
     void restorePremiumCancelAdmin() {
-        testExecutor.executePaymentTestAffRid(
+        testExecutor.executeTwoPaymentTest(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                context
+                context, 1
         );
         step("Перейти в ЛК пользователя после отмены заказа через Админку", () ->
                 adminOrdersPage.cancelOrderWithAdmin()
@@ -143,11 +143,11 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Оформление Renewall внутри ЛК")
     void renewalDesignInsideThePersonalAccount() {
-        testExecutor.executePaymentTestAffRid(
+        testExecutor.executeTwoPaymentTest(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionAffRid(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                context
+                context, 1
         );
         step("Перейти в ЛК пользователя", () -> {
             WaitHelper.waitForAnimationComplete();

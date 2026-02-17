@@ -2,6 +2,7 @@ package ru.tutor.utils;
 
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 
 import java.time.Duration;
@@ -99,5 +100,24 @@ public class universalMethod {
 
             AllureAttachments.attachText("Валидация", "✅ Кнопка '" + buttonName + "' доступна для клика");
         });
+    }
+
+    /**
+     * Универальный метод для получепния текста элемента
+     */
+    public static String getElementText(SelenideElement element, String elementName) {
+        String text = element.shouldBe(visible, DEFAULT_TIMEOUT).getText().trim();
+        Allure.addAttachment("Текст элемента '" + elementName + "'", text);
+        return text;
+    }
+
+    /**
+     * Универсальный метод для получения атрибута href
+     */
+    @Step("Получение href элемента: {elementName}")
+    public static String getElementHref(SelenideElement element, String elementName) {
+        String href = element.shouldBe(visible, DEFAULT_TIMEOUT).getAttribute("href");
+        Allure.addAttachment("HREF элемента '" + elementName + "'", href);
+        return href;
     }
 }

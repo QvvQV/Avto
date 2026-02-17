@@ -2,6 +2,9 @@ package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.Keys;
+import ru.tutor.utils.universalMethod;
+
+import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
@@ -11,11 +14,15 @@ import static io.qameta.allure.Allure.step;
 
 public class footer {
 
+    private static final String ANTY_POLICY_TEXT = "Антикоррупционная политика";
+    private static final String STUDY_TEXT = "Образовательная лицензия";
+    private static final String POLOCY_TEXT = "Политика конфиденциальности";
+
     //футер-информация
-    private static final SelenideElement AntyPolicy = $$("a").find(exactText("Антикоррупционная политика"));
-    private static final SelenideElement study = $$("a").find(exactText("Образовательная лицензия"));
-    private static final SelenideElement policy = $$("a").find(exactText("Политика конфиденциальности"));
-    private static final SelenideElement userAgreement = $$("a").find(exactText("Пользовательское соглашение"));
+    private static final SelenideElement AntyPolicy = $$("a").find(exactText(ANTY_POLICY_TEXT));
+    private static final SelenideElement study = $$("a").find(exactText(STUDY_TEXT));
+    private static final SelenideElement policy = $$("a").find(exactText(POLOCY_TEXT));
+    private static final SelenideElement userAgreement = $$("a").find(exactText(POLOCY_TEXT));
     private static final SelenideElement offer = $$("a").find(exactText("Публичная оферта"));
     private static final SelenideElement manual = $$("a").find(exactText("Руководство пользователя"));
     private static final SelenideElement personalDate = $$("a").find(exactText("Согласие на обработку персональных данных"));
@@ -39,29 +46,29 @@ public class footer {
     private static final SelenideElement quastions = $$("span").find(exactText("По общим вопросам"));
     private static final SelenideElement online = $$("p").find(exactText("Все обращения принимаются только в электронном виде на почту support@tutorplace.ru или онлайн - чат на сайте"));
     private static final SelenideElement didgital = $$("p").find(exactText("© OOO «ДИДЖИТАЛ КОНТЕНТ» 2022–2025"));
-    
+
     public static String setAntyPolicy() {
-        return AntyPolicy.getText().trim();
+        return universalMethod.getElementText(AntyPolicy, ANTY_POLICY_TEXT);
     }
 
     public static String atrAntyPolicy() {
-        return AntyPolicy.getDomAttribute("href");
+        return universalMethod.getElementHref(AntyPolicy, ANTY_POLICY_TEXT);
     }
 
     public static String setStudy() {
-        return study.getText().trim();
+        return universalMethod.getElementText(study, STUDY_TEXT);
     }
 
     public static String atrStudy() {
-        return study.getDomAttribute("href");
+        return universalMethod.getElementHref(study, STUDY_TEXT);
     }
 
     public static String setPolicy() {
-        return policy.getText().trim();
+        return universalMethod.getElementText(policy, POLOCY_TEXT);
     }
 
     public static String atrPolicy() {
-        return policy.getDomAttribute("href");
+        return universalMethod.getElementHref(policy, POLOCY_TEXT);
     }
 
     public static String setUserAgreement() {

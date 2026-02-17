@@ -7,7 +7,7 @@ import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.flow.SubscriptionTestFlow;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
 
-public class UnsubscribeInAdminCheckDate extends RecurrentPaymentTestBase {
+public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
 
     private RecurrentPaymentTestExecutor testExecutor;
 
@@ -29,7 +29,7 @@ public class UnsubscribeInAdminCheckDate extends RecurrentPaymentTestBase {
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscription(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                context
+                context, 2
         );
     }
 
@@ -40,7 +40,7 @@ public class UnsubscribeInAdminCheckDate extends RecurrentPaymentTestBase {
                 "Cloud Lite",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchaseLiteSubscription(), // Оплата Лайт подписки с главной страницы
                 SubscriptionTestFlow::processRecurrentInAdminLite,
-                context
+                context, 2
         );
     }
 
@@ -51,7 +51,7 @@ public class UnsubscribeInAdminCheckDate extends RecurrentPaymentTestBase {
                 "Sber Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionSber(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                context
+                context,2
         );
     }
 
@@ -62,7 +62,7 @@ public class UnsubscribeInAdminCheckDate extends RecurrentPaymentTestBase {
                 "Sber Lite",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchaseLiteSubscriptionSber(),
                 SubscriptionTestFlow::processRecurrentInAdminLite,
-                context
+                context,2
         );
     }
 }

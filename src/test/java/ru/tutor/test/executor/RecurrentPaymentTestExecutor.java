@@ -37,7 +37,7 @@ public class RecurrentPaymentTestExecutor {
      */
     public void executeTwoPaymentTest(String testName, Supplier<SubscriptionTestFlow> flowSupplier,
                                       Consumer<SubscriptionTestFlow> processMethod,
-                                      TestExecutionContext context) {
+                                      TestExecutionContext context, int cycles) {
         context.setTestName(testName);
 
         try {
@@ -50,69 +50,44 @@ public class RecurrentPaymentTestExecutor {
             // Обновляем страницу
             refreshPage();
 
-            // Получаем ID родукта и настройки
+            // Получаем ID продукта и настройки
             String productId = adminOrderDetails.getFirstProductId();
             context.setCurrentProductId(productId);
             ProductConfiguration.ProductSettings settings = ProductConfiguration.getSettings(productId);
 
             initializeTestContext(context);
 
-            // Выполняем первый платежный цикл
-            paymentCycleExecutor.performPaymentCycle("первый",
-                    settings.initialExpiresDays(),
-                    settings.afterFirstPaymentDays(),
-                    context);
+            switch (cycles) {
+                case 1:
+                    paymentCycleExecutor.performPaymentCycle("первый",
+                        settings.initialExpiresDays(),
+                        settings.afterFirstPaymentDays(),
+                        context);
+                            break;
+                    case 2:
+                        // Выполняем первый платежный цикл
+                paymentCycleExecutor.performPaymentCycle("первый",
+                        settings.initialExpiresDays(),
+                        settings.afterFirstPaymentDays(),
+                        context);
 
-            // Выполняем второй платежный цикл
-            paymentCycleExecutor.performPaymentCycle("второй",
-                    settings.afterFirstPaymentDays(),
-                    settings.afterSecondPaymentDays(),
-                    context);
+                // Выполняем второй платежный цикл
+                paymentCycleExecutor.performPaymentCycle("второй",
+                        settings.afterFirstPaymentDays(),
+                        settings.afterSecondPaymentDays(),
+                        context);
+                // Выполняем финальную проверку
+                comprehensiveChechExecutor.performFinalComprehensiveCheck(productId);
+                break;
 
-            // Выполняем финальную проверку
-            comprehensiveChechExecutor.performFinalComprehensiveCheck(productId);
+                default:
+                    throw new IllegalStateException(
+                            String.format("Неподдерживаемое кол-во циклов: %d. оддерживаются значения: 1, 2", cycles)
+                    );
+            }
 
             // Логируем завершение теста
             flow.logTestCompletion();
-        } catch (Exception e) {
-            captureFailureState(context);
-            throw e;
-        }
-    }
-
-    /**
-     * Выполнение теста по Африд/aff_rid ссылке с рекурентом
-     */
-    public void executePaymentTestAffRid(String testName, Supplier<SubscriptionTestFlow> flowSupplier,
-                                      Consumer<SubscriptionTestFlow> processMethod,
-                                      TestExecutionContext context) {
-        context.setTestName(testName);
-
-        try {
-            // Получаем экземпляр flow
-            SubscriptionTestFlow flow = flowSupplier.get();
-
-            // Выполняем экземпляр рекуррентной оплаты
-            processMethod.accept(flow);
-
-            // Обновляем страницу
-            refreshPage();
-
-            // Получаем ID родукта и настройки
-            String productId = adminOrderDetails.getFirstProductId();
-            context.setCurrentProductId(productId);
-            ProductConfiguration.ProductSettings settings = ProductConfiguration.getSettings(productId);
-
-            initializeTestContext(context);
-
-            // Выполняем первый платежный цикл
-            paymentCycleExecutor.performPaymentCycle("первый",
-                    settings.initialExpiresDays(),
-                    settings.afterFirstPaymentDays(),
-                    context);
-
-            // Логируем завершение теста
-//            flow.logTestCompletion();
         } catch (Exception e) {
             captureFailureState(context);
             throw e;

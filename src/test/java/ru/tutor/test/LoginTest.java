@@ -12,10 +12,11 @@ import ru.tutor.page.AddressPage;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
-public class loginTest extends BaseUiTest {
+public class LoginTest extends BaseUiTest {
 
     @BeforeEach
     void beforeEach() {
+
         step("Открытие стр", () ->
             open(AddressPage.login)
         );
@@ -121,7 +122,7 @@ public class loginTest extends BaseUiTest {
             Assertions.assertEquals("Регистрация", Registration.showH2Reg())
         );
         step("проверяем что кнопка Далее disable=true", () ->
-            Assertions.assertEquals("true", Registration.disablBtnRegist())
+            Assertions.assertEquals("true", Registration.disableBtnRegistr())
         );
     }
 
@@ -154,7 +155,7 @@ public class loginTest extends BaseUiTest {
         Registration.inputNumber();
         Registration.deleteName();
         step("проверяем что кнопка Далее disable=false", () ->
-            Assertions.assertNull(Registration.disablBtnRegist())
+            Assertions.assertNull(Registration.disableBtnRegistr())
         );
         Registration.clickBtnRegistr();
         step("сверяем текст ошибки под полем имя", () -> {

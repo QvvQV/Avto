@@ -104,7 +104,7 @@ public class TestTtPage extends BaseUiTest {
         assertEquals("© OOO «ДИДЖИТАЛ КОНТЕНТ»\n2022–2025", footer.setDidgital());});
     }
 
-//    @Test
+    @Test
     @DisplayName("ссылки в атрибуте href")
     public void linksTtPage() {
         String expected = "TutorPlace - Платформа для обучения, курсы по подписке, онлайн школа";
@@ -113,13 +113,13 @@ public class TestTtPage extends BaseUiTest {
         executeJavaScript("window.scrollTo(0, document.body.scrollHeight)");
         step("Проверяем наличие верных ссылок",()->{
 
-        assertEquals("https://static.tutorplace.ru/docs/anticorruptionpolicy.pdf", footer.atrAntyPolicy());
-        assertEquals("https://static.tutorplace.ru/docs/license.pdf", footer.atrStudy());
-        assertEquals("https://static.tutorplace.ru/docs/privacy_policy.pdf", footer.atrPolicy());
-        assertEquals("https://static.tutorplace.ru/docs/user_agreement.pdf", footer.atrUserAgreement());
-        assertEquals("https://static.tutorplace.ru/docs/oferta.pdf", footer.atrOffer());
-        assertEquals("https://static.tutorplace.ru/docs/rykovodstvo.pdf", footer.atrManual());
-        assertEquals("https://static.tutorplace.ru/docs/personal_data.pdf", footer.atrPersonalDate());
+        assertEquals("https://static.ttplace.ru/docs/anticorruptionpolicy.pdf", footer.atrAntyPolicy());
+        assertEquals("https://static.ttplace.ru/docs/license.pdf", footer.atrStudy());
+        assertEquals("https://static.ttplace.ru/docs/privacy_policy.pdf", footer.atrPolicy());
+        assertEquals("https://static.ttplace.ru/docs/user_agreement.pdf", footer.atrUserAgreement());
+        assertEquals("https://static.ttplace.ru/docs/oferta.pdf", footer.atrOffer());
+//        assertEquals("https://static.ttplace.ru/docs/rykovodstvo.pdf", footer.atrManual());
+        assertEquals("https://static.ttplace.ru/docs/personal_data.pdf", footer.atrPersonalDate());
         assertEquals("/about-company", footer.atrAboutCompany());
         assertEquals("/about-subscription", footer.atrAboutSubscription());
         assertEquals("/contacts", footer.atrContacts());

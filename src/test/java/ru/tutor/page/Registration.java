@@ -65,6 +65,7 @@ public class Registration {
     private static final SelenideElement HEAD2_TEXTMod = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));
     private static final SelenideElement HEAD2_ADD_KURS = $$("h2").find(exactText("Добавленное"));
 
+    // Тестовые данные
     private static final String email =  "tp5052_4@test.ru";
     private static final String valid_password = "12345678";
     private static final String invalid_password = "123";
@@ -234,7 +235,7 @@ public class Registration {
         );
     }
 
-    public static String disablBtnRegist() {
+    public static String disableBtnRegistr() {
         return NEXT_BUTTON.getAttribute("disabled");
     }
 
