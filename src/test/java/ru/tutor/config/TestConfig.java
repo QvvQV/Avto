@@ -21,7 +21,7 @@ public class TestConfig {
     }
 
     public static String getApiBaseUrl() {
-        return properties.getProperty("api.base.url", "https://api.dev.tutorplace.ru");
+        return properties.getProperty("api.base.url", "https://api.dev.ttplace.online");
     }
 
     public static String getApiProdUrl() {

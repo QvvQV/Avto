@@ -65,9 +65,7 @@ public class LiteUnsubscribePage {
     @Step("Получение текста заголовка")
     private static String getHeaderText() {
         return step("Заголовок страницы", () -> {
-            String headerText = H3_TEXT.shouldBe(visible, DEFAULT_TIMEOUT)
-                    .getText()
-                    .trim();
+            String headerText = universalMethod.getElementText(H3_TEXT, "Заголовок старницы");
             AllureAttachments.attachText("Заголовок страницы", headerText);
             return headerText;
         });
@@ -158,12 +156,11 @@ public class LiteUnsubscribePage {
     }
 
     @Step("Клик по гиперссылке")
-    public static void clickHyperlink() {
+    private static void clickHyperlink() {
         step("Клик по гиперссылке", () -> {
             universalMethod.safeClick(HREF, "Клик по гиперссылке");
 
             WaitHelper.waitForPageLoad();
-            WaitHelper.waitForAnimationComplete();
         });
     }
 

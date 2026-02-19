@@ -58,27 +58,30 @@ public class RecurrentPaymentTestExecutor {
             initializeTestContext(context);
 
             switch (cycles) {
-                case 1:
-                    paymentCycleExecutor.performPaymentCycle("первый",
-                        settings.initialExpiresDays(),
-                        settings.afterFirstPaymentDays(),
-                        context);
-                            break;
-                    case 2:
-                        // Выполняем первый платежный цикл
-                paymentCycleExecutor.performPaymentCycle("первый",
-                        settings.initialExpiresDays(),
-                        settings.afterFirstPaymentDays(),
-                        context);
 
-                // Выполняем второй платежный цикл
-                paymentCycleExecutor.performPaymentCycle("второй",
-                        settings.afterFirstPaymentDays(),
-                        settings.afterSecondPaymentDays(),
-                        context);
-                // Выполняем финальную проверку
-                comprehensiveChechExecutor.performFinalComprehensiveCheck(productId);
-                break;
+                // Для aff_rid ссылки
+                case 1:
+                    // Выполняем первый платежный цикл
+                    paymentCycleExecutor.performPaymentCycle("первый",
+                            settings.initialExpiresDays(),
+                            settings.afterFirstPaymentDays(),
+                            context);
+                    break;
+                case 2:
+
+                    paymentCycleExecutor.performPaymentCycle("первый",
+                            settings.initialExpiresDays(),
+                            settings.afterFirstPaymentDays(),
+                            context);
+
+                    // Выполняем второй платежный цикл
+                    paymentCycleExecutor.performPaymentCycle("второй",
+                            settings.afterFirstPaymentDays(),
+                            settings.afterSecondPaymentDays(),
+                            context);
+                    // Выполняем финальную проверку
+                    comprehensiveChechExecutor.performFinalComprehensiveCheck(productId);
+                    break;
 
                 default:
                     throw new IllegalStateException(

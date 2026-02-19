@@ -119,7 +119,7 @@ public class SubscriptionPurchaseBuilder {
         String stepName = buildStepName();
 
         step(stepName, () -> {
-            openMainPageAndCheckTitle();
+            openMainPageAndCheckTitle(false);
             ttPage.clickBtnOpenFor();
             selectSubscriptionType();
             processPaymentSystem();
@@ -140,7 +140,7 @@ public class SubscriptionPurchaseBuilder {
         String stepName = buildStepName();
 
         step(stepName, () -> {
-            openMainPageAndCheckTitleAffRid();
+            openMainPageAndCheckTitle(true);
             ttPage.clickBtnOpenFor();
             selectSubscriptionType();
             processPaymentSystem();
@@ -182,25 +182,20 @@ public class SubscriptionPurchaseBuilder {
 
     // Метод для оплаты без aff_rid ссылки
 
-    private void openMainPageAndCheckTitle() {
-        step("Открытие страницы", () ->
-            open(AddressPage.urlMain)
-        );
-        step("Проверка заголовка главной страницы", () -> {
-            assertEquals(TestConfig.Texts.MAIN_PAGE_TITLE, title());
-            AllureAttachments.attachText("Проверка страницы", "Главная страница загружена корректно");
-        });
-    }
+    // Универсальный метод с параметром для aff_rid
+    private void openMainPageAndCheckTitle(boolean useAffRid) {
+        String url = useAffRid ? AddressPage.urlMainRev : AddressPage.urlMain;
+        String stepName = useAffRid ? "с aff_rid параметром" : "без aff_rid параметра";
 
-    // Метод для оплаты с главной страницы, но с aff_rid ссылкой
-
-    private void openMainPageAndCheckTitleAffRid() {
-        step("Открытие страницы", () ->
-            open(AddressPage.urlMainRev)
+        step(String.format("Открытие главной страницы %s", stepName), () ->
+                open(url)
         );
+
         step("Проверка заголовка главной страницы", () -> {
-            assertEquals(TestConfig.Texts.MAIN_PAGE_TITLE, title());
-            AllureAttachments.attachText("Проверка страницы", "Главная страница загружена корректно");
+            assertEquals(TestConfig.Texts.MAIN_PAGE_TITLE, title(),
+                    "Заголовок главной страницы не совпадает");
+            AllureAttachments.attachText("Проверка страницы",
+                    String.format("Главная страница (%s) загружена корректно", stepName));
         });
     }
 
@@ -260,7 +255,7 @@ public class SubscriptionPurchaseBuilder {
                 sberPage.payWithExpiredCard();
                 break;
             case APPROVED_CARD:
-                default:
+            default:
                 sberPage.payWithApprovedCard();
                 break;
         }

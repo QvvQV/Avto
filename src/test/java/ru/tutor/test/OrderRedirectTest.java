@@ -5,10 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.*;
-import ru.tutor.steps.OrderStepsRedirect;
-import ru.tutor.utils.AllureAttachments;
+import ru.tutor.page.admin.AdminOrdersPage;
 
-import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
 
 @Epic("Order Processing")
@@ -17,8 +15,11 @@ import static io.qameta.allure.Allure.step;
 @DisplayName("🛒 Тесты обработки редиректов при заказе")
 class OrderRedirectTest extends BaseUiTest {
 
-    private final OrderStepsRedirect orderStepsRedirect = new OrderStepsRedirect();
     private static final TtPage ttPage = new TtPage();
+    private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
+    private final CloudPage cloudPage = new CloudPage();
+    private final SberPage sberPage = new SberPage();
+    private final ru.tutor.flow.SubscriptionTestFlow flow = new ru.tutor.flow.SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
 
     @Test
 //    @RepeatedTest(5)
@@ -26,23 +27,10 @@ class OrderRedirectTest extends BaseUiTest {
     @DisplayName("✅ Успешное оформление заказа с коррекцией редиректа")
     void successfulOrderWithRedirectCorrection() {
         // 1. Выполняем оформление заказа
-        step("1. Начало оформления заказа", () -> {
-        open(AddressPage.urlMain);
+        flow.purchasePremiumSubscription();
 
-
-        ttPage.clickBtnOpenFor();
-        ttPage.clickPremium();});
-
-        // 2. Заполнение данных и оплата
-        step("2. Заполнение данных и оплата", () -> {
-        CloudPage.setDateModal();
-        AllureAttachments.attachText("Email пользователя", CloudPage.atrEmail());
-
-            CloudPage.clickCardPageBtn();
-        });
-
-        // 3. Обработка редиректа после оплаты
-        step("3. Обработка редиректа после оплаты", RedirectPage::redirectPage
+        // 2. Обработка редиректа после оплаты
+        step("2. Обработка редиректа после оплаты", RedirectPage::redirectPage
         );
         }
     }

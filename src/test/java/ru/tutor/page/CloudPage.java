@@ -212,13 +212,11 @@ public class CloudPage {
         AllureAttachments.attachText("Введённые банковские данные: ", "\nНомер: " + TEST_CARD +
                 "\nСрок действия: " + TEST_DATE + "\nCVV: " + TEST_CVV);
 
-        WaitHelper.waitForAnimationComplete();
         step("Подтверждение заказа и проверка результата", () -> {
 
             switchToFrame(0);
             universalMethod.safeClick(CONFIRM_BUTTON, "Подтвердить заказ");
 
-            WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
 
             switchTo().defaultContent();
@@ -231,9 +229,10 @@ public class CloudPage {
     @Step("Проверка успешной оплаты")
     private static void verifyPaymentSuccess() {
         String expectedText = "Вернуться в магазин";
-        String actualText = BACK_TO_SHOP_BUTTON
-                .shouldBe(visible, DEFAULT_TIMEOUT)
-                .getText().trim();
+//        String actualText = BACK_TO_SHOP_BUTTON
+//                .shouldBe(visible, DEFAULT_TIMEOUT)
+//                .getText().trim();
+        String actualText = universalMethod.getElementText(BACK_TO_SHOP_BUTTON, "Кнопка вернутся в магазин");
 
         assertEquals(expectedText, actualText,
                 String.format("Текст кнопки не совпадает. Ожидалось: '%s', Фактически: '%s'",

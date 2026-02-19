@@ -5,25 +5,28 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
+import ru.tutor.page.*;
+import ru.tutor.page.admin.AdminOrdersPage;
+import ru.tutor.page.modals.greetings;
 import ru.tutor.unsubscribe.LiteUnsubscribePage;
 import ru.tutor.unsubscribe.PremiumUnsubscribePage;
 import ru.tutor.base.BaseUiTest;
-import ru.tutor.page.CloudPage;
-import ru.tutor.page.RedirectPage;
-import ru.tutor.page.AddressPage;
-import ru.tutor.page.dashbords.helloDash;
-import ru.tutor.page.TtPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
-
+@Tag("UI")
 @Story("Отписка пользователя от платформы")
 public class UnsubscribeTest extends BaseUiTest {
 
     private static final TtPage ttPage = new TtPage();
+    private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
+    private final CloudPage cloudPage = new CloudPage();
+    private final SberPage sberPage = new SberPage();
+    private final ru.tutor.flow.SubscriptionTestFlow flow = new ru.tutor.flow.SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
+    SubscriptionTestFlow flow1 = new SubscriptionTestFlow();
 
     @BeforeAll
     public static void setup() {
@@ -43,45 +46,24 @@ public class UnsubscribeTest extends BaseUiTest {
     @DisplayName("✅ Успешное отписка пользователя от Премиума и Лайта")
     void successfulUnsubscriptionOfAUserFromPremiumAndLite() {
 
-        step("1. Начало оформления заказа", () -> {
-            open(AddressPage.urlMain);
+        flow.purchasePremiumSubscription();
 
-
-            ttPage.clickBtnOpenFor();
-            ttPage.clickPremium();
-        });
-        step("2. Заполнение данных и оплата", () -> {
-            CloudPage.setDateModal();
-            AllureAttachments.attachText("Email пользователя", CloudPage.atrEmail());
-
-            CloudPage.clickCardPageBtn();
-        });
         step("3. Обработка редиректа после оплаты",
                 RedirectPage::redirectPage
         );
         step("4. Прохождение приветсвтенного onboarding", () -> {
-            helloDash.fillingOutTheWelcomeWindow();
-            AllureAttachments.attachText("Onbording", "Приветсвенные модули завершены");
-            AllureAttachments.attachScreenshot("Скриншот главного экрана");
+            flow1.completeOnbording();
         });
-        step("5. Переход к отпискам", () -> {
-            open(AddressPage.SUBSCRIPTION_SETTINGS);
-            WaitHelper.waitForPageLoad();
-            WaitHelper.waitForAnimationComplete();
-            AllureAttachments.attachScreenshot("Страница отписки от Премиума");
-        });
+        navigateToPage(PageType.PREMIUM_UNSUBSCRIBE, 5);
 
         step("6. Полный процесс отмены Premium подписки",
-            PremiumUnsubscribePage::completePremiumUnsubscription
+                PremiumUnsubscribePage::completePremiumUnsubscription
         );
-        step("7. Переход к отпискам", () -> {
-            open(AddressPage.PAYMENTS_SETTINGS);
-            WaitHelper.waitForPageLoad();
-            WaitHelper.waitForAnimationComplete();
-            AllureAttachments.attachScreenshot("Страница отписки от Лайта");
-        });
+
+        navigateToPage(PageType.LITE_UNSUBSCRIBE, 7);
+
         step("8. Полный процесс отмены Lite подписки",
-            LiteUnsubscribePage::completeLiteUnsubscription
+                LiteUnsubscribePage::completeLiteUnsubscription
         );
     }
 
@@ -91,10 +73,14 @@ public class UnsubscribeTest extends BaseUiTest {
     @Order(2)
     @DisplayName("✅ Успешная отписка Рекурентного пользователя от Премиума и Лайта")
     void successfulUnsubscriptionRecurringOfAUserFromPremiumAndLite() {
-        SubscriptionTestFlow flow = new SubscriptionTestFlow();
 
-        flow.purchasePremiumSubscription()
-                .completeOnbording()
+        flow.purchasePremiumSubscription();
+
+        step("3. Обработка редиректа после оплаты",
+                RedirectPage::redirectPage
+        );
+
+        flow1.completeOnbording()
                 .processRecurrentInAdmin()
                 .cancelPremiumSubscription();
     }
@@ -102,29 +88,9 @@ public class UnsubscribeTest extends BaseUiTest {
 
     private static class SubscriptionTestFlow {
 
-        private String userEmail;
-
-        public SubscriptionTestFlow purchasePremiumSubscription() {
-            step("Оформление и оплата Premium подписки", () -> {
-                open(AddressPage.urlMain);
-
-                ttPage.clickBtnOpenFor();
-                ttPage.clickPremium();
-
-                CloudPage.setDateModal();
-
-                userEmail = CloudPage.atrEmail();
-                AllureAttachments.attachText("Email пользователя", userEmail);
-
-                CloudPage.clickCardPageBtn();
-                RedirectPage.redirectPage();
-            });
-            return this;
-        }
-
         public SubscriptionTestFlow completeOnbording() {
             step("Завершение onbording процесса", () -> {
-                helloDash.fillingOutTheWelcomeWindow();
+                greetings.fillAccessInputAllForm();
                 AllureAttachments.attachText("Onbording", "Приветсвенные модули завершены");
                 AllureAttachments.attachScreenshot("Скриншот главного экрана");
             });
@@ -173,5 +139,36 @@ public class UnsubscribeTest extends BaseUiTest {
                 }
             }
         }
+    }
+
+    public enum PageType {
+        PREMIUM_UNSUBSCRIBE("Премиум", AddressPage.SUBSCRIPTION_SETTINGS),
+        LITE_UNSUBSCRIBE("Лайт", AddressPage.PAYMENTS_SETTINGS);
+
+        private final String name;
+        private final String url;
+
+        PageType(String name, String url) {
+            this.name = name;
+            this.url = url;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+    }
+
+    // Метод в классе
+    protected void navigateToPage(PageType pageType, int stepNumber) {
+        step(stepNumber + ". Переход к отпискам " + pageType.getName(), () -> {
+            open(pageType.getUrl());
+            WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
+            AllureAttachments.attachScreenshot("Страница отписки от " + pageType.getName());
+        });
     }
 }

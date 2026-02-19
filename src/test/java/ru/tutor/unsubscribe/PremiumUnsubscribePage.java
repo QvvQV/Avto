@@ -45,9 +45,7 @@ public class PremiumUnsubscribePage {
     @Step("Получение текста заголовка")
     private static String getHeaderText() {
         return step("Заголовок страницы", () -> {
-            String headerText = H3_TEXT.shouldBe(visible, DEFAULT_TIMEOUT)
-                    .getText()
-                    .trim();
+            String headerText = universalMethod.getElementText(H3_TEXT, "Заголовок текста");
             AllureAttachments.attachText("Заголовок страницы", headerText);
             return headerText;
         });
@@ -55,12 +53,12 @@ public class PremiumUnsubscribePage {
 
     // Premium подписка методы
     @Step("Клик по кнопке 'Активна'")
-    public static void clickActiveButton() {
+    private static void clickActiveButton() {
         universalMethod.clickButton(ACTIVE_BUTTON, ACTIVE_TEXT);
     }
 
     @Step("Клик по кнопке 'Изменить'")
-    public static void clickChangeButton() {
+    private static void clickChangeButton() {
         universalMethod.clickButtonWithPageLoad(CHANGE_BUTTON, CHANGE_TEXT);
 
         // Получаем и логируем заголовок
@@ -69,7 +67,7 @@ public class PremiumUnsubscribePage {
     }
 
     @Step("Клик по кнопке 'Отменить'")
-    public static void clickCancelButton() {
+    private static void clickCancelButton() {
         universalMethod.clickButtonWithPageLoad(CANCEL_BUTTON, CANCEL_TEXT);
 
         String headerText = getHeaderText();
@@ -77,12 +75,12 @@ public class PremiumUnsubscribePage {
     }
 
     @Step("Клик по кнопке 'Отменить полный доступ'")
-    public static void clickRevokeFullAccessButton() {
-        universalMethod.clickButtonWithPageLoad(REVOKE_FULL_ACCESS_BUTTON, REVOKE_FULL_ACCESS_TEXT);
+    private static void clickRevokeFullAccessButton() {
+        universalMethod.safeClick(REVOKE_FULL_ACCESS_BUTTON, REVOKE_FULL_ACCESS_TEXT);
     }
 
     @Step("Проверка состояния тарифного плана")
-    public static void verifyTariffPlanState(String expectedState) {
+    private static void verifyTariffPlanState(String expectedState) {
         step("Проверка состояния тарифного плана: " + expectedState, () -> {
             String actualHeader = getHeaderText();
 
@@ -96,8 +94,7 @@ public class PremiumUnsubscribePage {
     }
 
     @Step("Тарифный план отключен")
-    public static void verifyTariffPlanDisabled() {
-        WaitHelper.waitForAnimationComplete();
+    private static void verifyTariffPlanDisabled() {
         WaitHelper.waitForPageLoad();
         RESTORE_ACCESS_BUTTON.shouldBe(visible);
         verifyTariffPlanState("отключен");
@@ -110,7 +107,7 @@ public class PremiumUnsubscribePage {
 
     // Валидационные методы
     @Step("Проверка что кнопка 'Активна' disabled")
-    public static void verifyActiveButtonIsDisabled() {
+    private static void verifyActiveButtonIsDisabled() {
         step("Проверка disabled состояния кнопки 'Активна'", () -> {
             ACTIVE_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT)
                     .shouldHave(attribute("disabled"))

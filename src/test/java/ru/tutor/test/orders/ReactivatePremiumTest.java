@@ -2,6 +2,7 @@ package ru.tutor.test.orders;
 
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.tutor.unsubscribe.LiteUnsubscribePage;
 import ru.tutor.base.RecurrentPaymentTestBase;
@@ -31,6 +32,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
     private final AdminToUserLoginSteps adminToUserLoginSteps = new AdminToUserLoginSteps();
 
+
     @Epic("Отписка от подписки")
     @Override
     protected void initializePaymentCycleExecutor() {
@@ -44,6 +46,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
     }
 
+    @Tag("UI" + "API")
     @Test
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты")
     void restoreYourPremiumAccountUsingAnInternalEmail() {
@@ -74,6 +77,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         );
     }
 
+    @Tag("UI" + "API")
     @Test
     @DisplayName("Восстановление премиума по ссылке из email-рассылки")
     void restoreYourPremiumAccountUsingLinkFromEmailNewsletter() {
@@ -102,6 +106,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         );
     }
 
+    @Tag("UI" + "API")
     @Test
     @DisplayName("Восстановление Премиума по ссылке из email-рассылки отменённого заказа из Админки")
     void restorePremiumCancelAdmin() {
@@ -121,6 +126,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         );
     }
 
+    @Tag("UI" + "API")
     @Test
     @DisplayName("Восстановление Премиума по тарифу Пожизненный доступ")
     void restorePremiumLifetimeAccess() {
@@ -140,6 +146,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         });
     }
 
+    @Tag("UI" + "API")
     @Test
     @DisplayName("Оформление Renewall внутри ЛК")
     void renewalDesignInsideThePersonalAccount() {

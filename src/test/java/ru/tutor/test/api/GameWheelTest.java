@@ -1,6 +1,5 @@
 package ru.tutor.test.api;
 
-
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.*;
@@ -22,6 +21,7 @@ import java.util.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("API")
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
