@@ -61,16 +61,14 @@ public class TtPage {
         }
 
         public SelenideElement getElement(TtPage page) {
-            switch (this) {
-                case LITE:
-                    return page.lite99;
-                case LIFE:
-                    return page.life;
-                case PREMIUM:
-                    return page.premium;
-                default:
-                    throw new IllegalArgumentException("Unknow subscription type: " + this);
-            }
+            return switch (this) {
+                case LITE ->
+                     page.lite99;
+                case LIFE ->
+                     page.life;
+                case PREMIUM ->
+                     page.premium;
+            };
         }
     }
 
