@@ -38,6 +38,22 @@ public class SubscriptionPurchaseBuilder {
         EXPIRED_CARD
     }
 
+    public enum PageVariant {
+        DEFAULT(false),
+        WITH_AFF_RID(true);
+
+        private final boolean useAffRid;
+        PageVariant (boolean useAffRid) {this.useAffRid = useAffRid;}
+        public boolean useAffRid() { return useAffRid; }
+    }
+
+    private PageVariant pageVariant = PageVariant.DEFAULT;
+
+    public SubscriptionPurchaseBuilder withAffRid(){
+        this.pageVariant = PageVariant.WITH_AFF_RID;
+        return this;
+    }
+
     private SubscriptionPurchaseBuilder(TtPage ttPage, CloudPage cloudPage, SberPage sberPage) {
         this.ttPage = ttPage;
         this.cloudPage = cloudPage;
@@ -119,28 +135,7 @@ public class SubscriptionPurchaseBuilder {
         String stepName = buildStepName();
 
         step(stepName, () -> {
-            openMainPageAndCheckTitle(false);
-            ttPage.clickBtnOpenFor();
-            selectSubscriptionType();
-            processPaymentSystem();
-
-            if (captureEmail) {
-                captureUserEmail();
-            }
-
-            if (verifyError && expectedError != null) {
-                verifyErrorMessage();
-            }
-        });
-
-        return new SubscriptionPurchaseResult(userEmail);
-    }
-
-    public SubscriptionPurchaseResult executeAffRid() {
-        String stepName = buildStepName();
-
-        step(stepName, () -> {
-            openMainPageAndCheckTitle(true);
+            openMainPageAndCheckTitle(pageVariant.useAffRid());
             ttPage.clickBtnOpenFor();
             selectSubscriptionType();
             processPaymentSystem();
@@ -160,6 +155,10 @@ public class SubscriptionPurchaseBuilder {
     private String buildStepName() {
         StringBuilder name = new StringBuilder("Оформление и оплата ");
         name.append(subscriptionType).append(" подписки ");
+
+        if (pageVariant == PageVariant.WITH_AFF_RID) {
+            name.append("(c aff_rid) ");
+        }
 
         if (paymentSystem == PaymentSystem.CLOUD) {
             name.append("Cloud");
