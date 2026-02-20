@@ -62,20 +62,20 @@ public class RecurrentPaymentTestExecutor {
                 // Для aff_rid ссылки
                 case 1:
                     // Выполняем первый платежный цикл
-                    paymentCycleExecutor.performPaymentCycle("первый",
+                    paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(1),
                             settings.initialExpiresDays(),
                             settings.afterFirstPaymentDays(),
                             context);
                     break;
                 case 2:
 
-                    paymentCycleExecutor.performPaymentCycle("первый",
+                    paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(1),
                             settings.initialExpiresDays(),
                             settings.afterFirstPaymentDays(),
                             context);
 
                     // Выполняем второй платежный цикл
-                    paymentCycleExecutor.performPaymentCycle("второй",
+                    paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(2),
                             settings.afterFirstPaymentDays(),
                             settings.afterSecondPaymentDays(),
                             context);
@@ -85,7 +85,7 @@ public class RecurrentPaymentTestExecutor {
 
                 default:
                     throw new IllegalStateException(
-                            String.format("Неподдерживаемое кол-во циклов: %d. оддерживаются значения: 1, 2", cycles)
+                            String.format("Неподдерживаемое кол-во циклов: %d. поддерживаются значения: 1, 2", cycles)
                     );
             }
 
