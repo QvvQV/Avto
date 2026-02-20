@@ -88,7 +88,7 @@ public class DashbordsTest extends BaseUiTest {
 
 
             ttPage.clickBtnOpenFor();
-            ttPage.clickPremium();
+            ttPage.selectSubscription(TtPage.SubscriptionType.PREMIUM);
         });
         step("2. Заполнение данных и оплата", () -> {
             CloudPage.setDateModal();

@@ -158,7 +158,7 @@ public class CloudPage {
             universalMethod.safeSetValue(EMAIL_INPUT, email, "Email");
 
             // Логирование
-            String modalText = ttPage.setTextFromModal();
+            String modalText = ttPage.getTextModal();
             logModalType(modalText, email);
 
             // Опция
@@ -182,7 +182,7 @@ public class CloudPage {
             universalMethod.safeSetValue(EMAIL_INPUT, currentEmail, "Email (полная оплата)");
 
             // Логирование типа модалки
-            String modalText = ttPage.setTextFromModal();
+            String modalText = ttPage.getTextModal();
             logModalType(modalText, currentEmail);
 
             // Выбор опции полной оплаты

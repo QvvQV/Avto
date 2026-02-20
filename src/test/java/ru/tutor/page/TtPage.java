@@ -1,6 +1,7 @@
 package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import ru.tutor.utils.universalMethod;
 
 import static com.codeborne.selenide.Condition.visible;
@@ -15,44 +16,86 @@ public class TtPage {
 
     // Локаторы кнопок
     private final SelenideElement btnOpenFor = $("[data-btn-scroll='subscribe']");
+
+    // Карточки подписок
     private final SelenideElement lite99 = $("[data-subscription-type='litenew']");
     private final SelenideElement life = $("[data-subscription-type='lifetime']");
     private final SelenideElement premium = $("[data-subscription-type='premium']");
+
+    // Модальное окно
     private final SelenideElement textModal = $(".buy-modal_tarrif__qfojr");
     private final SelenideElement closeModal = $(".buy-modal_close__kHp6e");
 
-    public void clickBtnOpenFor() {
-        step("Кликаем по кнопке на главной за 1 руб", () ->
-            universalMethod.clickButton(btnOpenFor, "Открыть за 1Р")
+    // Enum для типов подписок
+    public enum SubscriptionType {
+        LITE("litenew", "Лайт 99", "Оформить доступ Лайт 99Р/Мес", "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”"),
+        LIFE("lifetime", "Пожизненный доступ", "Оформить доступ Пожизненный 3999Р/Мес", "ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ"),
+        PREMIUM("premium", "Премиум", "Оформить доступ Премиум 399/Мес", "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”");
+
+        private final String dataAttribute;
+        private final String displayName;
+        private final String stepDescription;
+        private final String expectedModalText;
+
+        SubscriptionType(String dataAttribute, String displayName, String stepDescription, String expectedModalText) {
+            this.dataAttribute = dataAttribute;
+            this.displayName = displayName;
+            this.stepDescription = stepDescription;
+            this.expectedModalText = expectedModalText;
+        }
+
+        public String getDataAttribute() {
+            return dataAttribute;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public String getStepDescription() {
+            return stepDescription;
+        }
+
+        public String getExpectedModalText() {
+            return expectedModalText;
+        }
+
+        public SelenideElement getElement(TtPage page) {
+            switch (this) {
+                case LITE:
+                    return page.lite99;
+                case LIFE:
+                    return page.life;
+                case PREMIUM:
+                    return page.premium;
+                default:
+                    throw new IllegalArgumentException("Unknow subscription type: " + this);
+            }
+        }
+    }
+
+    @Step("Кликаем по кнопке на главной за 1 руб")
+    public TtPage clickBtnOpenFor() {
+        universalMethod.clickButton(btnOpenFor, "Открыть за 1Р");
+        return this;
+    }
+
+    @Step("Выбор типа подписки: {type.displayName}")
+    public TtPage selectSubscription(SubscriptionType type) {
+        step(type.getStepDescription(), () ->
+                universalMethod.safeClick(type.getElement(this), type.getDisplayName())
         );
+        return this;
     }
 
-    public void clickLite99() {
-        step("Кликаем по кнопке Лайт 99", () ->
-            universalMethod.safeClick(lite99, "Офрмить доступ Лайт 99Р/Мес")
-    );
-    }
-
-    public void clickLife() {
-        step("Кликаем по кнопке Пожизненный доступ", () ->
-            universalMethod.safeClick(life, "Оформить доступ Пожизненный 3999Р/Мес")
-    );
-    }
-
-    public void clickPremium() {
-        step("Кликаем по кнопке Премиум", () ->
-            universalMethod.safeClick(premium, "Оформить доступ Премиум 399/Мес")
-    );
-    }
-
-    public String setTextFromModal() {
+    @Step("Получение текста из модального окна")
+    public String getTextModal() {
         return textModal.shouldBe(visible).getText().trim();
     }
 
-    public void clickBtnClose() {
-        step("Закрываем мод окно", () ->
-            universalMethod.clickButton(closeModal, "Закрытие модального окна")
-    );
+    @Step("Закрытие модального окна")
+    public TtPage closeModal() {
+        universalMethod.clickButton(closeModal, "Закрытие модального окна");
+        return this;
     }
-
 }

@@ -201,13 +201,16 @@ public class SubscriptionPurchaseBuilder {
     private void selectSubscriptionType() {
         switch (subscriptionType) {
             case "Premium":
-                ttPage.clickPremium();
+//                ttPage.clickPremium();
+                ttPage.selectSubscription(TtPage.SubscriptionType.PREMIUM);
                 break;
             case "Life":
-                ttPage.clickLife();
+                ttPage.selectSubscription(TtPage.SubscriptionType.LIFE);
+//                ttPage.clickLife();
                 break;
             case "Lite":
-                ttPage.clickLite99();
+                ttPage.selectSubscription(TtPage.SubscriptionType.LITE);
+//                ttPage.clickLite99();
                 break;
         }
     }

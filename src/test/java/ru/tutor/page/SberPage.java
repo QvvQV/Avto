@@ -54,7 +54,7 @@ public class SberPage {
             EMAIL_INPUT.setValue(email);
 
             // Логика определения типа продукта
-            String modalText = ttPage.setTextFromModal();
+            String modalText = ttPage.getTextModal();
             logModalType(modalText, email);
 
             universalMethod.safeClick(CloudPage.FULL_OPTION, "Оплата");

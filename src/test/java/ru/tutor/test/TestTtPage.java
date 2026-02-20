@@ -51,24 +51,14 @@ public class TestTtPage extends BaseUiTest {
                 assertEquals(expected, title()));
 
         ttPage.clickBtnOpenFor();
-        ttPage.clickLite99();
-        step("Проверяем текст модалки на соответствие Лайту", () ->
 
-                assertEquals("ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”", ttPage.setTextFromModal())
-        );
-        ttPage.clickBtnClose();
-        ttPage.clickLife();
-        step("Проверяем текст модалки на соответствие Пожизненному доступу", () ->
-
-                assertEquals("ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ", ttPage.setTextFromModal())
-        );
-        ttPage.clickBtnClose();
-        ttPage.clickPremium();
-        step("Проверяем текст модалки на соответствие Премиуму", () ->
-
-                assertEquals("ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”", ttPage.setTextFromModal())
-        );
-        ttPage.clickBtnClose();
+        for (TtPage.SubscriptionType type : TtPage.SubscriptionType.values()) {
+            ttPage.selectSubscription(type);
+            step("Проверяяем текст модалки для " + type.getDisplayName(), () ->
+                    assertEquals(type.getExpectedModalText(), ttPage.getTextModal())
+            );
+            ttPage.closeModal();
+        }
     }
 
     //    @Issue(value = "tests-73")
