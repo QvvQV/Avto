@@ -7,6 +7,7 @@ import org.openqa.selenium.Keys;
 import ru.tutor.page.dashbords.allDashbords;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -174,7 +175,7 @@ public class Home {
     public static void deleteProduct(String productName) {
         step("Удаляем продукт", () -> {
             refresh();
-            allDashbords.safeCarouselClick(ELLIPSES_BUTTON);
+            universalMethod.safeClick(ELLIPSES_BUTTON, "Круг");
 
             GARBAGE_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(interactable)

@@ -3,6 +3,7 @@ package ru.tutor.test.orders;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.flow.SubscriptionTestFlow;
@@ -27,7 +28,7 @@ public class CloudTest extends BaseUiTest {
 
 //    @Test
     @AllureId("1")
-    //        @RepeatedTest(2)
+//            @RepeatedTest(2)
     @DisplayName("Оплата с главной на СисАк Oфферум")
     public void PayFromMainOfferrum() {
         step("Открытие страницы", () ->

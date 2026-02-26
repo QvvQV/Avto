@@ -31,6 +31,9 @@ public class SberPage {
     private final String SHOP_TEXT = "Перейти в магазин";
     private final String ERROR_TEXT = "Операция отклонена. Проверьте введенные данные, достаточность средств на карте и повторите операцию";
 
+    // Таймаут
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+
     //Локаторы
     private final SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
     private final SelenideElement ACCESS_BUTTON = $("#access-button");
@@ -108,7 +111,7 @@ public class SberPage {
 
     private void fillCardData(String cardNumber, String expiry, String cvc) {
         step("Заполнение данных карты: " + maskCardNumber(cardNumber), () -> {
-            CARD_NUMBER.shouldBe(visible, Duration.ofSeconds(20)).setValue(cardNumber);
+            CARD_NUMBER.shouldBe(visible, DEFAULT_TIMEOUT).setValue(cardNumber);
             EXPIRY_DATE.setValue(expiry);
             CVC.setValue(cvc);
             universalMethod.safeClick(SUCCESS_BUTTON, PAY_TEXT);
@@ -127,7 +130,7 @@ public class SberPage {
 
     private void handleDeclinePayment() {
         step("Заполнение ACS кода", () -> {
-            PASSWORD_EDIT.shouldBe(visible, Duration.ofSeconds(10)).setValue("111111");
+            PASSWORD_EDIT.shouldBe(visible, DEFAULT_TIMEOUT).setValue("111111");
             WaitHelper.waitForPageLoad();
             AllureAttachments.attachText("Статус оплаты", "Платеж отклонен");
         });
@@ -184,6 +187,6 @@ public class SberPage {
     }
 
     public String getErrorText() {
-        return TEXT_ERROR.shouldBe(visible, Duration.ofSeconds(10)).getText().trim();
+        return TEXT_ERROR.shouldBe(visible, DEFAULT_TIMEOUT).getText().trim();
     }
 }

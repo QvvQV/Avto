@@ -1,0 +1,20 @@
+package ru.tutor.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class StoryScreenResponse {
+    @JsonProperty("id")
+    private Long id;
+
+    @JsonProperty("storyId")
+    private String storyId; // или Long, смотрите по факту
+
+    @JsonProperty("screenId")
+    private String screenId;
+
+    @JsonProperty("viewedAt")
+    private String viewedAt;
+
+    @JsonProperty("status")
+    private String status;
+}

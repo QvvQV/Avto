@@ -7,7 +7,7 @@ import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
 import ru.tutor.page.*;
 import ru.tutor.page.admin.AdminOrdersPage;
-import ru.tutor.page.modals.greetings;
+import ru.tutor.page.modals.GreetingsModal;
 import ru.tutor.unsubscribe.LiteUnsubscribePage;
 import ru.tutor.unsubscribe.PremiumUnsubscribePage;
 import ru.tutor.base.BaseUiTest;
@@ -90,7 +90,7 @@ public class UnsubscribeTest extends BaseUiTest {
 
         public SubscriptionTestFlow completeOnbording() {
             step("Завершение onbording процесса", () -> {
-                greetings.fillAccessInputAllForm();
+                GreetingsModal.fillAccessInputAllForm();
                 AllureAttachments.attachText("Onbording", "Приветсвенные модули завершены");
                 AllureAttachments.attachScreenshot("Скриншот главного экрана");
             });

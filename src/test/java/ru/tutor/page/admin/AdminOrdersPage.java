@@ -63,8 +63,36 @@ public class AdminOrdersPage {
     private static final SelenideElement UTM_TEXT = $x("//div[contains(@class, 'order-info-entry')][.//div[text()='UTM']]/div[2]");
 
 
-    // Универсальные методы
+    // Таймаут
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
+
+    // Поле для хранения флага aff_rid
+    private boolean shouldCheckUtm = false;
+
+    /**
+     * Устанавливаем флаг необходимости проверки UTM
+     */
+
+    public AdminOrdersPage withUtmCheck(boolean check) {
+        this.shouldCheckUtm = check;
+        Allure.addAttachment("Настройка UTM проверки",
+                String.format("Проверка UTM: %s", check ? "включена":"отключена"));
+        return this;
+    }
+
+    /**
+     * Включаем проверку UTM
+     */
+    public AdminOrdersPage enableUtmCheck() {
+        return withUtmCheck(true);
+    }
+
+    /**
+     * Выключаем проверку UTM
+     */
+    public AdminOrdersPage disableUtmCheck() {
+        return withUtmCheck(false);
+    }
 
     @Step("Переход в раздел заказов")
     public AdminOrdersPage navigateToOrders() {
@@ -105,10 +133,9 @@ public class AdminOrdersPage {
     public void processRecurrentPayment() {
         int originalWindowCount = WebDriverRunner.getWebDriver().getWindowHandles().size();
 
-        step("Кликаем по заказу: ", () -> {
-            ORDER_NUMBER.click();
-            WaitHelper.waitForAnimationComplete();
-        });
+        step("Кликаем по заказу: ", () ->
+            universalMethod.safeClick(ORDER_NUMBER, "Номер заказа")
+        );
 
         Selenide.Wait().until(driver -> driver.getWindowHandles().size() > originalWindowCount);
 
@@ -151,8 +178,20 @@ public class AdminOrdersPage {
         // Запоминаем текущую вкладку
 
         String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
-        step("Сравнием utm_medium с эталоном - '1012_966574': ", this::processUtm
-        );
+
+        // Сохранённый флаг для проверки utm
+        if (shouldCheckUtm) {
+            step("проверка UTM метки (заказ с aff_rid)", () -> {
+                processUtm();
+                Allure.addAttachment("UTM проверка",
+                        "✅ Успешно: utm_medium соответствует '" + EXPECTED_REWARD_ID + "'");
+            });
+        } else {
+            Allure.addAttachment("UTM проверка",
+                    "⏭️ Пропущена - заказ без aff_rid метки" );
+        }
+//        step("Сравнием utm_medium с эталоном - '1012_966574': ", this::processUtm
+//        );
 
         // Кликаем на кнопку Войти
         universalMethod.clickButton(LOGIN_BUTTON, LOGIN_TEXT);

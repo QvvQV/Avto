@@ -18,7 +18,7 @@ import static io.qameta.allure.Allure.step;
  * Кнопки и логика модалки приветствия
  */
 
-public class greetings {
+public class GreetingsModal {
 
     // Константы
     private static final Faker faker = new Faker(Locale.ENGLISH);
@@ -86,7 +86,7 @@ public class greetings {
         universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         WaitHelper.waitForAnimationComplete();
-        step("Выбрать интересы", greetings::randomInterest
+        step("Выбрать интересы", GreetingsModal::randomInterest
         );
         universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         step("Ввод номер телефона", () -> enterRussianPhone(faker.phoneNumber().cellPhone())

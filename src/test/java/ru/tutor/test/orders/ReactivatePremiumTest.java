@@ -134,7 +134,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
         step("Обработка редиректа после оплаты", RedirectPage::redirectPage
         );
-        step("Заполнение модального окна", greetings::fillAccessInput
+        step("Заполнение модального окна", GreetingsModal::fillAccessInput
         );
         product.beginProduct();
         unlockNextWeek.openUnlimitedAccess();
@@ -170,7 +170,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
                             orderSteps.toggleOrderSubscription(token, TEST_ORDER_ID)
                     );
         });
-        step("Заполнение приветсвенного модального окна", greetings::fillOutTwoFieldsWelcomeModal);
+        step("Заполнение приветсвенного модального окна", GreetingsModal::fillOutTwoFieldsWelcomeModal);
         step("Переход к отпискам", () -> {
                     open(AddressPage.PAYMENTS_SETTINGS);
                     WaitHelper.waitForPageLoad();

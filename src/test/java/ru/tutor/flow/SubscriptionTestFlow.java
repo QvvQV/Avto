@@ -24,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SubscriptionTestFlow {
 
+    // Поле для хранения флага
+    private boolean currentOrderHasAffRid = false;
+
     private String userEmail;
     private final TtPage ttPage;
     private final CloudPage cloudPage;
@@ -33,6 +36,8 @@ public class SubscriptionTestFlow {
     private SubscriptionPurchaseResult purchase(Consumer<SubscriptionPurchaseBuilder> configurator) {
         SubscriptionPurchaseBuilder builder = SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage);
         configurator.accept(builder);
+
+        this.currentOrderHasAffRid = builder.hasAffRid();
         SubscriptionPurchaseResult result = builder.execute();
         this.userEmail = result.userEmail();
         return result;
@@ -60,9 +65,9 @@ public class SubscriptionTestFlow {
     public SubscriptionTestFlow purchasePremiumSubscriptionAffRid() {
         purchase(builder ->
                 builder.forPremium()
-                .viaCloud()
-                .withStandardPayment()
-                .withAffRid()
+                        .viaCloud()
+                        .withStandardPayment()
+                        .withAffRid()
         );
         return this;
     }
@@ -71,8 +76,8 @@ public class SubscriptionTestFlow {
     public SubscriptionTestFlow purchaseLifeSubscription() {
         purchase(builder ->
                 builder.forLife()
-                .viaCloud()
-                .withStandardPayment()
+                        .viaCloud()
+                        .withStandardPayment()
         );
         return this;
     }
@@ -110,9 +115,9 @@ public class SubscriptionTestFlow {
     @Step("Оплата Лайт по карте Сбер")
     public SubscriptionTestFlow purchaseLiteSubscriptionSber() {
         purchase(builder ->
-                        builder.forLite()
-                                .viaSber()
-                                .withApprovedCard()
+                builder.forLite()
+                        .viaSber()
+                        .withApprovedCard()
         );
         return this;
     }
@@ -141,7 +146,7 @@ public class SubscriptionTestFlow {
     public SubscriptionTestFlow purchasePremiumSubscriptionInsufficientFundsSber() {
         purchase(builder ->
                 builder.forPremium()
-                .viaSber()
+                        .viaSber()
                         .withInsufficientFundsCard()
                         .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
         );
@@ -153,7 +158,7 @@ public class SubscriptionTestFlow {
     public SubscriptionTestFlow purchasePremiumSubscriptionExpireSber() {
         purchase(builder ->
                 builder.forPremium()
-                .viaSber()
+                        .viaSber()
                         .withExpiredCard()
                         .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
         );
@@ -164,19 +169,24 @@ public class SubscriptionTestFlow {
     // Методы для работы с админкой
 
     @Step("Рекурент по тарифу Премиум")
-    public void processRecurrentInAdmin() {
+    public SubscriptionTestFlow processRecurrentInAdmin() {
         step("Проведение рекуррентного платежа через админку", () -> {
             String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
 
             try {
                 TabManager.openAdminInNewWindow(originalWindow);
                 loginToAdmin();
-                processRecurrentPayment();
+                adminOrdersPage
+                        .withUtmCheck(currentOrderHasAffRid)
+                        .navigateToOrders()
+                        .findOrderByEmail(userEmail)
+                        .processRecurrentPayment();
                 WaitHelper.waitForAnimationComplete();
             } finally {
                 // Можно добавить закрытие окна админки если нужно
             }
         });
+        return this;
     }
 
     @Step("Рекуррент по тарифу Лайт")
@@ -231,6 +241,33 @@ public class SubscriptionTestFlow {
             WaitHelper.waitForPageLoad();
 //            AllureAttachments.attachScreenshot("Заказ найден в него перешли");
         });
+    }
+
+    // ==================== Методы для перехода в ЛК ====================
+
+    @Step("Переход в Личный кабинет пользователя")
+    public SubscriptionTestFlow goToUserPersonalAccount() {
+        // Передаём флаг в AdminOrdersPage
+        adminOrdersPage
+                .withUtmCheck(currentOrderHasAffRid) // Устанавливаем флаг
+                .goToUserPersonalAccount(); // Вызываем метод перехода
+        return this;
+    }
+
+    @Step("Переход в ЛИчный кабинет с принудительной проверкой UTM")
+    public SubscriptionTestFlow goToUserPersonalAccountWithUtmCheck() {
+        adminOrdersPage
+                .enableUtmCheck()
+                .goToUserPersonalAccount();
+        return this;
+    }
+
+    @Step("Переход в Личный кабинет без проверки UTM")
+    public SubscriptionTestFlow goToUserPersonalAccountWithoutUtmCheck() {
+        adminOrdersPage
+                .disableUtmCheck()
+                .goToUserPersonalAccount();
+        return this;
     }
 
     public void logTestCompletion() {

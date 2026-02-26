@@ -33,7 +33,7 @@ public class ClubApi extends BaseApi {
     }
 
     /**
-     * GET /user/club/members - получение списка участников клуба (если есть такой эндпоинт)
+     * GET /user/club/members - получение списка участников клуба
      */
     public Response getClubMembers(String authToken) {
         return given()

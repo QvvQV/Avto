@@ -54,6 +54,10 @@ public class SubscriptionPurchaseBuilder {
         return this;
     }
 
+    public boolean hasAffRid() {
+        return pageVariant == PageVariant.WITH_AFF_RID;
+    }
+
     private SubscriptionPurchaseBuilder(TtPage ttPage, CloudPage cloudPage, SberPage sberPage) {
         this.ttPage = ttPage;
         this.cloudPage = cloudPage;

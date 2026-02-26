@@ -13,19 +13,22 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class AdminOrderDetails {
 
+    // Таймаут
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
+
     // Селекторы
     private static SelenideElement getDateElement(OrderDateType dateType) {
         return $$("div.order-info-entry")
                 .findBy(text(dateType.getDisplayName()))
                 .$("div", 1)
-                .shouldBe(visible, Duration.ofSeconds(10));
+                .shouldBe(visible, DEFAULT_TIMEOUT);
     }
 
     private static SelenideElement getProductElement() {
         return $$("div.order-info-entry")
                 .findBy(text("Продукт"))
                 .$(".order-info-entry__children")
-                .shouldBe(visible, Duration.ofSeconds(10));
+                .shouldBe(visible, DEFAULT_TIMEOUT);
     }
 
     public enum OrderDateType {
@@ -49,7 +52,7 @@ public class AdminOrderDetails {
     @Step("Получение даты '{dateType}'")
     private String getDate(OrderDateType dateType) {
         return getDateElement(dateType)
-                .shouldBe(visible, Duration.ofSeconds(10))
+                .shouldBe(visible, DEFAULT_TIMEOUT)
                 .getText()
                 .trim();
     }
@@ -105,9 +108,9 @@ public class AdminOrderDetails {
 
     @Step("Проверка что все даты заказа отображаются")
     public void verifyAllDatesAreDisplayed() {
-        getDateElement(OrderDateType.CREATED).shouldBe(visible, Duration.ofSeconds(10));
-        getDateElement(OrderDateType.EXPIRES).shouldBe(visible, Duration.ofSeconds(10));
-        getDateElement(OrderDateType.NEXT_PAYMENT).shouldBe(visible, Duration.ofSeconds(10));
+        getDateElement(OrderDateType.CREATED).shouldBe(visible, DEFAULT_TIMEOUT);
+        getDateElement(OrderDateType.EXPIRES).shouldBe(visible, DEFAULT_TIMEOUT);
+        getDateElement(OrderDateType.NEXT_PAYMENT).shouldBe(visible, DEFAULT_TIMEOUT);
     }
 
     @Step("Обновление страницы для получения актуальных данных")
@@ -129,7 +132,7 @@ public class AdminOrderDetails {
         String productText = getProductElement()
                 .$$("a[href^='/product/edit/']")
                 .first()
-                .shouldBe(visible, Duration.ofSeconds(10))
+                .shouldBe(visible, DEFAULT_TIMEOUT)
                 .getText()
                 .trim();
 
@@ -144,7 +147,7 @@ public class AdminOrderDetails {
         String productText = getProductElement()
                 .$$("a")
                 .first()
-                .shouldBe(visible, Duration.ofSeconds(10))
+                .shouldBe(visible, DEFAULT_TIMEOUT)
                 .getText()
                 .trim();
 
