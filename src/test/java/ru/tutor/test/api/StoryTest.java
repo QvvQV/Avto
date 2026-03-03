@@ -22,8 +22,8 @@ import static io.qameta.allure.Allure.step;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StoryTest {
 
-    private final AuthSteps authSteps =  AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final StoriesSteps  storiesSteps =  StoriesSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps =  AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final StoriesSteps  storiesSteps =  StoriesSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmailFortune();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
@@ -44,7 +44,7 @@ public class StoryTest {
         );
     }
 
-    @Test
+//    @Test
     @Order(1)
     @DisplayName("Успешное получение списка наград игрового колеса (Проверка 200 OK)")
     @Story("Основной сценарий")

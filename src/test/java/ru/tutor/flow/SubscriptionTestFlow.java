@@ -1,15 +1,18 @@
 package ru.tutor.flow;
 
 import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.builder.SubscriptionPurchaseBuilder;
 import ru.tutor.flow.builder.SubscriptionPurchaseResult;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.SberPage;
 import ru.tutor.page.admin.AdminLoginPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.TtPage;
+import ru.tutor.page.modals.GreetingsModal;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
@@ -267,6 +270,24 @@ public class SubscriptionTestFlow {
         adminOrdersPage
                 .disableUtmCheck()
                 .goToUserPersonalAccount();
+        return this;
+    }
+
+    @Step("Регистрация нового пользователя по реферальной ссылке")
+    public SubscriptionTestFlow registerNewUserByReferral(String referralLink, GreetingsModal greetingsModal) {
+        step("Открытие страницы с реферальной ссылкой", () -> {
+            String url = AddressPage.urlMain + "?club_ref=" +  referralLink;
+            open(url);
+
+            Allure.addAttachment("Реферальная ссылка", url);
+        });
+
+        step("Регистрация нового пользователя", () -> {
+            ttPage.clickBtnOpenFor();
+
+
+            Allure.addAttachment("Регистрация", "✅ Новый пользователь зарегистрирован по реферальной ссылке");
+        });
         return this;
     }
 

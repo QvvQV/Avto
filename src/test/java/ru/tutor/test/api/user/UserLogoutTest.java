@@ -21,14 +21,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты эндпоинта /user/logout")
 public class UserLogoutTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private ru.tutor.steps.UserSteps userSteps;
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     @BeforeEach
     void setup() {
-        userSteps = new UserSteps(TestConfig.getApiBaseUrl());
+        userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     }
 
     @Test

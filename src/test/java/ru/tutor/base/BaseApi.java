@@ -4,6 +4,7 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import ru.tutor.config.TestConfig;
 
 import static io.restassured.RestAssured.given;
 
@@ -22,13 +23,37 @@ public abstract class BaseApi {
     }
 
     @Step("POST запрос к {endpoint}")
-    protected Response post(String endpoint, String body) {
+    protected Response postWithToken(String endpoint, String token, Object body, Object... pathParams) {
+        String formattedEndpoint = String.format(endpoint, pathParams);
+
         return given()
                 .filter(new AllureRestAssured())
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json, text/plain, */*")
-                .header("Origin", "https://client.ttplace.ru")
-                .header("Referer", "https://client.ttplace.ru/")
+                .header("Authorization", "Bearer " + token)
+                .header("Origin", TestConfig.getClientBaseUrl())
+                .header("Referer", TestConfig.getClientBaseUrl() + "/")
+//                .header("Origin", "https://client.tutorplace.ru/")
+//                .header("Referer", "https://client.tutorplace.ru/")
+                .body(body)
+                .log().all() // Логирование запроса
+                .when()
+                .post(formattedEndpoint)
+                .then()
+                .log().ifError() // Логирование при ошибке
+                .extract()
+                .response();
+    }
+
+    @Step("POST запрос к {endpoint}")
+    protected Response post(String endpoint, Object body) {
+        return given()
+                .filter(new AllureRestAssured())
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json, text/plain, */*")
+//                .header("Authorization", "Bearer " + token)
+                .header("Origin", TestConfig.getClientBaseUrl())
+                .header("Referer", TestConfig.getClientBaseUrl() + "/")
 //                .header("Origin", "https://client.tutorplace.ru/")
 //                .header("Referer", "https://client.tutorplace.ru/")
                 .body(body)
@@ -42,10 +67,13 @@ public abstract class BaseApi {
     }
 
     @Step("GET запрос к {endpoint}")
-    protected Response get(String endpoint) {
+    protected Response getWithToken(String endpoint, String token) {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Accept", "application/json, text/plain, */*")
+                .header("Authorization", "Bearer " + token)
+                .header("Origin", TestConfig.getClientBaseUrl())
+                .header("Referer", TestConfig.getClientBaseUrl())
                 .log().all()
                 .when()
                 .get(endpoint)
@@ -66,6 +94,24 @@ public abstract class BaseApi {
                 .log().all()
                 .when()
                 .post(endpoint)
+                .then()
+                .log().ifError()
+                .extract()
+                .response();
+    }
+
+    @Step("DELETE запрос к {endpoint}")
+    protected Response deleteWithToken(String endpoint, String token) {
+        return given()
+                .filter(new AllureRestAssured())
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .header("Origin", TestConfig.getClientBaseUrl())
+                .header("Referer", TestConfig.getClientBaseUrl() + "/")
+                .log().all()
+                .when()
+                .delete(endpoint)
                 .then()
                 .log().ifError()
                 .extract()

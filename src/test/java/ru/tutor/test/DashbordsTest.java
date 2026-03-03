@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import ru.tutor.base.BaseUiTest;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.page.*;
 import ru.tutor.page.paymentModalWindow.paymentModal;
 import ru.tutor.page.personalAccount.Catalog;

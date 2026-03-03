@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Execution(ExecutionMode.CONCURRENT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
-public class ResetTest extends BaseApiTest {
-    private final ResetSteps resetSteps = ResetSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+public class ResetTest {
+    private final ResetSteps resetSteps = ResetSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test

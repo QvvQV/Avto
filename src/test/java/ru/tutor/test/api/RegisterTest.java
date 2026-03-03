@@ -8,6 +8,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import ru.tutor.config.TestConfig;
+import ru.tutor.steps.ProductsSteps;
 import ru.tutor.steps.RegisterSteps;
 import ru.tutor.base.BaseApiTest;
 import ru.tutor.utils.AllureAttachments;
@@ -27,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RegisterTest extends BaseApiTest {
     private final RegisterSteps registerSteps = new RegisterSteps(API_BASE_URL);
+//    private final RegisterSteps registerSteps = RegisterSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test

@@ -190,7 +190,8 @@ public record AuthSteps(AuthApi authApi) {
         // Только самые базовые проверки которые точно должны работать
         response.then()
                 .header("Content-Type", equalTo("application/json"))
-                .header("Server", notNullValue())
+                .header("Cache-Control", notNullValue())
+                .header("Strict-Transport-Security", notNullValue())
                 .header("Date", notNullValue());
     }
 

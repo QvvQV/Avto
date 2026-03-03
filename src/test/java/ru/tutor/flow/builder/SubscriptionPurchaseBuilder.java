@@ -3,7 +3,7 @@ package ru.tutor.flow.builder;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.SberPage;
-import ru.tutor.page.AddressPage;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.page.TtPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;

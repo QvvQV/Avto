@@ -8,6 +8,7 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 import ru.tutor.base.BaseApi;
+import ru.tutor.constants.ApiEndpoints;
 
 /**
  * Ручка для колеса фортуны
@@ -21,71 +22,26 @@ public class GameWheelApi extends BaseApi {
 
     @Step("GET /user/game-wheel/rewards - получение списка наград игрового колеса")
     public Response getGameWheelRewards(String authToken) {
-        return given()
-                .filter(new AllureRestAssured())
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .log().all()
-                .when()
-                .get(baseUrl + "/user/game-wheel/rewards")
-                .then()
-                .log().all()
-                .extract().response();
+        return getWithToken(ApiEndpoints.GAME_WHEEL_REWARDS, authToken);
     }
 
     @Step("POST /user/game-wheel/start-game - запуск игры на колесе")
     public Response startGame(String authToken) {
-        return given()
-                .filter(new AllureRestAssured())
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .log().all()
-                .when()
-                .post(baseUrl + "/user/game-wheel/start-game")
-                .then()
-                .log().all()
-                .extract().response();
+        return postWithToken(ApiEndpoints.GAME_WHEEL_START, authToken, "[]");
     }
 
     @Step("GET /user/reward/list - получение списка наград пользователя")
     public Response getUserRewards(String authToken) {
-        return given()
-                .filter(new AllureRestAssured())
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .log().all()
-                .when()
-                .get(baseUrl + "/user/reward/list")
-                .then()
-                .log().all()
-                .extract().response();
+        return getWithToken(ApiEndpoints.GAME_REWARD_LIST, authToken);
     }
 
     @Step("POST /user/reward/open/{id} - удаление подарка из списка призов")
     public Response openReward(String authToken, Long rewardId) {
-        return given()
-                .filter(new AllureRestAssured())
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .log().all()
-                .when()
-                .post(baseUrl + "/user/reward/open/{id}", rewardId)
-                .then()
-                .log().all()
-                .extract().response();
+        return postWithToken(ApiEndpoints.GAME_REWARD_OPEN_ID, authToken, "[]", rewardId);
     }
 
     @Step("GET /user/reward/history - получение истории забранных наград пользователя")
     public Response getUserRewardHistory(String authToken) {
-        return given()
-                .filter(new AllureRestAssured())
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .log().all()
-                .when()
-                .get(baseUrl + "/user/reward/history")
-                .then()
-                .log().all()
-                .extract().response();
+        return getWithToken(ApiEndpoints.GAME_REWARD_HISTORY, authToken);
     }
 }

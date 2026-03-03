@@ -2,6 +2,7 @@ package ru.tutor.page;
 
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.Keys;
+import ru.tutor.utils.WaitHelper;
 import ru.tutor.utils.universalMethod;
 
 import static com.codeborne.selenide.Condition.exactText;
@@ -129,7 +130,7 @@ public class footer {
     public static void clickAboutCompany(){
        step ("клик по гиперссылке `О компании`", ()->{
         universalMethod.safeClick(aboutCompany,  ABOUT_COMPANY_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();});
     }
 
     public static String setAboutSubscription() {
@@ -144,7 +145,9 @@ public class footer {
         step ("Клик по гиперссылке `О Подписке`", ()->{
         aboutSubscription.sendKeys(Keys.END);
         universalMethod.safeClick(aboutSubscription, ABOUT_SUBSCRIPTION_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();
+            
+         });
     }
 
     public static String setContacts() {
@@ -159,7 +162,7 @@ public class footer {
         step ("клик по гиперссылке `Контакты`", ()->{
         contacts.sendKeys(Keys.END);
         universalMethod.safeClick(contacts, CONTACTS_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();});
     }
 
     public static String setNewHorizon() {
@@ -174,7 +177,7 @@ public class footer {
         step ("клик по гиперссылке `новые горизонты`", ()->{
         newHorizons.sendKeys(Keys.END);
         universalMethod.safeClick(newHorizons, NEW_HORIZONS_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();});
     }
 
     public static String setWebmaster() {
@@ -189,7 +192,7 @@ public class footer {
         step ("клик по гиперссылке `Вебмастерам`", ()->{
         webmasters.sendKeys(Keys.END);
         universalMethod.safeClick(webmasters, WEBMASTERS_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();});
     }
 
     public static String setForAuthors() {
@@ -204,7 +207,7 @@ public class footer {
         step ("клик по гиперссылке `Для авторов`", ()->{
         forAuthors.sendKeys(Keys.END);
         universalMethod.safeClick(forAuthors, FOR_AUTHORS_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();});
     }
 
     public static String setInstall() {
@@ -219,7 +222,7 @@ public class footer {
         step ("клик по гиперссылке `Установка ПО`", ()->{
         install.sendKeys(Keys.END);
         universalMethod.safeClick(install, INSTALL_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();});
     }
 
     public static String setCareer() {
@@ -233,7 +236,7 @@ public class footer {
     public static void clickCareer(){
         step ("клик по гиперссылке `Карьера`", ()->{
             universalMethod.safeClick(career, CAREER_TEXT);
-        sleep(500);});
+        WaitHelper.waitForPageLoad();});
     }
 
     public static String setNumber() {

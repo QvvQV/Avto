@@ -10,7 +10,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.flow.SubscriptionTestFlow;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.RedirectPage;
-import ru.tutor.page.AddressPage;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.page.modals.*;
 import ru.tutor.steps.AdminToUserLoginSteps;
 import ru.tutor.steps.ReactivatePremiumSteps;
@@ -26,8 +26,8 @@ import static io.qameta.allure.Allure.step;
 public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
     private RecurrentPaymentTestExecutor testExecutor;
-    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getApi1BaseUrl());
+    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(TestConfig.getApi1BaseUrl());
     private final Integer TEST_ORDER_ID = 180;
     private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
     private final AdminToUserLoginSteps adminToUserLoginSteps = new AdminToUserLoginSteps();

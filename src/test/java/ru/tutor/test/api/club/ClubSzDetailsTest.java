@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("club")
 public class ClubSzDetailsTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final ClubSzDetailsSteps szDetailsSteps = ClubSzDetailsSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final ClubSzDetailsSteps szDetailsSteps = ClubSzDetailsSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private ru.tutor.steps.UserSteps userSteps;
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -35,7 +35,7 @@ public class ClubSzDetailsTest {
     private static String authToken;
     private static Integer currentUserId;
     private static SzDetailsRequest testRequest;
-    private static final Integer testUserId = 42225;
+    private static final Integer testUserId = 46469;
     private static Integer savedSzDetailsId;
 
     @BeforeEach
@@ -43,6 +43,8 @@ public class ClubSzDetailsTest {
         authToken = step("Логин", () ->
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
+
+
     }
 
     @Test

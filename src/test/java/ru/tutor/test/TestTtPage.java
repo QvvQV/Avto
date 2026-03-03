@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.page.*;
 
 import java.util.Arrays;

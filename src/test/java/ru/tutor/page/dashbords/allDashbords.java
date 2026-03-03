@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+import ru.tutor.utils.universalMethod;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
@@ -15,6 +16,9 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class allDashbords {
+
+    // Таймаут
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
     //локаторы модуля Приложения
 
@@ -48,7 +52,7 @@ public class allDashbords {
     @Step("Проверка видимости дашборда: {dashboardName}")
     private static void verifyDashboardVisibility(String dashboardName, SelenideElement dashboardElement) {
         step("Проверка: " + dashboardName, () -> {
-            dashboardElement.shouldBe(visible, Duration.ofSeconds(5))
+            dashboardElement.shouldBe(visible, DEFAULT_TIMEOUT)
                     .shouldHave(exactText(dashboardName));
 
             AllureAttachments.attachText("Дашборд проверен", "✓ " + dashboardName + " - отображается корректно");
@@ -58,7 +62,7 @@ public class allDashbords {
 
     @Step("Проверка что на первом позиции дашбор: {expectedDashboard}")
     private static void verifyFirstDashboard(String expectedDashboard) {
-        FIRST_DASHBOARD.shouldBe(visible, Duration.ofSeconds(5));
+        FIRST_DASHBOARD.shouldBe(visible, DEFAULT_TIMEOUT);
 
         //Проверяем текст дашборда
         String actualText = FIRST_DASHBOARD.getText();
@@ -71,16 +75,16 @@ public class allDashbords {
         AllureAttachments.attachScreenshot(actualText);
     }
 
-    @Step("Безопасный клик по карусели")
-    public static void safeCarouselClick(SelenideElement button) {
-        step("Клик по карусели", () -> {
-            button.shouldBe(visible, Duration.ofSeconds(5))
-                    .shouldBe(interactable, Duration.ofSeconds(3))
-                    .click();
-            WaitHelper.waitForAnimationComplete();
-            WaitHelper.waitFor(Duration.ofSeconds(1)); // Дополнительная стабилизация
-        });
-    }
+//    @Step("Безопасный клик по карусели")
+//    public static void safeCarouselClick(SelenideElement button) {
+//        step("Клик по карусели", () -> {
+//            button.shouldBe(visible, Duration.ofSeconds(5))
+//                    .shouldBe(interactable, Duration.ofSeconds(3))
+//                    .click();
+//            WaitHelper.waitForAnimationComplete();
+//            WaitHelper.waitFor(Duration.ofSeconds(1)); // Дополнительная стабилизация
+//        });
+//    }
 
     @Step("Проверка видимости и доступности всех дашбордов")
     public static void verifyDashboardsVisibility() {
@@ -112,23 +116,23 @@ public class allDashbords {
     private static void navigateThroughDashboards() {
         step("Переход к следующим слайдам", () -> {
             //Слайд 2: Таро
-            safeCarouselClick(BUTTON_NEXT_SLIDE);
+            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
             verifyDashboardVisibility("Таро", TARO);
 
             //Слайд 3: Расчёт матрицы
-            safeCarouselClick(BUTTON_NEXT_SLIDE);
+            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
             verifyDashboardVisibility("Расчет матрицы", MATRIX_CALCULATION);
 
             //Слайд 4: пропускаем повторный SpyHeart
-            safeCarouselClick(BUTTON_NEXT_SLIDE);
-            safeCarouselClick(BUTTON_NEXT_SLIDE);
+            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
 
             //Слайд 5: Тренажёр памяти
             verifyDashboardVisibility("Тренажер памяти", MEMORY_TRAINER);
 
             //Слайд 6: пропускаем повторный SpyHeart
-            safeCarouselClick(BUTTON_NEXT_SLIDE);
-            safeCarouselClick(BUTTON_NEXT_SLIDE);
+            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
 
 
             //Слайд 7: Учёт каналов и редактор карточек

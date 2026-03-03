@@ -4,7 +4,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
-import ru.tutor.page.*;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.page.admin.AdminLoginPage;
 import ru.tutor.page.devProduct;
 

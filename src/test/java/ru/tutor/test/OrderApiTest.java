@@ -39,7 +39,7 @@ public class OrderApiTest {
 
     @BeforeAll
     void setUp() {
-        RestAssured.baseURI = TestConfig.getApiBaseUrl(); // "https://api.dev.tutorplace.ru"
+        RestAssured.baseURI = TestConfig.getApi1BaseUrl();
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
 
         // Генерация уникального email один раз для всех тестов

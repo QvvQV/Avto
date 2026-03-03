@@ -7,7 +7,7 @@ import org.junit.jupiter.api.*;
 
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.Registration;
-import ru.tutor.page.AddressPage;
+import ru.tutor.constants.AddressPage;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;

@@ -3,13 +3,12 @@ package ru.tutor.test.orders;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.flow.SubscriptionTestFlow;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.SberPage;
-import ru.tutor.page.AddressPage;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.TtPage;
 
@@ -26,7 +25,7 @@ public class CloudTest extends BaseUiTest {
 
     private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
 
-//    @Test
+    @Test
     @AllureId("1")
 //            @RepeatedTest(2)
     @DisplayName("Оплата с главной на СисАк Oфферум")
@@ -83,7 +82,6 @@ public class CloudTest extends BaseUiTest {
         step("Открытие страницы", () ->
             open(AddressPage.PAY_WITH_REVSHARE)
         );
-
         CloudPage.clickBtnStartProd();
         CloudPage.clickCardPageBtnProd();
         sleep(1000);

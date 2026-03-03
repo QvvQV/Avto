@@ -2,7 +2,7 @@ package ru.tutor.utils;
 
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import ru.tutor.page.AddressPage;
+import ru.tutor.constants.AddressPage;
 
 import java.time.Duration;
 import java.util.ArrayList;

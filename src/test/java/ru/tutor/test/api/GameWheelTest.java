@@ -29,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GameWheelTest {
 
-    private final AuthSteps authSteps =  AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final GameWheelStartGameSteps gameWheelStartGameSteps = GameWheelStartGameSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final UserRewardSteps userRewardSteps = UserRewardSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps =  AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final GameWheelStartGameSteps gameWheelStartGameSteps = GameWheelStartGameSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final UserRewardSteps userRewardSteps = UserRewardSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmailFortune();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 

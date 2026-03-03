@@ -5,6 +5,7 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
+import ru.tutor.constants.ApiEndpoints;
 
 import static io.restassured.RestAssured.given;
 
@@ -22,15 +23,6 @@ public class OrderApi extends BaseApi {
 
     @Step("POST /user/orders/toggle_subscription/{orderId} - Отписка пользователя до Лайт")
     public Response toggleOrderSubscription(String authToken, Integer orderId) {
-        return given()
-                .filter(new AllureRestAssured())
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .log().all()
-                .when()
-                .post(baseUrl + "/user/orders/toggle_subscription/" + orderId)
-                .then()
-                .log().all()
-                .extract().response();
+        return postWithToken(ApiEndpoints.ORDERS_TOGGLE_SUBSCRIPTION, authToken, "[]", orderId);
     }
 }

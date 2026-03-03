@@ -5,7 +5,9 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
+import ru.tutor.constants.ApiEndpoints;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.executeJavaScript;
@@ -24,24 +26,31 @@ public class ReactivatePremiumApi extends BaseApi {
     // Реактивация заказа по внутренней почте
 
     @Step("POST /user/orders/reactivate-premium - Реактивация пользователя Лайт по внутренней почте")
-    public Response reactivatePremium(String authToken) {
+    public Response reactivatePremium(String authToken, String affRid) {
 
-        String aff_rid = executeJavaScript (
-                "return localStorage.getItem('aff_rid') || 'default_aff_rid';"
+//        String aff_rid = executeJavaScript (
+//                "return localStorage.getItem('aff_rid') || 'default_aff_rid';"
+//        );
+//
+//        return given()
+//                .filter(new AllureRestAssured())
+//                .contentType(ContentType.JSON)
+//                .header("Authorization", "Bearer " + authToken)
+//                .body("{\"aff_rid\":\"" + aff_rid + "\"}")
+//                .log().all()
+//                .when()
+//                .post(baseUrl + "/user/orders/reactivate-premium")
+//                .then()
+//                .statusCode(200)
+//                .log().all()
+//                .extract().response();
+        Map<String, String> body = Map.of("aff_rid", affRid);
+
+        return postWithToken(
+                ApiEndpoints.ORDERS_REACTIVATE_PREMIUM,
+                authToken,
+                body
         );
-
-        return given()
-                .filter(new AllureRestAssured())
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .body("{\"aff_rid\":\"" + aff_rid + "\"}")
-                .log().all()
-                .when()
-                .post(baseUrl + "/user/orders/reactivate-premium")
-                .then()
-                .statusCode(200)
-                .log().all()
-                .extract().response();
     }
 
     @Step("POST /user/orders/reactivate-premium-by-email - Восстановление премиума по ссылке из email-рассылки")
@@ -58,7 +67,7 @@ public class ReactivatePremiumApi extends BaseApi {
                 .body("{\"aff_rid\":\"" + aff_rid + "\"}")
                 .log().all()
                 .when()
-                .post(baseUrl + "/user/orders/reactivate-premium-by-email")
+                .post(baseUrl + ApiEndpoints.ORDERS_REACTIVATE_PREMIUM_BY_EMAIL)
                 .then()
                 .statusCode(200)
                 .log().all()

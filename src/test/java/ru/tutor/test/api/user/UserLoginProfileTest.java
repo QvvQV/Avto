@@ -25,11 +25,11 @@ public class UserLoginProfileTest {
     private ru.tutor.steps.UserSteps userSteps;
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
 
     @BeforeEach
     void setUp() {
-        userSteps = new UserSteps(TestConfig.getApiBaseUrl());
+        userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     }
 
     @Test
@@ -51,14 +51,14 @@ public class UserLoginProfileTest {
                     .body("email", equalTo(TEST_EMAIL));
         });
 
-        step("Проверка name = dfs", () -> {
+        step("Проверка name = admin", () -> {
             profileResponse.then()
-                    .body("name", equalTo("dfs"));
+                    .body("name", equalTo("admin"));
         });
 
-        step("Проверка флага isTariffLifetime = true", () -> {
+        step("Проверка флага isTariffLifetime = false", () -> {
             profileResponse.then()
-                    .body("isTariffLifetime", equalTo(true));
+                    .body("isTariffLifetime", equalTo(false));
         });
 
         step("Проверка флага isYtSubscribed = false", () -> {

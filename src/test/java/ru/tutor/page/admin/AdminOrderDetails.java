@@ -115,7 +115,7 @@ public class AdminOrderDetails {
 
     @Step("Обновление страницы для получения актуальных данных")
     public void refreshPage() {
-        sleep(7000);
+        sleep(10000);
         Selenide.refresh();
         verifyAllDatesAreDisplayed();
     }

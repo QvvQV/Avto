@@ -1,7 +1,6 @@
 package ru.tutor.test.api.club;
 
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.restassured.response.Response;
@@ -13,11 +12,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.flow.SubscriptionTestFlow;
 import ru.tutor.model.ClubMemberResponse;
 import ru.tutor.model.ClubStatisticsResponse;
-import ru.tutor.page.AddressPage;
-import ru.tutor.page.CloudPage;
-import ru.tutor.page.SberPage;
-import ru.tutor.page.TtPage;
-import ru.tutor.page.admin.AdminOrdersPage;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.steps.AdminToUserLoginSteps;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderToggleSubscriptionSteps;
@@ -31,10 +26,10 @@ import static io.qameta.allure.Allure.step;
 public class Referals extends RecurrentPaymentTestBase {
 
     private RecurrentPaymentTestExecutor testExecutor;
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getApiBaseUrl());
-    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getCurrentApiUrl() );
+    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
     private final AdminToUserLoginSteps adminToUserLoginSteps = new AdminToUserLoginSteps();
     private static ClubMemberResponse memberInfo;
@@ -69,7 +64,7 @@ public class Referals extends RecurrentPaymentTestBase {
             adminOrdersPage.goToUserPersonalAccount();
         });
 
-        step("Получить реферальную ссылку", () -> {
+        String referralLink = step("Получить реферальную ссылку", () -> {
 
             String token = AdminToUserLoginSteps.switchToTabAndGetToken();
 
@@ -91,9 +86,54 @@ public class Referals extends RecurrentPaymentTestBase {
                                 "Дата членства: " + memberInfo.getMembershipDate() + "\n" +
                                 "Реферальная ссылка: " + memberInfo.getReferralLink() + "\n" +
                                 "Детали: " + memberInfo.getDetails());
+
             });
-            Selenide.open(AddressPage.urlMain + "?club_ref=" + memberInfo.getReferralLink());
-            System.out.println(WebDriverRunner.url());
+            return memberInfo.getReferralLink();
         });
+
+        step("Регистрируем второго пользователя клуба", () -> {
+            String urlWithReferral = AddressPage.urlMainRev + "?club_ref=" + referralLink;
+            Selenide.open(urlWithReferral);
+
+            new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage)
+                    .purchasePremiumSubscription() // или другой тариф
+                    .processRecurrentInAdmin();
+        });
+
+            step("Перейти в ЛК пользователя", () -> {
+                WaitHelper.waitForAnimationComplete();
+                adminOrdersPage.goToUserPersonalAccount();
+            });
+
+            String referralLink2 = step("Получить реферальную ссылку", () -> {
+
+                String token = AdminToUserLoginSteps.switchToTabAndGetToken();
+
+                Response response = step("GET /user/club/member", () ->
+                        clubSteps.getClubMember(token)
+                );
+
+                memberInfo = step("Валидация ответа", () ->
+                        clubSteps.validateClubMemberResponse(response)
+                );
+
+                step("Проверка значений членства", () -> {
+                    clubSteps.validateClubMemberValues(memberInfo);
+
+                    Allure.addAttachment("Информация о членстве", "text/plain",
+                            "ID: " + memberInfo.getId() + "\n" +
+                                    "Активен: " + memberInfo.getActive() + "\n" +
+                                    "Тип членства: " + memberInfo.getMemberType() + "\n" +
+                                    "Дата членства: " + memberInfo.getMembershipDate() + "\n" +
+                                    "Реферальная ссылка: " + memberInfo.getReferralLink() + "\n" +
+                                    "Детали: " + memberInfo.getDetails());
+                });
+                return memberInfo.getReferralLink();
+            });
+
+            step("Регистрируем второго пользователя клуба", () -> {
+                String urlWithReferral2 = AddressPage.urlMainRev + "?club_ref=" + referralLink2;
+                Selenide.open(urlWithReferral2);
+            });
     }
 }

@@ -44,7 +44,7 @@ public class SuccessOrderPage {
      */
     public static SuccessOrderPage waitForRedirectAndOpen(String originalUrl, long timeoutMs) {
         // Простая реализация - сразу модифицируем URL
-        String modifiedUrl = UrlRedirectHelper.simpleReplaceDomain(originalUrl, "ttplace.ru");
+        String modifiedUrl = UrlRedirectHelper.simpleReplaceDomain(originalUrl, "dev1.ttplace.online");
         Selenide.open(modifiedUrl);
 
         SuccessOrderPage page = new SuccessOrderPage();
@@ -73,7 +73,7 @@ public class SuccessOrderPage {
      */
     public static SuccessOrderPage openAndFixPage(String url) {
         // Проверяем и исправляем URL если нужно
-        UrlRedirectHelper.checkAndFixCurrentUrl("ttplace.ru");
+        UrlRedirectHelper.checkAndFixCurrentUrl("dev1.ttplace.online");
 
         SuccessOrderPage page = new SuccessOrderPage();
         page.fixLoginButtonHref();

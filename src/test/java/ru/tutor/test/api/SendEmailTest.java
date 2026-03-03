@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(AllureJunit5.class)
 public class SendEmailTest {
-    private final SendEmailSteps sendEmailSteps = SendEmailSteps.withBaseUrl(TestConfig.getApiBaseUrl());
+    private final SendEmailSteps sendEmailSteps = SendEmailSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
 
     @Test
     @DisplayName("Успешная отправка письма")

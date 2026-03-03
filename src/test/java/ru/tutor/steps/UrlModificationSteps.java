@@ -5,7 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import ru.tutor.page.AddressPage;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.utils.WaitHelper;
 
 import static io.qameta.allure.Allure.step;

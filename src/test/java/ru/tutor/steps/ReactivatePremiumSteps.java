@@ -18,7 +18,7 @@ public record ReactivatePremiumSteps(ReactivatePremiumApi reactivatePremiumApi) 
 
     @Step("Переключение подписки c Лайта на Премиум по внутренней почте")
     public Response reactivatePremium(String authToken) {
-        return this.reactivatePremiumApi.reactivatePremium(authToken);
+        return this.reactivatePremiumApi.reactivatePremium(authToken, null);
     }
 
     @Step("Переключение подписки c Лайта на Премиум по по ссылке из email-рассылки")

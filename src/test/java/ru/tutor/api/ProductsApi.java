@@ -16,18 +16,7 @@ public class ProductsApi extends BaseApi {
      * GET /user/products - получение списка продуктов пользователя
      */
     public Response getUserProducts(String authToken) {
-        return given()
-                .filter(new AllureRestAssured())
-                .header("Authorization", "Bearer " + authToken)
-                .header("Accept", "application/json, text/plain, */*")
-                .header("Origin", "https://client.ttplace.ru")
-                .header("Referer", "https://client.ttplace.ru/")
-                .log().all()
-                .when()
-                .get("/user/products")
-                .then()
-                .log().all()
-                .extract().response();
+        return getWithToken("/user/products", authToken);
     }
 
     /**
