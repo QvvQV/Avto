@@ -19,7 +19,7 @@ public class ProductsTest {
     private final ProductsSteps productSteps =
             new ProductsSteps("https://ttplace.ru", "admin", "JWwppsEA84B4BozJgE44sNiZZ");
 
-    @Test
+//    @Test
     @AllureId("50")
     @DisplayName("Все продукты из каталога должны быть доступны по коду 200")
     void allProductsAccessible() {

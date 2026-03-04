@@ -23,13 +23,16 @@ import static io.qameta.allure.Allure.step;
 
 public class OrderToggleSubscriptionTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
     private final Integer TEST_ORDER_ID = 180;
+
+
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(BASE_URL);
+    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(BASE_URL);
+    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(BASE_URL);
+
 
     private static String token;
 

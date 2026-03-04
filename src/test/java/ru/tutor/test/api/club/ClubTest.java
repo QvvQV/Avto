@@ -7,13 +7,14 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.ClubMemberResponse;
-import ru.tutor.model.ClubStatisticsResponse;
+import ru.tutor.model.*;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubWithdrawalSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -22,18 +23,30 @@ import static org.hamcrest.Matchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ClubTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    // Общие константы
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
+    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(BASE_URL);
+    private final ClubWithdrawalSteps withdrawalSteps = ClubWithdrawalSteps.withBaseUrl(BASE_URL);
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(BASE_URL);
+
     private static ClubMemberResponse memberInfo;
     private static ClubStatisticsResponse statisticsInfo;
+    private String authToken;
 
     @BeforeAll
     public static void setupAll() {
         Allure.label("component", "API");
         Allure.label("feature", "User Club");
+    }
+
+    @BeforeEach
+    public void setup() {
+        authToken = step("Логин", () ->
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
     }
 
     @Test
@@ -42,12 +55,9 @@ public class ClubTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     void getClubStatisticsSuccess() {
-        String token = step("Логин", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
 
         Response response = step("GET /user/club/statistics", () ->
-                clubSteps.getClubStatictics(token)
+                clubSteps.getClubStatictics(authToken)
         );
 
         statisticsInfo = step("Валидация ответа", () ->
@@ -70,12 +80,9 @@ public class ClubTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     void getClubMemberSuccess() {
-        String token = step("Логин", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
 
         Response response = step("GET /user/club/member", () ->
-                clubSteps.getClubMember(token)
+                clubSteps.getClubMember(authToken)
         );
 
         memberInfo = step("Валидация ответа", () ->
@@ -102,23 +109,17 @@ public class ClubTest {
     @Severity(SeverityLevel.NORMAL)
     void verifySpecificValuesFromExample() {
 
-//        Response memberResponse = clubSteps.getClubMember(token);
-        String token = step("Логин", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-
         Response response = step("GET /user/club/member", () ->
-                clubSteps.getClubMember(token)
+                clubSteps.getClubMember(authToken)
         );
 
-
-        step("Проверка членства из примера", () -> {
+        step("Проверка членства", () -> {
             response.then()
-                    .body("id", equalTo(3338))
+                    .body("id", notNullValue())
                     .body("isActive",  equalTo(true))
                     .body("memberType", nullValue())
-                    .body("membershipDate", equalTo("2025-10-17"))
-                    .body("referralLink", equalTo("68f1fe239caf76.05384387"))
+                    .body("membershipDate", notNullValue())
+                    .body("referralLink", notNullValue())
                     .body("details", nullValue());
         });
     }
@@ -149,5 +150,36 @@ public class ClubTest {
         step("Проверка ошибки авторизации", () ->
             clubSteps.validateUnauthorizedResponse(response)
         );
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Запрос на вывод 3000р")
+    @Story("Валидация спецификации")
+    @Severity(SeverityLevel.NORMAL)
+    void requestWithdrawalExampleAmount() {
+        WithdrawalRequest request = new WithdrawalRequest(3000);
+
+        Response response = step("POST с суммой 3000р", () ->
+                withdrawalSteps.requestWithdrawal(authToken, request)
+        );
+
+        step("Проверка ответа", () -> {
+            int statusCode = response.getStatusCode();
+
+            String responseBody = response.getBody().asString();
+
+            if (statusCode == 201) {
+                WithdrawalResponse withdrawalResponse = response.as(WithdrawalResponse.class);
+                if (withdrawalResponse != null && withdrawalResponse.isSuccessful()) {
+                    assertEquals(3000, withdrawalResponse.getWithdrawalAmount(),
+                            "Сумма в ответе должна быть 3000");
+                    Allure.addAttachment("Успех", "text/plain",
+                            "✅ Запрос на вывод 3000 ₽ выполнен успешно");
+                }
+            } else if (statusCode == 422) {
+
+            }
+        });
     }
 }

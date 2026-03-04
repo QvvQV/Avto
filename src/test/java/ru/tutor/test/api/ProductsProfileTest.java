@@ -22,8 +22,10 @@ import static io.qameta.allure.Allure.step;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProductsProfileTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final ProductsSteps productsSteps = ProductsSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(BASE_URL);
+    private final ProductsSteps productsSteps = ProductsSteps.withBaseUrl(BASE_URL);
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 

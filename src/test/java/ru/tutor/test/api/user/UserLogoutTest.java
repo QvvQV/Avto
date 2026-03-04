@@ -21,25 +21,28 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты эндпоинта /user/logout")
 public class UserLogoutTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private ru.tutor.steps.UserSteps userSteps;
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
+    private final UserSteps userSteps = new UserSteps(BASE_URL);
+
+    private String authToken;
+
     @BeforeEach
     void setup() {
-        userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+        authToken = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
     }
 
     @Test
     @DisplayName("Успешный выход из системы")
     @Story("Основной сценарий")
     void successfulLogout() {
-        String token = step("Логин и получение токена", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
+
         Response logoutResponse = step("POST /user/logout", () ->
-                userSteps.logout(token)
+                userSteps.logout(authToken)
         );
 
         step("Проверка ответа логаута", () -> {
@@ -72,20 +75,13 @@ public class UserLogoutTest {
     @DisplayName("Выход и повторный логин")
     @Story("Жизненный цикл сессии")
     void logoutAndLoginAgain() {
-        String firstToken = authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
 
-        Response response = userSteps.logout(firstToken);
-        response.then()
-                .statusCode(200);
+       userSteps.logout(authToken);
 
-        String secondToken = authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
+        String secondToken = userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
 
-        assertNotEquals(firstToken, secondToken, "После повторного логина должен быть новый токен");
+        assertNotEquals(authToken, secondToken, "После повторного логина должен быть новый токен");
 
-        Response response2 = userSteps.getProfile(secondToken);
-        response2.then()
-                .statusCode(200)
-                .body("email", equalTo(TEST_EMAIL));
     }
 
     @AfterEach

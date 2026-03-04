@@ -9,7 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.SzDetailsRequest;
 import ru.tutor.model.SzDetailsResponse;
+import ru.tutor.model.UserProfile;
 import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.UserSteps;
 import ru.tutor.steps.club.ClubSzDetailsSteps;
 import ru.tutor.utils.SzDetailsTestDataGenerator;
 
@@ -26,25 +28,22 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("club")
 public class ClubSzDetailsTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final ClubSzDetailsSteps szDetailsSteps = ClubSzDetailsSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private ru.tutor.steps.UserSteps userSteps;
-    private final String TEST_EMAIL = TestConfig.getTestEmail();
-    private final String TEST_PASSWORD = TestConfig.getTestPassword();
+    // Общие константы
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
+    private static final String TEST_EMAIL = TestConfig.getTestEmail();
+    private static final String TEST_PASSWORD = TestConfig.getTestPassword();
 
-    private static String authToken;
-    private static Integer currentUserId;
+    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final ClubSzDetailsSteps szDetailsSteps = ClubSzDetailsSteps.withBaseUrl(BASE_URL);
+
+    private UserProfile profile;
     private static SzDetailsRequest testRequest;
-    private static final Integer testUserId = 46469;
-    private static Integer savedSzDetailsId;
 
     @BeforeEach
     public void setup() {
-        authToken = step("Логин", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        profile = step("Логин", () ->
+                userSteps.loginAndGetUserProfile(TEST_EMAIL, TEST_PASSWORD)
         );
-
-
     }
 
     @Test
@@ -55,7 +54,7 @@ public class ClubSzDetailsTest {
     void saveSzDetailsWithValidDate() {
         // Генерация тестовых данных с Faker
         testRequest = step("Генерация тестовых данных", () ->
-                SzDetailsTestDataGenerator.generateValidSzDetails(testUserId, TEST_EMAIL)
+                SzDetailsTestDataGenerator.generateValidSzDetails(profile.getId(), TEST_EMAIL)
         );
 
         Allure.addAttachment("Сгенерированные данные", "text/plain",
@@ -66,7 +65,7 @@ public class ClubSzDetailsTest {
                         "Email: " + testRequest.getEmail());
 
         Response response = step("POST /user/club/sz-details", () ->
-                szDetailsSteps.saveSzDetails(authToken, testRequest)
+                szDetailsSteps.saveSzDetails(userSteps.getCurrentAuthToken(), testRequest)
         );
 
         step("Валидация ответа (ожидаем 201)", () ->
@@ -93,13 +92,13 @@ public class ClubSzDetailsTest {
     @Severity(SeverityLevel.NORMAL)
     void saveSzDetailsWithMinimalFields() {
         testRequest = step("Генерация тестовых данных", () ->
-                SzDetailsTestDataGenerator.generateValidSzDetails(testUserId, TEST_EMAIL)
+                SzDetailsTestDataGenerator.generateValidSzDetails(profile.getId(), profile.getEmail())
         );
 
         // Создаем минимальный набор данных
         Map<String, Object> minimalPayload = Map.of(
-                "userId", testUserId,
-                "email", TEST_EMAIL,
+                "userId", profile.getId(),
+                "email", profile.getEmail(),
                 "fullName", "Тестовый пользователь",
                 "phone", "+7 (999) 123-45-67",
                 "dateBirth", "1990-01-01",
@@ -108,7 +107,7 @@ public class ClubSzDetailsTest {
         );
 
         Response response = step("POST /user/club/sz-details с минимльными данными", () ->
-                szDetailsSteps.saveSzDetails(authToken, minimalPayload)
+                szDetailsSteps.saveSzDetails(userSteps.getCurrentAuthToken(), minimalPayload)
         );
 
         step("Проверка валидации", () ->
@@ -129,7 +128,7 @@ public class ClubSzDetailsTest {
         );
 
         Response response = step("POST с неверным userID", () ->
-                szDetailsSteps.saveSzDetails(authToken, request)
+                szDetailsSteps.saveSzDetails(userSteps.getCurrentAuthToken(), request)
         );
 
         step("Проверка ошибки", () -> {
@@ -156,11 +155,11 @@ public class ClubSzDetailsTest {
     @Severity(SeverityLevel.NORMAL)
     void saveSzDetailsWithInvalidEmail() {
 
-        SzDetailsRequest request = SzDetailsTestDataGenerator.generateValidSzDetails(testUserId, TEST_EMAIL);
+        SzDetailsRequest request = SzDetailsTestDataGenerator.generateValidSzDetails(profile.getId(), TEST_EMAIL);
         request.setEmail("invalid_email");
 
         Response response = step("POST с невалидным email", () ->
-                szDetailsSteps.saveSzDetails(authToken, request)
+                szDetailsSteps.saveSzDetails(userSteps.getCurrentAuthToken(), request)
         );
 
         step("Проверка валидации", () ->
@@ -174,7 +173,7 @@ public class ClubSzDetailsTest {
     @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
     void saveSzDetailsWithoutAuth() {
-        SzDetailsRequest request = SzDetailsTestDataGenerator.generateValidSzDetails(testUserId, TEST_EMAIL);
+        SzDetailsRequest request = SzDetailsTestDataGenerator.generateValidSzDetails(profile.getId(), TEST_EMAIL);
 
         Response response = step("POST без токена авторизации", () ->
                 szDetailsSteps.saveSzDetails("invalid_token", request)
@@ -200,8 +199,8 @@ public class ClubSzDetailsTest {
     @Story("Функциональность")
     @Severity(SeverityLevel.NORMAL)
     void saveMultipleSzDetails() {
-        SzDetailsRequest request1 = SzDetailsTestDataGenerator.generateValidSzDetails(testUserId, TEST_EMAIL);
-        Response response1 = szDetailsSteps.saveSzDetails(authToken, request1);
+        SzDetailsRequest request1 = SzDetailsTestDataGenerator.generateValidSzDetails(profile.getId(), TEST_EMAIL);
+        Response response1 = szDetailsSteps.saveSzDetails(userSteps.getCurrentAuthToken(), request1);
 
         step("Проверка первого сохранения", () -> {
             int status1 = response1.getStatusCode();
@@ -210,11 +209,11 @@ public class ClubSzDetailsTest {
                             (status1 == 201 ? "✅ Успешно" : "❌ Ошибка"));
         });
 
-        SzDetailsRequest request2 = SzDetailsTestDataGenerator.generateValidSzDetails(testUserId, TEST_EMAIL);
-        Response response2 = szDetailsSteps.saveSzDetails(authToken, request2);
+        SzDetailsRequest request2 = SzDetailsTestDataGenerator.generateValidSzDetails(profile.getId(), TEST_EMAIL);
+        Response response2 = szDetailsSteps.saveSzDetails(userSteps.getCurrentAuthToken(), request2);
 
         Response firstResponse = step("Первое удаление", () ->
-                szDetailsSteps.deleteClubDetails(authToken)
+                szDetailsSteps.deleteClubDetails(userSteps.getCurrentAuthToken())
         );
 
         step("Проверка первого удаления", () -> {
@@ -258,7 +257,7 @@ public class ClubSzDetailsTest {
     @Severity(SeverityLevel.CRITICAL)
     void deleteClubDetailsSuccess() {
         Response response = step("DELETE /user/club/details", () ->
-                szDetailsSteps.deleteClubDetails(authToken)
+                szDetailsSteps.deleteClubDetails(userSteps.getCurrentAuthToken())
         );
 
         step("Валидация успешного удаления", () ->
@@ -316,7 +315,7 @@ public class ClubSzDetailsTest {
     void verifyDeleteResponseStructure200() {
         step("Выполнение 3 DELETE запросов подряд", () -> {
                     for (int i = 1; i <= 3; i++) {
-                        Response response = szDetailsSteps.deleteClubDetails(authToken);
+                        Response response = szDetailsSteps.deleteClubDetails(userSteps.getCurrentAuthToken());
                         int statusCode = response.getStatusCode();
 
                         Allure.addAttachment("Запрос " + i, "text/plain",
@@ -336,7 +335,7 @@ public class ClubSzDetailsTest {
     void quickSmokeTest() {
         // Генерация тестовых данных с Faker
         testRequest = step("Генерация тестовых данных", () ->
-                SzDetailsTestDataGenerator.generateValidSzDetails(testUserId, TEST_EMAIL)
+                SzDetailsTestDataGenerator.generateValidSzDetails(profile.getId(), TEST_EMAIL)
         );
 
         Allure.addAttachment("Сгенерированные данные", "text/plain",
@@ -347,7 +346,7 @@ public class ClubSzDetailsTest {
                         "Email: " + testRequest.getEmail());
 
         Response response = step("POST /user/club/sz-details", () ->
-                szDetailsSteps.saveSzDetails(authToken, testRequest)
+                szDetailsSteps.saveSzDetails(userSteps.getCurrentAuthToken(), testRequest)
         );
 
         step("Валидация ответа (ожидаем 201)", () ->
@@ -367,7 +366,7 @@ public class ClubSzDetailsTest {
         }
 
         Response responseDel = step("DELETE запрос", () ->
-                szDetailsSteps.deleteClubDetails(authToken)
+                szDetailsSteps.deleteClubDetails(userSteps.getCurrentAuthToken())
         );
 
         step("Детальная проверка структуры ответа", () -> {
@@ -412,7 +411,7 @@ public class ClubSzDetailsTest {
     void saveIpDetailsWithValidData() {
         // Генерация тестовых данных с Faker
         testRequest = step("Генерация тестовых данных", () ->
-                SzDetailsTestDataGenerator.generateValidIpDetails(testUserId, TEST_EMAIL)
+                SzDetailsTestDataGenerator.generateValidIpDetails(profile.getId(), TEST_EMAIL)
         );
 
         Allure.addAttachment("Сгенерированные данные", "text/plain",
@@ -423,7 +422,7 @@ public class ClubSzDetailsTest {
                         "Email: " + testRequest.getEmail());
 
         Response response = step("POST /user/club/ip-details", () ->
-                szDetailsSteps.saveIpDetails(authToken, testRequest)
+                szDetailsSteps.saveIpDetails(userSteps.getCurrentAuthToken(), testRequest)
         );
 
         step("Валидация ответа (ожидаем 201)", () ->
@@ -450,7 +449,7 @@ public class ClubSzDetailsTest {
     @Severity(SeverityLevel.NORMAL)
     void testValidationWithIncompleteData() {
         testRequest = step("Генерация тестовых данных", () ->
-                SzDetailsTestDataGenerator.generateValidIpDetails(testUserId, TEST_EMAIL)
+                SzDetailsTestDataGenerator.generateValidIpDetails(profile.getId(), TEST_EMAIL)
         );
 
         // Создаем запрос только с несколькими полями
@@ -462,7 +461,7 @@ public class ClubSzDetailsTest {
         );
 
         Response response = step("POST /user/club/sz-details с минимльными данными", () ->
-                szDetailsSteps.saveIpDetails(authToken, incompletePayload)
+                szDetailsSteps.saveIpDetails(userSteps.getCurrentAuthToken(), incompletePayload)
         );
 
         step("Проверка валидации", () ->
@@ -477,14 +476,14 @@ public class ClubSzDetailsTest {
     @Severity(SeverityLevel.NORMAL)
     void saveIpDetailsWithInvalidOgrnip() {
         testRequest = step("Генерация тестовых данных", () ->
-                SzDetailsTestDataGenerator.generateValidIpDetails(testUserId, TEST_EMAIL)
+                SzDetailsTestDataGenerator.generateValidIpDetails(profile.getId(), TEST_EMAIL)
         );
 
         testRequest.setOgrnip("неправильный огрнип");
 
 
         Response response = step("POST с невалидным ОГРНИП", () ->
-                szDetailsSteps.saveIpDetails(authToken, testRequest)
+                szDetailsSteps.saveIpDetails(userSteps.getCurrentAuthToken(), testRequest)
         );
 
         step("Проверка валидации ОГРНИП", () -> {
@@ -507,7 +506,7 @@ public class ClubSzDetailsTest {
     @Severity(SeverityLevel.CRITICAL)
     void saveIpDetailsWithoutAuth() {
         testRequest = step("Генерация тестовых данных", () ->
-                SzDetailsTestDataGenerator.generateValidIpDetails(testUserId, TEST_EMAIL)
+                SzDetailsTestDataGenerator.generateValidIpDetails(profile.getId(), TEST_EMAIL)
         );
 
         Response response = step("POST без токена авторизации", () ->

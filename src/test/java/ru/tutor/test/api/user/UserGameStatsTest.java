@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import ru.tutor.model.UserProfile;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.UserSteps;
 import ru.tutor.config.TestConfig;
@@ -22,26 +23,28 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты эндпоинта /user/game-stats")
 public class UserGameStatsTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private ru.tutor.steps.UserSteps userSteps;
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
+    private final UserSteps userSteps = new UserSteps(BASE_URL);
+
+    private UserProfile profile;
+
     @BeforeEach
-    void setup() {
-        userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+        public void setup() {
+            profile = step("Логин", () ->
+                    userSteps.loginAndGetUserProfile(TEST_EMAIL, TEST_PASSWORD)
+            );
     }
 
     @Test
     @DisplayName("Получение игровой статистики")
     @Story("Основной сценарий")
     void getGameStatsSuccess() {
-        String token = step("Логин", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
 
         Response response = step("GET /user/game-stats", () ->
-                userSteps.getGameStats(token)
+                userSteps.getGameStats(userSteps.getCurrentAuthToken())
         );
 
         step("Проверка ответа", () -> {
@@ -59,14 +62,13 @@ public class UserGameStatsTest {
     @DisplayName("Детальная проверка данных игровой статистики")
     @Story("Валидация данных")
     void verifyGameStatsDetails() {
-        String token = authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
-        Response response = userSteps.getGameStats(token);
+        Response response = userSteps.getGameStats(userSteps.getCurrentAuthToken());
         GameStatsResponse stats = userSteps.validateGameStatsResponse(response);
 
         step("Проверка конкретных значений", () ->
                 assertAll("Game stats specific values",
                         () -> assertEquals(500, stats.getLevelUpLimit(), "LevelUpLimit should be 500"),
-                        () -> assertEquals(15, stats.getSeason(), "Season should be 15"),
+                        () -> assertEquals(18, stats.getSeason(), "Season should be 18"),
                         () -> assertNotNull(stats.getSeasonEnd(), "SeasonEnd should not be null"),
                         () -> assertTrue(stats.getSeasonEnd().contains("2026"), "SeasonEnd should be in 2026"),
                         () -> assertNotNull(stats.getShowModal(), "showModal should not be null"))
@@ -76,8 +78,8 @@ public class UserGameStatsTest {
     @Test
     @DisplayName("Проверка структуры массива days")
     void verifyDaysArrayStructure() {
-        String token = authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
-        Response response = userSteps.getGameStats(token);
+
+        Response response = userSteps.getGameStats(userSteps.getCurrentAuthToken());
 
         response.then()
                 .body("days.size()", equalTo(31))
@@ -108,12 +110,12 @@ public class UserGameStatsTest {
     @Story("Интеграционный тест")
     void verifyConnectionWithUserProfile() {
         // 1. Получаем профиль
-        String token = authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
-        Response profileResponse = userSteps.getGameStats(token);
+
+        Response profileResponse = userSteps.getGameStats(userSteps.getCurrentAuthToken());
         Boolean hasLoginTodayProfile = profileResponse.jsonPath().getBoolean("hasLoginToday");
 
         // 2. Получаем игровую статистику
-        Response gameStatsResponse = userSteps.getGameStats(token);
+        Response gameStatsResponse = userSteps.getGameStats(userSteps.getCurrentAuthToken());
         Boolean hasGameStatsResponse = gameStatsResponse.jsonPath().getBoolean("hasLoginToday");
 
         // 3. Проверяем согласованность

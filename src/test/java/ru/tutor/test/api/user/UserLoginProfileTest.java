@@ -22,21 +22,21 @@ import static org.hamcrest.Matchers.*;
 @Story("Полный сценарий аутентификации")
 public class UserLoginProfileTest {
 
-    private ru.tutor.steps.UserSteps userSteps;
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final UserSteps userSteps = new UserSteps(BASE_URL);
 
-    @BeforeEach
-    void setUp() {
-        userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
-    }
+//    @BeforeEach
+//    void setUp() {
+//        userSteps = new UserSteps(BASE_URL);
+//    }
 
     @Test
     @DisplayName("Полный сценарий: Логин → Профиль → Проверка флагов")
     void fullLoginProfileScenario() {
         // 1. Логин и получение токена
-        String token = authSteps.loginAndGetToken(
+        String token = userSteps.loginAndGetToken(
                 TEST_EMAIL,
                 TEST_PASSWORD
         );
@@ -51,9 +51,9 @@ public class UserLoginProfileTest {
                     .body("email", equalTo(TEST_EMAIL));
         });
 
-        step("Проверка name = admin", () -> {
+        step("Проверка name = ugh", () -> {
             profileResponse.then()
-                    .body("name", equalTo("admin"));
+                    .body("name", equalTo("ugh"));
         });
 
         step("Проверка флага isTariffLifetime = false", () -> {

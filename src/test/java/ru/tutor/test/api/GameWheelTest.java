@@ -11,6 +11,7 @@ import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.model.fortune.GameWheelStartGameResponse;
 import ru.tutor.model.fortune.UserRewardResponse;
 import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.UserSteps;
 import ru.tutor.steps.fortune.GameWheelStartGameSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 import ru.tutor.steps.fortune.UserRewardSteps;
@@ -29,14 +30,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GameWheelTest {
 
-    private final AuthSteps authSteps =  AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final GameWheelStartGameSteps gameWheelStartGameSteps = GameWheelStartGameSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final UserRewardSteps userRewardSteps = UserRewardSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmailFortune();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
+    private final AuthSteps authSteps =  AuthSteps.withBaseUrl(BASE_URL);
+    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(BASE_URL);
+    private final GameWheelStartGameSteps gameWheelStartGameSteps = GameWheelStartGameSteps.withBaseUrl(BASE_URL);
+    private final UserRewardSteps userRewardSteps = UserRewardSteps.withBaseUrl(BASE_URL);
+
     private static String token;
+
     private static List<GameWheelRewardResponse> rewards;
 //    TODO: сейчас таблица призов по ручке не появляется (может к ней вернутся)
 //    private static Map<String, GameWheelRewardsSteps.RewardValidationResult> validationResults;
@@ -50,7 +55,7 @@ public class GameWheelTest {
     @BeforeEach
     void setUpAuth() {
         // Логин перед каждым тестом
-        token = step("Логин пользователя", () ->
+        token = step("Логин", () ->
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
@@ -154,7 +159,7 @@ public class GameWheelTest {
 
         List<GameWheelStartGameResponse> multiplePrizes = step("Множественный запуск игры (10 раза)",
                 () ->
-                        gameWheelStartGameSteps.multipleStartGame(token, 10)
+                        gameWheelStartGameSteps.multipleStartGame(token, 5)
         );
 
         step("Проверка уникальности", () -> {

@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserSteps {
     private final UserApi userApi;
+    private UserProfile currentUserProfile;
     private String currentAuthToken;
 
     public UserSteps(String baseUrl) {
@@ -66,29 +67,6 @@ public class UserSteps {
         return response;
     }
 
-    @Step("Получить профиль с текущим токеном")
-    public Response getProfileWithCurrentToken() {
-        if (currentAuthToken == null) {
-            throw new IllegalStateException("Токен не получен. Сначала выполните логин.");
-        }
-        return getProfile(currentAuthToken);
-    }
-
-    @Step("Проверить ответ логина")
-    public LoginResponse validateLoginResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("token", not(emptyOrNullString()))
-                .body("username", not(emptyOrNullString()));
-
-        LoginResponse loginResponse = response.as(LoginResponse.class);
-        assertNotNull(loginResponse, "Login response should not be null");
-        assertNotNull(loginResponse.getToken(), "token should not be null");
-
-        return loginResponse;
-    }
-
     @Step("Проверить ответ профиля")
     public UserProfile validateProfileResponse(Response response, String expectedEmail) {
         response.then()
@@ -106,7 +84,11 @@ public class UserSteps {
         return userProfile;
     }
 
+    @Step("Получить профиль с текущим токеном")
     public String getCurrentAuthToken() {
+        if (currentAuthToken == null) {
+            throw new IllegalStateException("Токен не получен. Сначала выполните login!");
+        }
         return currentAuthToken;
     }
 
@@ -203,43 +185,22 @@ public class UserSteps {
         return stats;
     }
 
-    @Step("Получить ID пользователя из профиля")
-    public Integer getUserIdFromProfile(String authToken) {
-        Response response = getProfile(authToken);
 
-        response.then()
-                .statusCode(200)
-                .contentType("application/json");
+    @Step("Выполнить логин и получить данные пользователя")
+    public UserProfile loginAndGetUserProfile(String email, String password) {
+        String token = loginAndGetToken(email, password);
 
-        Integer userId = response.jsonPath().getInt("id");
+        Response profileResponse = getProfile(token);
 
-        if (userId == null) {
-            throw new RuntimeException("ID пользователя не найден в ответе профиля");
-        }
+        UserProfile profile = validateProfileResponse(profileResponse, email);
 
-        AllureAttachments.attachJson("Получен ID пользователя",
-                "User ID: " + userId + "\n" +
-                "Email: " + response.jsonPath().getString("email"));
+        this.currentAuthToken = token;
+        this.currentUserProfile = profile;
 
-        return userId;
-    }
-
-    @Step("Получить ID текущего пользователя")
-    public Integer getCurrentUserId() {
-        if (currentAuthToken == null) {
-            throw new IllegalStateException("Токен не получен. Сначала выполните логин.");
-        }
-        return getUserIdFromProfile(currentAuthToken);
-    }
-
-    @Step("Получить полную информацию о профиле пользователя")
-    public UserProfile getFullUserProfile(String authToken) {
-        Response response = getProfile(authToken);
-        UserProfile profile = validateProfileResponse(response, null);
-
-        AllureAttachments.attachText("Полная информация профиля",
-                "ID: " + profile.getId() + "\n" +
-                "Email: " + profile.getEmail());
+        AllureAttachments.attachText("Профиль пользователя",
+                String.format("ID: %d\nEmail: %s",
+                        profile.getId(),
+                        profile.getEmail()));
 
         return profile;
     }
