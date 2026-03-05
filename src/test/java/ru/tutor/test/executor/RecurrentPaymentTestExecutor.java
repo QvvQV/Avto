@@ -20,7 +20,7 @@ public class RecurrentPaymentTestExecutor {
     private final OrderDatesPage orderDatesPage;
     private final AdminOrderDetails adminOrderDetails;
     private final PaymentCycleExecutor paymentCycleExecutor;
-    private final ComprehensiveCheckExecutor comprehensiveChechExecutor;
+    private final ComprehensiveCheckExecutor comprehensiveCheckExecutor;
 
     public RecurrentPaymentTestExecutor(OrderDatesPage orderDatesPage,
                                         AdminOrderDetails adminOrderDetails,
@@ -29,7 +29,7 @@ public class RecurrentPaymentTestExecutor {
         this.orderDatesPage = orderDatesPage;
         this.adminOrderDetails = adminOrderDetails;
         this.paymentCycleExecutor = paymentCycleExecutor;
-        this.comprehensiveChechExecutor = new ComprehensiveCheckExecutor(orderDatesPage);
+        this.comprehensiveCheckExecutor = new ComprehensiveCheckExecutor(orderDatesPage);
     }
 
     /**
@@ -80,7 +80,7 @@ public class RecurrentPaymentTestExecutor {
                             settings.afterSecondPaymentDays(),
                             context);
                     // Выполняем финальную проверку
-                    comprehensiveChechExecutor.performFinalComprehensiveCheck(productId);
+                    comprehensiveCheckExecutor.performFinalComprehensiveCheck(productId);
                     break;
 
                 default:

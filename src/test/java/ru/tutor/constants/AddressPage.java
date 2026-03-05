@@ -25,7 +25,7 @@ public class AddressPage {
 
     // ==================== Клиентские URL ====================
 
-    private static final String CLIENT = TestConfig.getClientBaseUrl();
+    private static final String CLIENT = TestConfig.getCurrentClientDomain();
 
     // ==================== Динамические URL ====================
     public static final String login = CLIENT + "/login";
@@ -36,7 +36,7 @@ public class AddressPage {
 
     // ==================== Admin URL ====================
     //стр admin Dev
-    public static final String devAdmin = TestConfig.getAdminBaseUrl();
+    public static final String devAdmin = TestConfig.getCurrentAdminDomain();
 
     // стр продукта под задачу TP-5345 Поля "навыки" для новых карточек в настройке продукта
     public static final String product525 = TestConfig.getAdminProductUrl(525);
@@ -51,6 +51,7 @@ public class AddressPage {
         System.out.println("🌐 UI URL: " + urlMain);
         System.out.println("🔧 API URL: " + ApiEndpoints.apiBaseUrl);
         System.out.println("⚙️ Admin URL: " + devAdmin);
+        System.out.println("👤 Client URL: " + login);
     }
 }
 

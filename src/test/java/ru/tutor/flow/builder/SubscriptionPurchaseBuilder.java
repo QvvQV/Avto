@@ -13,10 +13,11 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SubscriptionPurchaseBuilder {
-    private String subscriptionType;
+//    private String subscriptionType;
+    private TtPage.SubscriptionType subscriptionType;
     private PaymentSystem paymentSystem;
     private PaymentMethod paymentMethod;
-    private boolean captureEmail = true;
+    private final boolean captureEmail = true;
     private boolean verifyError = false;
     private String expectedError;
 
@@ -49,9 +50,8 @@ public class SubscriptionPurchaseBuilder {
 
     private PageVariant pageVariant = PageVariant.DEFAULT;
 
-    public SubscriptionPurchaseBuilder withAffRid(){
+    public void withAffRid(){
         this.pageVariant = PageVariant.WITH_AFF_RID;
-        return this;
     }
 
     public boolean hasAffRid() {
@@ -68,71 +68,90 @@ public class SubscriptionPurchaseBuilder {
         return new SubscriptionPurchaseBuilder(ttPage, cloudPage, sberPage);
     }
 
-    public SubscriptionPurchaseBuilder forPremium() {
-        this.subscriptionType = "Premium";
+    // Универсальный метод Типа
+    public SubscriptionPurchaseBuilder forSubscription(TtPage.SubscriptionType type) {
+        this.subscriptionType = type;
         return this;
     }
 
-    public SubscriptionPurchaseBuilder forLife() {
-        this.subscriptionType = "Life";
+//    public SubscriptionPurchaseBuilder forPremium() {
+////        this.subscriptionType = "Premium";
+////        return this;
+//        return forSubscription(TtPage.SubscriptionType.PREMIUM);
+//    }
+//
+//    public SubscriptionPurchaseBuilder forLife() {
+////        this.subscriptionType = "Life";
+////        return this;
+//        return forSubscription(TtPage.SubscriptionType.LIFE);
+//    }
+//
+//    public SubscriptionPurchaseBuilder forLite() {
+////        this.subscriptionType = "Lite";
+////        return this;
+//        return forSubscription(TtPage.SubscriptionType.LITE);
+//    }
+//
+//    public SubscriptionPurchaseBuilder viaCloud() {
+//        this.paymentSystem = PaymentSystem.CLOUD;
+//        return this;
+//    }
+//
+//    public SubscriptionPurchaseBuilder viaSber() {
+//        this.paymentSystem = PaymentSystem.SBER;
+//        return this;
+//    }
+
+    // Универсальный метод для платёжной системы
+    public SubscriptionPurchaseBuilder via(PaymentSystem system) {
+        this.paymentSystem = system;
         return this;
     }
 
-    public SubscriptionPurchaseBuilder forLite() {
-        this.subscriptionType = "Lite";
+//    public SubscriptionPurchaseBuilder withStandardPayment() {
+//        this.paymentMethod = PaymentMethod.STANDARD;
+//        return this;
+//    }
+//
+//    public SubscriptionPurchaseBuilder withInstallments() {
+//        this.paymentMethod = PaymentMethod.INSTALLMENTS;
+//        return this;
+//    }
+//
+//    public SubscriptionPurchaseBuilder withApprovedCard() {
+//        this.paymentMethod = PaymentMethod.APPROVED_CARD;
+//        return this;
+//    }
+//
+//    public SubscriptionPurchaseBuilder withFixedBalanceCard() {
+//        this.paymentMethod = PaymentMethod.FIXED_BALANCE_CARD;
+//        return this;
+//    }
+//
+//    public SubscriptionPurchaseBuilder withInsufficientFundsCard() {
+//        this.paymentMethod = PaymentMethod.INSUFFICIENT_FUNDS_CARD;
+//        this.verifyError = true;
+//        return this;
+//    }
+//
+//    public SubscriptionPurchaseBuilder withExpiredCard() {
+//        this.paymentMethod = PaymentMethod.EXPIRED_CARD;
+//        this.verifyError = true;
+//        return this;
+//    }
+
+    // Универсальный метод для способа оплаты
+    public SubscriptionPurchaseBuilder withPaymentMethod(PaymentMethod method) {
+        this.paymentMethod = method;
+        if (method == PaymentMethod.INSUFFICIENT_FUNDS_CARD ||
+        method == PaymentMethod.EXPIRED_CARD) {
+            this.verifyError = true;
+        }
         return this;
     }
 
-    public SubscriptionPurchaseBuilder viaCloud() {
-        this.paymentSystem = PaymentSystem.CLOUD;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder viaSber() {
-        this.paymentSystem = PaymentSystem.SBER;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withStandardPayment() {
-        this.paymentMethod = PaymentMethod.STANDARD;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withInstallments() {
-        this.paymentMethod = PaymentMethod.INSTALLMENTS;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withApprovedCard() {
-        this.paymentMethod = PaymentMethod.APPROVED_CARD;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withFixedBalanceCard() {
-        this.paymentMethod = PaymentMethod.FIXED_BALANCE_CARD;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withInsufficientFundsCard() {
-        this.paymentMethod = PaymentMethod.INSUFFICIENT_FUNDS_CARD;
-        this.verifyError = true;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withExpiredCard() {
-        this.paymentMethod = PaymentMethod.EXPIRED_CARD;
-        this.verifyError = true;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withoutEmailCapture() {
-        this.captureEmail = false;
-        return this;
-    }
-
-    public SubscriptionPurchaseBuilder withExpectedError(String errorMessage) {
+    public void withExpectedError(String errorMessage) {
         this.expectedError = errorMessage;
-        return this;
     }
 
     public SubscriptionPurchaseResult execute() {
@@ -203,20 +222,21 @@ public class SubscriptionPurchaseBuilder {
     }
 
     private void selectSubscriptionType() {
-        switch (subscriptionType) {
-            case "Premium":
-//                ttPage.clickPremium();
-                ttPage.selectSubscription(TtPage.SubscriptionType.PREMIUM);
-                break;
-            case "Life":
-                ttPage.selectSubscription(TtPage.SubscriptionType.LIFE);
-//                ttPage.clickLife();
-                break;
-            case "Lite":
-                ttPage.selectSubscription(TtPage.SubscriptionType.LITE);
-//                ttPage.clickLite99();
-                break;
+//        switch (subscriptionType) {
+//            case "Premium":
+//                ttPage.selectSubscription(TtPage.SubscriptionType.PREMIUM);
+//                break;
+//            case "Life":
+//                ttPage.selectSubscription(TtPage.SubscriptionType.LIFE);
+//                break;
+//            case "Lite":
+//                ttPage.selectSubscription(TtPage.SubscriptionType.LITE);
+//                break;
+//        }
+        if (subscriptionType == null) {
+            throw new IllegalStateException("Тип подписки не выбран!");
         }
+        ttPage.selectSubscription(subscriptionType);
     }
 
     private void processPaymentSystem() {

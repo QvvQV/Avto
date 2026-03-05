@@ -5,7 +5,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserApi;
 import ru.tutor.model.fortune.GameStatsResponse;
-import ru.tutor.model.LoginResponse;
 import ru.tutor.model.LogoutResponse;
 import ru.tutor.model.UserProfile;
 import ru.tutor.utils.AllureAttachments;

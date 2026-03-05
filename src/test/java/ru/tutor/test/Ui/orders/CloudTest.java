@@ -1,6 +1,8 @@
-package ru.tutor.test.orders;
+package ru.tutor.test.Ui.orders;
 
 import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,9 @@ import ru.tutor.page.TtPage;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
-
+@Epic("Платежи через Cloud")
+@Feature("Тестирование различных сценариев оплаты")
+@DisplayName("🧪 Тестирование платежной системы Cloud")
 public class CloudTest extends BaseUiTest {
 
     private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();

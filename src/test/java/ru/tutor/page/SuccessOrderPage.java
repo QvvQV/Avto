@@ -2,6 +2,7 @@ package ru.tutor.page;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import ru.tutor.config.TestConfig;
 import ru.tutor.utils.UrlRedirectHelper;
 import ru.tutor.utils.universalMethod;
 
@@ -44,7 +45,7 @@ public class SuccessOrderPage {
      */
     public static SuccessOrderPage waitForRedirectAndOpen(String originalUrl, long timeoutMs) {
         // Простая реализация - сразу модифицируем URL
-        String modifiedUrl = UrlRedirectHelper.simpleReplaceDomain(originalUrl, "dev1.ttplace.online");
+        String modifiedUrl = UrlRedirectHelper.simpleReplaceDomain(originalUrl, TestConfig.getCurrentUiUrl());
         Selenide.open(modifiedUrl);
 
         SuccessOrderPage page = new SuccessOrderPage();
@@ -58,14 +59,14 @@ public class SuccessOrderPage {
      */
     public void fixLoginButtonHref() {
         // ИСПРАВЛЕНИЕ: используем селектор с двойными кавычками
-        UrlRedirectHelper.modifyElementHref("a[href*=\"loginToken\"]", "client.ttplace.ru");
+        UrlRedirectHelper.modifyElementHref("a[href*=\"loginToken\"]", TestConfig.getCurrentClientDomain());
     }
 
     /**
      * Альтернативный метод исправления через XPath
      */
     public void fixLoginButtonHrefByXPath() {
-        UrlRedirectHelper.modifyElementHrefByXPath("//a[contains(@href, 'loginToken')]", "client.ttplace.ru");
+        UrlRedirectHelper.modifyElementHrefByXPath("//a[contains(@href, 'loginToken')]", TestConfig.getCurrentClientDomain());
     }
 
     /**
@@ -73,7 +74,7 @@ public class SuccessOrderPage {
      */
     public static SuccessOrderPage openAndFixPage(String url) {
         // Проверяем и исправляем URL если нужно
-        UrlRedirectHelper.checkAndFixCurrentUrl("dev1.ttplace.online");
+        UrlRedirectHelper.checkAndFixCurrentUrl(TestConfig.getCurrentUiUrl());
 
         SuccessOrderPage page = new SuccessOrderPage();
         page.fixLoginButtonHref();

@@ -83,7 +83,7 @@ public class TabManager {
             WaitHelper.waitForPageLoad();
 
             // Проверяем Url
-            verifyPaymentpageUrl();
+            verifyPaymentPageUrl();
 
             WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
@@ -105,7 +105,7 @@ public class TabManager {
         }
     }
 
-    private static void verifyPaymentpageUrl(){
+    private static void verifyPaymentPageUrl(){
         String currentUrl = url();
 
         //Проверяем различные возможные платежные системы

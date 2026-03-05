@@ -25,18 +25,21 @@ import static io.qameta.allure.Allure.step;
 
 public class Referals extends RecurrentPaymentTestBase {
 
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
+
     private RecurrentPaymentTestExecutor testExecutor;
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getCurrentApiUrl() );
-    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(BASE_URL);
+    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(BASE_URL);
+    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(BASE_URL);
+    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(BASE_URL);
+
     private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
     private final AdminToUserLoginSteps adminToUserLoginSteps = new AdminToUserLoginSteps();
     private static ClubMemberResponse memberInfo;
     private static ClubStatisticsResponse statisticsInfo;
 
 
-    @Epic("Отписка от подписки")
+    @Epic("Реферальная цепочка клуба")
     @Override
     protected void initializePaymentCycleExecutor() {
         super.initializePaymentCycleExecutor();

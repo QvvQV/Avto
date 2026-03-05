@@ -24,7 +24,7 @@ public class TestConfig {
 
     /** Dev1 */
     public static String getDev1BaseUrl() {
-        return properties.getProperty("dev1.base.url");
+        return properties.getProperty("dev1.base.url", "https://dev1.ttplace.online");
     }
 
     public static String getApi1BaseUrl() {
@@ -35,23 +35,39 @@ public class TestConfig {
         return properties.getProperty("admin1.base.url", "https://admin1.ttplace.online");
     }
 
-    public static String getClientBaseUrl() {
-        return properties.getProperty("client.base.url", "https://client.ttplace.ru");
+    public static String getClient1BaseUrl() {
+        return properties.getProperty("client1.base.url", "https://client1.ttplace.online");
     }
 
     /** Dev2 */
-    public static String getApi2BaseUrl() {
-        return properties.getProperty("api2.base.url", "https://api2.ttplace.online");
-    }
-
     public static String getDev2BaseUrl() {
         return properties.getProperty("dev2.base.url", "https://dev2.ttplace.online");
     }
 
+    public static String getApi2BaseUrl() {
+        return properties.getProperty("api2.base.url", "https://api2.ttplace.online");
+    }
+
+    public static String getAdmin2BaseUrl() {
+        return properties.getProperty("admin2.base.url", "https://admin2.ttplace.online");
+    }
+
+    public static String getClient2BaseUrl() {
+        return properties.getProperty("client2.base.url",  "https://client2.ttplace.online");
+    }
+
     /** Prod */
+
+    public static String getProdBaseUrl() {
+        return properties.getProperty("prod.base.url", "https://tester.tutorplace.ru");
+    }
 
     public static String getApiProdUrl() {
         return properties.getProperty("api.prod.url", "https://api.tutorplace.ru");
+    }
+
+    public static String getClientBaseUrl() {
+        return properties.getProperty("client.base.url",  "https://client.tutorplace.ru");
     }
 
 
@@ -71,16 +87,12 @@ public class TestConfig {
         return properties.getProperty("test.password");
     }
 
-    public static boolean isHeadless() {
-        return Boolean.parseBoolean(properties.getProperty("headless"));
-    }
-
     // ==================== Метод для получения URL в зависимости от окружения ====================
     public static String getCurrentUiUrl() {
         String env = System.getProperty("env.ui", "dev1"); // dev1, dev2, prod
         return switch (env) {
             case "dev2" -> getDev2BaseUrl();
-            case "prod" -> "https://tutorplace.ru"; // или другой prod URL
+            case "prod" -> getProdBaseUrl(); // или другой prod URL
             default -> getDev1BaseUrl();
         };
     }
@@ -94,8 +106,28 @@ public class TestConfig {
         };
     }
 
+    public static String getCurrentClientDomain() {
+        String env = System.getProperty("env.client", "dev1");
+
+        return switch (env) {
+            case  "dev2" -> getClient2BaseUrl();
+            case "prod" -> getClientBaseUrl();
+            default -> getClient1BaseUrl();
+        };
+    }
+
+    public static String getCurrentAdminDomain() {
+        String env = System.getProperty("env.admin", "admin1");
+
+        return switch (env) {
+            case  "admin2" -> getAdmin2BaseUrl();
+            case "prod" -> null;
+            default -> getAdminBaseUrl();
+        };
+    }
+
     public static String getAdminProductUrl(int productId) {
-        return getAdminBaseUrl() + "/product/edit/" + productId;
+        return getCurrentAdminDomain() + "/product/edit/" + productId;
     }
 
     // ==================== Тестовые карты Sber ====================

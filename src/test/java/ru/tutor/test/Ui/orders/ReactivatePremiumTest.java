@@ -1,4 +1,4 @@
-package ru.tutor.test.orders;
+package ru.tutor.test.Ui.orders;
 
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
@@ -25,9 +25,11 @@ import static io.qameta.allure.Allure.step;
 // TP-6415 (Реализовать работу ссылок типа affrid в личном кабинете) и TP-6417 (Переработать восстановление премиума по кнопке)
 public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
+    private static final String BASE_URL = TestConfig.getApi1BaseUrl();
+
     private RecurrentPaymentTestExecutor testExecutor;
-    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(TestConfig.getApi1BaseUrl());
-    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(TestConfig.getApi1BaseUrl());
+    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(BASE_URL);
+    private final ReactivatePremiumSteps reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(BASE_URL);
     private final Integer TEST_ORDER_ID = 180;
     private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
     private final AdminToUserLoginSteps adminToUserLoginSteps = new AdminToUserLoginSteps();

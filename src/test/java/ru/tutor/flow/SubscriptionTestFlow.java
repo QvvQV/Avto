@@ -1,18 +1,15 @@
 package ru.tutor.flow;
 
 import com.codeborne.selenide.WebDriverRunner;
-import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.builder.SubscriptionPurchaseBuilder;
 import ru.tutor.flow.builder.SubscriptionPurchaseResult;
-import ru.tutor.constants.AddressPage;
 import ru.tutor.page.CloudPage;
 import ru.tutor.page.SberPage;
 import ru.tutor.page.admin.AdminLoginPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.TtPage;
-import ru.tutor.page.modals.GreetingsModal;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
@@ -23,7 +20,6 @@ import java.util.function.Consumer;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SubscriptionTestFlow {
 
@@ -36,14 +32,13 @@ public class SubscriptionTestFlow {
     private final SberPage sberPage;
     private final AdminOrdersPage adminOrdersPage;
 
-    private SubscriptionPurchaseResult purchase(Consumer<SubscriptionPurchaseBuilder> configurator) {
+    private void purchase(Consumer<SubscriptionPurchaseBuilder> configurator) {
         SubscriptionPurchaseBuilder builder = SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage);
         configurator.accept(builder);
 
         this.currentOrderHasAffRid = builder.hasAffRid();
         SubscriptionPurchaseResult result = builder.execute();
         this.userEmail = result.userEmail();
-        return result;
     }
 
     public SubscriptionTestFlow(TtPage ttPage, CloudPage cloudPage, SberPage sberPage, AdminOrdersPage adminOrdersPage) {
@@ -56,10 +51,9 @@ public class SubscriptionTestFlow {
     // Короткие методы-обертки для различных сценариев покупки
     @Step("Оплата Премиума по Клауду")
     public SubscriptionTestFlow purchasePremiumSubscription() {
-        purchase(builder ->
-                builder.forPremium()
-                        .viaCloud()
-                        .withStandardPayment()
+        purchase(builder -> builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
+                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
         );
         return this;
     }
@@ -67,112 +61,138 @@ public class SubscriptionTestFlow {
     @Step("Оплата по aff_rid ссылке Клауд")
     public SubscriptionTestFlow purchasePremiumSubscriptionAffRid() {
         purchase(builder ->
-                builder.forPremium()
-                        .viaCloud()
-                        .withStandardPayment()
-                        .withAffRid()
+            builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
+                    .withAffRid()
         );
         return this;
     }
 
     @Step("Оплата Пожизненного доступа по Клауду")
-    public SubscriptionTestFlow purchaseLifeSubscription() {
+    public void purchaseLifeSubscription() {
         purchase(builder ->
-                builder.forLife()
-                        .viaCloud()
-                        .withStandardPayment()
+            builder.forSubscription(TtPage.SubscriptionType.LIFE)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
         );
-        return this;
     }
 
     @Step("Оплата долями по Клауду")
-    public SubscriptionTestFlow purchaseLifeInstallmentsSubscription() {
+    public void purchaseLifeInstallmentsSubscription() {
         purchase(builder ->
-                builder.forLife()
-                        .viaCloud()
-                        .withInstallments()
+            builder.forSubscription(TtPage.SubscriptionType.LIFE)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.INSTALLMENTS)
         );
-        return this;
     }
 
     @Step("Оплата Лайт по Клауду")
     public SubscriptionTestFlow purchaseLiteSubscription() {
         purchase(builder ->
-                builder.forLite()
-                        .viaCloud()
-                        .withStandardPayment()
+            builder.forSubscription(TtPage.SubscriptionType.LITE)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
         );
         return this;
     }
 
     @Step("Оплата Премиум по карте Сбер")
     public SubscriptionTestFlow purchasePremiumSubscriptionSber() {
+//        purchase(builder ->
+//                builder.forPremium()
+//                        .viaSber()
+//                        .withApprovedCard()
+//        );
         purchase(builder ->
-                builder.forPremium()
-                        .viaSber()
-                        .withApprovedCard()
+            builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.APPROVED_CARD)
         );
         return this;
     }
 
     @Step("Оплата Лайт по карте Сбер")
     public SubscriptionTestFlow purchaseLiteSubscriptionSber() {
+//        purchase(builder ->
+//                builder.forLite()
+//                        .viaSber()
+//                        .withApprovedCard()
+//        );
         purchase(builder ->
-                builder.forLite()
-                        .viaSber()
-                        .withApprovedCard()
+            builder.forSubscription(TtPage.SubscriptionType.LITE)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.APPROVED_CARD)
         );
         return this;
     }
 
     @Step("Оплата Пожизненного по карте Сбер")
-    public SubscriptionTestFlow purchaseLifeSubscriptionSber() {
+    public void purchaseLifeSubscriptionSber() {
+//        purchase(builder ->
+//                builder.forLife()
+//                        .viaSber()
+//                        .withApprovedCard()
+//        );
         purchase(builder ->
-                builder.forLife()
-                        .viaSber()
-                        .withApprovedCard()
+            builder.forSubscription(TtPage.SubscriptionType.LIFE)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.APPROVED_CARD)
         );
-        return this;
     }
 
     @Step("Оплата Премиум по карте Сбер с фиксированным остатком = 100р")
-    public SubscriptionTestFlow purchasePremiumSubscriptionFixSber() {
+    public void purchasePremiumSubscriptionFixSber() {
+//        purchase(builder ->
+//                builder.forPremium()
+//                        .viaSber()
+//                        .withFixedBalanceCard()
+//        );
         purchase(builder ->
-                builder.forPremium()
-                        .viaSber()
-                        .withFixedBalanceCard()
+            builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.FIXED_BALANCE_CARD)
         );
-        return this;
     }
 
     @Step("Ошибка 'Недостаточно средств' по карте Сбер")
-    public SubscriptionTestFlow purchasePremiumSubscriptionInsufficientFundsSber() {
+    public void purchasePremiumSubscriptionInsufficientFundsSber() {
+//        purchase(builder ->
+//                builder.forPremium()
+//                        .viaSber()
+//                        .withInsufficientFundsCard()
+//                        .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
+//        );
         purchase(builder ->
-                builder.forPremium()
-                        .viaSber()
-                        .withInsufficientFundsCard()
-                        .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
+            builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.INSUFFICIENT_FUNDS_CARD)
+                    .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
         );
         this.captureScreenshot();
-        return this;
     }
 
     @Step("Ошибка 'Невалидная карта' по карте Сбер")
-    public SubscriptionTestFlow purchasePremiumSubscriptionExpireSber() {
+    public void purchasePremiumSubscriptionExpireSber() {
+//        purchase(builder ->
+//                builder.forPremium()
+//                        .viaSber()
+//                        .withExpiredCard()
+//                        .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
+//        );
         purchase(builder ->
-                builder.forPremium()
-                        .viaSber()
-                        .withExpiredCard()
-                        .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
+            builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                    .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
+                    .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.EXPIRED_CARD)
+                    .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
         );
         this.captureScreenshot();
-        return this;
     }
 
     // Методы для работы с админкой
 
     @Step("Рекурент по тарифу Премиум")
-    public SubscriptionTestFlow processRecurrentInAdmin() {
+    public void processRecurrentInAdmin() {
         step("Проведение рекуррентного платежа через админку", () -> {
             String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
 
@@ -189,7 +209,6 @@ public class SubscriptionTestFlow {
                 // Можно добавить закрытие окна админки если нужно
             }
         });
-        return this;
     }
 
     @Step("Рекуррент по тарифу Лайт")
@@ -213,12 +232,7 @@ public class SubscriptionTestFlow {
             try {
                 TabManager.openAdminInNewWindow(originalWindow);
                 loginToAdmin();
-                adminOrdersPage
-                        .navigateToOrders()
-                        .findOrderByEmail(userEmail)
-                        .processRecurrentPayment();
-                WaitHelper.waitForAnimationComplete();
-                WaitHelper.waitForPageLoad();
+                processRecurrentPayment();
             } finally {
                 // Можно добавить закрытие окна админки если нужно
             }
@@ -242,54 +256,10 @@ public class SubscriptionTestFlow {
                     .processRecurrentPayment();
             WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
-//            AllureAttachments.attachScreenshot("Заказ найден в него перешли");
         });
     }
 
     // ==================== Методы для перехода в ЛК ====================
-
-    @Step("Переход в Личный кабинет пользователя")
-    public SubscriptionTestFlow goToUserPersonalAccount() {
-        // Передаём флаг в AdminOrdersPage
-        adminOrdersPage
-                .withUtmCheck(currentOrderHasAffRid) // Устанавливаем флаг
-                .goToUserPersonalAccount(); // Вызываем метод перехода
-        return this;
-    }
-
-    @Step("Переход в ЛИчный кабинет с принудительной проверкой UTM")
-    public SubscriptionTestFlow goToUserPersonalAccountWithUtmCheck() {
-        adminOrdersPage
-                .enableUtmCheck()
-                .goToUserPersonalAccount();
-        return this;
-    }
-
-    @Step("Переход в Личный кабинет без проверки UTM")
-    public SubscriptionTestFlow goToUserPersonalAccountWithoutUtmCheck() {
-        adminOrdersPage
-                .disableUtmCheck()
-                .goToUserPersonalAccount();
-        return this;
-    }
-
-    @Step("Регистрация нового пользователя по реферальной ссылке")
-    public SubscriptionTestFlow registerNewUserByReferral(String referralLink, GreetingsModal greetingsModal) {
-        step("Открытие страницы с реферальной ссылкой", () -> {
-            String url = AddressPage.urlMain + "?club_ref=" +  referralLink;
-            open(url);
-
-            Allure.addAttachment("Реферальная ссылка", url);
-        });
-
-        step("Регистрация нового пользователя", () -> {
-            ttPage.clickBtnOpenFor();
-
-
-            Allure.addAttachment("Регистрация", "✅ Новый пользователь зарегистрирован по реферальной ссылке");
-        });
-        return this;
-    }
 
     public void logTestCompletion() {
         step("Завершение теста", () -> {
@@ -299,16 +269,6 @@ public class SubscriptionTestFlow {
                             "📧 Email: " + userEmail + "\n" +
                             "⏱️ Время выполнения: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         });
-    }
-
-    public SubscriptionTestFlow verifyErrorMessage(String expectedError) {
-        step("Проверка сообщения об ошибке", () -> {
-            String actualError = sberPage.getErrorText();
-            assertEquals(expectedError, actualError);
-            AllureAttachments.attachText("Проверка ошибки",
-                    "Ожидалось: " + expectedError + "\nФактически: " + actualError);
-        });
-        return this;
     }
 
     public void captureScreenshot() {

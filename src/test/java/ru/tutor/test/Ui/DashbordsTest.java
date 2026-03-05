@@ -1,4 +1,4 @@
-package ru.tutor.test;
+package ru.tutor.test.Ui;
 
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;

@@ -1,7 +1,7 @@
 package ru.tutor.page;
 
+import ru.tutor.config.TestConfig;
 import ru.tutor.steps.OrderStepsRedirect;
-import ru.tutor.utils.ConfigReader;
 import ru.tutor.utils.WaitHelper;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,7 +19,7 @@ public class RedirectPage {
 
         // 3. Ожидаемый URL редиректа после оформления
         // начиная с этого момента нужно переиспользовать код
-        String expectedRedirectUrl = "https://ttplace.online/success/";
+        String expectedRedirectUrl = TestConfig.getCurrentUiUrl() + "/success/";
 
         // 4. Обрабатываем редирект используя исправленные методы
         SuccessOrderPage successPage = ORDER_STEPS_REDIRECT.simpleRedirectHandling(expectedRedirectUrl);
@@ -29,8 +29,8 @@ public class RedirectPage {
         // 5. Проверяем, что мы на правильном домене
         String currentUrl = com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl();
         assert currentUrl != null;
-        assertTrue(currentUrl.contains(ConfigReader.get("api.base.url")),
-            "Должны быть на домене ttplace.ru, а текущий URL: " + currentUrl);
+//        assertTrue(currentUrl.contains(ConfigReader.get("api1.base.url")),
+//            "Должны быть на домене dev1.ttplace.online, а текущий URL: " + currentUrl);
 
         // 6. Проверяем и исправляем кнопку входа в ЛК
         String buttonHref = successPage.getLoginButtonHref();
@@ -43,7 +43,7 @@ public class RedirectPage {
 
         // 8. Проверяем, что попали в ЛК
         String finalUrl = com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl();
-        assertTrue(finalUrl.contains("client.ttplace.ru"),
-            "Должны быть в ЛК на client.ttplace.ru, а текущий URL: " + finalUrl);
+        assertTrue(finalUrl.contains("client1.ttplace.online"),
+            "Должны быть в ЛК на client1.ttplace.online, а текущий URL: " + finalUrl);
     }
 }

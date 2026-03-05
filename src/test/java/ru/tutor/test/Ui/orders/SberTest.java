@@ -1,4 +1,4 @@
-package ru.tutor.test.orders;
+package ru.tutor.test.Ui.orders;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.*;

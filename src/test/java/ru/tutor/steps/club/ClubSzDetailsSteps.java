@@ -4,7 +4,6 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ClubApi;
-import ru.tutor.api.ClubSzDetailsApi;
 import ru.tutor.model.SzDetailsRequest;
 import ru.tutor.model.SzDetailsResponse;
 import ru.tutor.utils.AllureAttachments;

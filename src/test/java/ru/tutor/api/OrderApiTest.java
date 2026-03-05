@@ -1,4 +1,4 @@
-package ru.tutor.test;
+package ru.tutor.api;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
@@ -39,7 +39,7 @@ public class OrderApiTest {
 
     @BeforeAll
     void setUp() {
-        RestAssured.baseURI = TestConfig.getApi1BaseUrl();
+        RestAssured.baseURI = TestConfig.getCurrentUiUrl();
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
 
         // Генерация уникального email один раз для всех тестов
@@ -125,7 +125,7 @@ public class OrderApiTest {
                 .contentType(ContentType.JSON)
                 .body("$", hasKey("token"))
                 .body("token", notNullValue())
-                .body("token", containsString("https://client.ttplace.ru/login"));
+                .body("token", containsString(TestConfig.getCurrentClientDomain()));
     }
 
     @Step("Извлечение и валидация токена из ответа")

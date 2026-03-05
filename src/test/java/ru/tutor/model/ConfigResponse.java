@@ -21,31 +21,11 @@ public class ConfigResponse {
         return requestPath;
     }
 
-    public void setRequestPath(String requestPath) {
-        this.requestPath = requestPath;
-    }
-
     public Integer getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(Integer timeout) {
-        this.timeout = timeout;
-    }
-
     public Integer getMaxConnections() {
         return maxConnections;
-    }
-
-    public void setMaxConnections(Integer maxConnections) {
-        this.maxConnections = maxConnections;
-    }
-
-    public String getEnviroment() {
-        return enviroment;
-    }
-
-    public void setEnviroment(String enviroment) {
-        this.enviroment = enviroment;
     }
 }

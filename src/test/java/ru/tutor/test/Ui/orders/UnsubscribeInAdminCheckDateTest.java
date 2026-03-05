@@ -1,4 +1,4 @@
-package ru.tutor.test.orders;
+package ru.tutor.test.Ui.orders;
 
 
 import org.junit.jupiter.api.DisplayName;
