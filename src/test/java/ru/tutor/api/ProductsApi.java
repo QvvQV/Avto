@@ -3,6 +3,7 @@ package ru.tutor.api;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
+import ru.tutor.config.TestConfig;
 
 import static io.restassured.RestAssured.given;
 
@@ -28,8 +29,8 @@ public class ProductsApi extends BaseApi {
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Bearer " + authToken)
                 .header("Accept", "application/json, text/plain, */*")
-                .header("Origin", "https://client.ttplace.ru")
-                .header("Referer", "https://client.ttplace.ru/")
+                .header("Origin", TestConfig.getCurrentClientDomain())
+                .header("Referer", TestConfig.getCurrentClientDomain())
                 .log().all()
                 .when()
                 .get("/user/products/" + productId)

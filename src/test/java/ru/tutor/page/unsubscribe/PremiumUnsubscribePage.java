@@ -1,4 +1,4 @@
-package ru.tutor.unsubscribe;
+package ru.tutor.page.unsubscribe;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;

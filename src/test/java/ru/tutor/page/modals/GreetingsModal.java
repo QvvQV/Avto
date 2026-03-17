@@ -48,23 +48,25 @@ public class GreetingsModal {
 
     @Step("Заполнение данными для доступа быстрая форма")
     public static void fillAccessInput(){
-        String name = faker.name().firstName();
-        String password = "12345678";
+        step("Заполнение данными для доступа", () -> {
+            String name = faker.name().firstName();
+            String password = "12345678";
 
-        universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
-        WaitHelper.waitForAnimationComplete();
-        step("Ввод имени пользователя", () -> universalMethod.safeSetValue(NAME_INPUT, name, "Имя пользователя")
-        );
-        step("Задать пароль", () -> universalMethod.safeSetValue(PASSWORD_INPUT, password, "Пароль")
-        );
-        step("Повторение пароля", () -> universalMethod.safeSetValue(REPEAT_PASSWORD_INPUT, password, "Повторите новый пароль")
-        );
-        verifyActiveOption();
-        universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
-
-        step("Закрытие модального окна", () -> {
-            universalMethod.safeClick(CLOSE_BUTTON, "Крестик");
+            universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
             WaitHelper.waitForAnimationComplete();
+            step("Ввод имени пользователя", () -> universalMethod.safeSetValue(NAME_INPUT, name, "Имя пользователя")
+            );
+            step("Задать пароль", () -> universalMethod.safeSetValue(PASSWORD_INPUT, password, "Пароль")
+            );
+            step("Повторение пароля", () -> universalMethod.safeSetValue(REPEAT_PASSWORD_INPUT, password, "Повторите новый пароль")
+            );
+            verifyActiveOption();
+            universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
+
+            step("Закрытие модального окна", () -> {
+                universalMethod.safeClick(CLOSE_BUTTON, "Крестик");
+                WaitHelper.waitForAnimationComplete();
+            });
         });
     }
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static io.qameta.allure.Allure.step;
 
 public class AdminOrderDetails {
 
@@ -115,9 +116,11 @@ public class AdminOrderDetails {
 
     @Step("Обновление страницы для получения актуальных данных")
     public void refreshPage() {
-        sleep(10000);
-        Selenide.refresh();
-        verifyAllDatesAreDisplayed();
+        step("Обновление страницы для получения актуальных данных", ()-> {
+            sleep(10000);
+            Selenide.refresh();
+            verifyAllDatesAreDisplayed();
+        });
     }
 
     @Step("Отображение всех дат заказа")
@@ -129,17 +132,19 @@ public class AdminOrderDetails {
 
     @Step("Получение ID первого продукта")
     public String getFirstProductId() {
-        String productText = getProductElement()
-                .$$("a[href^='/product/edit/']")
-                .first()
-                .shouldBe(visible, DEFAULT_TIMEOUT)
-                .getText()
-                .trim();
+        return step("Получение ID первого продукта", () -> {
+            String productText = getProductElement()
+                    .$$("a[href^='/product/edit/']")
+                    .first()
+                    .shouldBe(visible, DEFAULT_TIMEOUT)
+                    .getText()
+                    .trim();
 
-        // Извлекаем ID из текста "247 - Премиум подписка"
-        String productId = extractProductId(productText);
-        AllureAttachments.attachText("ID первого продукта", productId);
-        return productId;
+            // Извлекаем ID из текста "247 - Премиум подписка"
+            String productId = extractProductId(productText);
+            AllureAttachments.attachText("ID первого продукта", productId);
+            return productId;
+        });
     }
 
     @Step("Получение названия первого продукта")

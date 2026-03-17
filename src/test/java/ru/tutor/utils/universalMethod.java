@@ -29,7 +29,7 @@ public class universalMethod {
                 .shouldBe(enabled, DEFAULT_TIMEOUT)
                 .click();
         WaitHelper.waitForAnimationComplete();
-        AllureAttachments.attachText("Клик выполнен", "✓ Нажат элемент: " +  elementName);
+//        AllureAttachments.attachText("Клик выполнен", "✓ Нажат элемент: " +  elementName);
     }
 
     /**
@@ -47,7 +47,7 @@ public class universalMethod {
     }
 
     /**
-     * Универсальный метод для клика по кнопке с проверками
+     * Универсальный метод для клика по кнопке с проверками и скроллингом до кнопки
      */
     @Step("Клик по кнопке: {buttonName}")
     public static void clickButton(SelenideElement button, String buttonName) {

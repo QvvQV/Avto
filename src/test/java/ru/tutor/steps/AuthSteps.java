@@ -4,6 +4,7 @@ package ru.tutor.steps;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.AuthApi;
+import ru.tutor.config.TestConfig;
 import ru.tutor.model.LoginResponse;
 import ru.tutor.model.ErrorResponse;
 import ru.tutor.utils.AllureAttachments;
@@ -161,7 +162,7 @@ public record AuthSteps(AuthApi authApi) {
         try {
             if (response.getHeader("Access-Control-Allow-Origin") != null) {
                 response.then().header("Access-Control-Allow-Origin",
-                    equalTo("https://client.ttplace.ru"));
+                    equalTo(TestConfig.getCurrentClientDomain()));
             }
         } catch (AssertionError e) {
             // Игнорируем если CORS заголовков нет

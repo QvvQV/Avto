@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ClubApi;
+import ru.tutor.config.TestConfig;
 import ru.tutor.model.WithdrawalRequest;
 import ru.tutor.model.WithdrawalResponse;
 import ru.tutor.utils.AllureAttachments;
@@ -44,7 +45,7 @@ public record ClubWithdrawalSteps(ClubApi withdrawalApi) {
             response.then()
                     .statusCode(statusCode)
                     .contentType(ContentType.JSON)
-                    .header("Access-Control-Allow-Origin", equalTo("https://client.ttplace.ru"))
+                    .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
                     .header("Access-Control-Allow-Credentials", equalTo("true"));
 
             // Проверяем структуру ответа

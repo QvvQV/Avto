@@ -2,11 +2,13 @@ package ru.tutor.page;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.utils.UrlRedirectHelper;
 import ru.tutor.utils.universalMethod;
 
 import static com.codeborne.selenide.Selenide.$;
+import static io.qameta.allure.Allure.step;
 
 public class SuccessOrderPage {
 
@@ -29,11 +31,13 @@ public class SuccessOrderPage {
         return orderNumberElement.getText();
     }
 
+    @Step("Клик по кнопке логин")
     public void clickLoginButton() {
-        // Перед кликом убеждаемся, что href правильный
-        fixLoginButtonHref();
-        universalMethod.safeClick(loginButton, "Логин");
-//        loginButton.click();
+       step("Клик по кнопке для перехода в ЛК", ()-> {
+           // Перед кликом убеждаемся, что href правильный
+           fixLoginButtonHref();
+           universalMethod.safeClick(loginButton, "Логин");
+       });
     }
 
     public String getLoginButtonHref() {

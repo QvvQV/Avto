@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ClubApi;
+import ru.tutor.config.TestConfig;
 import ru.tutor.model.SzDetailsRequest;
 import ru.tutor.model.SzDetailsResponse;
 import ru.tutor.utils.AllureAttachments;
@@ -41,7 +42,7 @@ public record ClubSzDetailsSteps(ClubApi clubApi) {
         response.then()
                 .statusCode(201)
                 .contentType(ContentType.JSON)
-                .header("Access-Control-Allow-Origin", equalTo("https://client.ttplace.ru"))
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
                 .header("Access-Control-Allow-Credentials", equalTo("true"));
 
         // Проверяем структуру ответа
@@ -123,7 +124,7 @@ public record ClubSzDetailsSteps(ClubApi clubApi) {
         response.then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .header("Access-Control-Allow-Origin", equalTo("https://client.ttplace.ru"))
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
                 .header("Access-Control-Allow-Credentials", equalTo("true"));
 
         // проверяем что тело ответа - пустой массив []

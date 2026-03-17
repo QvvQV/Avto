@@ -4,7 +4,7 @@ import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import ru.tutor.unsubscribe.LiteUnsubscribePage;
+import ru.tutor.page.unsubscribe.LiteUnsubscribePage;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.SubscriptionTestFlow;

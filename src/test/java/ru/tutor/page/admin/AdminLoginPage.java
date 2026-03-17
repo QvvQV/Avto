@@ -1,6 +1,8 @@
 package ru.tutor.page.admin;
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Allure;
 import ru.tutor.utils.WaitHelper;
 import ru.tutor.utils.universalMethod;
 
@@ -12,23 +14,39 @@ import static io.qameta.allure.Allure.step;
 public class AdminLoginPage {
 
     private final static SelenideElement LOGIN = $("#root > div > div > div > form > div:nth-child(1) > div.input__wrapper > input");
-    private final static SelenideElement PASSWORD= $("[name='password']");
+    private final static SelenideElement PASSWORD = $("[name='password']");
     private final static SelenideElement LOGIN_BUTTON = $$("button").find(exactText("войти"));
 
-        public static void login() {
+    public static void login() {
+        // Проверяем, не авторизованы ли уже
+
+        if (!isLoggedIn()) {
 
             String adminUsername = "admin";
             String adminPassword = "admin";
-        step("вводим валидный email", () -> {
-            LOGIN.setValue(adminUsername);
-        });
-        step("вводим валидный пароль", () -> {
-            PASSWORD.setValue(adminPassword);
-        });
-        step("кликаем по кнопке войти", () -> {
-            universalMethod.safeClick(LOGIN_BUTTON, "Войти");
-            WaitHelper.waitForPageLoad();
-            WaitHelper.waitForAnimationComplete();
-        });
+            step("вводим валидный email", () -> {
+                LOGIN.setValue(adminUsername);
+            });
+            step("вводим валидный пароль", () -> {
+                PASSWORD.setValue(adminPassword);
+            });
+            step("кликаем по кнопке войти", () -> {
+                universalMethod.safeClick(LOGIN_BUTTON, "Войти");
+                WaitHelper.waitForPageLoad();
+                WaitHelper.waitForAnimationComplete();
+            });
+        } else {
+            Allure.addAttachment("Авторизация", "Уже аторизованы, пропускаем логин");
+        }
+    }
+
+    private static boolean isLoggedIn() {
+        // Проверяем наличие элемента, который есть только после логина
+        try {
+            return WebDriverRunner.getWebDriver().getCurrentUrl().contains("dashboard")
+                    && !WebDriverRunner.getWebDriver().getCurrentUrl().contains("auth");
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -34,10 +34,9 @@ public class CloudTest extends BaseUiTest {
 //            @RepeatedTest(2)
     @DisplayName("Оплата с главной на СисАк Oфферум")
     public void PayFromMainOfferrum() {
-        step("Открытие страницы", () ->
-            open(AddressPage.urlMainRev)
-        );
-        flow.purchasePremiumSubscription();
+
+        flow.purchasePremiumSubscriptionAffRid();
+
     }
 
     @Test

@@ -1,16 +1,20 @@
 package ru.tutor.steps;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserApi;
+import ru.tutor.config.TestConfig;
 import ru.tutor.model.fortune.GameStatsResponse;
 import ru.tutor.model.LogoutResponse;
 import ru.tutor.model.UserProfile;
 import ru.tutor.utils.AllureAttachments;
 
+import java.util.Base64;
 import java.util.List;
 
+import static io.qameta.allure.Allure.step;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,8 +99,29 @@ public class UserSteps {
     public Response logout(String authToken) {
         Response response = userApi.logout(authToken);
 
-        AllureAttachments.attachJson("Logout Response", response.getBody().asString());
-        AllureAttachments.attachJson("Logout Headers", response.getHeaders().toString());
+        step("Проверка ответа логаута", () -> {
+            response.then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON);
+
+            Allure.addAttachment("Logout Response",
+                    "✅ Статус: 200 OK\n📦 Тело: " + response.getBody().asString());
+        });
+
+        // Логируем информацию о JWT токене
+        step("Информация о токене", () -> {
+            String[] parts = authToken.split("\\.");
+            if (parts.length >= 2) {
+                String payload = new String(Base64.getDecoder().decode(parts[1]));
+                Allure.addAttachment("JWT Payload", "application/json", payload);
+            }
+        });
+
+        // Не проверяем токен, так как знаем, что он продолжит работать
+        Allure.addAttachment("Примечание",
+                "⚠️ Сервер использует stateless JWT токены.\n" +
+                        "Токен будет работать до истечения срока действия.\n" +
+                        "Для полного выхода закройте браузер или удалите токен локально.");
 
         return response;
     }
@@ -107,7 +132,7 @@ public class UserSteps {
         response.then()
                 .statusCode(200)
                 .contentType("application/json")
-                .header("Access-Control-Allow-Origin", equalTo("https://client.ttplace.ru"))
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
                 .header("Access-Control-Allow-Credentials", equalTo("true"));
 
         // Парсим ответ
@@ -163,7 +188,7 @@ public class UserSteps {
         response.then()
                 .statusCode(200)
                 .contentType("application/json")
-                .header("Access-Control-Allow-Origin", equalTo("https://client.ttplace.ru"))
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
                 .header("Access-Control-Allow-Credentials", equalTo("true"));
 
         // Проверяем основные поля

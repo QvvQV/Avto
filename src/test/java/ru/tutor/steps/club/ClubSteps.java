@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ClubApi;
+import ru.tutor.config.TestConfig;
 import ru.tutor.model.ClubMemberResponse;
 import ru.tutor.model.ClubStatisticsResponse;
 import ru.tutor.utils.AllureAttachments;
@@ -41,7 +42,7 @@ public record ClubSteps(ClubApi clubApi){
         response.then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .header("Access-Control-Allow-Origin", equalTo("https://client.ttplace.ru"))
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
                 .header("Access-Control-Allow-Credentials", equalTo("true"));
 
         response.then()
@@ -67,7 +68,7 @@ public record ClubSteps(ClubApi clubApi){
         response.then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .header("Access-Control-Allow-Origin", equalTo("https://client.ttplace.ru"))
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
                 .header("Access-Control-Allow-Credentials", equalTo("true"));
 
         response.then()

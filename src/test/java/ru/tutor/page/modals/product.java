@@ -17,11 +17,13 @@ public class product {
 
     // Названия кнопок
     private static final String BEGIN_TEXT = "Начать";
+    private static final String CASHBACK_TEXT = "Забрать бонус";
 
     //Локаторы
     private static final SelenideElement BEGIN_BUTTON = $$("button").find(exactText(BEGIN_TEXT));
     private static final SelenideElement WEEK_BUTTON = $("a[href*='user/product']");
     private static final SelenideElement OPEN_WEEK_TWO = $x("//button[contains(@class, '_week_') and .//p[contains(text(), 'Неделя 2')]]");
+    private static final SelenideElement PICK_UP_BONUS_BUTTON = $$("button").find(exactText(CASHBACK_TEXT));
 
     @Step("Переход в продукт")
     public static void beginProduct() {
@@ -33,6 +35,14 @@ public class product {
         );
         step("Ткрываем вторую неделю курса", () ->universalMethod.safeClick(OPEN_WEEK_TWO, "Неделя 2")
         );
+    }
 
+    @Step("Забрать Бонус - Кешбэк")
+    public static void pickUpBonus() {
+        step("Кликаем по кнопке забрать бонус - Кешбэк", () -> {
+                WaitHelper.waitForAnimationComplete();
+                WaitHelper.waitForPageLoad();
+                universalMethod.safeClick(PICK_UP_BONUS_BUTTON, CASHBACK_TEXT);
+        });
     }
 }

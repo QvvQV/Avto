@@ -34,10 +34,12 @@ public class TabManager {
 
     @Step("Переходим к вкладке Order в админке")
     public static void goToTheOrderTab() {
-        closeWindow();
-        switchToLastTab();
-        closeWindow();
-        switchToLastTab();
+        step("Переходим к вкладке Order в админке", () -> {
+            closeWindow();
+            switchToLastTab();
+            closeWindow();
+            switchToLastTab();
+        });
     }
 
     @Step("Переключение на новое окно браузера для Sber")

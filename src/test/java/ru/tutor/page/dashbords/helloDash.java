@@ -35,7 +35,7 @@ public class helloDash {
     // Локаторы модального окна знакомства с платформой
     private static final SelenideElement BUTTON_OUT_MYSELF = $$("button").find(exactText("Нет, я хочу разобраться сам"));
 
-    @Step("Заполенение приветственного модального окна")
+    @Step("Заполнение приветственного модального окна")
     private static void completeWelcomeModal() {
         step("Ожидание загрузки модального окна", () -> {
 
