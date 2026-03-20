@@ -7,6 +7,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.*;
+import ru.tutor.page.orders.CloudPage;
+import ru.tutor.page.orders.TtPage;
 import ru.tutor.page.paymentModalWindow.paymentModal;
 import ru.tutor.page.personalAccount.Catalog;
 import ru.tutor.page.personalAccount.Home;

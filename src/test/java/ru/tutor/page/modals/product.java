@@ -33,7 +33,7 @@ public class product {
         WaitHelper.waitForPageLoad();
         step("Переход по кнопке Неделя 1, Урок 1", () -> universalMethod.safeClick(WEEK_BUTTON, "'Неделя 1,Урок 1'")
         );
-        step("Ткрываем вторую неделю курса", () ->universalMethod.safeClick(OPEN_WEEK_TWO, "Неделя 2")
+        step("Открываем вторую неделю курса", () ->universalMethod.safeClick(OPEN_WEEK_TWO, "Неделя 2")
         );
     }
 

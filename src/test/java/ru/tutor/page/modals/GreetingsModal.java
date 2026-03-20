@@ -47,7 +47,7 @@ public class GreetingsModal {
     private static final SelenideElement CLOSE_BUTTON = $x("//button[contains(@class, '_close_')]");
 
     @Step("Заполнение данными для доступа быстрая форма")
-    public static void fillAccessInput(){
+    public static void fillAccessInput() {
         step("Заполнение данными для доступа", () -> {
             String name = faker.name().firstName();
             String password = "12345678";
@@ -71,7 +71,7 @@ public class GreetingsModal {
     }
 
     @Step("Заполнение данными для доступа Вся форма")
-    public static void fillAccessInputAllForm(){
+    public static void fillAccessInputAllForm() {
         String name = faker.name().firstName();
         String password = "12345678";
 
@@ -94,7 +94,7 @@ public class GreetingsModal {
         step("Ввод номер телефона", () -> enterRussianPhone(faker.phoneNumber().cellPhone())
         );
         step("Задать время 'C'", () -> selectStartTime("01:00")
-                );
+        );
         step("Задать время 'До'", () -> selectEndTime("12:00")
         );
         step("Привязываем телефон", () -> universalMethod.safeClick(SNAP_BUTTON, SNAP_TEXT)
@@ -104,19 +104,21 @@ public class GreetingsModal {
     }
 
     @Step("Заполнение двух пунктов в приветственной модалке")
-    public static void fillOutTwoFieldsWelcomeModal(){
-        String name = faker.name().firstName();
+    public static void fillOutTwoFieldsWelcomeModal() {
+        step("Заполнение двух пунктов в приветсвенной модалке", () -> {
+            String name = faker.name().firstName();
 
-        universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
-        WaitHelper.waitForAnimationComplete();
-        step("Ввод имени пользователя", () -> universalMethod.safeSetValue(NAME_INPUT, name, "Имя пользователя")
-        );
-        verifyActiveOption();
-        universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
-
-        step("Закрытие модального окна", () -> {
-            universalMethod.safeClick(CLOSE_BUTTON, "Крестик");
+            universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
             WaitHelper.waitForAnimationComplete();
+            step("Ввод имени пользователя", () -> universalMethod.safeSetValue(NAME_INPUT, name, "Имя пользователя")
+            );
+            verifyActiveOption();
+            universalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
+
+            step("Закрытие модального окна", () -> {
+                universalMethod.safeClick(CLOSE_BUTTON, "Крестик");
+                WaitHelper.waitForAnimationComplete();
+            });
         });
     }
 

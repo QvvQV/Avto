@@ -2,7 +2,7 @@ package ru.tutor.page.paymentModalWindow;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import ru.tutor.page.CloudPage;
+import ru.tutor.page.orders.CloudPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;

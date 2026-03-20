@@ -8,10 +8,10 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.model.ClubMemberResponse;
 import ru.tutor.model.ClubStatisticsResponse;
-import ru.tutor.page.CloudPage;
+import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.RedirectPage;
-import ru.tutor.page.SberPage;
-import ru.tutor.page.TtPage;
+import ru.tutor.page.orders.SberPage;
+import ru.tutor.page.orders.TtPage;
 import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.modals.GreetingsModal;
@@ -117,7 +117,7 @@ public class ReferralFlow {
 
     @Step("Выполнение платежа")
     private void executePayment() {
-        testExecutor.executeTwoPaymentTest(
+        testExecutor.executePaymentTest(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage)
                         .purchasePremiumSubscription(),

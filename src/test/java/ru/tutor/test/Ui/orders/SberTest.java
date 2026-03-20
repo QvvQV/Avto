@@ -6,11 +6,11 @@ import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.SubscriptionTestFlow;
-import ru.tutor.page.CloudPage;
-import ru.tutor.page.SberPage;
+import ru.tutor.page.orders.CloudPage;
+import ru.tutor.page.orders.SberPage;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.admin.AdminOrdersPage;
-import ru.tutor.page.TtPage;
+import ru.tutor.page.orders.TtPage;
 import ru.tutor.utils.AllureAttachments;
 
 import static com.codeborne.selenide.Selenide.*;

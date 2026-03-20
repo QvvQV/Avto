@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 
 import static com.codeborne.selenide.Selenide.Wait;
 import static com.codeborne.selenide.Selenide.sleep;
@@ -35,12 +36,22 @@ public class WaitHelper {
     }
 
     // Утилитарные методы
-    public static void waitFor(Duration duration) {
-        try {
-            Thread.sleep(duration.toMillis());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+    public static void waitFor(BooleanSupplier condition, Duration timeout, String message) {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + timeout.toMillis();
+
+        while (System.currentTimeMillis() < endTime) {
+            if (condition.getAsBoolean()) {
+                return;
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Ожидание прервано", e);
+            }
         }
+        throw new AssertionError(message + " (таймаут " + timeout.getSeconds() + " с)");
     }
 
     // Ожидание для анимаций и модальных окон

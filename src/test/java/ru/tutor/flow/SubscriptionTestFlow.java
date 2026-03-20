@@ -6,11 +6,11 @@ import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.builder.SubscriptionPurchaseBuilder;
 import ru.tutor.flow.builder.SubscriptionPurchaseResult;
-import ru.tutor.page.CloudPage;
-import ru.tutor.page.SberPage;
+import ru.tutor.page.orders.CloudPage;
+import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.admin.AdminLoginPage;
 import ru.tutor.page.admin.AdminOrdersPage;
-import ru.tutor.page.TtPage;
+import ru.tutor.page.orders.TtPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
@@ -52,9 +52,10 @@ public class SubscriptionTestFlow {
     // Короткие методы-обертки для различных сценариев покупки
     @Step("Оплата Премиума по Клауду")
     public SubscriptionTestFlow purchasePremiumSubscription() {
-        purchase(builder -> builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
-                .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
-                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
+        purchase(builder ->
+                builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                        .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
+                        .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
         );
         return this;
     }
@@ -100,11 +101,6 @@ public class SubscriptionTestFlow {
 
     @Step("Оплата Премиум по карте Сбер")
     public SubscriptionTestFlow purchasePremiumSubscriptionSber() {
-//        purchase(builder ->
-//                builder.forPremium()
-//                        .viaSber()
-//                        .withApprovedCard()
-//        );
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
@@ -115,11 +111,6 @@ public class SubscriptionTestFlow {
 
     @Step("Оплата Лайт по карте Сбер")
     public SubscriptionTestFlow purchaseLiteSubscriptionSber() {
-//        purchase(builder ->
-//                builder.forLite()
-//                        .viaSber()
-//                        .withApprovedCard()
-//        );
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.LITE)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
@@ -130,11 +121,6 @@ public class SubscriptionTestFlow {
 
     @Step("Оплата Пожизненного по карте Сбер")
     public void purchaseLifeSubscriptionSber() {
-//        purchase(builder ->
-//                builder.forLife()
-//                        .viaSber()
-//                        .withApprovedCard()
-//        );
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.LIFE)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
@@ -144,11 +130,6 @@ public class SubscriptionTestFlow {
 
     @Step("Оплата Премиум по карте Сбер с фиксированным остатком = 100р")
     public SubscriptionTestFlow purchasePremiumSubscriptionFixSber() {
-//        purchase(builder ->
-//                builder.forPremium()
-//                        .viaSber()
-//                        .withFixedBalanceCard()
-//        );
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
@@ -160,12 +141,6 @@ public class SubscriptionTestFlow {
 
     @Step("Ошибка 'Недостаточно средств' по карте Сбер")
     public SubscriptionTestFlow purchasePremiumSubscriptionInsufficientFundsSber() {
-//        purchase(builder ->
-//                builder.forPremium()
-//                        .viaSber()
-//                        .withInsufficientFundsCard()
-//                        .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
-//        );
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
@@ -178,12 +153,6 @@ public class SubscriptionTestFlow {
 
     @Step("Ошибка 'Невалидная карта' по карте Сбер")
     public SubscriptionTestFlow purchasePremiumSubscriptionExpireSber() {
-//        purchase(builder ->
-//                builder.forPremium()
-//                        .viaSber()
-//                        .withExpiredCard()
-//                        .withExpectedError(TestConfig.Texts.ERROR_MESSAGE)
-//        );
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.PREMIUM)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)

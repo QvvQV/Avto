@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.page.*;
 import ru.tutor.page.admin.AdminOrdersPage;
+import ru.tutor.page.orders.CloudPage;
+import ru.tutor.page.orders.SberPage;
+import ru.tutor.page.orders.TtPage;
 
 import static io.qameta.allure.Allure.step;
 

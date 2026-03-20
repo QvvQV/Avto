@@ -25,7 +25,7 @@ public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Комплексная проверка дат заказа после серии рекуррентных платежей Cloud Premium")
     void testComplexOrderDateAfterMultiplePayments() {
-        testExecutor.executeTwoPaymentTest(
+        testExecutor.executePaymentTest(
                 "Cloud Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscription(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
@@ -36,7 +36,7 @@ public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Комплексная проверка дат заказа после серии рекуррентных платежей Cloud Lite")
     void testComplexOrderAfterMultiplePaymentLiteCloud() {
-        testExecutor.executeTwoPaymentTest(
+        testExecutor.executePaymentTest(
                 "Cloud Lite",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchaseLiteSubscription(), // Оплата Лайт подписки с главной страницы
                 SubscriptionTestFlow::processRecurrentInAdminLite,
@@ -47,7 +47,7 @@ public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Комплексная проверка дат заказа после серии рекуррентных платежей Sber Premium")
     void testComplexOrderDateAfterMultiplePaymentSber() {
-        testExecutor.executeTwoPaymentTest(
+        testExecutor.executePaymentTest(
                 "Sber Premium",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchasePremiumSubscriptionSber(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
@@ -58,7 +58,7 @@ public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Комлпексная проверка дат заказа после серии рекуррентных платежей Sber Lite")
     void testComplexOrderAfterMultiplePaymentSberLite() {
-        testExecutor.executeTwoPaymentTest(
+        testExecutor.executePaymentTest(
                 "Sber Lite",
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage).purchaseLiteSubscriptionSber(),
                 SubscriptionTestFlow::processRecurrentInAdminLite,

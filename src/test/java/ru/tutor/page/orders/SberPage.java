@@ -1,4 +1,4 @@
-package ru.tutor.page;
+package ru.tutor.page.orders;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;

@@ -2,12 +2,12 @@ package ru.tutor.base;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import ru.tutor.page.CloudPage;
+import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.OrderDatesPage;
-import ru.tutor.page.SberPage;
+import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.admin.AdminOrdersPage;
-import ru.tutor.page.TtPage;
+import ru.tutor.page.orders.TtPage;
 import ru.tutor.test.context.TestExecutionContext;
 import ru.tutor.test.executor.PaymentCycleExecutor;
 import ru.tutor.utils.DateValidator;

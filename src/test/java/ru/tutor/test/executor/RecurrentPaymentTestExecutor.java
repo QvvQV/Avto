@@ -33,9 +33,9 @@ public class RecurrentPaymentTestExecutor {
     }
 
     /**
-     * Выполнение теста с двумя рекуррентными платежами.
+     * Выполнение теста с рекуррентными платежами.
      */
-    public void executeTwoPaymentTest(String testName, Supplier<SubscriptionTestFlow> flowSupplier,
+    public void executePaymentTest(String testName, Supplier<SubscriptionTestFlow> flowSupplier,
                                       Consumer<SubscriptionTestFlow> processMethod,
                                       TestExecutionContext context, int cycles) {
         context.setTestName(testName);

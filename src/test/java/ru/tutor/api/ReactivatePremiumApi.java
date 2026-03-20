@@ -1,5 +1,6 @@
 package ru.tutor.api;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
@@ -44,12 +45,34 @@ public class ReactivatePremiumApi extends BaseApi {
 //                .statusCode(200)
 //                .log().all()
 //                .extract().response();
-        Map<String, String> body = Map.of("aff_rid", affRid);
+//        Map<String, String> body = Map.of("aff_rid", affRid);
+//
+//        return postWithToken(
+//                ApiEndpoints.ORDERS_REACTIVATE_PREMIUM,
+//                authToken,
+//                body
+
+        String affRidValue = affRid != null ? affRid : "null";
+        Allure.addAttachment("aff_rid", "Значение: " +  affRidValue);
+
+        Object requestBody;
+
+        if (affRid != null && !affRid.isEmpty()) {
+            Map<String, String> bodyMap = new HashMap<>();
+            bodyMap.put("aff_rid", affRid);
+            requestBody = bodyMap;
+
+            Allure.addAttachment("Тело запроса", String.format("Содержит aff_rid: %s", affRid));
+        } else {
+            requestBody = "[]";
+            Allure.addAttachment("Тело запроса",
+                    "Пустой массив (aff_rid отсутсвует)");
+        }
 
         return postWithToken(
                 ApiEndpoints.ORDERS_REACTIVATE_PREMIUM,
                 authToken,
-                body
+                requestBody
         );
     }
 

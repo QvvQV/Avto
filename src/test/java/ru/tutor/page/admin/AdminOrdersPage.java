@@ -134,7 +134,7 @@ public class AdminOrdersPage {
         int originalWindowCount = WebDriverRunner.getWebDriver().getWindowHandles().size();
 
         step("Кликаем по заказу: ", () ->
-            universalMethod.safeClick(ORDER_NUMBER, "Номер заказа")
+                universalMethod.safeClick(ORDER_NUMBER, "Номер заказа")
         );
 
         Selenide.Wait().until(driver -> driver.getWindowHandles().size() > originalWindowCount);
@@ -244,7 +244,7 @@ public class AdminOrdersPage {
         WaitHelper.waitForAnimationComplete();
         processRecurrentPayment();
         step("Сравнием utm_medium с эталоном - '1012_966574': ",
-            this::processUtm
+                this::processUtm
         );
         step("Проведение рекурента:", () -> makePayment("755"));
     }

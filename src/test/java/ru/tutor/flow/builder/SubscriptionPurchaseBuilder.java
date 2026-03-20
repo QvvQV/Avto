@@ -1,10 +1,10 @@
 package ru.tutor.flow.builder;
 
 import ru.tutor.config.TestConfig;
-import ru.tutor.page.CloudPage;
-import ru.tutor.page.SberPage;
+import ru.tutor.page.orders.CloudPage;
+import ru.tutor.page.orders.SberPage;
 import ru.tutor.constants.AddressPage;
-import ru.tutor.page.TtPage;
+import ru.tutor.page.orders.TtPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 
@@ -74,71 +74,11 @@ public class SubscriptionPurchaseBuilder {
         return this;
     }
 
-//    public SubscriptionPurchaseBuilder forPremium() {
-////        this.subscriptionType = "Premium";
-////        return this;
-//        return forSubscription(TtPage.SubscriptionType.PREMIUM);
-//    }
-//
-//    public SubscriptionPurchaseBuilder forLife() {
-////        this.subscriptionType = "Life";
-////        return this;
-//        return forSubscription(TtPage.SubscriptionType.LIFE);
-//    }
-//
-//    public SubscriptionPurchaseBuilder forLite() {
-////        this.subscriptionType = "Lite";
-////        return this;
-//        return forSubscription(TtPage.SubscriptionType.LITE);
-//    }
-//
-//    public SubscriptionPurchaseBuilder viaCloud() {
-//        this.paymentSystem = PaymentSystem.CLOUD;
-//        return this;
-//    }
-//
-//    public SubscriptionPurchaseBuilder viaSber() {
-//        this.paymentSystem = PaymentSystem.SBER;
-//        return this;
-//    }
-
     // Универсальный метод для платёжной системы
     public SubscriptionPurchaseBuilder via(PaymentSystem system) {
         this.paymentSystem = system;
         return this;
     }
-
-//    public SubscriptionPurchaseBuilder withStandardPayment() {
-//        this.paymentMethod = PaymentMethod.STANDARD;
-//        return this;
-//    }
-//
-//    public SubscriptionPurchaseBuilder withInstallments() {
-//        this.paymentMethod = PaymentMethod.INSTALLMENTS;
-//        return this;
-//    }
-//
-//    public SubscriptionPurchaseBuilder withApprovedCard() {
-//        this.paymentMethod = PaymentMethod.APPROVED_CARD;
-//        return this;
-//    }
-//
-//    public SubscriptionPurchaseBuilder withFixedBalanceCard() {
-//        this.paymentMethod = PaymentMethod.FIXED_BALANCE_CARD;
-//        return this;
-//    }
-//
-//    public SubscriptionPurchaseBuilder withInsufficientFundsCard() {
-//        this.paymentMethod = PaymentMethod.INSUFFICIENT_FUNDS_CARD;
-//        this.verifyError = true;
-//        return this;
-//    }
-//
-//    public SubscriptionPurchaseBuilder withExpiredCard() {
-//        this.paymentMethod = PaymentMethod.EXPIRED_CARD;
-//        this.verifyError = true;
-//        return this;
-//    }
 
     // Универсальный метод для способа оплаты
     public SubscriptionPurchaseBuilder withPaymentMethod(PaymentMethod method) {
@@ -222,17 +162,6 @@ public class SubscriptionPurchaseBuilder {
     }
 
     private void selectSubscriptionType() {
-//        switch (subscriptionType) {
-//            case "Premium":
-//                ttPage.selectSubscription(TtPage.SubscriptionType.PREMIUM);
-//                break;
-//            case "Life":
-//                ttPage.selectSubscription(TtPage.SubscriptionType.LIFE);
-//                break;
-//            case "Lite":
-//                ttPage.selectSubscription(TtPage.SubscriptionType.LITE);
-//                break;
-//        }
         if (subscriptionType == null) {
             throw new IllegalStateException("Тип подписки не выбран!");
         }

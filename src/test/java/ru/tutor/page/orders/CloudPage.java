@@ -1,14 +1,16 @@
-package ru.tutor.page;
+package ru.tutor.page.orders;
 
 /*
  * Логика и кнопки связанные с Cloud/Тинькофф. Оплата
  */
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.By;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.FrameHelper;
 import ru.tutor.utils.WaitHelper;
 import ru.tutor.utils.universalMethod;
 
@@ -19,7 +21,7 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.tutor.page.SberPage.logModalType;
+import static ru.tutor.page.orders.SberPage.logModalType;
 
 public class CloudPage {
 
@@ -64,28 +66,6 @@ public class CloudPage {
     // Внутренние состояния
     private String currentEmail;
 
-    /**
-     * Универсальный метод для переключенения на iframe
-     */
-    @Step("Переключение на iframe #{frameIndex}")
-    private static void switchToFrame(int frameIndex) {
-        switchTo().frame(frameIndex);
-        WaitHelper.waitForPageLoad();
-        AllureAttachments.attachText("Переключение iframe",
-                "✓ Успешно переключились на iframe #" + frameIndex);
-    }
-
-//    @Step("Заполнение данных модального окна")
-//    public static void clickBtnStart() {
-//        step("Ввод email и выбор тарифа", () -> {
-////            BUY_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT).click();
-//            universalMethod.safeClick(BUY_BUTTON, BUY_TEXT);
-//            EMAIL_INPUT.sendKeys(faker.internet().emailAddress());
-//            ACCESS_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT).click();
-//            ERROR_MESSAGE.shouldNot(visible);
-//        });
-//    }
-
     @Step("Заполнение данных модального окна Prod")
     public static void clickBtnStartProd() {
         step("Ввод email", () -> {
@@ -105,49 +85,41 @@ public class CloudPage {
     @Step("Заполнение данных модального окна")
     public static void clickCardPageBtn() {
         step("Ввод валидных банковских данных", () -> {
+
             sleep(2000);
-            switchToFrame(0);
-            WaitHelper.waitForPageLoad();
-//            universalMethod.clickButton(CARD_PAGE_BUTTON, "Банковская карта");
-            CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT).sendKeys(TEST_CARD_NUMBER);
+
+            PaymentFrameHandler.ensurePaymentFrame();
+
+            CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT)
+                    .sendKeys(TEST_CARD_NUMBER);
+
             universalMethod.clickButton(CARD_PAY_BUTTON, "Кнопка Оплатить");
-            switchToFrame(0);
-            universalMethod.safeClick(SUCCESS_BUTTON,SUCCESS_TEXT);
-            sleep(500);
+
+            PaymentFrameHandler.ensureSuccessFrame();
+
+            universalMethod.safeClick(SUCCESS_BUTTON, SUCCESS_TEXT);
+
+            WaitHelper.waitForAnimationComplete();
+            FrameHelper.switchToDefaultContent();
         });
     }
 
-    @Step("Заполнение данных модального окна ЛК")
-    public static void clickCardPageBtnLK() {
-        step("Ввод валидных банковских данных", () -> {
+    // ==================== МЕТОДЫ ДЛЯ PROD ОКРУЖЕНИЯ ====================
 
-            WaitHelper.waitForAnimationComplete();
-            switchToFrame(1);
-            WaitHelper.waitForPageLoad();
-            universalMethod.safeClick(CARD_PAGE_BUTTON,"Перейти к оплате картой");
-            universalMethod.safeSetValue(CARD_INPUT,TEST_CARD_NUMBER, "Номер карты");
-            universalMethod.safeClick(CARD_PAY_BUTTON, "Оплата картой в ЛК");
-
-            switchToFrame(0);
-            universalMethod.safeClick(SUCCESS_BUTTON,SUCCESS_TEXT);
-            WaitHelper.waitForPageLoad();
-            WaitHelper.waitForAnimationComplete();
-            switchTo().defaultContent();
-        });
-    }
-
-    @Step("Заполнение данных модального окна")
+    @Step("Заполнение данных модального окна Prod")
     public static void clickCardPageBtnProd() {
         step("Ввод валидных банковских данных", () -> {
             sleep(2000);
-            switchToFrame(0);
+            FrameHelper.switchToFrame(0);
             WaitHelper.waitForPageLoad();
             universalMethod.safeSetValue(CARD_INPUT, TEST_CARD_NUMBER, "Номер карты");
             universalMethod.safeClick(CARD_PAY_BUTTON, "Оплата картой");
-            switchToFrame(0);
+            FrameHelper.switchToFrame(0);
             universalMethod.safeClick(SUCCESS_BUTTON,SUCCESS_TEXT);
         });
     }
+
+    // ==================== МЕТОДЫ ДЛЯ РАБОТЫ С МОДАЛКАМИ ====================
 
     @Step("Выбор опции 'Рассрочка' в модальном окне")
     public static void setDateModal() {
@@ -197,6 +169,8 @@ public class CloudPage {
         });
     }
 
+    // ==================== МЕТОДЫ ДЛЯ НОВОГО ОКНА ОПЛАТЫ ====================
+
     @Step("Наполнение тестовыми данными в новом окне")
     public static void fillingWithTestData() {
         step("Ввод номера карты", () ->
@@ -214,12 +188,12 @@ public class CloudPage {
 
         step("Подтверждение заказа и проверка результата", () -> {
 
-            switchToFrame(0);
+            FrameHelper.switchToFrame(0);
             universalMethod.safeClick(CONFIRM_BUTTON, "Подтвердить заказ");
 
             WaitHelper.waitForPageLoad();
 
-            switchTo().defaultContent();
+            FrameHelper.switchToDefaultContent();
 
             // Проверка успешного завершения
             verifyPaymentSuccess();
@@ -229,9 +203,7 @@ public class CloudPage {
     @Step("Проверка успешной оплаты")
     private static void verifyPaymentSuccess() {
         String expectedText = "Вернуться в магазин";
-//        String actualText = BACK_TO_SHOP_BUTTON
-//                .shouldBe(visible, DEFAULT_TIMEOUT)
-//                .getText().trim();
+
         String actualText = universalMethod.getElementText(BACK_TO_SHOP_BUTTON, "Кнопка вернутся в магазин");
 
         assertEquals(expectedText, actualText,
@@ -241,5 +213,95 @@ public class CloudPage {
         AllureAttachments.attachText("Проверка текста кнопки",
                 "✓ Текст кнопки корректен: " + actualText);
         AllureAttachments.attachScreenshot("Страница после оплаты");
+    }
+
+    // ==================== ВНУТРЕННИЙ КЛАСС ДЛЯ РАБОТЫ С IFrame ====================
+
+    private static class PaymentFrameHandler {
+
+        @Step("Поиск iframe с формой оплаты")
+        static void ensurePaymentFrame() {
+            boolean found = PaymentFrameChecker.findPaymentFrame();
+            if (!found) {
+                AllureAttachments.attachScreenshot("Ошибка поиска iframe");
+                throw new AssertionError("Не удалось найти iframe с формой оплаты");
+            }
+            AllureAttachments.attachText("Статус", "✓ Форма оплаты найдена");
+        }
+
+        @Step("Поиск iframe с подтверждением")
+        static void ensureSuccessFrame() {
+            WaitHelper.waitFor(() -> !$$("iframe").isEmpty(), DEFAULT_TIMEOUT,
+                    "Ожидание iframe после оплаты");
+
+            boolean found = PaymentFrameChecker.findSuccessFrame();
+            if (!found) {
+                AllureAttachments.attachScreenshot("Ошибка поиска подтверждения");
+                throw new AssertionError("Не найден iframe с подтверждением");
+            }
+        }
+    }
+
+    // ==================== ВНУТРЕННИЙ КЛАСС ДЛЯ ПРОВЕРКИ IFrame ====================
+
+    private static class PaymentFrameChecker {
+
+        static boolean findPaymentFrame() {
+            return checkFrame(0, CloudPage::isPaymentFrame) ||
+                    checkFrame(1, CloudPage::isPaymentFrame) ||
+                    checkFrame(2, CloudPage::isPaymentFrame) ||
+                    FrameHelper.switchToFrameByCondition(PaymentFrameChecker::isPaymentUrl);
+        }
+
+        static boolean findSuccessFrame() {
+            return checkFrame(0, CloudPage::isSuccessFrame) ||
+                    checkFrame(1, CloudPage::isSuccessFrame) ||
+                    checkFrame(2, CloudPage::isSuccessFrame);
+        }
+
+        private static boolean checkFrame(int index, java.util.function.BooleanSupplier checker) {
+            try {
+                FrameHelper.switchToFrame(index);
+                if (checker.getAsBoolean()) {
+                    return true;
+                }
+
+                FrameHelper.switchToDefaultContent();
+            } catch (Exception e) {
+                FrameHelper.switchToDefaultContent();
+            }
+            return false;
+        }
+
+        private static boolean isPaymentUrl(String url) {
+            return url.contains("payment") ||
+                    url.contains("cloudpayments") ||
+                    url.contains("pay");
+        }
+    }
+
+    // ==================== МЕТОДЫ ПРОВЕРКИ СОСТОЯНИЯ ====================
+
+    private static boolean isPaymentFrame() {
+        try {
+            return CARD_INPUT.exists() && CARD_INPUT.is(visible) ||
+                    isPaymentUrl(WebDriverRunner.getWebDriver().getCurrentUrl());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static boolean isSuccessFrame() {
+        try {
+            return SUCCESS_BUTTON.exists() && SUCCESS_BUTTON.is(visible);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static boolean isPaymentUrl(String url) {
+        return url.contains("cloudpayments") ||
+                url.contains("payment") ||
+                url.contains("pay");
     }
 }
