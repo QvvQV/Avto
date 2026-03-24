@@ -265,6 +265,13 @@ public class ReactivatePremiumFlow {
         return this;
     }
 
+    @Step("Получить кешбек и заполнить приветсвенное окно")
+    public ReactivatePremiumFlow takeCashbackAndFillWelcomeWindow() {
+        product.pickUpBonus();
+        GreetingsModal.fillOutTwoFieldsWelcomeModal();
+        return this;
+    }
+
     /**
      * Получение aff_rid из конфига
      */

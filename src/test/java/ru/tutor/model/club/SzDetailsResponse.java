@@ -1,4 +1,4 @@
-package ru.tutor.model;
+package ru.tutor.model.club;
 
 // Модель ответа
 

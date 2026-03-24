@@ -5,8 +5,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ClubApi;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.WithdrawalRequest;
-import ru.tutor.model.WithdrawalResponse;
+import ru.tutor.model.club.WithdrawalRequest;
+import ru.tutor.model.club.WithdrawalResponse;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WithdrawalTestDataGenerator;
 

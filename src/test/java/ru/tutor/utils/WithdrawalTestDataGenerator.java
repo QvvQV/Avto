@@ -1,6 +1,6 @@
 package ru.tutor.utils;
 
-import ru.tutor.model.WithdrawalRequest;
+import ru.tutor.model.club.WithdrawalRequest;
 
 import java.util.Map;
 

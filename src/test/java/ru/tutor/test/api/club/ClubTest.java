@@ -7,14 +7,17 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.*;
+import ru.tutor.model.club.ClubMemberResponse;
+import ru.tutor.model.club.ClubStatisticsResponse;
+import ru.tutor.model.club.WithdrawalRequest;
+import ru.tutor.model.club.WithdrawalResponse;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.club.ClubSteps;
 import ru.tutor.steps.club.ClubWithdrawalSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -104,7 +107,7 @@ public class ClubTest {
 
     @Test
     @Order(3)
-    @DisplayName("Проверка конкретных значений из примера")
+    @DisplayName("Проверка конкретных значений")
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
     void verifySpecificValuesFromExample() {
@@ -177,8 +180,20 @@ public class ClubTest {
                     Allure.addAttachment("Успех", "text/plain",
                             "✅ Запрос на вывод 3000 ₽ выполнен успешно");
                 }
-            } else if (statusCode == 422) {
-
+            } else if (statusCode == 400) {
+                // Недостаточно средств
+                assertAll("Проверка ошибки недостаточно средств",
+                        () -> assertTrue(responseBody.contains("Not enough credits"),
+                                "Сообщение должно содержать 'Not enough credits'"),
+                        () -> assertTrue(responseBody.contains("1000"),
+                                "Сообщение должно содержать доступный баланс")
+                );
+            } else {
+                // Неожиданный статус код
+                Allure.addAttachment("Неожиданный ответ", "text/plain",
+                        String.format("⚠ Получен неожиданный статус код: %d\nТело ответа: %s",
+                                statusCode, responseBody));
+                fail(String.format("Неожиданный статус код: %d. Ожидался 201, 400", statusCode));
             }
         });
     }

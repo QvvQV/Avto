@@ -85,7 +85,6 @@ public class AdminToUserLoginSteps {
 
     @Step("Переключиться на вкладку и получить токен")
     public static String switchToTabAndGetToken() {
-//        System.out.println(extractTokenFromCurrentPage());
         return extractTokenFromCurrentPage();
     }
 

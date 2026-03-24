@@ -79,17 +79,14 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
     @Tag("UI" + "API")
     @Test
-    @DisplayName("Оформление Renewal внутри ЛК")
+    @DisplayName("Оформление Renewal внутри ЛК c Aff_Rid в URL")
     void renewalDesignInsideThePersonalAccount() {
         reactivateFlow
                 .createUserWithAffRidAndRecurrent()
-                .goToUserPersonalAccount();
-        product.pickUpBonus();
-        GreetingsModal.fillOutTwoFieldsWelcomeModal();
-
-        reactivateFlow.addAffiliateParameter()
+                .goToUserPersonalAccount()
+                .takeCashbackAndFillWelcomeWindow()
+                .addAffiliateParameter()
                 .downgradeToLite()
-
                 .processRenewalInPersonalAccount()
                 .verifyAffRid();
     }
@@ -104,6 +101,20 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
                 .fetchAuthToken()
                 .downgradeToLite()
                 .reactivatePremium();
+    }
+
+    @Tag("UI" + "API")
+    @Test
+    @DisplayName("Оформление билла с потоковой ссылкой. Оформление реневалла без потоковой ссылки в url")
+    void restoreYourPremiumAccountUsingWithAffRidRenewalWithoutAffRid() {
+        reactivateFlow
+                .createUserWithAffRidAndRecurrent()
+                .goToUserPersonalAccount()
+                .takeCashbackAndFillWelcomeWindow()
+                .fetchAuthToken()
+                .downgradeToLite()
+                .processRenewalInPersonalAccount()
+                .verifyAffRid();
     }
 
 // Основные ручки для отработки

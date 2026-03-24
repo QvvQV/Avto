@@ -78,4 +78,7 @@ public final class ApiEndpoints {
     /** Запрос на вывод средств */
     public static final String CLUB_REQUEST_WITHDRAWAL = "/user/club/request-withdrawal";
 
+    /** Запрос на историю оплат */
+    public static final String CLUB_PAYMENTS = "/user/club/payments";
+
 }

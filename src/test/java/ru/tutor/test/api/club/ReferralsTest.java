@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
-import ru.tutor.flow.ReferralFlow;
+import ru.tutor.flow.club.ReferralFlow;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
 
 import java.util.List;

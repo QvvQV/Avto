@@ -2,13 +2,13 @@ package ru.tutor.utils;
 
 
 import net.datafaker.Faker;
-import ru.tutor.model.SzDetailsRequest;
+import ru.tutor.model.club.SzDetailsRequest;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
-public class SzDetailsTestDataGenerator {
+public class ClubTestDataGenerator {
     private static final Faker faker = new Faker(new Locale("ru"));
     private static final Random random = new Random();
 
@@ -146,7 +146,6 @@ public class SzDetailsTestDataGenerator {
         // Генерация данных
         request.setFullName(faker.name().fullName());
         request.setPhone(generateRussianPhone());
-//        request.setDateBirth("1950-07-27");
         request.setInn(generateInn());
         request.setOgrnip(generateOgrnip());
         request.setIdEdo(generateIdEdo());
@@ -158,11 +157,6 @@ public class SzDetailsTestDataGenerator {
         request.setSameAddress(true);
 
 //        // Паспортные данные
-//        request.setPassSerial(generatePassportSerial());
-//        request.setPassNumber(generatePassportNumber());
-//        request.setPassIssued("1958-12-30");
-//        request.setPassIssuer(faker.company().name() + " ОВД");
-//        request.setPassDepartment(faker.numerify("###-###"));
 
         // Банковские реквизиты
         request.setBankName("ПАО " + faker.company().name() + " Банк");

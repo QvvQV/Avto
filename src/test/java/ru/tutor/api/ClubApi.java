@@ -27,6 +27,13 @@ public class ClubApi extends BaseApi {
     }
 
     /**
+     * GET /user/club/payments
+     */
+    public Response getClubPayments(String authToken) {
+        return getWithToken(ApiEndpoints.CLUB_PAYMENTS, authToken);
+    }
+
+    /**
      * POST /user/club/request-withdrawal - запрос на вывод средств
      */
     public Response requestWithdrawal(String authToken, Map<String, Object> payload) {

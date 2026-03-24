@@ -1,4 +1,4 @@
-package ru.tutor.flow;
+package ru.tutor.flow.club;
 
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Allure;
@@ -6,8 +6,9 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
-import ru.tutor.model.ClubMemberResponse;
-import ru.tutor.model.ClubStatisticsResponse;
+import ru.tutor.flow.SubscriptionTestFlow;
+import ru.tutor.model.club.ClubMemberResponse;
+import ru.tutor.model.club.ClubStatisticsResponse;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.RedirectPage;
 import ru.tutor.page.orders.SberPage;
