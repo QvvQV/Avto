@@ -8,7 +8,7 @@ import ru.tutor.config.TestConfig;
 public class AddressPage {
 
     public static final String param = "aff_rid";
-    public static final String value = "1012_EUz3";
+    public static final String value = "1012_EV8y";
     public static final String recovery_from_email = "recovery_from_email_pitanie_v1";
     public static final String utm_source = "&utm_source=customutm";
 
@@ -32,6 +32,7 @@ public class AddressPage {
     public static final String register = CLIENT + "/register";
     public static final String SUBSCRIPTION_SETTINGS = CLIENT + "/user/settings/subscription"; // стр Отписки от Premium
     public static final String PAYMENTS_SETTINGS = CLIENT + "/user/settings/payments";  // стр отписки от Lite
+    public static final String CATALOG = CLIENT + "/user/catalog";
 
 
     // ==================== Admin URL ====================

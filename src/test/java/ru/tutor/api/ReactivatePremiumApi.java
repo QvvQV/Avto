@@ -29,29 +29,6 @@ public class ReactivatePremiumApi extends BaseApi {
     @Step("POST /user/orders/reactivate-premium - Реактивация пользователя Лайт по внутренней почте")
     public Response reactivatePremium(String authToken, String affRid) {
 
-//        String aff_rid = executeJavaScript (
-//                "return localStorage.getItem('aff_rid') || 'default_aff_rid';"
-//        );
-//
-//        return given()
-//                .filter(new AllureRestAssured())
-//                .contentType(ContentType.JSON)
-//                .header("Authorization", "Bearer " + authToken)
-//                .body("{\"aff_rid\":\"" + aff_rid + "\"}")
-//                .log().all()
-//                .when()
-//                .post(baseUrl + "/user/orders/reactivate-premium")
-//                .then()
-//                .statusCode(200)
-//                .log().all()
-//                .extract().response();
-//        Map<String, String> body = Map.of("aff_rid", affRid);
-//
-//        return postWithToken(
-//                ApiEndpoints.ORDERS_REACTIVATE_PREMIUM,
-//                authToken,
-//                body
-
         String affRidValue = affRid != null ? affRid : "null";
         Allure.addAttachment("aff_rid", "Значение: " +  affRidValue);
 
@@ -121,22 +98,4 @@ public class ReactivatePremiumApi extends BaseApi {
                 .log().all()
                 .extract().response();
     }
-
-//    public OrderResponse toggleSubscriptionAndGetResponse(String authToken) {
-//        Response response = toggleSubscription(authToken);
-//
-//        return response
-//                .then()
-//                .statusCode(200)
-//                .extract()
-//                .as(OrderResponse.class);
-//    }
-
-//    public Response toggleSubscriptionWithInvalidToken() {
-//        return given()
-//                .header("Authorization", "Bearer invalid_token_123")
-//                .contentType(ContentType.JSON)
-//                .when()
-//                .post()
-//    }
 }

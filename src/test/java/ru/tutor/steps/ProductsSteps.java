@@ -39,7 +39,7 @@ public record ProductsSteps(ProductsApi productsApi) {
 
         for (ProductsResponse product : products) {
             // Обязательные поля
-            assertNotNull(product.getId(), "ID родукта не должен быть null");
+            assertNotNull(product.getId(), "ID продукта не должен быть null");
             assertNotNull(product.getName(), "Название продукта не должен быть null");
             assertNotNull(product.getAvailable(), "Available е должен быть null");
             assertNotNull(product.getCategoryAsString(), "Категория не должна быть null");

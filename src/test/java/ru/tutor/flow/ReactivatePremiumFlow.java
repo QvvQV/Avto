@@ -242,13 +242,19 @@ public class ReactivatePremiumFlow {
     /**
      * Обработка редиректа и заполнение данных
      */
-    @Step("Обработка послеоплатных шагов")
-    public ReactivatePremiumFlow handlePostPaymentSteps() {
+    public static void handlePostPaymentSteps() {
         step("Редирект после оплаты", RedirectPage::redirectPage);
         step("Заполнение модалки", GreetingsModal::fillAccessInput );
+    }
+
+    /**
+     * Открытие первой недели курса
+     */
+    @Step("Обработка послеоплатных шагов")
+    public void openFirstWeek() {
+        handlePostPaymentSteps();
         product.beginProduct();
         unlockNextWeek.openUnlimitedAccess();
-        return this;
     }
 
     /**

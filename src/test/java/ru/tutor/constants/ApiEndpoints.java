@@ -18,6 +18,7 @@ public final class ApiEndpoints {
     // ==================== Аутентификация ====================
     public static final String LOGIN = "/user/login";
     public static final String LOGOUT = "/user/logout";
+    public static final String REGISTER = "/register";
 
 
     // ==================== Профиль пользователя ====================

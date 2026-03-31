@@ -4,6 +4,10 @@ import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.utils.ConfigReader;
 
+/**
+ * Со временем удалится
+ */
+
 @ExtendWith(AllureJunit5.class)
 public abstract class BaseApiTest {
     protected static final String API_BASE_URL = ConfigReader.get("api1.base.url");

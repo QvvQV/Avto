@@ -20,7 +20,7 @@ public class LoginTest extends BaseUiTest {
         step("Открытие стр", () ->
             open(AddressPage.login)
         );
-        step("проверяем title", () -> {
+        step("Проверяем title", () -> {
             String expected = "TutorPlace";
             Assertions.assertEquals(expected, title());
         });
@@ -34,7 +34,7 @@ public class LoginTest extends BaseUiTest {
 
     @Test
     @AllureId("16")
-    @DisplayName("текст ошибки при не зарегистрирован пользователе")
+    @DisplayName("Текст ошибки при не зарегистрирован пользователе")
     public void showTextErrorFromNotUser() {
         Registration.randomEmail();
         Registration.validPass();
@@ -51,7 +51,7 @@ public class LoginTest extends BaseUiTest {
 
     @Test
     @AllureId("22")
-    @DisplayName("текст ошибки при некорректном логине")
+    @DisplayName("Текст ошибки при некорректном логине")
     public void showTextErrorFromNotKorrectLogin() {
         Registration.notKorrectEmail();
         Registration.validPass();

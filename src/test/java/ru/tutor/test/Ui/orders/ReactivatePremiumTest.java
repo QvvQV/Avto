@@ -68,10 +68,10 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
     @Tag("UI" + "API")
     @Test
-    @DisplayName("Восстановление Премиума по тарифу Пожизненный доступ")
+    @DisplayName("Офрмление с aff_rid, восстановление Премиума по тарифу Пожизненный доступ без aff_rid в ссылке")
     void restorePremiumlifeAccess() {
         flow.purchasePremiumSubscriptionAffRid();
-        reactivateFlow.handlePostPaymentSteps();
+        reactivateFlow.openFirstWeek();
         CloudPage.clickCardPageBtn();
         flow.processUnlimitedInAdmin();
         reactivateFlow.goToUserPersonalAccount();

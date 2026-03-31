@@ -6,6 +6,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserApi;
 import ru.tutor.config.TestConfig;
+import ru.tutor.model.RegistrationRequest;
+import ru.tutor.model.RegistrationResponse;
 import ru.tutor.model.fortune.GameStatsResponse;
 import ru.tutor.model.LogoutResponse;
 import ru.tutor.model.UserProfile;
@@ -225,6 +227,162 @@ public class UserSteps {
                 String.format("ID: %d\nEmail: %s",
                         profile.getId(),
                         profile.getEmail()));
+
+        return profile;
+    }
+
+    // ==================== РЕГИСТРАЦИЯ ====================
+
+    @Step("POST /register - регистрация нового пользователя")
+    public Response register(RegistrationRequest request) {
+        AllureAttachments.attachJson("Registration request",
+                String.format("""
+                        {
+                            "email": "%s",
+                            "name": "%s",
+                            "phone": "%s",
+                            "telegram": "%s",
+                            "approvePolicy": %s,
+                            "gender": %d
+                        }""",
+                        request.getEmail(),
+                        request.getName(),
+                        request.getPhone() != null ? request.getPhone() : "",
+                        request.getTelegram() != null ? request.getTelegram() : "",
+                        request.getApprovePolicy(),
+                        request.getGender() != null ? request.getGender() : 0));
+
+        Response response = userApi.register(request);
+        AllureAttachments.attachJson("Registration Response", response.getBody().asString());
+        AllureAttachments.attachJson("Registration Headers", response.getHeaders().toString());
+        return response;
+    }
+
+    @Step("Выполнить регистрацию и получить ответ")
+    public RegistrationResponse registerAndGetResponse(RegistrationRequest request) {
+        Response response = register(request);
+        return validateRegistrationResponse(response);
+    }
+
+    @Step("Валидация ответа регистрации")
+    public RegistrationResponse validateRegistrationResponse(Response response) {
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
+                .header("Access-Control-Allow-Credentials", equalTo("true"));
+
+        response.then()
+                .body("$", hasKey("message"))
+                .body("message", equalTo("ok"));
+
+        RegistrationResponse  registrationResponse = response.as(RegistrationResponse.class);
+        assertNotNull(registrationResponse, "Registration response should not be null");
+
+        registrationResponse.setSuccess(true);
+
+        return registrationResponse;
+    }
+
+    @Step("Проверка успешной регистрации")
+    public void validateSuccessfulRegistration(RegistrationResponse response, String expectedEmail)
+    {
+        assertTrue(response.isSuccessful() || "ok".equals(response.getMessage()),
+                "Registration response should be: success");
+        if (response.hasUserId()) {
+            assertTrue(response.getUserId() > 0, "user ID should be positive");
+        }
+
+        if (response.getEmail()  != null) {
+            assertEquals(expectedEmail, response.getEmail(), "Email address should match");
+        }
+
+        AllureAttachments.attachText("Регистрация успешна",
+                String.format("""
+                        ✅ Пользователь успешно зарегистрирован
+                        📧 Email: %s
+                        🆔 User ID: %d
+                        🔑 Token: %s
+                        📝 Сообщение: %s
+                        """,
+                        expectedEmail,
+                        response.getUserId() != null ? response.getUserId() : "не указан",
+                        response.getShortToken() != null ? response.getShortToken() : "не получен",
+                        response.getMessage()));
+    }
+
+    @Step("Проверка ошибки регистрации")
+    public void validateRegistrationError(Response response, int expectedStatusCode, String expectedMessagePart) {
+        int statusCode = response.getStatusCode();
+
+        AllureAttachments.attachText("Ошибка регистрации",
+                String.format("""
+                        ❌ Регистрация не удалась
+                        📊 Статус код: %d (ожидался: %d)
+                        📝 Сообщение: %s
+                        """,
+                        statusCode,
+                        expectedStatusCode,
+                        response.getBody().asString()));
+
+        assertTrue(statusCode == expectedStatusCode || statusCode == 400 || statusCode ==422,
+                "Should return error status code. Got: " + statusCode);
+
+        String body = response.getBody().asString();
+        if (expectedMessagePart != null && !expectedMessagePart.isEmpty()) {
+            assertTrue(body.toLowerCase().contains(expectedMessagePart.toLowerCase()),
+                    "Response should contain: " + expectedMessagePart);
+        }
+    }
+
+    @Step("Регистрация и автоматический вход")
+    public String registerAndLogin(RegistrationRequest request) {
+        RegistrationResponse registrationResponse = registerAndGetResponse(request);
+
+        if (!registrationResponse.isSuccessful()) {
+            throw new IllegalStateException("Registration failed: " + registrationResponse.getMessage());
+        }
+
+        String token = registrationResponse.getToken();
+
+        if (token == null || token.isEmpty()) {
+            token = loginAndGetToken(request.getEmail(), request.getPassword());
+        }
+
+        currentAuthToken = token;
+
+        AllureAttachments.attachText("Регистрация и вход",
+                String.format("""
+                        ✅ Пользователь зарегистрирован и авторизован
+                        📧 Email: %s
+                        🆔 User ID: %d
+                        """,
+                        request.getEmail(),
+                        registrationResponse.getUserId()));
+
+        return token;
+    }
+
+    @Step("Создание случайного пользователя (регистрация + вход)")
+    public UserProfile createRandomUser() {
+        RegistrationRequest request = RegistrationRequest.generateRandom();
+        String token = registerAndLogin(request);
+
+        Response profileResponse = getProfile(token);
+        UserProfile profile = validateProfileResponse(profileResponse, request.getEmail());
+
+        currentUserProfile = profile;
+
+        AllureAttachments.attachText("Создан случайный пользователь",
+                String.format("""
+                        🆕 Новый пользователь создан
+                        📧 Email: %s
+                        👤 Имя: %s
+                        🆔 ID: %d
+                        """,
+                        profile.getEmail(),
+                        profile.getName(),
+                        profile.getId()));
 
         return profile;
     }

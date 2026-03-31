@@ -112,7 +112,7 @@ public class ProductsResponse {
     private List<Object> previews;
 
     @JsonProperty("productId")
-    private Integer productId;
+    private String productId;
 
     @JsonProperty("rating")
     private Integer rating;
@@ -256,11 +256,11 @@ public class ProductsResponse {
         isPremium = premium;
     }
 
-    public Integer getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

@@ -8,9 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.steps.UserSteps;
 import ru.tutor.config.TestConfig;
 
-
-import ru.tutor.steps.AuthSteps;
-
 import static io.qameta.allure.Allure.step;
 import static org.hamcrest.Matchers.*;
 

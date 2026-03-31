@@ -17,7 +17,15 @@ public class ProductsApi extends BaseApi {
      * GET /user/products - получение списка продуктов пользователя
      */
     public Response getUserProducts(String authToken) {
-        return getWithToken("/user/products", authToken);
+        return getWithToken("user/products", authToken);
+    }
+
+
+    /**
+     * GET /user/products/all - получение всех доступных продуктов
+     */
+    public Response getAllProducts(String authToken) {
+        return getWithToken("user/products/all", authToken);
     }
 
     /**

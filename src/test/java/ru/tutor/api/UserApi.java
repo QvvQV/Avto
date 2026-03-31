@@ -3,6 +3,7 @@ package ru.tutor.api;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
+import ru.tutor.model.RegistrationRequest;
 
 public class UserApi extends BaseApi {
 
@@ -47,5 +48,12 @@ public class UserApi extends BaseApi {
 
     public Response getGameStats(String authToken) {
         return getWithToken(ApiEndpoints.USER_GAME_STATS, authToken);
+    }
+
+    /**
+     * POST /register - регистрация пользователя
+     */
+    public Response register(RegistrationRequest request) {
+        return post(ApiEndpoints.REGISTER, request);
     }
 }

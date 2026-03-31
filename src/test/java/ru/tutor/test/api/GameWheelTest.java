@@ -11,7 +11,6 @@ import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.model.fortune.GameWheelStartGameResponse;
 import ru.tutor.model.fortune.UserRewardResponse;
 import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.UserSteps;
 import ru.tutor.steps.fortune.GameWheelStartGameSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 import ru.tutor.steps.fortune.UserRewardSteps;
