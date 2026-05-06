@@ -7,7 +7,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -33,6 +33,7 @@ public class SberPage {
 
     // Таймаут
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+    private final CloudPage cloudPage = new CloudPage();
 
     //Локаторы
     private final SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
@@ -60,7 +61,7 @@ public class SberPage {
             String modalText = ttPage.getTextModal();
             logModalType(modalText, email);
 
-            universalMethod.safeClick(CloudPage.FULL_OPTION, "Оплата");
+            UniversalMethod.safeClick(cloudPage.FULL_OPTION, "Оплата");
             sleep(9000);
             ERROR_MESSAGE.shouldNotBe(visible);
 
@@ -92,13 +93,13 @@ public class SberPage {
     @Step("Начало оформления заказа с продукта Excel")
     public void startOrderFromProduct() {
         step("Клик по кнопке оплатить", () ->
-            universalMethod.safeClick(BUY_BUTTON, BUY_TEXT)
+            UniversalMethod.safeClick(BUY_BUTTON, BUY_TEXT)
         );
 
         step("Заполнение email", () -> {
             String email = faker.internet().emailAddress();
             EMAIL_INPUT.setValue(email);
-            universalMethod.safeClick(ACCESS_BUTTON, "Подтверждение");
+            UniversalMethod.safeClick(ACCESS_BUTTON, "Подтверждение");
             sleep(9000);
 
             ERROR_MESSAGE.shouldNotBe(visible);
@@ -114,7 +115,7 @@ public class SberPage {
             CARD_NUMBER.shouldBe(visible, DEFAULT_TIMEOUT).setValue(cardNumber);
             EXPIRY_DATE.setValue(expiry);
             CVC.setValue(cvc);
-            universalMethod.safeClick(SUCCESS_BUTTON, PAY_TEXT);
+            UniversalMethod.safeClick(SUCCESS_BUTTON, PAY_TEXT);
 
             AllureAttachments.attachText("Данные карты",
                     "Карта: " + maskCardNumber(cardNumber) + "\nСрок: " + expiry + "\nCVC: " + cvc);
@@ -139,12 +140,12 @@ public class SberPage {
     @Step("Оплата одобренной картой")
     public void payWithApprovedCard() {
         fillCardData(
-                TestConfig.Cards.APPROVED,
-                TestConfig.Cards.Approved.EXPIRY,
-                TestConfig.Cards.Approved.CVC
+                TestConfig.Cards.getApproved(),
+                TestConfig.Cards.getApprovedExpiry(),
+                TestConfig.Cards.getApprovedCvc()
         );
         step("Переход в магазин", () -> {
-            universalMethod.safeClick(GO_SHOP, SHOP_TEXT);
+            UniversalMethod.safeClick(GO_SHOP, SHOP_TEXT);
             AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
         });
     }
@@ -152,9 +153,9 @@ public class SberPage {
     @Step("Оплата картой с недостаточными средствами")
     public void payWithInsufficientFundsCard() {
         fillCardData(
-                TestConfig.Cards.INSUFFICIENT_FUNDS,
-                TestConfig.Cards.InsufficientFunds.EXPIRY,
-                TestConfig.Cards.InsufficientFunds.CVC
+                TestConfig.Cards.getInsufficientFunds(),
+                TestConfig.Cards.getInsufficientFundsExpiry(),
+                TestConfig.Cards.getInsufficientFundsCvc()
         );
 
         handleDeclinePayment();
@@ -163,9 +164,9 @@ public class SberPage {
     @Step("Оплата просроченной картой")
     public void payWithExpiredCard() {
         fillCardData(
-                TestConfig.Cards.EXPIRED,
-                TestConfig.Cards.Expired.EXPIRY,
-                TestConfig.Cards.Expired.CVC
+                TestConfig.Cards.getExpired(),
+                TestConfig.Cards.getExpiredExpiry(),
+                TestConfig.Cards.getExpiredCvc()
         );
 
         handleDeclinePayment();
@@ -174,14 +175,14 @@ public class SberPage {
     @Step("Оплата картой с фиксированным балансом")
     public void payWithFixedBalanceCard() {
         fillCardData(
-                TestConfig.Cards.FIXED_BALANCE,
-                TestConfig.Cards.FixBalance.EXPIRY,
-                TestConfig.Cards.FixBalance.CVC
+                TestConfig.Cards.getFixedBalance(),
+                TestConfig.Cards.getFixedBalanceExpiry(),
+                TestConfig.Cards.getFixedBalanceCvc()
         );
         handleDeclinePayment();
 
         step("Переход в магазин", () -> {
-            universalMethod.safeClick(GO_SHOP, SHOP_TEXT);
+            UniversalMethod.safeClick(GO_SHOP, SHOP_TEXT);
             AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
         });
     }

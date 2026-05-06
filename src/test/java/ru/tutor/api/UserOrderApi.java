@@ -1,8 +1,6 @@
 package ru.tutor.api;
 
 import io.qameta.allure.Step;
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
@@ -10,12 +8,12 @@ import ru.tutor.constants.ApiEndpoints;
 import static io.restassured.RestAssured.given;
 
 /**
- * Ручка для отписки до Лайта
+ * Ручка для отписки до Лайта. Ручка для тарифа Подарок
  */
 
-public class OrderApi extends BaseApi {
+public class UserOrderApi extends BaseApi {
 
-    public OrderApi(String baseUrl) {
+    public UserOrderApi(String baseUrl) {
         super(baseUrl);
     }
 
@@ -24,5 +22,12 @@ public class OrderApi extends BaseApi {
     @Step("POST /user/orders/toggle_subscription/{orderId} - Отписка пользователя до Лайт")
     public Response toggleOrderSubscription(String authToken, Integer orderId) {
         return postWithToken(ApiEndpoints.ORDERS_TOGGLE_SUBSCRIPTION, authToken, "[]", orderId);
+    }
+
+    // Подарок
+
+    @Step(" POST user/orders/get-premium-gift - Получение Тариф Подарок")
+    public Response getPremiumGift(String authToken) {
+        return postWithToken(ApiEndpoints.ORDERS_GET_PREMIUM_GIFT, authToken, "[]");
     }
 }

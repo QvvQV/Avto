@@ -6,11 +6,9 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserApi;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.RegistrationRequest;
-import ru.tutor.model.RegistrationResponse;
+import ru.tutor.constants.PromoCodeTestData;
+import ru.tutor.model.*;
 import ru.tutor.model.fortune.GameStatsResponse;
-import ru.tutor.model.LogoutResponse;
-import ru.tutor.model.UserProfile;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.Base64;
@@ -32,6 +30,34 @@ public class UserSteps {
     public UserSteps(String baseUrl) {
         this.userApi = new UserApi(baseUrl);
     }
+
+    // ==================== РАБОТА С ТОКЕНОМ ИЗ ВКЛАДКИ ====================
+
+    /**
+     * Получение токена из текущей вкладки пользователя
+     */
+    @Step("Получение токена из вкладки пользователя")
+    public String getTokenFromUserTab(){
+        String token = AdminToUserLoginSteps.switchToTabAndGetToken();
+
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("не удалось получить токен из владки пользователя");
+        }
+
+        this.currentAuthToken = token;
+        return token;
+    }
+
+    /**
+     * Обновление токена из вкладки пользователя
+     */
+    @Step("Обновление токена из вкладки пользователя")
+    public UserSteps refreshTokenFromUserTab() {
+        getTokenFromUserTab();
+        return this;
+    }
+
+    // ==================== РАБОТА С ЛОГИНОМ ====================
 
     @Step("POST /user/login - вход пользователя {email}")
     public Response login(String email, String password) {
@@ -237,14 +263,14 @@ public class UserSteps {
     public Response register(RegistrationRequest request) {
         AllureAttachments.attachJson("Registration request",
                 String.format("""
-                        {
-                            "email": "%s",
-                            "name": "%s",
-                            "phone": "%s",
-                            "telegram": "%s",
-                            "approvePolicy": %s,
-                            "gender": %d
-                        }""",
+                                {
+                                    "email": "%s",
+                                    "name": "%s",
+                                    "phone": "%s",
+                                    "telegram": "%s",
+                                    "approvePolicy": %s,
+                                    "gender": %d
+                                }""",
                         request.getEmail(),
                         request.getName(),
                         request.getPhone() != null ? request.getPhone() : "",
@@ -276,7 +302,7 @@ public class UserSteps {
                 .body("$", hasKey("message"))
                 .body("message", equalTo("ok"));
 
-        RegistrationResponse  registrationResponse = response.as(RegistrationResponse.class);
+        RegistrationResponse registrationResponse = response.as(RegistrationResponse.class);
         assertNotNull(registrationResponse, "Registration response should not be null");
 
         registrationResponse.setSuccess(true);
@@ -285,26 +311,25 @@ public class UserSteps {
     }
 
     @Step("Проверка успешной регистрации")
-    public void validateSuccessfulRegistration(RegistrationResponse response, String expectedEmail)
-    {
+    public void validateSuccessfulRegistration(RegistrationResponse response, String expectedEmail) {
         assertTrue(response.isSuccessful() || "ok".equals(response.getMessage()),
                 "Registration response should be: success");
         if (response.hasUserId()) {
             assertTrue(response.getUserId() > 0, "user ID should be positive");
         }
 
-        if (response.getEmail()  != null) {
+        if (response.getEmail() != null) {
             assertEquals(expectedEmail, response.getEmail(), "Email address should match");
         }
 
         AllureAttachments.attachText("Регистрация успешна",
                 String.format("""
-                        ✅ Пользователь успешно зарегистрирован
-                        📧 Email: %s
-                        🆔 User ID: %d
-                        🔑 Token: %s
-                        📝 Сообщение: %s
-                        """,
+                                ✅ Пользователь успешно зарегистрирован
+                                📧 Email: %s
+                                🆔 User ID: %d
+                                🔑 Token: %s
+                                📝 Сообщение: %s
+                                """,
                         expectedEmail,
                         response.getUserId() != null ? response.getUserId() : "не указан",
                         response.getShortToken() != null ? response.getShortToken() : "не получен",
@@ -317,15 +342,15 @@ public class UserSteps {
 
         AllureAttachments.attachText("Ошибка регистрации",
                 String.format("""
-                        ❌ Регистрация не удалась
-                        📊 Статус код: %d (ожидался: %d)
-                        📝 Сообщение: %s
-                        """,
+                                ❌ Регистрация не удалась
+                                📊 Статус код: %d (ожидался: %d)
+                                📝 Сообщение: %s
+                                """,
                         statusCode,
                         expectedStatusCode,
                         response.getBody().asString()));
 
-        assertTrue(statusCode == expectedStatusCode || statusCode == 400 || statusCode ==422,
+        assertTrue(statusCode == expectedStatusCode || statusCode == 400 || statusCode == 422,
                 "Should return error status code. Got: " + statusCode);
 
         String body = response.getBody().asString();
@@ -353,10 +378,10 @@ public class UserSteps {
 
         AllureAttachments.attachText("Регистрация и вход",
                 String.format("""
-                        ✅ Пользователь зарегистрирован и авторизован
-                        📧 Email: %s
-                        🆔 User ID: %d
-                        """,
+                                ✅ Пользователь зарегистрирован и авторизован
+                                📧 Email: %s
+                                🆔 User ID: %d
+                                """,
                         request.getEmail(),
                         registrationResponse.getUserId()));
 
@@ -375,15 +400,128 @@ public class UserSteps {
 
         AllureAttachments.attachText("Создан случайный пользователь",
                 String.format("""
-                        🆕 Новый пользователь создан
-                        📧 Email: %s
-                        👤 Имя: %s
-                        🆔 ID: %d
-                        """,
+                                🆕 Новый пользователь создан
+                                📧 Email: %s
+                                👤 Имя: %s
+                                🆔 ID: %d
+                                """,
                         profile.getEmail(),
                         profile.getName(),
                         profile.getId()));
 
         return profile;
     }
+
+    // ==================== ПРОМОКОДЫ ====================
+
+    @Step("POST /user/promo-codes/apply - применение промокода")
+    public Response applyPromoCode(String authToken, ApplyPromoCodeRequest request) {
+        String effectiveToken = authToken;
+        if (effectiveToken == null || effectiveToken.isEmpty()) {
+            if (currentAuthToken != null && !currentAuthToken.isEmpty()) {
+                effectiveToken = currentAuthToken;
+                Allure.addAttachment("Использование токена", "text/plain", "Используем сохранённый токен из контекста");
+            } else {
+                effectiveToken = getTokenFromUserTab();
+                Allure.addAttachment("Использование токена", "text/plain", "Получен новый токен из вкладки пользователя");
+            }
+        }
+
+        AllureAttachments.attachJson("Apply Promo Code Request",
+                String.format("{\"promoCodeName\":\"%s\",\"orderNumber\":\"%s\"}",
+                        request.getPromoCodeName(), request.getOrderNumber()));
+        Response response = userApi.applyPromoCode(authToken, request);
+        AllureAttachments.attachJson("Apply Promo Code Response", response.getBody().asString());
+        AllureAttachments.attachJson("Apply Promo Code Headers", response.getHeaders().toString());
+        return response;
+    }
+
+    @Step("Валидация успешного ответа при применении промокода")
+    public ApplyPromoCodeResponse validateSuccessfulPromoCodeResponse(Response response) {
+        response.then()
+                .statusCode(200)
+                .contentType("application/json")
+                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
+                .header("Access-Control-Allow-Credentials", equalTo("true"));
+
+        response.then()
+                .body("$", hasKey("message"));
+
+        ApplyPromoCodeResponse promoResponse = response.as(ApplyPromoCodeResponse.class);
+        assertNotNull(promoResponse, "Promo code response should not be null");
+        assertTrue(PromoCodeTestData.isSuccessResponse(promoResponse.getMessage()), "Promo code response should be success");
+//        assertTrue(promoResponse.isSuccessful(), "Promo code response should be: success");
+
+        AllureAttachments.attachText("Промокод применен",
+                String.format("""
+                                ✅ Промокод успешно применен
+                                📝 Сообщение: %s
+                                """,
+                        promoResponse.getMessage()));
+
+        return promoResponse;
+    }
+
+    @Step("Валидация ответа с ошибкой при применении промокода")
+    public ApplyPromoCodeResponse validatePromoCodeErrorResponse(Response response, int expectedStatusCode, String expectedError) {
+        int statusCode = response.getStatusCode();
+
+        response.then()
+                .statusCode(expectedStatusCode)
+                .contentType("application/json");
+
+        response.then()
+                .body("$", hasKey("error"));
+
+        ApplyPromoCodeResponse promoResponse = response.as(ApplyPromoCodeResponse.class);
+        assertNotNull(promoResponse, "Promo code response should not be null");
+        assertTrue(promoResponse.hasError(), "Should have error message");
+
+        String actualErrorType = PromoCodeTestData.getErrorType(promoResponse.getError());
+
+        if (expectedError != null && !expectedError.isEmpty()) {
+            assertTrue(PromoCodeTestData.isExpectedError(promoResponse.getError(), expectedError),
+                    String.format("Error should contain '%s'. Actual: '%s'",
+                            expectedError, actualErrorType, promoResponse.getError()));
+        }
+
+        AllureAttachments.attachText("Ошибка применения промокода",
+                String.format("""
+                        ❌ Промокод не применен
+                        📊 Статус: %d
+                        📝 Ошибка: %s
+                        """,
+                        statusCode,
+                        actualErrorType,
+                        promoResponse.getError()));
+
+        return promoResponse;
+    }
+
+    @Step("Применение промокода с проверкой успеха")
+    public ApplyPromoCodeResponse applyPromoCodeAndValidate(String promoCodeName,
+                                                            String orderNumber) {
+        String authToken = getTokenFromUserTab();
+        ApplyPromoCodeRequest request = ApplyPromoCodeRequest.of(promoCodeName, orderNumber);
+        Response response = applyPromoCode(authToken, request);
+        return validateSuccessfulPromoCodeResponse(response);
+    }
+
+    @Step("Применение промокода с ожидаемой ошибкой")
+    public ApplyPromoCodeResponse applyPromoCodeAndExpectError(String promoCodeName,
+                                                               String orderNumber, String expectedError) {
+        String authToken = getTokenFromUserTab();
+
+        ApplyPromoCodeRequest request = ApplyPromoCodeRequest.of(promoCodeName, orderNumber);
+        Response response = applyPromoCode(authToken, request);
+        return validatePromoCodeErrorResponse(response, 400, expectedError);
+    }
+
+//    @Step("Применение промокода текущим пользователем")
+//    public ApplyPromoCodeResponse applyPromoCodeForCurrentUser(String promoCodeName, String orderNumber) {
+//        if (currentAuthToken == null) {
+//            throw new IllegalStateException("Токен не получен. Сначала выполните login!");
+//        }
+//        return applyPromoCodeAndValidate(currentAuthToken, promoCodeName, orderNumber);
+//    }
 }

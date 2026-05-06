@@ -13,7 +13,6 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SubscriptionPurchaseBuilder {
-//    private String subscriptionType;
     private TtPage.SubscriptionType subscriptionType;
     private PaymentSystem paymentSystem;
     private PaymentMethod paymentMethod;
@@ -50,8 +49,9 @@ public class SubscriptionPurchaseBuilder {
 
     private PageVariant pageVariant = PageVariant.DEFAULT;
 
-    public void withAffRid(){
+    public SubscriptionPurchaseBuilder withAffRid(){
         this.pageVariant = PageVariant.WITH_AFF_RID;
+        return this;
     }
 
     public boolean hasAffRid() {
@@ -146,7 +146,7 @@ public class SubscriptionPurchaseBuilder {
 
     // Универсальный метод с параметром для aff_rid
     private void openMainPageAndCheckTitle(boolean useAffRid) {
-        String url = useAffRid ? AddressPage.urlMainRev : AddressPage.urlMain;
+        String url = useAffRid ? AddressPage.URL_MAINRev : AddressPage.URL_MAIN;
         String stepName = useAffRid ? "с aff_rid параметром" : "без aff_rid параметра";
 
         step(String.format("Открытие главной страницы %s", stepName), () ->
@@ -180,14 +180,14 @@ public class SubscriptionPurchaseBuilder {
         if (paymentMethod == PaymentMethod.INSTALLMENTS) {
             cloudPage.setDateModalInstallments();
         } else {
-            CloudPage.setDateModal();
+            cloudPage.setDateModal();
         }
 
         if (captureEmail) {
-            userEmail = CloudPage.atrEmail();
+            userEmail = cloudPage.atrEmail();
         }
 
-        CloudPage.clickCardPageBtn();
+        cloudPage.clickCardPageBtn();
     }
 
     private void processSberPayment() {

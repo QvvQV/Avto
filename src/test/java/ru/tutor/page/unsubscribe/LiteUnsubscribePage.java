@@ -4,7 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 
@@ -29,16 +29,16 @@ public class LiteUnsubscribePage {
     private static final String SUBSCRIBE_TEXT = "Оформить подписку";
 
     // Локаторы Premium подписки
-    private static final SelenideElement ACTIVE_BUTTON = $$("button").find(exactText(ACTIVE_TEXT));
-    private static final SelenideElement SUBSCRIBE_BUTTON = $$("button").find(exactText(SUBSCRIBE_TEXT));
-    private static final SelenideElement H3_TEXT = $("h3");
+    private final SelenideElement ACTIVE_BUTTON = $$("button").find(exactText(ACTIVE_TEXT));
+    private final SelenideElement SUBSCRIBE_BUTTON = $$("button").find(exactText(SUBSCRIBE_TEXT));
+    private final SelenideElement H3_TEXT = $("h3");
 
     // Локаторы Lite подписки
-    private static final SelenideElement HREF = $("a[href*='payments']");
-    private static final SelenideElement DISABLE_ACCESS_BUTTON = $$("button").find(exactText(DISABLE_ACCESS_TEXT));
-    private static final SelenideElement DEACTIVE_ACCESS_BUTTON = $$("button").find(exactText(DEACTIVATE_ACCESS_TEXT));
-    private static final SelenideElement DEACTIVE_BUTTON = $$("button").find(exactText(DEACTIVATE_TEXT));
-    private static final SelenideElement MISS_CHANCE_BUTTON = $$("button").find(exactText(MISS_CHANCE_TEXT));
+    private final SelenideElement HREF = $("a[href*='payments']");
+    private final SelenideElement DISABLE_ACCESS_BUTTON = $$("button").find(exactText(DISABLE_ACCESS_TEXT));
+    private final SelenideElement DEACTIVE_ACCESS_BUTTON = $$("button").find(exactText(DEACTIVATE_ACCESS_TEXT));
+    private final SelenideElement DEACTIVE_BUTTON = $$("button").find(exactText(DEACTIVATE_TEXT));
+    private final SelenideElement MISS_CHANCE_BUTTON = $$("button").find(exactText(MISS_CHANCE_TEXT));
 
 
     // Универсальные методы
@@ -63,25 +63,25 @@ public class LiteUnsubscribePage {
      * Получение и логирование текста заголовка
      */
     @Step("Получение текста заголовка")
-    private static String getHeaderText() {
+    private String getHeaderText() {
         return step("Заголовок страницы", () -> {
-            String headerText = universalMethod.getElementText(H3_TEXT, "Заголовок старницы");
+            String headerText = UniversalMethod.getElementText(H3_TEXT, "Заголовок старницы");
             AllureAttachments.attachText("Заголовок страницы", headerText);
             return headerText;
         });
     }
 
     @Step("Клик по кнопке 'Отключить доступ'")
-    private static void clickDisableAccessButton() {
-        universalMethod.clickButtonWithPageLoad(DISABLE_ACCESS_BUTTON, DISABLE_ACCESS_TEXT);
+    private void clickDisableAccessButton() {
+        UniversalMethod.clickButtonWithPageLoad(DISABLE_ACCESS_BUTTON, DISABLE_ACCESS_TEXT);
 
         String headerText = getHeaderText();
         AllureAttachments.attachScreenshot("После клика на 'Отключить доступ' - " + headerText);
     }
 
     @Step("Клик по кнопке 'Деактивировать доступ'")
-    private static void clickDeactivateAccessButton() {
-        universalMethod.clickButtonWithPageLoad(DEACTIVE_ACCESS_BUTTON, DEACTIVATE_ACCESS_TEXT);
+    private void clickDeactivateAccessButton() {
+        UniversalMethod.clickButtonWithPageLoad(DEACTIVE_ACCESS_BUTTON, DEACTIVATE_ACCESS_TEXT);
 
         // Получаем и логируем заголовок
         String headerText = getHeaderText();
@@ -89,13 +89,13 @@ public class LiteUnsubscribePage {
     }
 
     @Step("Клик по кнопке 'деактивировать доступ'")
-    public static void clickDeactivateButton() {
-       universalMethod.clickButtonWithPageLoad(DEACTIVE_BUTTON, DEACTIVATE_TEXT);
+    public void clickDeactivateButton() {
+       UniversalMethod.clickButtonWithPageLoad(DEACTIVE_BUTTON, DEACTIVATE_TEXT);
     }
 
     @Step("Клик по кнопке 'Упустить свой шанс'")
-    public static void clickMissChanceButton() {
-        universalMethod.clickButtonWithPageLoad(MISS_CHANCE_BUTTON, MISS_CHANCE_TEXT);
+    public void clickMissChanceButton() {
+        UniversalMethod.clickButtonWithPageLoad(MISS_CHANCE_BUTTON, MISS_CHANCE_TEXT);
 
         // Получаем и логируем заголовок
         String headerText = getHeaderText();
@@ -103,7 +103,7 @@ public class LiteUnsubscribePage {
     }
 
     @Step("Проверка состояния тарифного плана: {state.displayName}")
-    private static void verifyTariffPlanState(TariffState state) {
+    private void verifyTariffPlanState(TariffState state) {
         step("Проверка состояния тарифного плана: " + state.getDisplayName(), () -> {
             String actualHeader = getHeaderText();
 
@@ -117,14 +117,14 @@ public class LiteUnsubscribePage {
     }
 
     @Step("Тарифный план отключен")
-    private static void verifyTariffPlanDisabled() {
+    private void verifyTariffPlanDisabled() {
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
         verifyTariffPlanState(TariffState.DISABLED);
     }
 
     @Step("Тарифный план активен")
-    private static void verifyTariffPlanActive() {
+    private void verifyTariffPlanActive() {
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
         verifyTariffPlanState(TariffState.ACTIVE);
@@ -132,7 +132,7 @@ public class LiteUnsubscribePage {
 
     // Валидационные методы
     @Step("Проверка что кнопка 'Активна' disabled")
-    public static void verifyActiveButtonIsDisabled() {
+    public void verifyActiveButtonIsDisabled() {
         step("Проверка disabled состояния кнопки 'Активна'", () -> {
             ACTIVE_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT)
                     .shouldHave(attribute("disabled"))
@@ -145,27 +145,27 @@ public class LiteUnsubscribePage {
 
     // Flow методы для комплексных сценариев
     @Step("Полный процесс отмены Lite подписки")
-    public static void completeLiteUnsubscription() {
+    public void completeLiteUnsubscription() {
         clickHyperlink();
-        universalMethod.clickButton(ACTIVE_BUTTON,ACTIVE_TEXT);
-        universalMethod.clickButton(DISABLE_ACCESS_BUTTON,DISABLE_ACCESS_TEXT);
-        universalMethod.clickButton(DEACTIVE_ACCESS_BUTTON,DEACTIVATE_ACCESS_TEXT);
-        universalMethod.clickButton(MISS_CHANCE_BUTTON,MISS_CHANCE_TEXT);
+        UniversalMethod.clickButton(ACTIVE_BUTTON,ACTIVE_TEXT);
+        UniversalMethod.clickButton(DISABLE_ACCESS_BUTTON,DISABLE_ACCESS_TEXT);
+        UniversalMethod.clickButton(DEACTIVE_ACCESS_BUTTON,DEACTIVATE_ACCESS_TEXT);
+        UniversalMethod.clickButton(MISS_CHANCE_BUTTON,MISS_CHANCE_TEXT);
 
         verifyTariffPlanDisabled();
     }
 
     @Step("Клик по гиперссылке")
-    private static void clickHyperlink() {
+    private void clickHyperlink() {
         step("Клик по гиперссылке", () -> {
-            universalMethod.safeClick(HREF, "Клик по гиперссылке");
+            UniversalMethod.safeClick(HREF, "Клик по гиперссылке");
 
             WaitHelper.waitForPageLoad();
         });
     }
 
     @Step("Клик по кнопке Оформить подписку")
-    public static void clickSubscribe() {
-        universalMethod.clickButton(SUBSCRIBE_BUTTON, SUBSCRIBE_TEXT);
+    public void clickSubscribe() {
+        UniversalMethod.clickButton(SUBSCRIBE_BUTTON, SUBSCRIBE_TEXT);
     }
 }

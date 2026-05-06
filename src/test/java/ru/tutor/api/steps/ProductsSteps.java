@@ -7,7 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ru.tutor.page.api.ProductsApi;
+import ru.tutor.api.catalog.CatalogProductsApi;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -19,10 +19,10 @@ import static io.restassured.RestAssured.given;
 
 
 public class ProductsSteps {
-    private final ProductsApi productApi;
+    private final CatalogProductsApi productApi;
 
     public ProductsSteps(String baseUrl, String login, String password) {
-        this.productApi = new ProductsApi(baseUrl, login, password);
+        this.productApi = new CatalogProductsApi(baseUrl, login, password);
     }
 
     @Step("Проверка всех продуктов каталога")

@@ -19,62 +19,62 @@ import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItems;
 
-public class devProduct {
-    private static final Faker faker = new Faker(Locale.ENGLISH);
+public class DevProduct {
+    private final Faker faker = new Faker(Locale.ENGLISH);
     private static final SelenideElement btnSave = $$("button").find(exactText("Сохранить"));
-    private static final SelenideElement h2 = $$("h2").find(exactText("Редактирование продукта"));
-    private static final SelenideElement h1 = $("h1");
-    private static final SelenideElement card1Title = $("div:nth-child(2) > div:nth-child(2) > div.input__wrapper > input");
-    private static final SelenideElement card2Title = $("div:nth-child(2) > div:nth-child(4) > div.input__wrapper > input");
-    private static final SelenideElement card3Title = $("div:nth-child(2) > div:nth-child(6) > div.input__wrapper > input");
-    private static final SelenideElement label = $$("label").find(exactText("Навык 1"));
-    private static final SelenideElement description = $$("[name=\"description\"]").get(3);
-    private static final SelenideElement sideBArProduct = $$("span").find(exactText("Продукты"));
-    private static final SelenideElement pencil = $(".table__inner > div:nth-child(3) > div.tableRow__item.tableRow__item--svg.tableRow__item--m > a > svg > path:nth-child(3)");
+    private final SelenideElement h2 = $$("h2").find(exactText("Редактирование продукта"));
+    private final SelenideElement h1 = $("h1");
+    private final SelenideElement card1Title = $("div:nth-child(2) > div:nth-child(2) > div.input__wrapper > input");
+    private final SelenideElement card2Title = $("div:nth-child(2) > div:nth-child(4) > div.input__wrapper > input");
+    private final SelenideElement card3Title = $("div:nth-child(2) > div:nth-child(6) > div.input__wrapper > input");
+    private final SelenideElement label = $$("label").find(exactText("Навык 1"));
+    private final SelenideElement description = $$("[name=\"description\"]").get(3);
+    private final SelenideElement sideBArProduct = $$("span").find(exactText("Продукты"));
+    private final SelenideElement pencil = $(".table__inner > div:nth-child(3) > div.tableRow__item.tableRow__item--svg.tableRow__item--m > a > svg > path:nth-child(3)");
 
-    public static void textH2() {
+    public void textH2() {
         step("проверяем, что попали в редактор", () ->
             Assertions.assertEquals("Редактирование продукта", h2.getText().trim())
         );
     }
 
-    public static void textH1() {
+    public void textH1() {
         step("проверяем текст заголовка Н1", () ->
             Assertions.assertEquals("Продукты", h1.getText().trim())
         );
     }
 
-    public static void scrollToElement() {
+    public void scrollToElement() {
         step("прокручиваем до элемента", () ->
             executeJavaScript("arguments[0].scrollIntoView(true);", label)
         );
     }
 
-    public static void inputText() {
+    public void inputText() {
         step("вводим текст в первый модуль", () ->
             description.sendKeys("навык-приветствия")
         );
     }
 
-    public static void assertionsText() {
+    public void assertionsText() {
         step("проверяем ранее набранный текст", () ->
             Assertions.assertEquals("навык-приветствия", description.getText().trim())
         );
     }
 
-    public static void deleteText() {
+    public void deleteText() {
         step("удаляем текст в поле", () ->
             description.sendKeys(Keys.CONTROL + "A" + Keys.DELETE)
         );
     }
 
-    public static void cleanText() {
+    public void cleanText() {
         step("проверяем что поле пустое", () ->
             Assertions.assertEquals("", description.getText().trim())
         );
     }
 
-    public static void scrollToBtnSave() {
+    public void scrollToBtnSave() {
         step("прокручиваем до элемента", () ->
             executeJavaScript("arguments[0].scrollIntoView(true);", btnSave)
         );
@@ -84,7 +84,7 @@ public class devProduct {
         });
     }
 
-    public static void visibleCardTitle() {
+    public void visibleCardTitle() {
         step("видимость заголовков", () -> {
             step("заголовок1", () ->
                 card1Title.shouldBe(visible)
@@ -98,11 +98,11 @@ public class devProduct {
         });
     }
 
-    public static void clickPencil() {
+    public void clickPencil() {
         doGet();
     }
 
-    public static void doGet() {
+    public void doGet() {
         step("получаем токен", () -> {
         });
         String requestBody = "{\"username\": \"admin\", \"password\": \"admin\"}";

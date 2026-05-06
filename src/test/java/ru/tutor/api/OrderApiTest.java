@@ -1,7 +1,5 @@
 package ru.tutor.api;
 
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
@@ -19,14 +17,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.sleep;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-// Получение токен для авторов TP-5735 Регистрация для авторов
+// Получение токен для авторов TP-5735 Регистрация для авторов. Ленд - https://authors.tutorplace.ru/
 @Epic("API Tests")
 @Feature("Создание заказа")
 @DisplayName("Тесты для эндпоинта создания заказа")
@@ -39,10 +35,8 @@ public class OrderApiTest {
 
     @BeforeAll
     void setUp() {
-        RestAssured.baseURI = TestConfig.getCurrentApiUrl();
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
 
-        // Генерация уникального email один раз для всех тестов
         testEmail = "tes" + System.currentTimeMillis() + "@as.qq";
     }
 
@@ -76,27 +70,12 @@ public class OrderApiTest {
 //        openTokenUrlInBrowser(loginTokenUrl);
     }
 
-    @Step("Открыть URL токена в браузере")
-    private void openTokenUrlInBrowser(String tokenUrl) {
-        // Настройка браузера
-        Configuration.browser = "chrome";
-        Configuration.timeout = 10000;
-
-        // Открываем URL с токеном
-        open(tokenUrl);
-
-        // Ждем загрузки
-        sleep(3000);
-
-        AllureAttachments.attachScreenshot("Страница после открытия токена");
-        AllureAttachments.attachText("Текущий URL", WebDriverRunner.url());
-    }
-
     @Step("Отправка POST запроса на создание заказа")
     private Response sendCreateOrderRequest(Map<String, String> formData) {
-        // Прикрепляем данные запроса к отчету
+        String baseUrl = TestConfig.getCurrentApiUrl();
+
         StringBuilder requestDetails = new StringBuilder();
-        requestDetails.append("URL: ").append(RestAssured.baseURI).append(CREATE_ORDER_ENDPOINT).append("\n");
+        requestDetails.append("URL: ").append(baseUrl).append(CREATE_ORDER_ENDPOINT).append("\n");
         requestDetails.append("Method: POST\n");
         requestDetails.append("Content-Type: multipart/form-data\n");
         requestDetails.append("Form Data:\n");
@@ -104,6 +83,7 @@ public class OrderApiTest {
         AllureAttachments.attachText("Детали запроса", requestDetails.toString());
 
          return given()
+                .baseUri(baseUrl)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("isAuthorRegister", formData.get("isAuthorRegister"))
                 .multiPart("order[email]", formData.get("order[email]"))
@@ -123,7 +103,7 @@ public class OrderApiTest {
                 .assertThat()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("$", hasKey("token"))
+//                .body("$", hasKey("token"))
                 .body("token", notNullValue())
                 .body("token", containsString(TestConfig.getCurrentClientDomain()));
     }
@@ -150,10 +130,8 @@ public class OrderApiTest {
         assertAll("Проверка параметров токена",
                 () -> assertNotNull(username, "username не должен быть null"),
                 () -> assertNotNull(loginToken, "login_token не должен быть null"),
-                () -> {
-                    assert loginToken != null;
-                    assertTrue(loginToken.length() >= 32, "login_token должен быть достаточно длинным");
-                }
+                () ->
+                    assertTrue(loginToken.length() >= 32, "login_token должен быть достаточно длинным")
         );
 
         AllureAttachments.attachText("Детали токена",
@@ -200,6 +178,7 @@ public class OrderApiTest {
         testFormData.put("order[name]", "Test Name");
 
         Response response = given()
+                .baseUri(TestConfig.getCurrentApiUrl())
                 .contentType(ContentType.MULTIPART)
                 .multiPart("isAuthorRegister", testFormData.get("isAuthorRegister"))
                 .multiPart("order[email]", testFormData.get("order[email]"))
@@ -218,6 +197,7 @@ public class OrderApiTest {
         testFormData.put("order[name]", "");
 
         Response response = given()
+                .baseUri(TestConfig.getCurrentApiUrl())
                 .contentType(ContentType.MULTIPART)
                 .multiPart("isAuthorRegister", testFormData.get("isAuthorRegister"))
                 .multiPart("order[email]", testFormData.get("order[email]"))

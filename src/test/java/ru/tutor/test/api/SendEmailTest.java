@@ -54,7 +54,7 @@ public class SendEmailTest {
     }
 
     @Test
-    @DisplayName("Отправка письма с пустым email")
+    @DisplayName("Отправка письма с пустым name")
     void testSendEmailEmptyName(){
         sendEmailSteps.sendEmailWithEmptyName();
     }

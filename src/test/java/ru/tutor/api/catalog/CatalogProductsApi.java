@@ -1,4 +1,4 @@
-package ru.tutor.page.api;
+package ru.tutor.api.catalog;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
@@ -9,12 +9,12 @@ import java.util.Base64;
 
 import static io.restassured.RestAssured.given;
 
-public class ProductsApi extends BaseApi {
+public class CatalogProductsApi extends BaseApi {
 //    private final String baseCatalogUrl = "https://ttplace.ru/catalog";
 //    private final String baseProductUrl = "https://ttplace.ru/catalog/product";
     private final String authHeader;
 
-    public ProductsApi(String baseUrl, String login, String password) {
+    public CatalogProductsApi(String baseUrl, String login, String password) {
         super(baseUrl);
         this.authHeader = "Basic " + Base64.getEncoder()
                 .encodeToString((login + ":" + password).getBytes(StandardCharsets.UTF_8));

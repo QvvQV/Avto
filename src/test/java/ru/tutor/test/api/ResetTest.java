@@ -10,7 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.config.TestConfig;
 import ru.tutor.steps.ResetSteps;
-import ru.tutor.base.BaseApiTest;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.Locale;

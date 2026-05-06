@@ -8,7 +8,7 @@ import io.qameta.allure.Step;
 import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -18,34 +18,34 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 
-public class taro {
+public class Taro {
 
     // Константа
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
-    private static final SelenideElement TARO = $$("p").find(exactText("Таро"));
+    private final SelenideElement TARO = $$("p").find(exactText("Таро"));
 
     // Локаторы карусели
-    private static final ElementsCollection TARO_BUTTONS = $$("button._btn_121zv_91");
-    private static final SelenideElement DASHBOARDS_BUTTON = $$("a").find(exactText("Таро"));
-    private static final SelenideElement TITLE = $("h2");
-    private static final SelenideElement RIGHT_BUTTON = $(".right");
+    private final ElementsCollection TARO_BUTTONS = $$("button._btn_121zv_91");
+    private final SelenideElement DASHBOARDS_BUTTON = $$("a").find(exactText("Таро"));
+    private final SelenideElement TITLE = $("h2");
+    private final SelenideElement RIGHT_BUTTON = $(".right");
 
     @Step("Кликаем по Таро")
-    public static void clickFromTaro() {
+    public void clickFromTaro() {
 
         step("Кликаем по Таро", () -> {
-            universalMethod.safeClick(TARO, "Таро");
+            UniversalMethod.safeClick(TARO, "Таро");
             AllureAttachments.attachScreenshot("Результат после клика");
         });
     }
 
-    private static final String[] TAROS_NAMES = {
+    private final String[] TAROS_NAMES = {
             "Отношения", "Далекое будущее", "Ответ на вопрос: “Да” или “Нет”", "Ближайшее будущее",
             "Что он думает о вас", "Личность", "Деньги", "Пoл будущeгo peбeнкa"
     };
 
-    public static void mealNavigationWithCollection() {
+    public void mealNavigationWithCollection() {
         TARO_BUTTONS.shouldHave(CollectionCondition.size(8), DEFAULT_TIMEOUT);
 
         for (int i = 0; i < TARO_BUTTONS.size(); i++) {
@@ -58,11 +58,11 @@ public class taro {
         }
 
         step("Переход на главную страницу",
-            Home::clickMainlink
+                () -> new Home().clickMainlink()
         );
     }
 
-    private static void navigateToButtonByIndex(int targetIndex) {
+    private void navigateToButtonByIndex(int targetIndex) {
         step("Навигация к кнопке #" + (targetIndex + 1), () -> {
             // Проверяем текущую позицию - находим первую видимую кнопку
             int currentPosition = findFirstVisibleButtonIndex();
@@ -80,7 +80,7 @@ public class taro {
                             .shouldBe(interactable, DEFAULT_TIMEOUT)
                             .click();
                     WaitHelper.waitForAnimationComplete();
-                    WaitHelper.waitFor(DEFAULT_TIMEOUT);
+//                    WaitHelper.waitFor(DEFAULT_TIMEOUT);
                 } else {
                     AllureAttachments.attachText("Предупреждение",
                             "Не удалось прокрутить к кнопке #" + targetIndex +
@@ -101,7 +101,7 @@ public class taro {
     /**
      * Находит индекс первой видимой кнопки в карусели
      */
-    private static int findFirstVisibleButtonIndex() {
+    private int findFirstVisibleButtonIndex() {
         for (int i = 0; i < TARO_BUTTONS.size(); i++) {
             if (TARO_BUTTONS.get(i).isDisplayed()) {
                 return i;
@@ -113,7 +113,7 @@ public class taro {
     /**
      * Проверяет доступна ли кнопка прокрутки вправо
      */
-    private static boolean isRightButtonEnabled() {
+    private boolean isRightButtonEnabled() {
         try {
             return RIGHT_BUTTON.exists() &&
                     RIGHT_BUTTON.isDisplayed() &&
@@ -124,7 +124,7 @@ public class taro {
         }
     }
 
-    private static void mealButtonByIndex(int index) {
+    private void mealButtonByIndex(int index) {
         String taroName = TAROS_NAMES[index];
 
         step("Тестирование кнопки: " + taroName, () -> {
@@ -154,7 +154,7 @@ public class taro {
             });
 
             step("Возвращаемся на страницу 'Таро'", () -> {
-                universalMethod.safeClick(DASHBOARDS_BUTTON, "Назад на страницу 'Таро'");
+                UniversalMethod.safeClick(DASHBOARDS_BUTTON, "Назад на страницу 'Таро'");
 
                 WaitHelper.waitForPageLoad();
 

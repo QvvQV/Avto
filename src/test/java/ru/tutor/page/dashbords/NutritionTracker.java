@@ -8,7 +8,7 @@ import io.qameta.allure.Step;
 import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 
@@ -16,7 +16,7 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 
-public class nutritionTracker {
+public class NutritionTracker {
 
     // Константа
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
@@ -32,29 +32,29 @@ public class nutritionTracker {
     private static final String RESULTS_TEXT = "Результаты";
 
     // Локаторы кнопок
-    private static final SelenideElement NUTRITION_TRACKER = $$("p").find(exactText(NUTRITION_TEXT));
-    private static final SelenideElement START_BUTTON = $$("button").find(exactText(START_TEXT));
-    private static final SelenideElement START_A_FASTING_PERIOD_BUTTON = $$("button").find(exactText(START_A_FASTING_PERIOD_TEXT));
-    private static final SelenideElement START_THE_EATING_PERIOD_BUTTON = $$("button").find(exactText(START_THE_EATING_PERIOD_TEXT));
-    private static final SelenideElement ABORT_THE_PROGRAM_BUTTON = $$("button").find(exactText(ABORT_THE_PROGRAM_TEXT));
-    private static final SelenideElement INTERRUPT_BUTTON = $$("button").find(exactText(INTERRUPT_TEXT));
+    private final SelenideElement NUTRITION_TRACKER = $$("p").find(exactText(NUTRITION_TEXT));
+    private final SelenideElement START_BUTTON = $$("button").find(exactText(START_TEXT));
+    private final SelenideElement START_A_FASTING_PERIOD_BUTTON = $$("button").find(exactText(START_A_FASTING_PERIOD_TEXT));
+    private final SelenideElement START_THE_EATING_PERIOD_BUTTON = $$("button").find(exactText(START_THE_EATING_PERIOD_TEXT));
+    private final SelenideElement ABORT_THE_PROGRAM_BUTTON = $$("button").find(exactText(ABORT_THE_PROGRAM_TEXT));
+    private final SelenideElement INTERRUPT_BUTTON = $$("button").find(exactText(INTERRUPT_TEXT));
 
     // Локаторы для проверки страниц
-    private static final SelenideElement MY_RECIPES = $$("h2").find(exactText(MY_RECIPES_TEXT));
-    private static final SelenideElement RESULTS_BUTTON = $$("a").find(exactText(RESULTS_TEXT));
+    private final SelenideElement MY_RECIPES = $$("h2").find(exactText(MY_RECIPES_TEXT));
+    private final SelenideElement RESULTS_BUTTON = $$("a").find(exactText(RESULTS_TEXT));
 
     // Локаторы приёма пищи
-    private static final ElementsCollection MEAL_BUTTONS = $$("a._addButton_1y9xd_102");
+    private final ElementsCollection MEAL_BUTTONS = $$("a._addButton_1y9xd_102");
 
 
     @Step("Кликаем по трекеру питания")
-    public static void clickFromNutritionTracker() {
-        universalMethod.safeClick(NUTRITION_TRACKER, NUTRITION_TEXT);
+    public void clickFromNutritionTracker() {
+        UniversalMethod.safeClick(NUTRITION_TRACKER, NUTRITION_TEXT);
         AllureAttachments.attachScreenshot("Дашборд питания");
     }
 
     @Step("Проверяем модальное окно 'Начать программу'")
-    public static void startProgramm() {
+    public void startProgramm() {
         clickStartProgram();
         clickStartFastingPeriod();
         clickAbortProgramm();
@@ -63,48 +63,48 @@ public class nutritionTracker {
     }
 
     @Step("Кликаем по кнопке 'Начать период голодания'")
-    private static void clickStartFastingPeriod() {
+    private void clickStartFastingPeriod() {
         step("Кликаем по кнопке 'Начать период голодания'", () ->
-                universalMethod.safeClick(START_A_FASTING_PERIOD_BUTTON, START_TEXT)
+                UniversalMethod.safeClick(START_A_FASTING_PERIOD_BUTTON, START_TEXT)
         );
     }
 
     @Step("Кликаем по кнопке 'Начать программу'")
-    private static void clickStartProgram() {
+    private void clickStartProgram() {
         step("Кликаем по кнопке 'Начать программу'", () ->
-        universalMethod.safeClick(START_BUTTON, START_TEXT)
+        UniversalMethod.safeClick(START_BUTTON, START_TEXT)
         );
     }
 
     @Step("Кликаем по кнопке 'Прервать программу'")
-    private static void clickAbortProgramm() {
+    private void clickAbortProgramm() {
         step("Кликаем по кнопке 'Прервать программу'", () ->
-        universalMethod.safeClick(ABORT_THE_PROGRAM_BUTTON, ABORT_THE_PROGRAM_TEXT)
+        UniversalMethod.safeClick(ABORT_THE_PROGRAM_BUTTON, ABORT_THE_PROGRAM_TEXT)
         );
         step("Прерываем программу", () -> {
-            universalMethod.safeClick(INTERRUPT_BUTTON, INTERRUPT_TEXT);
+            UniversalMethod.safeClick(INTERRUPT_BUTTON, INTERRUPT_TEXT);
             AllureAttachments.attachText("✅ ", "Программа прервана");
         });
     }
 
     @Step("Кликаем по кнопке 'Начать период приёма пищи'")
-    private static void clickStartEatingPeriod() {
+    private void clickStartEatingPeriod() {
         step("Кликаем по кнопке 'Начать период приёма пищи'", () ->
-                universalMethod.safeClick(START_THE_EATING_PERIOD_BUTTON , START_THE_EATING_PERIOD_TEXT)
+                UniversalMethod.safeClick(START_THE_EATING_PERIOD_BUTTON , START_THE_EATING_PERIOD_TEXT)
         );
     }
 
-    public static void mealNavigationWithCollection(){
+    public void mealNavigationWithCollection(){
         MEAL_BUTTONS.shouldHave(CollectionCondition.size(4), DEFAULT_TIMEOUT);
         for (int i = 0; i < MEAL_BUTTONS.size(); i++){
             mealButtonByIndex(i);
         }
         step("Переход на главную страницу",
-            Home::clickMainlink
+                () -> new Home().clickMainlink()
         );
     }
 
-        private static void mealButtonByIndex(int index) {
+        private void mealButtonByIndex(int index) {
         String[] mealNames = {"BREAKFAST", "DINNER", "LAUNCH", "SUPPER", };
         String mealName = mealNames[index];
 
@@ -128,7 +128,7 @@ public class nutritionTracker {
             });
 
             step("Возвращаемся на страницу 'Результаты'", ()->{
-                universalMethod.safeClick(RESULTS_BUTTON, RESULTS_TEXT);
+                UniversalMethod.safeClick(RESULTS_BUTTON, RESULTS_TEXT);
 
                 WaitHelper.waitForPageLoad();
 

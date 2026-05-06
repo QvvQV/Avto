@@ -10,6 +10,8 @@ import ru.tutor.utils.UrlRedirectHelper;
 
 public class OrderStepsRedirect {
 
+    private final SuccessOrderPage successOrderPage = new SuccessOrderPage();
+
     @Step("Завершить заказ и обработать редирект")
     public SuccessOrderPage completeOrderWithRedirectHandling(String orderPageUrl) {
         // Настраиваем перехват редиректов
@@ -19,7 +21,7 @@ public class OrderStepsRedirect {
         );
 
         // Используем упрощенный метод для обработки редиректа
-        return SuccessOrderPage.waitForRedirectAndOpen(orderPageUrl, 10000);
+        return successOrderPage.waitForRedirectAndOpen(orderPageUrl, 10000);
     }
 
     @Step("Перейти в ЛК через модифицированную кнопку")
@@ -37,6 +39,6 @@ public class OrderStepsRedirect {
     @Step("Простая обработка редиректа")
     public SuccessOrderPage simpleRedirectHandling(String redirectUrl) {
         // Просто открываем модифицированную страницу
-        return SuccessOrderPage.openAndFixPage(redirectUrl);
+        return successOrderPage.openAndFixPage(redirectUrl);
     }
 }

@@ -1,4 +1,4 @@
-package ru.tutor.page.api;
+package ru.tutor.api.catalog;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.config.EncoderConfig;
@@ -10,9 +10,9 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
-public class OrderApi extends BaseApi {
+public class CatalogOrderApi extends BaseApi {
 
-    public OrderApi(String baseUrl) {
+    public CatalogOrderApi(String baseUrl) {
         super(baseUrl);
     }
 

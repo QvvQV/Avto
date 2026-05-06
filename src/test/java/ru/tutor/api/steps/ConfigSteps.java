@@ -3,7 +3,7 @@ package ru.tutor.api.steps;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.model.ConfigResponse;
-import ru.tutor.page.api.ConfigApi;
+import ru.tutor.api.catalog.ConfigApi;
 import ru.tutor.utils.AllureAttachments;
 
 import java.net.MalformedURLException;

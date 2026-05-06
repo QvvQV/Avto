@@ -3,7 +3,7 @@ package ru.tutor.steps;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
-import ru.tutor.page.api.RegisterApi;
+import ru.tutor.api.RegisterApi;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.ResponseAnalyzer;
 

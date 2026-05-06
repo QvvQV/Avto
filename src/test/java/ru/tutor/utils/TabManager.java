@@ -63,7 +63,7 @@ public class TabManager {
         step("Открытие админки в новом окне", () -> {
             int originalWindowCount = WebDriverRunner.getWebDriver().getWindowHandles().size();
 
-            executeJavaScript("window.open('" + AddressPage.devAdmin + "', '_blank');");
+            executeJavaScript("window.open('" + AddressPage.DEV_ADMIN + "', '_blank');");
             WaitHelper.waitForNewWindow(originalWindowCount + 1, Duration.ofSeconds(5));
             switchToNewWindow(originalWindow);
             AllureAttachments.attachScreenshot("Админка открыта");

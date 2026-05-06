@@ -58,7 +58,7 @@ public class ClubApi extends BaseApi {
      * GET /user/club/ip-details - получение деталей ИП
      */
     public Response getIpDetails(String authToken) {
-        return getWithToken("/user/club/ip-details", authToken);
+        return getWithToken(ApiEndpoints.CLUB_IP_DETAILS, authToken);
     }
 
     /**

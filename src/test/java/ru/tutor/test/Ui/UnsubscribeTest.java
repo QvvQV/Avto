@@ -31,6 +31,7 @@ public class UnsubscribeTest extends BaseUiTest {
     private final SberPage sberPage = new SberPage();
     private final ru.tutor.flow.SubscriptionTestFlow flow = new ru.tutor.flow.SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
     SubscriptionTestFlow flow1 = new SubscriptionTestFlow();
+    private final RedirectPage redirectPage = new RedirectPage();
 
     @BeforeAll
     public static void setup() {
@@ -53,7 +54,7 @@ public class UnsubscribeTest extends BaseUiTest {
         flow.purchasePremiumSubscription();
 
         step("3. Обработка редиректа после оплаты",
-                RedirectPage::redirectPage
+                redirectPage::redirectPage
         );
         step("4. Прохождение приветсвтенного onboarding", () -> {
             flow1.completeOnbording();
@@ -61,13 +62,13 @@ public class UnsubscribeTest extends BaseUiTest {
         navigateToPage(PageType.PREMIUM_UNSUBSCRIBE, 5);
 
         step("6. Полный процесс отмены Premium подписки",
-                PremiumUnsubscribePage::completePremiumUnsubscription
+                new PremiumUnsubscribePage()::completePremiumUnsubscription
         );
 
         navigateToPage(PageType.LITE_UNSUBSCRIBE, 7);
 
         step("8. Полный процесс отмены Lite подписки",
-                LiteUnsubscribePage::completeLiteUnsubscription
+                new LiteUnsubscribePage()::completeLiteUnsubscription
         );
     }
 
@@ -81,7 +82,7 @@ public class UnsubscribeTest extends BaseUiTest {
         flow.purchasePremiumSubscription();
 
         step("3. Обработка редиректа после оплаты",
-                RedirectPage::redirectPage
+                redirectPage::redirectPage
         );
 
         flow1.completeOnbording()
@@ -94,7 +95,7 @@ public class UnsubscribeTest extends BaseUiTest {
 
         public SubscriptionTestFlow completeOnbording() {
             step("Завершение onbording процесса", () -> {
-                GreetingsModal.fillAccessInputAllForm();
+                new GreetingsModal().fillAccessInputAllForm();
                 AllureAttachments.attachText("Onbording", "Приветсвенные модули завершены");
                 AllureAttachments.attachScreenshot("Скриншот главного экрана");
             });

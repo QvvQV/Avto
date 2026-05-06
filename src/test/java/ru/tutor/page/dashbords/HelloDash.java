@@ -4,6 +4,8 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.Keys;
+import ru.tutor.config.TestConfig;
+import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.personalAccount.Catalog;
 import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
@@ -11,32 +13,37 @@ import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Properties;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 
-public class helloDash {
+public class HelloDash {
 
-    private static final Faker faker = new Faker(Locale.ENGLISH);
+    private final Faker faker = new Faker(Locale.ENGLISH);
+    private final Home home = new Home();
 
     // Локаторы модального окна приветствия
-    private static final SelenideElement ACCESS_DATA_TITLE_FIRST = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));
-    private static final SelenideElement ACCESS_DATA_TITLE = $$("h2").find(exactText("Укажите данные для доступа к платформе"));
-    private static final SelenideElement NAME_INPUT = $("[name='name']");
-    private static final SelenideElement PASSWORD_INPUT = $("[name='newPassword']");
-    private static final SelenideElement REPEAT_PASSWORD_INPUT = $("[name='repeatPassword']");
-    private static final SelenideElement GENDER_PLACEHOLDER = $("[id=\"react-select-2-placeholder\"]");
-    private static final SelenideElement GENDER_INPUT = $("[id=\"react-select-2-input\"]");
-    private static final SelenideElement BUTTON_NEXT_STEP = $$("button").find(exactText("Следующий шаг"));
-    private static final SelenideElement BUTTON_CLOSE_MODAL = $("._close_1l2kq_40");
+    private final SelenideElement ACCESS_DATA_TITLE_FIRST = $$("h2").find(exactText("Добро пожаловать на TutorPlace"));
+    private final SelenideElement ACCESS_DATA_TITLE = $$("h2").find(exactText("Укажите данные для доступа к платформе"));
+    private final SelenideElement NAME_INPUT = $("[name='name']");
+    private final SelenideElement PASSWORD_INPUT = $("[name='newPassword']");
+    private final SelenideElement REPEAT_PASSWORD_INPUT = $("[name='repeatPassword']");
+    private final SelenideElement GENDER_PLACEHOLDER = $("[id=\"react-select-2-placeholder\"]");
+    private final SelenideElement GENDER_INPUT = $("[id=\"react-select-2-input\"]");
+    private final SelenideElement BUTTON_NEXT_STEP = $$("button").find(exactText("Следующий шаг"));
+    private final SelenideElement BUTTON_CLOSE_MODAL = $("._close_1l2kq_40");
 
     // Локаторы модального окна знакомства с платформой
     private static final SelenideElement BUTTON_OUT_MYSELF = $$("button").find(exactText("Нет, я хочу разобраться сам"));
 
+    /** Пароль */
+    String password = TestConfig.getTestPassword();
+
     @Step("Заполнение приветственного модального окна")
-    private static void completeWelcomeModal() {
+    private void completeWelcomeModal() {
         step("Ожидание загрузки модального окна", () -> {
 
             ACCESS_DATA_TITLE_FIRST.shouldBe(visible, Duration.ofSeconds(10));
@@ -50,7 +57,6 @@ public class helloDash {
 
         step("Заполнение персональных данных", () -> {
             String userName = faker.name().firstName();
-            String password = "12345678";
             NAME_INPUT.setValue(userName);
 
             PASSWORD_INPUT.setValue(password);
@@ -69,7 +75,7 @@ public class helloDash {
     }
 
     @Step("Заполнение приветсвенного модального окна после регистрации")
-    private static void completeWelcomeModalAfterRegistration() {
+    private void completeWelcomeModalAfterRegistration() {
         step("Ожидание и валидация модального окна", () -> {
             ACCESS_DATA_TITLE.shouldBe(visible, Duration.ofSeconds(10))
                     .shouldHave(exactText("Укажите данные для доступа к платформе"));
@@ -88,7 +94,7 @@ public class helloDash {
     }
 
     @Step("Выбор пола пользователя")
-    private static void selectGender() {
+    private void selectGender() {
         step("Выбор из выпадающего списка", () -> {
             GENDER_PLACEHOLDER.shouldBe(visible).click();
             GENDER_INPUT.sendKeys(Keys.ENTER);
@@ -97,7 +103,7 @@ public class helloDash {
     }
 
     @Step("Обработка окна знакомства с платформой")
-    private static void hadlePlatformIntroduction() {
+    private void hadlePlatformIntroduction() {
         step("закрытие приветственного модального окна", () -> {
             BUTTON_CLOSE_MODAL.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(interactable)
@@ -114,7 +120,7 @@ public class helloDash {
     }
 
     @Step("Проверка завершения onboarding процесса")
-    private static void verifyOnboardingCompletion() {
+    private void verifyOnboardingCompletion() {
         step("Проверка отсутствия модальных окон", () -> {
             ACCESS_DATA_TITLE.shouldNotBe(visible, Duration.ofSeconds(3));
             BUTTON_OUT_MYSELF.shouldNotBe(visible, Duration.ofSeconds(3));
@@ -123,23 +129,23 @@ public class helloDash {
     }
 
     @Step("Заполнение окна приветствия для вновь зарегистрированных пользователей")
-    public static void fillingOutTheWelcomeWindow() {
+    public void fillingOutTheWelcomeWindow() {
         completeWelcomeModal();
         hadlePlatformIntroduction();
         verifyOnboardingCompletion();
     }
 
     @Step("Заполнение окна приветствия для новых зарегистрированных пользователей")
-    public static void fillingOutTheWelcomeWindowANewRegistration() {
+    public void fillingOutTheWelcomeWindowANewRegistration() {
         completeWelcomeModalAfterRegistration();
         verifyPlatformNavigation();
         AllureAttachments.attachText("Onboarding статус", "Onboarding процесс успешно завершён");
     }
 
     @Step("Проверка навигации по платформе")
-    private static void verifyPlatformNavigation() {
-        Catalog.verifyCatalogPresence();
-        Home.verifyHomeLinkPresence();
+    private void verifyPlatformNavigation() {
+        new Catalog().verifyCatalogPresence();
+        home.verifyHomeLinkPresence();
         AllureAttachments.attachText("Навигация", "Основные элементы навигации доступны");
     }
 }

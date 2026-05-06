@@ -33,7 +33,7 @@ class OrderRedirectTest extends BaseUiTest {
         flow.purchasePremiumSubscription();
 
         // 2. Обработка редиректа после оплаты
-        step("2. Обработка редиректа после оплаты", RedirectPage::redirectPage
+        step("2. Обработка редиректа после оплаты", new RedirectPage()::redirectPage
         );
         }
     }

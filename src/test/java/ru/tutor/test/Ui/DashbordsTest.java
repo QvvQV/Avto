@@ -9,7 +9,7 @@ import ru.tutor.constants.AddressPage;
 import ru.tutor.page.*;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.page.paymentModalWindow.paymentModal;
+import ru.tutor.page.paymentModalWindow.PaymentModal;
 import ru.tutor.page.personalAccount.Catalog;
 import ru.tutor.page.personalAccount.Home;
 import ru.tutor.page.dashbords.*;
@@ -32,6 +32,16 @@ import static io.qameta.allure.Allure.step;
 public class DashbordsTest extends BaseUiTest {
 
     private final TtPage ttPage = new TtPage();
+    private final Home home = new Home();
+    private final CloudPage cloudPage = new CloudPage();
+    private final HelloDash helloDash = new HelloDash();
+    private final Registration registration = new Registration();
+    private final AllDashbords allDashbords = new AllDashbords();
+    private final Taro taro = new Taro();
+    private final ProductCardEditor productCardEditor = new ProductCardEditor();
+    private final NutritionTracker nutritionTracker = new NutritionTracker();
+    private final NatalChart natalChart = new NatalChart();
+    private final MemoryTrainer memoryTrainer = new MemoryTrainer();
 
     @AfterEach
     protected void tearDown() {
@@ -55,7 +65,7 @@ public class DashbordsTest extends BaseUiTest {
             AllureAttachments.attachText("Логин", "Страница логина открыта");
         });
         step("Заполнение валидными данными",
-            Registration::validPerson
+            registration::validPerson
         );
         allDashbords.testSingleProduct(productName, dashboardName);
     }
@@ -66,13 +76,13 @@ public class DashbordsTest extends BaseUiTest {
             AllureAttachments.attachText("Логин", "Страница логина открыта");
         });
         step("2. Заполнение валидными данными",
-                Registration::validPerson
+                registration::validPerson
         );
         step("3. Проверяем модальное окно ежедневной награды",
-            RewardHelper::safeClickCollectReward
+            new RewardHelper()::safeClickCollectReward
         );
         step("4. Добавляем продукт", () ->
-            Home.walkthroughtAddingACourse(productName)
+            home.walkthroughtAddingACourse(productName)
         );
         step("5. Обновляем страницу", () ->
             allDashbords.testSingleProduct(productName, dashboard)
@@ -87,21 +97,21 @@ public class DashbordsTest extends BaseUiTest {
     void successfulOrderWithRedirectCorrection() {
 
         step("1. Начало оформления заказа", () -> {
-            open(AddressPage.urlMain);
+            open(AddressPage.URL_MAIN);
 
 
             ttPage.clickBtnOpenFor();
             ttPage.selectSubscription(TtPage.SubscriptionType.PREMIUM);
         });
         step("2. Заполнение данных и оплата", () -> {
-            CloudPage.setDateModal();
-            AllureAttachments.attachText("Email пользователя", CloudPage.atrEmail());
+            cloudPage.setDateModal();
+            AllureAttachments.attachText("Email пользователя", cloudPage.atrEmail());
 
-            CloudPage.clickCardPageBtn();
+            cloudPage.clickCardPageBtn();
         });
         step("3. Обработка редиректа после оплаты",
 
-            RedirectPage::redirectPage
+            new RedirectPage()::redirectPage
         );
         step("4. Прохождение onboarding процесса", () -> {
             helloDash.fillingOutTheWelcomeWindow();
@@ -131,24 +141,24 @@ public class DashbordsTest extends BaseUiTest {
         });
         step("2. Заполнение регистрационных данных", () -> {
 
-            Registration.inputName();
-            Registration.clickBtnRegistr();
+            registration.inputName();
+            registration.clickBtnRegistr();
 
-            Registration.randomEmail();
-            Registration.validPass();
-            Registration.validRepeatPass();
+            registration.randomEmail();
+            registration.validPass();
+            registration.validRepeatPass();
             AllureAttachments.attachScreenshot("Форма регистрации");
 
-            Registration.clickBtnRegister();
+            registration.clickBtnRegister();
             WaitHelper.waitForPageLoad();
         });
         step("3. Заполнение приветсвенного окна", () -> {
             helloDash.fillingOutTheWelcomeWindowANewRegistration();
-            Catalog.verifyCatalogHeader();
+            new Catalog().verifyCatalogHeader();
             AllureAttachments.attachText("Onboarding", "Приветсвенный процесс завершён");
         });
         step("4. Навигация по платформе", () -> {
-            Home.navigateToMainPage();
+            home.navigateToMainPage();
             WaitHelper.waitForPageLoad();
         });
         step("5. Проверка видимости всех дашбордов", () -> {
@@ -171,24 +181,24 @@ public class DashbordsTest extends BaseUiTest {
         });
         step("2. Заполнение регистрационных данных", () -> {
 
-            Registration.inputName();
-            Registration.clickBtnRegistr();
+            registration.inputName();
+            registration.clickBtnRegistr();
 
-            Registration.randomEmail();
-            Registration.validPass();
-            Registration.validRepeatPass();
+            registration.randomEmail();
+            registration.validPass();
+            registration.validRepeatPass();
             AllureAttachments.attachScreenshot("Форма регистрации");
 
-            Registration.clickBtnRegister();
+            registration.clickBtnRegister();
             WaitHelper.waitForPageLoad();
         });
         step("3. Заполнение приветсвенного окна", () -> {
             helloDash.fillingOutTheWelcomeWindowANewRegistration();
-            Catalog.verifyCatalogHeader();
+            new Catalog().verifyCatalogHeader();
             AllureAttachments.attachText("Onboarding", "Приветсвенный процесс завершён");
         });
         step("4. Навигация по платформе", () -> {
-            Home.navigateToMainPage();
+            home.navigateToMainPage();
             WaitHelper.waitForPageLoad();
         });
         step("5. Проверка видимости всех дашбордов", () -> {
@@ -199,7 +209,7 @@ public class DashbordsTest extends BaseUiTest {
             memoryTrainer::clickFromMemoryTrainer
         );
         step("7. Проводим оплату подписки",
-            paymentModal::verifyPriceIsOneRuble
+            () -> new PaymentModal().verifyPriceIsOneRuble()
         );
         step("8. Фиксация финального состояния", () -> {
             refresh();
@@ -230,7 +240,7 @@ public class DashbordsTest extends BaseUiTest {
             nutritionTracker::mealNavigationWithCollection
         );
         step("9. Удаляем курс", () ->
-            Home.deleteProduct(productName)
+            home.deleteProduct(productName)
         );
     }
 
@@ -253,27 +263,7 @@ public class DashbordsTest extends BaseUiTest {
             natalChart::redirectToTheInfoPage
         );
         step("9. Удаляем курс", () ->
-            Home.deleteProduct(productName)
-        );
-    }
-
-//    @Test
-    @Order(6)
-    @Severity(SeverityLevel.NORMAL)
-    @DisplayName("Тестирование редиректов страниц дашборда 'SpyHeart'")
-    void testingRedirectsForSpyHeart() {
-        String productName = "spyHeart";
-        String dashboard = "SpyHeart";
-        chekingInsideTheDashboard(productName, dashboard);
-        step("6. Переходим в дашборд 'SpyHeart'",
-            spyHeart::clickFromSpyHeart
-        );
-        step("7. Проверка функционала", spyHeart::ckeckVisionElement
-        );
-        step("8. Редирект на главную страницу", Home::clickMainlink
-        );
-        step("9. Удаляем курс", () ->
-            Home.deleteProduct(productName)
+            home.deleteProduct(productName)
         );
     }
 
@@ -287,10 +277,10 @@ public class DashbordsTest extends BaseUiTest {
         chekingInsideTheDashboard(productName, dashboard);
         step("6. Переходим в дашборд 'Тренажер памяти'", memoryTrainer::clickFromMemoryTrainer
         );
-        step("7. Проверяем редирект по страницам Игр", memoryTrainer::gameNavigationWithCollection
+        step("7. Проверяем редирект по страницам Игр",  memoryTrainer::gameNavigationWithCollection
         );
         step("8. Удаляем курс", () ->
-            Home.deleteProduct(productName)
+            home.deleteProduct(productName)
         );
     }
 
@@ -303,12 +293,12 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "матрица судьбы";
         String dashboard = "Расчет матрицы";
         chekingInsideTheDashboard(productName, dashboard);
-        step("6. Переходим в дашборд 'Расчёт матрицы'", matrixCalculation::clickFromMatrixCalculation
+        step("6. Переходим в дашборд 'Расчёт матрицы'", new MatrixCalculation()::clickFromMatrixCalculation
         );
-        step("7. Проверяем работу внутри дашборда", matrixCalculation::openModalWindowInTheDashboard
+        step("7. Проверяем работу внутри дашборда", new MatrixCalculation()::openModalWindowInTheDashboard
         );
         step("8. Удаляем курс", () ->
-            Home.deleteProduct(productName)
+            home.deleteProduct(productName)
         );
     }
 
@@ -320,12 +310,12 @@ public class DashbordsTest extends BaseUiTest {
         String productName = "таргетолог";
         String dashboard = "Учет каналов";
         chekingInsideTheDashboard(productName, dashboard);
-        step("6. Переходим в дашборд 'Учет каналов'", channelAccounting::clickFromChannelAccounting
+        step("6. Переходим в дашборд 'Учет каналов'", new ChannelAccounting()::clickFromChannelAccounting
         );
-        step("7. Проверяем работу внутри дашборда", channelAccounting::fillForm
+        step("7. Проверяем работу внутри дашборда", new ChannelAccounting()::fillForm
         );
         step("8. Удаляем курс", () ->
-            Home.deleteProduct(productName)
+            home.deleteProduct(productName)
         );
     }
 
@@ -342,7 +332,7 @@ public class DashbordsTest extends BaseUiTest {
         step("7. Проверяем работу внутри дашборда", taro::mealNavigationWithCollection
         );
         step("8. Удаляем курс", () ->
-            Home.deleteProduct(productName)
+            home.deleteProduct(productName)
         );
     }
 
@@ -359,7 +349,7 @@ public class DashbordsTest extends BaseUiTest {
         step("7. Проверяем работу внутри дашборда", productCardEditor::workDashboard
         );
         step("8. Удаляем курс", () ->
-            Home.deleteProduct(productName)
+            home.deleteProduct(productName)
         );
     }
 }

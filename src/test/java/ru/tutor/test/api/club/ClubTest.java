@@ -60,7 +60,7 @@ public class ClubTest {
     void getClubStatisticsSuccess() {
 
         Response response = step("GET /user/club/statistics", () ->
-                clubSteps.getClubStatictics(authToken)
+                clubSteps.getClubStatistics(authToken)
         );
 
         statisticsInfo = step("Валидация ответа", () ->
@@ -134,7 +134,7 @@ public class ClubTest {
     @Severity(SeverityLevel.CRITICAL)
     void getClubStatisticsWithoutAuth() {
         Response response = step("GET /user/club/statistics без токена", () ->
-                clubSteps.getClubStatictics("invalid")
+                clubSteps.getClubStatistics("invalid")
         );
 
         step("Проверка ошибки авторизации", () -> clubSteps.validateUnauthorizedResponse(response));

@@ -1,6 +1,5 @@
-package ru.tutor.page.api;
+package ru.tutor.api.catalog;
 
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 
@@ -9,11 +8,11 @@ import java.util.Base64;
 
 import static io.restassured.RestAssured.given;
 
-public class PageApi extends BaseApi {
+public class CatalogApi extends BaseApi {
     private final String encodedAuth;
     private final String authHeader;
 
-    public PageApi(String baseUrl, String username, String password) {
+    public CatalogApi(String baseUrl, String username, String password) {
         super(baseUrl);
         String credentials = username + ":" + password;
         this.encodedAuth = Base64.getEncoder()
@@ -21,62 +20,45 @@ public class PageApi extends BaseApi {
         this.authHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
     }
 
-
-    /**
-     * Get страница
-     */
-    public Response getPage(String endpoint) {
-        return given()
-                .filter(new AllureRestAssured())
+    public Response getCatalog(String endpoint) {
+        return given(baseSpec)
                 .header("Authorization", "Basic " + encodedAuth)
                 .when()
-                .get(baseUrl + endpoint)
+                .get("/catalog/" + endpoint)
                 .then()
                 .extract()
                 .response();
     }
 
-    /**
-     * Post страница
-     */
-    public Response createPage(String endpoint, Object body) {
-        return given()
-                .filter(new AllureRestAssured())
+    public Response createCatalogItem(String endpoint, String body) {
+        return given(baseSpec)
                 .header("Authorization", "Basic " + encodedAuth)
                 .header("Content-Type", "application/json")
                 .body(body)
                 .when()
-                .post(baseUrl + endpoint)
+                .post("/catalog/" + endpoint)
                 .then()
                 .extract()
                 .response();
     }
 
-    /**
-     * Put страница
-     */
-    public Response updatePage(String endpoint, Object body) {
-        return given()
-                .filter(new AllureRestAssured())
+    public Response updateCatalogItem(String endpoint, String body) {
+        return given(baseSpec)
                 .header("Authorization", "Basic " + encodedAuth)
                 .header("Content-Type", "application/json")
                 .body(body)
                 .when()
-                .put(baseUrl + endpoint)
+                .put("/catalog/" + endpoint)
                 .then()
                 .extract()
                 .response();
     }
 
-    /**
-     * Delete страница
-     */
-    public Response deletePage(String endpoint) {
-        return given()
-                .filter(new AllureRestAssured())
+    public Response deleteCatalogItem(String endpoint) {
+        return given(baseSpec)
                 .header("Authorization", "Basic " + encodedAuth)
                 .when()
-                .delete(baseUrl + endpoint)
+                .delete("/catalog/" + endpoint)
                 .then()
                 .extract()
                 .response();
@@ -89,4 +71,5 @@ public class PageApi extends BaseApi {
     public String getAuthHeader() {
         return authHeader;
     }
+
 }

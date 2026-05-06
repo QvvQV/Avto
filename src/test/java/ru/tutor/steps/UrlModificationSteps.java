@@ -91,10 +91,10 @@ public class UrlModificationSteps {
     }
 
     @Step("Добавить параметр к текущему URL")
-    public static void addParameter(String paramName, String paramValue) {
+    public static void removeAffiliateParameterByEmail() {
         String currentUrl = getCurrentUrl();
         String modifiedUrl = buildUrlWithParams(currentUrl,
-                paramName + "=" + paramValue);
+                AddressPage.recovery_from_email);
 
         logUrlModification(currentUrl, modifiedUrl);
         openUrl(modifiedUrl);

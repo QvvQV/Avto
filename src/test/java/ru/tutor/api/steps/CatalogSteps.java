@@ -5,7 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import ru.tutor.page.api.CatalogApi;
+import ru.tutor.api.catalog.CatalogApi;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

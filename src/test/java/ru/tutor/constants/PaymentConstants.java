@@ -4,9 +4,6 @@ public class PaymentConstants {
     // Платежная система
     public static final String PAYMENT_SYSTEM = "CloudPayments";
 
-    // Публичный ID для тестов
-    public static final String PUBLIC_ID = "pk_92fb5586b2d613a5de95ed98dd5f7";
-
     // Язык по умолчанию
     public static final String DEFAULT_LANGUAGE = "ru-RU";
 

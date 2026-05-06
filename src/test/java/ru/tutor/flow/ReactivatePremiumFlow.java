@@ -1,6 +1,7 @@
 package ru.tutor.flow;
 
 import io.qameta.allure.Step;
+import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.OrderDatesPage;
@@ -8,16 +9,13 @@ import ru.tutor.page.RedirectPage;
 import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.modals.GreetingsModal;
-import ru.tutor.page.modals.product;
-import ru.tutor.page.modals.unlockNextWeek;
+import ru.tutor.page.modals.Product;
+import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.page.unsubscribe.LiteUnsubscribePage;
-import ru.tutor.steps.AdminToUserLoginSteps;
-import ru.tutor.steps.OrderToggleSubscriptionSteps;
-import ru.tutor.steps.ReactivatePremiumSteps;
-import ru.tutor.steps.UrlModificationSteps;
+import ru.tutor.steps.*;
 import ru.tutor.test.context.TestExecutionContext;
 import ru.tutor.test.executor.PaymentCycleExecutor;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
@@ -35,21 +33,29 @@ public class ReactivatePremiumFlow {
     private final AdminOrderDetails adminOrderDetails;
     private final OrderDatesPage orderDatesPage;
     private final PaymentCycleExecutor paymentCycleExecutor;
-    private final TestExecutionContext contex;
+    private final TestExecutionContext context;
     private final Integer TEST_ORDER_ID = 180;
 
     private RecurrentPaymentTestExecutor testExecutor;
     private final OrderToggleSubscriptionSteps orderSteps;
     private final ReactivatePremiumSteps reactivatePremiumSteps;
     private final AdminToUserLoginSteps adminToUserLoginSteps;
+    private final OrderPremiumGift orderStepsPremiumGift;
+    private final Product product = new Product();
 
     private String authToken;
+
+    // Константы UTM меток
+    private static final String DEFAULT_UTM = "1012_966574";
+    private static final String SYSTEM_UTM = "1012_896988";
+
+    private boolean isRenewalInPersonalAccount = false;
     private String userEmail;
 
     public ReactivatePremiumFlow(
             TtPage ttPage, CloudPage cloudPage, SberPage sberPage, AdminOrdersPage adminOrdersPage,
             AdminOrderDetails adminOrderDetails, OrderDatesPage orderDatesPage,
-            PaymentCycleExecutor paymentCycleExecutor, TestExecutionContext contex) {
+            PaymentCycleExecutor paymentCycleExecutor, TestExecutionContext context) {
 
         this.ttPage = ttPage;
         this.cloudPage = cloudPage;
@@ -58,10 +64,11 @@ public class ReactivatePremiumFlow {
         this.adminOrderDetails = adminOrderDetails;
         this.orderDatesPage = orderDatesPage;
         this.paymentCycleExecutor = paymentCycleExecutor;
-        this.contex = contex;
+        this.context = context;
 
         String baseUrl = TestConfig.getCurrentApiUrl();
         this.orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(baseUrl);
+        this.orderStepsPremiumGift = OrderPremiumGift.withBaseUrl(baseUrl);
         this.reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(baseUrl);
         this.adminToUserLoginSteps = new AdminToUserLoginSteps();
 
@@ -88,7 +95,7 @@ public class ReactivatePremiumFlow {
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage)
                         .purchasePremiumSubscriptionAffRid(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                contex, 1
+                context, 1
         );
 
         // Получаем email после создания
@@ -106,7 +113,7 @@ public class ReactivatePremiumFlow {
                 () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage)
                         .purchasePremiumSubscription(),
                 SubscriptionTestFlow::processRecurrentInAdmin,
-                contex, 1
+                context, 1
         );
 
         userEmail = adminOrdersPage.getLastSearchedEmail();
@@ -144,6 +151,15 @@ public class ReactivatePremiumFlow {
     }
 
     /**
+     * Добавление параметра email-рассылки
+     */
+    @Step("Добавление параметра из email-рассылки, без aff_rid")
+    public ReactivatePremiumFlow removeAffiliateParameterFromEmail() {
+        step("Добавление параметра из email-рассылки без aff_rid", UrlModificationSteps::removeAffiliateParameterByEmail);
+        return this;
+    }
+
+    /**
      * Получение токена авторизации
      */
     @Step("Получение токена авторизации")
@@ -163,6 +179,23 @@ public class ReactivatePremiumFlow {
             }
             step("POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
                     orderSteps.toggleOrderSubscription(authToken, TEST_ORDER_ID));
+        });
+        return this;
+    }
+
+    /**
+     * Отписка до тарифа Подарок
+     */
+    @Step("Отписка до тарифа Подарок")
+    public ReactivatePremiumFlow downgradeToPremiumGift() {
+        step("Отписка до Подарка", () -> {
+            if (authToken == null) {
+                fetchAuthToken();
+            }
+             Response response = step("POST /user/orders/get-premium-gift", () ->
+                    orderStepsPremiumGift.getPremiumGift(authToken));
+             step("Валидация ответа", ()->
+                    orderStepsPremiumGift.validateGetPremiumGiftResponse(response) );
         });
         return this;
     }
@@ -214,7 +247,17 @@ public class ReactivatePremiumFlow {
      */
     @Step("Проверка aff_rid метки заказа")
     public ReactivatePremiumFlow verifyAffRid() {
-        step("Проверка aff_rid", adminOrdersPage::renewal);
+        if(isRenewalInPersonalAccount) {
+            step("Проверка aff_rid (системная метка после Renewal в ЛК)", () -> {
+                adminOrdersPage.renewal(SYSTEM_UTM);
+            });
+
+            // Сбрасываем флаг после проверки
+            isRenewalInPersonalAccount = false;
+        } else {
+            step("Проверка aff_rid (вебовская метка)", () ->
+                    adminOrdersPage.renewal(DEFAULT_UTM));
+        }
         return this;
     }
 
@@ -234,7 +277,7 @@ public class ReactivatePremiumFlow {
     public ReactivatePremiumFlow payFromEmailNewsletter() {
         step("Оплата из email", () -> {
             adminToUserLoginSteps.sendEmailPay();
-            CloudPage.clickCardPageBtn();
+            cloudPage.clickCardPageBtn();
         });
         return this;
     }
@@ -243,8 +286,8 @@ public class ReactivatePremiumFlow {
      * Обработка редиректа и заполнение данных
      */
     public static void handlePostPaymentSteps() {
-        step("Редирект после оплаты", RedirectPage::redirectPage);
-        step("Заполнение модалки", GreetingsModal::fillAccessInput );
+        step("Редирект после оплаты", () -> new RedirectPage().redirectPage());
+        step("Заполнение модалки", new GreetingsModal()::fillAccessInput );
     }
 
     /**
@@ -254,7 +297,7 @@ public class ReactivatePremiumFlow {
     public void openFirstWeek() {
         handlePostPaymentSteps();
         product.beginProduct();
-        unlockNextWeek.openUnlimitedAccess();
+        new UnlockNextWeek().openUnlimitedAccess();
     }
 
     /**
@@ -262,19 +305,21 @@ public class ReactivatePremiumFlow {
      */
     @Step("Оформление Renewall внутри ЛК")
     public ReactivatePremiumFlow processRenewalInPersonalAccount() {
+        this.isRenewalInPersonalAccount = true;
+
         step("Переход к отпискам", () -> {
             open(AddressPage.PAYMENTS_SETTINGS);
             WaitHelper.waitForPageLoad();
-            step("Вызов модального окна оплаты", LiteUnsubscribePage::clickSubscribe);
+            step("Вызов модального окна оплаты", new LiteUnsubscribePage()::clickSubscribe);
         });
-        CloudPage.clickCardPageBtn();
+        cloudPage.clickCardPageBtn();
         return this;
     }
 
     @Step("Получить кешбек и заполнить приветсвенное окно")
     public ReactivatePremiumFlow takeCashbackAndFillWelcomeWindow() {
         product.pickUpBonus();
-        GreetingsModal.fillOutTwoFieldsWelcomeModal();
+        new GreetingsModal().fillOutTwoFieldsWelcomeModal();
         return this;
     }
 

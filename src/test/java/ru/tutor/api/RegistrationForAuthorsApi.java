@@ -25,13 +25,12 @@ public class RegistrationForAuthorsApi extends BaseApi {
         String email = "tbgesta22322@as.qq";
         String name = "bulka";
 
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .contentType(ContentType.JSON)
                 .body("{\"isAuthorRegister\":\"" + isAuthorRegister + "\"email\":\"" + email + "\"name\":\"" + name + "\"}")
                 .log().all()
                 .when()
-                .post("https://api.dev.tutorplace.ru/order")
+                .post(baseUrl + "/order")
                 .then()
                 .statusCode(200)
                 .log().all()

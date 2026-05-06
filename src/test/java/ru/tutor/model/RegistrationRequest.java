@@ -2,6 +2,7 @@ package ru.tutor.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.datafaker.Faker;
+import ru.tutor.config.TestConfig;
 
 import java.util.Objects;
 
@@ -105,6 +106,9 @@ public class RegistrationRequest {
     /**
      * Генерация случайных данных для регистрации
      */
+
+    private static final String TEST_PASSWORD =  TestConfig.getTestPassword();
+
     public static RegistrationRequest generateRandom() {
         Faker faker = new Faker();
 
@@ -112,7 +116,7 @@ public class RegistrationRequest {
                 faker.internet().emailAddress(),
                 faker.name().firstName(),
                 faker.phoneNumber().phoneNumber(),
-                "12345678",
+                TEST_PASSWORD,
                 "@" + faker.name().firstName(),
                 true,
                 0
@@ -129,7 +133,7 @@ public class RegistrationRequest {
                 faker.internet().emailAddress(),
                 faker.name().firstName(),
                 "",
-                "12345678",
+                TEST_PASSWORD,
                 "",
                 true,
                 0
@@ -146,7 +150,7 @@ public class RegistrationRequest {
                 faker.internet().emailAddress(),
                 faker.name().firstName(),
                 faker.phoneNumber().phoneNumber(),
-                "12345678",
+                TEST_PASSWORD,
                 "@" + faker.name().firstName(),
                 false,
                 null
@@ -164,7 +168,7 @@ public class RegistrationRequest {
                 "invalid-email",
                 faker.name().firstName(),
                 faker.phoneNumber().phoneNumber(),
-                "12345678",
+                TEST_PASSWORD,
                 "@" + faker.name().firstName(),
                 true,
                 null
@@ -181,7 +185,7 @@ public class RegistrationRequest {
                 faker.internet().emailAddress(),
                 "",
                 faker.phoneNumber().phoneNumber(),
-                "12345678",
+                TEST_PASSWORD,
                 "@" + faker.name().firstName(),
                 true,
                 null
@@ -232,7 +236,7 @@ public class RegistrationRequest {
                 faker.internet().emailAddress(),
                 faker.name().firstName(),
                 "",
-                "12345678",
+                TEST_PASSWORD,
                 "",
                 true,
                 null

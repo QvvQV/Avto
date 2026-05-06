@@ -3,7 +3,7 @@ package ru.tutor.api.steps;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import ru.tutor.page.api.SendEmailApi;
+import ru.tutor.api.catalog.SendEmailApi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

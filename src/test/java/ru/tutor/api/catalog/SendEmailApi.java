@@ -1,4 +1,4 @@
-package ru.tutor.page.api;
+package ru.tutor.api.catalog;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
@@ -23,12 +23,12 @@ public class SendEmailApi extends BaseApi {
                 name, email, content
         );
 
-        return given()
+        return given(baseSpec)
                 .filter(new AllureRestAssured())
                 .header("Content-Type", "application/json")
                 .body(payload)
                 .when()
-                .post(baseUrl + "/send-email")
+                .post( "/send-email")
                 .then()
                 .extract()
                 .response();

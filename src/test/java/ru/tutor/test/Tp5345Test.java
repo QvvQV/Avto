@@ -6,12 +6,14 @@ import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.admin.AdminLoginPage;
-import ru.tutor.page.devProduct;
+import ru.tutor.page.DevProduct;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
 public class Tp5345Test extends BaseUiTest {
+    
+    private final DevProduct devProduct = new DevProduct();
 
 
     @AfterAll
@@ -24,14 +26,14 @@ public class Tp5345Test extends BaseUiTest {
     @DisplayName("открытие стр продукта")
     public void WriteTheText()  {
         step("Открытие стр админки", () ->
-            open(AddressPage.devAdmin)
+            open(AddressPage.DEV_ADMIN)
         );
         step("проверяем title", () -> {
             String expected = "Online курсы";
             Assertions.assertEquals(expected, title());
         });
         step("регистрируемся",
-            AdminLoginPage::login
+                () -> new  AdminLoginPage().login()
         );
         devProduct.clickPencil();
         devProduct.textH2();
@@ -58,14 +60,14 @@ public class Tp5345Test extends BaseUiTest {
     @DisplayName("изменения в модуле н1")
     public void ChangeH1() {
         step("Открытие стр админки", () ->
-            open(AddressPage.devAdmin)
+            open(AddressPage.DEV_ADMIN)
         );
         step("проверяем title", () -> {
             String expected = "Online курсы";
             Assertions.assertEquals(expected, title());
         });
         step("регистрируемся",
-            AdminLoginPage::login
+                () -> new  AdminLoginPage().login()
         );
         devProduct.clickPencil();
         devProduct.textH1();
@@ -78,7 +80,7 @@ public class Tp5345Test extends BaseUiTest {
      @DisplayName("добавление навыков только за счёт бека, без фронта")
     public void open1() {
         step("Открытие стр админки", () ->
-            open(AddressPage.devAdmin)
+            open(AddressPage.DEV_ADMIN)
         );
 
         devProduct.clickPencil();

@@ -60,8 +60,7 @@ public class ReactivatePremiumApi extends BaseApi {
                 "return localStorage.getItem('aff_rid') || 'default_aff_rid';"
         );
 
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + authToken)
                 .body("{\"aff_rid\":\"" + aff_rid + "\"}")
@@ -85,8 +84,7 @@ public class ReactivatePremiumApi extends BaseApi {
         ) ;
 
 
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + authToken)
                 .body(letterData)

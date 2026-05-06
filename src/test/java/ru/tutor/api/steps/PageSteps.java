@@ -4,7 +4,7 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.jsoup.Jsoup;
-import ru.tutor.page.api.PageApi;
+import ru.tutor.api.catalog.PageContentApi;
 
 import org.jsoup.nodes.Document;
 import java.util.LinkedHashSet;
@@ -14,10 +14,10 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PageSteps {
-    private final PageApi pageApi;
+    private final PageContentApi pageApi;
 
     public PageSteps(String baseUrl, String username, String password){
-        this.pageApi = new PageApi(baseUrl, username, password);
+        this.pageApi = new PageContentApi(baseUrl, username, password);
     }
 
     /**

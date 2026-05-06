@@ -24,7 +24,7 @@ public record ClubSteps(ClubApi clubApi){
     }
 
     @Step("GET /user/club/statistics - получить статистику клуба")
-    public Response getClubStatictics(String authToken) {
+    public Response getClubStatistics(String authToken) {
         Response response = this.clubApi.getClubStatistics(authToken);
         AllureAttachments.attachJson("Club Statics Response", response.getBody().asString());
         AllureAttachments.attachJson("Club Statistics Headers", response.getHeaders().toString());

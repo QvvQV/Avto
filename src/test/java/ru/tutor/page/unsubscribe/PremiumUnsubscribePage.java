@@ -4,7 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 
@@ -29,12 +29,12 @@ public class PremiumUnsubscribePage {
 
 
     // Локаторы Premium подписки
-    private static final SelenideElement ACTIVE_BUTTON = $$("button").find(exactText(ACTIVE_TEXT));
-    private static final SelenideElement CHANGE_BUTTON = $$("button").find(exactText(CHANGE_TEXT));
-    private static final SelenideElement CANCEL_BUTTON = $$("button").find(exactText(CANCEL_TEXT));
-    private static final SelenideElement REVOKE_FULL_ACCESS_BUTTON = $$("button").find(exactText(REVOKE_FULL_ACCESS_TEXT));
-    private static final SelenideElement H3_TEXT = $("h3");
-    private static final SelenideElement RESTORE_ACCESS_BUTTON = $$("button").find(exactText(RESTORE_ACCESS_TEXT));
+    private final SelenideElement ACTIVE_BUTTON = $$("button").find(exactText(ACTIVE_TEXT));
+    private final SelenideElement CHANGE_BUTTON = $$("button").find(exactText(CHANGE_TEXT));
+    private final SelenideElement CANCEL_BUTTON = $$("button").find(exactText(CANCEL_TEXT));
+    private final SelenideElement REVOKE_FULL_ACCESS_BUTTON = $$("button").find(exactText(REVOKE_FULL_ACCESS_TEXT));
+    private final SelenideElement H3_TEXT = $("h3");
+    private final SelenideElement RESTORE_ACCESS_BUTTON = $$("button").find(exactText(RESTORE_ACCESS_TEXT));
 
     // Универсальные методы
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
@@ -43,9 +43,9 @@ public class PremiumUnsubscribePage {
      * Получение и логирование текста заголовка
      */
     @Step("Получение текста заголовка")
-    private static String getHeaderText() {
+    private String getHeaderText() {
         return step("Заголовок страницы", () -> {
-            String headerText = universalMethod.getElementText(H3_TEXT, "Заголовок текста");
+            String headerText = UniversalMethod.getElementText(H3_TEXT, "Заголовок текста");
             AllureAttachments.attachText("Заголовок страницы", headerText);
             return headerText;
         });
@@ -53,13 +53,13 @@ public class PremiumUnsubscribePage {
 
     // Premium подписка методы
     @Step("Клик по кнопке 'Активна'")
-    private static void clickActiveButton() {
-        universalMethod.clickButton(ACTIVE_BUTTON, ACTIVE_TEXT);
+    private void clickActiveButton() {
+        UniversalMethod.clickButton(ACTIVE_BUTTON, ACTIVE_TEXT);
     }
 
     @Step("Клик по кнопке 'Изменить'")
-    private static void clickChangeButton() {
-        universalMethod.clickButtonWithPageLoad(CHANGE_BUTTON, CHANGE_TEXT);
+    private void clickChangeButton() {
+        UniversalMethod.clickButtonWithPageLoad(CHANGE_BUTTON, CHANGE_TEXT);
 
         // Получаем и логируем заголовок
         String headerText = getHeaderText();
@@ -67,20 +67,20 @@ public class PremiumUnsubscribePage {
     }
 
     @Step("Клик по кнопке 'Отменить'")
-    private static void clickCancelButton() {
-        universalMethod.clickButtonWithPageLoad(CANCEL_BUTTON, CANCEL_TEXT);
+    private void clickCancelButton() {
+        UniversalMethod.clickButtonWithPageLoad(CANCEL_BUTTON, CANCEL_TEXT);
 
         String headerText = getHeaderText();
         AllureAttachments.attachScreenshot("После клика на 'Отменить' - " + headerText);
     }
 
     @Step("Клик по кнопке 'Отменить полный доступ'")
-    private static void clickRevokeFullAccessButton() {
-        universalMethod.safeClick(REVOKE_FULL_ACCESS_BUTTON, REVOKE_FULL_ACCESS_TEXT);
+    private void clickRevokeFullAccessButton() {
+        UniversalMethod.safeClick(REVOKE_FULL_ACCESS_BUTTON, REVOKE_FULL_ACCESS_TEXT);
     }
 
     @Step("Проверка состояния тарифного плана")
-    private static void verifyTariffPlanState(String expectedState) {
+    private void verifyTariffPlanState(String expectedState) {
         step("Проверка состояния тарифного плана: " + expectedState, () -> {
             String actualHeader = getHeaderText();
 
@@ -94,20 +94,20 @@ public class PremiumUnsubscribePage {
     }
 
     @Step("Тарифный план отключен")
-    private static void verifyTariffPlanDisabled() {
+    private void verifyTariffPlanDisabled() {
         WaitHelper.waitForPageLoad();
         RESTORE_ACCESS_BUTTON.shouldBe(visible);
         verifyTariffPlanState("отключен");
     }
 
     @Step("Тарифный план активен")
-    public static void verifyTariffPlanActive() {
+    public void verifyTariffPlanActive() {
         verifyTariffPlanState("активен");
     }
 
     // Валидационные методы
     @Step("Проверка что кнопка 'Активна' disabled")
-    private static void verifyActiveButtonIsDisabled() {
+    private void verifyActiveButtonIsDisabled() {
         step("Проверка disabled состояния кнопки 'Активна'", () -> {
             ACTIVE_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT)
                     .shouldHave(attribute("disabled"))
@@ -119,17 +119,17 @@ public class PremiumUnsubscribePage {
     }
 
     @Step("Проверка что кнопка 'Изменить' доступна")
-    public static void verifyChangeButtonIsEnabled() {
-        universalMethod.verifyButtonIsEnabled(CHANGE_BUTTON, CHANGE_TEXT);
+    public void verifyChangeButtonIsEnabled() {
+        UniversalMethod.verifyButtonIsEnabled(CHANGE_BUTTON, CHANGE_TEXT);
     }
 
     @Step("Проверка что кнопка 'Отменить' доступна")
-    public static void verifyCancelButtonIsEnabled() {
-        universalMethod.verifyButtonIsEnabled(CANCEL_BUTTON, CANCEL_TEXT);
+    public void verifyCancelButtonIsEnabled() {
+        UniversalMethod.verifyButtonIsEnabled(CANCEL_BUTTON, CANCEL_TEXT);
     }
 
     // Flow методы для комплексных сценариев
-    public static void completePremiumUnsubscription() {
+    public void completePremiumUnsubscription() {
         clickActiveButton();
         verifyActiveButtonIsDisabled();
         clickChangeButton();
@@ -140,7 +140,7 @@ public class PremiumUnsubscribePage {
 
     // Методы для проверки видимости элементов
     @Step("Проверка видимости всех элементов Premium подписки")
-    public static void verifyPremiumElementsVisible() {
+    public void verifyPremiumElementsVisible() {
         step("Проверка видимости элементов Premium подписки", () -> {
             ACTIVE_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT);
             CHANGE_BUTTON.shouldBe(visible, DEFAULT_TIMEOUT);

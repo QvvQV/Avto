@@ -68,38 +68,4 @@ public abstract class BaseUiTest {
                 .savePageSource(true)
                 .includeSelenideSteps(true));
     }
-
-//    private static void verifyDriverAvailable() {
-//        String driverPath = System.getProperty("webdriver.chrome.driver");
-//        File driver = new File(driverPath);
-//
-//        if (driver.exists()) {
-//            System.out.println("✅ ChromeDriver 142.x доступен: " + driverPath);
-//        } else {
-//            System.err.println("❌ ChromeDriver не найден: " + driverPath);
-//            System.err.println("Скачайте вручную и распакуйте:");
-//            System.err.println("https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.60/win64/chromedriver-win64.zip");
-//        }
-    }
-
-//    static
-
-    // КРИТИЧЕСКИ ВАЖНЫЕ НАСТРОЙКИ ДО ЛЮБОЙ ИНИЦИАЛИЗАЦИИ SELENIDE
-//        System.setProperty("webdriver.manager.enabled", "false");
-//        System.setProperty("selenium.manager.enabled", "false");
-//        System.setProperty("se:manager", "false");
-//        System.setProperty("webdriver.manager.disabled", "true");
-
-        // Блокируем сетевые запросы Selenium Manager
-//        System.setProperty("webdriver.manager.check.interval", "0");
-//        System.setProperty("webdriver.manager.cache.valid", "9999");
-
-            // Отключаем ВСЕ логи Selenium
-//        System.setProperty("webdriver.chrome.silentOutput", "true");
-//        System.setProperty("webdriver.chrome.silentLog", "true");
-//        System.setProperty("wdm.printStackTraces", "false");
-
-        // Отключаем логирование на уровне JUL
-//        java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(java.util.logging.Level.OFF);
-//        java.util.logging.Logger.getLogger("com.codeborne.selenide").setLevel(java.util.logging.Level.OFF);
-//}
+}

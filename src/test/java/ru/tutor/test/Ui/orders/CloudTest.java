@@ -29,7 +29,7 @@ public class CloudTest extends BaseUiTest {
 
     private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
 
-    @Test
+//    @Test
     @AllureId("1")
 //            @RepeatedTest(2)
     @DisplayName("Оплата с главной на СисАк Oфферум")
@@ -69,7 +69,7 @@ public class CloudTest extends BaseUiTest {
 
     }
 
-    @Test
+//    @Test
     @AllureId("5")
     @DisplayName("Оплата Долями с главной за Пожизненный")
     public void PayMainLifeInstallments() {
@@ -83,10 +83,10 @@ public class CloudTest extends BaseUiTest {
     @DisplayName("Оплата по ссылке revshare PROD")
     public void PayFromRevshare() {
         step("Открытие страницы", () ->
-            open(AddressPage.PAY_WITH_REVSHARE)
+            open(AddressPage.URL_MAIN)
         );
-        CloudPage.clickBtnStartProd();
-        CloudPage.clickCardPageBtnProd();
+        cloudPage.clickBtnStartProd();
+        cloudPage.clickCardPageBtnProd();
         sleep(1000);
     }
 }

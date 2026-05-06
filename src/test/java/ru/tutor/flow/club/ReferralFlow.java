@@ -16,8 +16,8 @@ import ru.tutor.page.orders.TtPage;
 import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.modals.GreetingsModal;
-import ru.tutor.page.modals.product;
-import ru.tutor.page.modals.secretMenu;
+import ru.tutor.page.modals.Product;
+import ru.tutor.page.modals.SecretMenu;
 import ru.tutor.steps.AdminToUserLoginSteps;
 import ru.tutor.steps.club.ClubSteps;
 import ru.tutor.test.context.TestExecutionContext;
@@ -100,7 +100,7 @@ public class ReferralFlow {
     private String createUserByReferral(String referralLink, int userNumber) {
 
         return step("Создание пользователя " + userNumber + " по реферальной ссылке", () -> {
-            String urlWithReferral = AddressPage.urlMain + "?club_ref=" + referralLink;
+            String urlWithReferral = AddressPage.URL_MAIN + "?club_ref=" + referralLink;
             Selenide.open(urlWithReferral);
 
             Allure.addAttachment(String.format("👤 Пользователь #%d", userNumber),
@@ -130,9 +130,9 @@ public class ReferralFlow {
     @Step("Шаги после оплаты (редирект, бонус, регистрация)")
     private void processPostPaymentSteps() {
         TabManager.goToTheOrderTab();
-        RedirectPage.redirectPage();
-        product.pickUpBonus();
-        GreetingsModal.fillAccessInput();
+        new RedirectPage().redirectPage();
+        new Product().pickUpBonus();
+        new GreetingsModal().fillAccessInput();
     }
 
     @Step("Получение реферальной ссылки {userDescription} пользователя")
@@ -150,7 +150,7 @@ public class ReferralFlow {
 
     @Step("Выход текущего пользователя")
     private void logoutCurrentUser() {
-        secretMenu.logoutCurrentUser();
+        new SecretMenu().logoutCurrentUser();
     }
 
     @Step("Логирование информации о членстве")
@@ -205,7 +205,7 @@ public class ReferralFlow {
     }
 
     private ClubStatisticsResponse verifyUserStatisticsWithToken(String token, int expectedReferrals) {
-        Response response = clubSteps.getClubStatictics(token);
+        Response response = clubSteps.getClubStatistics(token);
         ClubStatisticsResponse stats = clubSteps.validateClubStatisticsResponse(response);
 
         Allure.addAttachment(String.format("Статистика пользователя (токен: %s...)",

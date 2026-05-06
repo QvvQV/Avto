@@ -1,4 +1,4 @@
-package ru.tutor.page.api;
+package ru.tutor.api.catalog;
 
 import io.restassured.response.Response;
 import io.qameta.allure.restassured.AllureRestAssured;

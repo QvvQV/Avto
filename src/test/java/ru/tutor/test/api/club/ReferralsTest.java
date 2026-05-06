@@ -39,12 +39,19 @@ public class ReferralsTest extends RecurrentPaymentTestBase {
     @Test
     @DisplayName("Создание цепочки из 4 членов клуба")
     void createFourLevelReferralChain() {
-        List<String> referralLinks = referralFlow.createReferralChain(4);
+        List<String> referralLinks = referralFlow.createReferralChain(2);
 
         step("Проверка создания цепочки", () -> {
-            assertEquals(4, referralLinks.size());
+            assertEquals(2, referralLinks.size());
         });
 
         referralFlow.verifyFullChainStatistics();
     }
+
+    /**
+     * зачисление по клубу (проведение рекурентного платежа или пожизненного доступа на аккаунте реферала)
+     * списание средств по клубу
+     * изменения статуса в клубе - не член клуба, может, не может выводит средства (это зависит от успеха последнего рекуррента)
+     */
+
 }

@@ -17,8 +17,7 @@ public class PaymentApi extends BaseApi {
 
     @Step("POST /order - создание платежа без авторизации")
     public Response createOrderWithoutAuth(OrderRequest orderRequest) {
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .contentType(ContentType.JSON)
                 .body(orderRequest)
                 .log().all()

@@ -2,7 +2,7 @@ package ru.tutor.steps;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import ru.tutor.api.OrderApi;
+import ru.tutor.api.UserOrderApi;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.model.OrderToggleSubscriptionResponse;
@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
  * Класс для переключения на Лайт по API
  */
 
-public record OrderToggleSubscriptionSteps(OrderApi orderApi) {
+public record OrderToggleSubscriptionSteps(UserOrderApi orderApi) {
 
     public static OrderToggleSubscriptionSteps withBaseUrl(String baseUrl) {
-        return new OrderToggleSubscriptionSteps(new OrderApi(baseUrl));
+        return new OrderToggleSubscriptionSteps(new UserOrderApi(baseUrl));
     }
 
     @Step("Переключение подписки на заказ ID: {orderId}")

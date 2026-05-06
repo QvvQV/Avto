@@ -1,6 +1,5 @@
 package ru.tutor.test.Ui;
 
-import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
@@ -11,12 +10,7 @@ import ru.tutor.page.personalAccount.Catalog;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
@@ -29,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CategoriesTest extends BaseUiTest {
 
     private final Catalog catalog = new Catalog();
+    private final Registration registration = new Registration();
 
     // Ожидаемое количество категорий
     private static final int EXPECTED_CATEGORIES_COUNT = 31;
@@ -76,15 +71,15 @@ public class CategoriesTest extends BaseUiTest {
     public void beforeEach() {
         step("Авторизация пользователя", () -> {
                     open(AddressPage.login);
-                    Registration.validEmail();
-                    Registration.validPass();
-                    Registration.clickBtnLogin();
+                    registration.validEmail();
+                    registration.validPass();
+                    registration.clickBtnLogin();
                     WaitHelper.waitForPageLoad();
                 }
         );
 
         step("Переход в каталог", () -> {
-            Catalog.verifyCatalogHasCategory();
+            catalog.verifyCatalogHasCategory();
             catalog.verifyOnCatalogPage();
         });
 

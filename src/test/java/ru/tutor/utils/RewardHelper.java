@@ -8,14 +8,14 @@ import static io.qameta.allure.Allure.step;
 
 public class RewardHelper {
 
-    private static final SelenideElement COLLECT_YOUR_REWARD_BUTTON = $$("button").find(exactText("Забрать награду"));
+    private final SelenideElement COLLECT_YOUR_REWARD_BUTTON = $$("button").find(exactText("Забрать награду"));
 
     /**
      * Безопасная попытка клика на кнопку "Забрать награду"
      * Если кнопка есть - кликаем, если нет - пропускаем
      */
 
-    public static void safeClickCollectReward() {
+    public void safeClickCollectReward() {
         step("Проверка и клик на кнопку 'Забрать награду'", () -> {
             if (isCollectRewardButtonPresent()) {
                 collectRewardIfVisible();
@@ -29,7 +29,7 @@ public class RewardHelper {
      * Проверяет наличие кнопки без исключения
      */
 
-    public static boolean isCollectRewardButtonPresent() {
+    public boolean isCollectRewardButtonPresent() {
         WaitHelper.waitForAnimationComplete();
         try {
             return COLLECT_YOUR_REWARD_BUTTON.exists() &&
@@ -43,9 +43,9 @@ public class RewardHelper {
      * Кликает на кнопку если она видима
      */
 
-    private static void collectRewardIfVisible() {
+    private void collectRewardIfVisible() {
         step("Клик на кнопку 'Забрать награду'", () -> {
-            universalMethod.safeClick(COLLECT_YOUR_REWARD_BUTTON, "Забрать награду");
+            UniversalMethod.safeClick(COLLECT_YOUR_REWARD_BUTTON, "Забрать награду");
 
             // Ждем исчезновения кнопки или модального окна
             WaitHelper.waitForModalToClose();

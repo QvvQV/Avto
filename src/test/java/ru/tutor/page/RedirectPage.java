@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RedirectPage {
 
-    private static final OrderStepsRedirect ORDER_STEPS_REDIRECT = new OrderStepsRedirect();
+    private final OrderStepsRedirect ORDER_STEPS_REDIRECT = new OrderStepsRedirect();
 
-    public static void redirectPage() {
+    public void redirectPage() {
         step("Редирект страницы заказа", ()-> {
             WaitHelper.waitForPaymentProcessing();
 
@@ -31,12 +31,11 @@ public class RedirectPage {
             // 5. Проверяем, что мы на правильном домене
             String currentUrl = com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl();
             assert currentUrl != null;
-//        assertTrue(currentUrl.contains(ConfigReader.get("api1.base.url")),
 //            "Должны быть на домене dev1.ttplace.online, а текущий URL: " + currentUrl);
 
             // 6. Проверяем и исправляем кнопку входа в ЛК
             String buttonHref = successPage.getLoginButtonHref();
-            if (buttonHref != null && buttonHref.contains("client.tutorplace.ru")) {
+            if (buttonHref != null && buttonHref.contains(TestConfig.getCurrentClientDomain())) {
                 successPage.fixLoginButtonHrefByXPath(); // Используем альтернативный метод
             }
 

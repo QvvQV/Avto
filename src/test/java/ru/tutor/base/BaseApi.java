@@ -3,8 +3,11 @@ package ru.tutor.base;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
+import io.restassured.config.LogConfig;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 
@@ -13,10 +16,22 @@ import static io.restassured.RestAssured.given;
  */
 public abstract class BaseApi {
     protected final String baseUrl;
+    protected final RequestSpecification baseSpec;
 
     protected BaseApi(String baseUrl) {
         this.baseUrl = baseUrl;
-        RestAssured.baseURI = baseUrl;
+        this.baseSpec = new RequestSpecBuilder()
+                .setBaseUri(baseUrl)
+                .addFilter(new AllureRestAssured())
+                .setConfig(RestAssured.config()
+                        .logConfig(LogConfig.logConfig()
+                                .enableLoggingOfRequestAndResponseIfValidationFails()))
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json, text/plain, */*")
+                .addHeader("Origin", TestConfig.getCurrentClientDomain())
+                .addHeader("Referer", TestConfig.getCurrentClientDomain())
+                .build();
+
 
         // Глобальная настройка RestAssured
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -26,13 +41,8 @@ public abstract class BaseApi {
     protected Response postWithToken(String endpoint, String token, Object body, Object... pathParams) {
         String formattedEndpoint = String.format(endpoint, pathParams);
 
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .header("Content-Type", "application/json")
-                .header("Accept", "application/json, text/plain, */*")
-                .header("Authorization", "Bearer " + token)
-                .header("Origin", TestConfig.getCurrentClientDomain())
-                .header("Referer", TestConfig.getCurrentClientDomain() + "/")
 //                .header("Origin", "https://client.tutorplace.ru/")
 //                .header("Referer", "https://client.tutorplace.ru/")
                 .body(body)
@@ -47,13 +57,8 @@ public abstract class BaseApi {
 
     @Step("POST запрос к {endpoint}")
     protected Response post(String endpoint, Object body) {
-        return given()
-                .filter(new AllureRestAssured())
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json, text/plain, */*")
+        return given(baseSpec)
 //                .header("Authorization", "Bearer " + token)
-                .header("Origin", TestConfig.getCurrentClientDomain())
-                .header("Referer", TestConfig.getCurrentClientDomain() + "/")
 //                .header("Origin", "https://client.tutorplace.ru/")
 //                .header("Referer", "https://client.tutorplace.ru/")
                 .body(body)
@@ -68,12 +73,8 @@ public abstract class BaseApi {
 
     @Step("GET запрос к {endpoint}")
     protected Response getWithToken(String endpoint, String token) {
-        return given()
-                .filter(new AllureRestAssured())
-                .header("Accept", "application/json, text/plain, */*")
+        return given(baseSpec)
                 .header("Authorization", "Bearer " + token)
-                .header("Origin", TestConfig.getCurrentClientDomain())
-                .header("Referer", TestConfig.getCurrentClientDomain())
                 .log().all()
                 .when()
                 .get(endpoint)
@@ -86,8 +87,7 @@ public abstract class BaseApi {
     // Дополнительные методы для разных типов контента
     @Step("POST запрос с form-data к {endpoint}")
     protected Response postFormData(String endpoint, String body) {
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Accept", "application/json")
                 .body(body)
@@ -102,13 +102,8 @@ public abstract class BaseApi {
 
     @Step("DELETE запрос к {endpoint}")
     protected Response deleteWithToken(String endpoint, String token) {
-        return given()
-                .filter(new AllureRestAssured())
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
+        return given(baseSpec)
                 .header("Authorization", "Bearer " + token)
-                .header("Origin", TestConfig.getCurrentClientDomain())
-                .header("Referer", TestConfig.getCurrentClientDomain() + "/")
                 .log().all()
                 .when()
                 .delete(endpoint)

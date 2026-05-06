@@ -15,7 +15,7 @@ import static io.qameta.allure.Allure.step;
  * Универсальные методы для тестов
  */
 
-public class universalMethod {
+public class UniversalMethod {
 
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
 

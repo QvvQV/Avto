@@ -9,8 +9,8 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
-import static com.codeborne.selenide.Selenide.Wait;
-import static com.codeborne.selenide.Selenide.sleep;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.*;
 import static io.qameta.allure.Allure.step;
 
@@ -21,6 +21,8 @@ import static io.qameta.allure.Allure.step;
 public class WaitHelper {
 
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
+    private static final Duration WEBHOOK_TIMEOUT = Duration.ofSeconds(15);
+    private static final String DEFAULT_PROCESSING_TEXT = "В данный момент по заказу идут платежи";
 
     public static void waitForPageLoad() {
         Wait().withTimeout(DEFAULT_TIMEOUT).until(driver ->
@@ -33,6 +35,21 @@ public class WaitHelper {
 
     public static void waitForPaymentProcessing() {
         waitForUrlContains("/success/", DEFAULT_TIMEOUT);
+    }
+
+    @Step("Ожидание обработки платежа вебхуком")
+    public static void waitForWebhookProcessed() {
+        waitForWebhookProcessed(WEBHOOK_TIMEOUT, DEFAULT_PROCESSING_TEXT);
+    }
+
+    @Step("Ожидание обработки платежа вебхуком")
+    public static void waitForWebhookProcessed(Duration timeout, String processingText) {
+        step("Ожидание прихода вебхука", () ->
+                waitFor(() -> {
+                    refresh();
+                    return $$(byText(processingText)).isEmpty();
+                }, timeout, "Вебхук не получен в течение " + timeout.getSeconds() + " секунд")
+        );
     }
 
     // Утилитарные методы
@@ -93,7 +110,7 @@ public class WaitHelper {
         step("Ожидание открытия новой вкладки", () -> {
             Wait()
                     .withTimeout(timeout)
-                    .pollingEvery(DEFAULT_TIMEOUT)
+                    .pollingEvery(Duration.ofSeconds(1))
                     .until(driver -> getWebDriver().getWindowHandles().size() >= expectedWindowsCount);
 
 

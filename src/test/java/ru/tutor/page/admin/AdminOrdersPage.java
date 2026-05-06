@@ -10,7 +10,7 @@ import ru.tutor.ProductConfiguration;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -26,7 +26,8 @@ import static io.qameta.allure.Allure.step;
 public class AdminOrdersPage {
 
     // Константа UTM-метки
-    private static final String EXPECTED_REWARD_ID = "1012_966574";
+    private static final String DEFAULT_UTM = "1012_966574";
+    private static final String SYSTEM_UTM = "1012_896988";
 
     // Названия кнопок
     private static final String APPLY_TEXT = "Применить";
@@ -38,29 +39,30 @@ public class AdminOrdersPage {
     private static final String UNDERSTAND_TEXT = "Понятно";
 
     // Локаторы
-    private static final SelenideElement ORDERS_BUTTON = $("a[href*='orders']");
-    private static final SelenideElement APPLY_BUTTON = $$("button").find(exactText(APPLY_TEXT));
-    private static final SelenideElement MAKE_A_PAYMENT = $(".button-modal");
-    private static final SelenideElement SAVE_BUTTON = $$("button").find(exactText(SAVE_TEXT));
-    private static final SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
-    private static final SelenideElement CANSEL_SUBSCRIPTION_BUTTON = $$("button").find(exactText(CANCEL_YOUR_SUBSCRIPTION_TEXT));
-    private static final SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
-    private static final SelenideElement UNDERSTAND_BUTTON = $$("button").find(exactText(UNDERSTAND_TEXT));
-    private static final SelenideElement EMAIL_INPUT_SEARCH = $("input[placeholder='Email']");
-    private static final SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
-    private static final SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
+    private final SelenideElement ORDERS_BUTTON = $("a[href*='orders']");
+    private final SelenideElement APPLY_BUTTON = $$("button").find(exactText(APPLY_TEXT));
+    private final SelenideElement MAKE_A_PAYMENT = $(".button-modal");
+    private final SelenideElement SAVE_BUTTON = $$("button").find(exactText(SAVE_TEXT));
+    private final SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
+    private final SelenideElement CANSEL_SUBSCRIPTION_BUTTON = $$("button").find(exactText(CANCEL_YOUR_SUBSCRIPTION_TEXT));
+    private final SelenideElement YES_BUTTON = $$("button").find(exactText(YES_TEXT));
+    private final SelenideElement UNDERSTAND_BUTTON = $$("button").find(exactText(UNDERSTAND_TEXT));
+    private final SelenideElement EMAIL_INPUT_SEARCH = $("input[placeholder='Email']");
+    private final SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
+    private final SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
 
     private String lastSearchedEmail; // Добавляем поле для хранения email
+    private String lastExtractedOrderNumber;
 
     // Селектор для поиска Лайт продуктов
-    private static final ElementsCollection ALL_ORDER_LINKS = $$("a[data-discover='true'][href*='/order/']");
+    private final ElementsCollection ALL_ORDER_LINKS = $$("a[data-discover='true'][href*='/order/']");
 
-    private static SelenideElement getLiteOrderLink() {
+    private SelenideElement getLiteOrderLink() {
         return ALL_ORDER_LINKS.findBy(text("Лайт").or(text("Lite")));
     }
 
     // Селектор для поиска UTM метки
-    private static final SelenideElement UTM_TEXT = $x("//div[contains(@class, 'order-info-entry')][.//div[text()='UTM']]/div[2]");
+    private final SelenideElement UTM_TEXT = $x("//div[contains(@class, 'order-info-entry')][.//div[text()='UTM']]/div[2]");
 
 
     // Таймаут
@@ -106,6 +108,22 @@ public class AdminOrdersPage {
         });
     }
 
+    /**
+     * Извлечение номера заказа из элемента
+     */
+    @Step("Извлечение номера заказ")
+    private void extractOrderNumber(){
+            String orderLinkText = ORDER_NUMBER.getText();
+            lastExtractedOrderNumber = orderLinkText != null ? orderLinkText : null;
+    }
+
+    public String getLastOrderNumber() {
+        if (lastExtractedOrderNumber == null) {
+            throw new IllegalStateException("Номер заказа не найден. Сначала выполните поиск заказа");
+        }
+        return lastExtractedOrderNumber;
+    }
+
 
     @Step("Поиск заказа по email: {email}")
     public AdminOrdersPage findOrderByEmail(String email) {
@@ -115,10 +133,11 @@ public class AdminOrdersPage {
 
             EMAIL_INPUT_SEARCH.shouldBe(visible, DEFAULT_TIMEOUT)
                     .setValue(email);
-            universalMethod.clickButton(APPLY_BUTTON, APPLY_TEXT);
+            UniversalMethod.clickButton(APPLY_BUTTON, APPLY_TEXT);
             WaitHelper.waitForAnimationComplete();
 
             ORDER_NUMBER.shouldBe(visible, DEFAULT_TIMEOUT);
+            extractOrderNumber();
             AllureAttachments.attachText("Поиск заказа", "Заказ для email " + email + " найден");
 
             return this;
@@ -134,7 +153,7 @@ public class AdminOrdersPage {
         int originalWindowCount = WebDriverRunner.getWebDriver().getWindowHandles().size();
 
         step("Кликаем по заказу: ", () ->
-                universalMethod.safeClick(ORDER_NUMBER, "Номер заказа")
+                UniversalMethod.safeClick(ORDER_NUMBER, "Номер заказа")
         );
 
         Selenide.Wait().until(driver -> driver.getWindowHandles().size() > originalWindowCount);
@@ -155,12 +174,12 @@ public class AdminOrdersPage {
 
     @Step("Проводим оплату")
     public void makePayment(String productId) {
-        universalMethod.clickButton(MAKE_A_PAYMENT, MAKE_A_PAYMENT_TEXT);
+        UniversalMethod.clickButton(MAKE_A_PAYMENT, MAKE_A_PAYMENT_TEXT);
 
         String price = ProductConfiguration.getSettings(productId).price();
 
         SUM_INPUT.shouldBe(visible, DEFAULT_TIMEOUT).setValue(price);
-        universalMethod.clickButton(SAVE_BUTTON, SAVE_TEXT);
+        UniversalMethod.clickButton(SAVE_BUTTON, SAVE_TEXT);
 
         AllureAttachments.attachText("Рекуррент",
                 "Рекуррентный платеж успешно проведен. ID продукта: " + productId + ", цена: " + price);
@@ -181,20 +200,18 @@ public class AdminOrdersPage {
 
         // Сохранённый флаг для проверки utm
         if (shouldCheckUtm) {
-            step("проверка UTM метки (заказ с aff_rid)", () -> {
-                processUtm();
+            step("Проверка UTM метки (заказ с aff_rid)", () -> {
+                processUtm(DEFAULT_UTM);
                 Allure.addAttachment("UTM проверка",
-                        "✅ Успешно: utm_medium соответствует '" + EXPECTED_REWARD_ID + "'");
+                        "✅ Успешно: utm_medium соответствует '" + DEFAULT_UTM + "'");
             });
         } else {
             Allure.addAttachment("UTM проверка",
                     "⏭️ Пропущена - заказ без aff_rid метки" );
         }
-//        step("Сравнием utm_medium с эталоном - '1012_966574': ", this::processUtm
-//        );
 
         // Кликаем на кнопку Войти
-        universalMethod.clickButton(LOGIN_BUTTON, LOGIN_TEXT);
+        UniversalMethod.clickButton(LOGIN_BUTTON, LOGIN_TEXT);
 
         // Переход на другую страницу
         List<String> handles = new ArrayList<>(WebDriverRunner.getWebDriver().getWindowHandles());
@@ -212,7 +229,7 @@ public class AdminOrdersPage {
     }
 
     @Step("Проверяем наличие UTM метки определённого значения")
-    private void processUtm() {
+    private void processUtm(String expectedValue) {
         String utmText = UTM_TEXT.shouldBe(visible, DEFAULT_TIMEOUT)
                 .getText();
 
@@ -224,10 +241,10 @@ public class AdminOrdersPage {
 
         if (matcher.find()) {
             String actualValue = matcher.group(1);
-            assert actualValue.equals(AdminOrdersPage.EXPECTED_REWARD_ID) :
-                    String.format("UTM medium не совпадает. Ожидалось: %s, Фактически: %s", AdminOrdersPage.EXPECTED_REWARD_ID, actualValue);
+            assert actualValue.equals(expectedValue) :
+                    String.format("UTM medium не совпадает. Ожидалось: %s, Фактически: %s", expectedValue, actualValue);
         } else {
-            throw new AssertionError("не удалось извлечь значение utm_medium");
+            throw new AssertionError("Не удалось извлечь значение utm_medium");
         }
     }
 
@@ -236,24 +253,24 @@ public class AdminOrdersPage {
      */
 
     @Step("Поиск заказа Renewal, работа с ним")
-    public void renewal() {
+    public void renewal(String expectedUtm) {
         step("Закрываем ненужные вкладки и переходим на вкладку Orders: ", TabManager::goToTheOrderTab
         );
 
-        universalMethod.clickButton(APPLY_BUTTON, APPLY_TEXT);
+        UniversalMethod.clickButton(APPLY_BUTTON, APPLY_TEXT);
         WaitHelper.waitForAnimationComplete();
         processRecurrentPayment();
-        step("Сравнием utm_medium с эталоном - '1012_966574': ",
-                this::processUtm
+        step(String.format("Сравнием utm_medium с эталоном - '%s'", expectedUtm),
+                () -> processUtm(expectedUtm)
         );
         step("Проведение рекурента:", () -> makePayment("755"));
     }
 
     @Step("Отменяем подписку пользователю через админку")
     public void cancelOrderWithAdmin() {
-        universalMethod.clickButton(CANSEL_SUBSCRIPTION_BUTTON, CANCEL_YOUR_SUBSCRIPTION_TEXT);
-        universalMethod.clickButton(YES_BUTTON, YES_TEXT);
-        universalMethod.clickButton(UNDERSTAND_BUTTON, UNDERSTAND_TEXT);
+        UniversalMethod.clickButton(CANSEL_SUBSCRIPTION_BUTTON, CANCEL_YOUR_SUBSCRIPTION_TEXT);
+        UniversalMethod.clickButton(YES_BUTTON, YES_TEXT);
+        UniversalMethod.clickButton(UNDERSTAND_BUTTON, UNDERSTAND_TEXT);
         WaitHelper.waitForAnimationComplete();
         goToUserPersonalAccount();
     }

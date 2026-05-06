@@ -32,6 +32,7 @@ public class SubscriptionTestFlow {
     private final CloudPage cloudPage;
     private final SberPage sberPage;
     private final AdminOrdersPage adminOrdersPage;
+    private final AdminLoginPage adminLoginPage = new AdminLoginPage();
 
     private void purchase(Consumer<SubscriptionPurchaseBuilder> configurator) {
         SubscriptionPurchaseBuilder builder = SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage);
@@ -72,21 +73,23 @@ public class SubscriptionTestFlow {
     }
 
     @Step("Оплата Пожизненного доступа по Клауду")
-    public void purchaseLifeSubscription() {
+    public SubscriptionTestFlow purchaseLifeSubscription() {
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.LIFE)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
                         .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
         );
+        return this;
     }
 
     @Step("Оплата долями по Клауду")
-    public void purchaseLifeInstallmentsSubscription() {
+    public SubscriptionTestFlow purchaseLifeInstallmentsSubscription() {
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.LIFE)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.CLOUD)
                         .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.INSTALLMENTS)
         );
+        return this;
     }
 
     @Step("Оплата Лайт по Клауду")
@@ -120,12 +123,13 @@ public class SubscriptionTestFlow {
     }
 
     @Step("Оплата Пожизненного по карте Сбер")
-    public void purchaseLifeSubscriptionSber() {
+    public SubscriptionTestFlow purchaseLifeSubscriptionSber() {
         purchase(builder ->
                 builder.forSubscription(TtPage.SubscriptionType.LIFE)
                         .via(SubscriptionPurchaseBuilder.PaymentSystem.SBER)
                         .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.APPROVED_CARD)
         );
+        return this;
     }
 
     @Step("Оплата Премиум по карте Сбер с фиксированным остатком = 100р")
@@ -189,12 +193,11 @@ public class SubscriptionTestFlow {
     public void processRecurrentInAdminLite() {
         processRecurrentInAdmin();
         step("Проведение рекуррентного платежа Lite через админку", () -> {
-            sleep(2000);
+            WaitHelper.waitForWebhookProcessed();
             adminOrdersPage.processRecurrentPayment();
             refresh();
             WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
-//            AllureAttachments.attachScreenshot("Заказ найден в него перешли");
         });
     }
 
@@ -221,7 +224,7 @@ public class SubscriptionTestFlow {
             String currentUrl = WebDriverRunner.getWebDriver().getCurrentUrl();
 
             if (currentUrl.contains("/auth")) {
-                AdminLoginPage.login();
+                adminLoginPage.login();
                 AllureAttachments.attachScreenshot("Авторизация в админке успешна");
             } else {
                 Allure.addAttachment("Авторизация в админке",

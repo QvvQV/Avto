@@ -2,17 +2,17 @@ package ru.tutor.api.steps;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import ru.tutor.page.api.OrderApi;
+import ru.tutor.api.catalog.CatalogOrderApi;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderSteps {
-    private final OrderApi orderApi;
+    private final CatalogOrderApi orderApi;
 
     public OrderSteps(String baseUrl) {
-        this.orderApi = new OrderApi(baseUrl);
+        this.orderApi = new CatalogOrderApi(baseUrl);
     }
 
     @Step("Создать заказ для email: {email}")

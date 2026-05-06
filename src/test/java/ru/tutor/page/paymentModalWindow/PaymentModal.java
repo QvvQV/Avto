@@ -14,17 +14,17 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class paymentModal {
+public class PaymentModal {
 
-    private static final SelenideElement PRICE_ELEMENT = $("div[class*='price']");
-    private static final SelenideElement OPEN_ACCESS_BUTTON = $$("button").find(exactText("Открыть доступ"));
+    private final SelenideElement PRICE_ELEMENT = $("div[class*='price']");
+    private final SelenideElement OPEN_ACCESS_BUTTON = $$("button").find(exactText("Открыть доступ"));
 
-    private static String getPriceText() {
+    private String getPriceText() {
         return PRICE_ELEMENT.getText().replace("\u00A0", " ");
     }
 
     @Step("Проверяем что цена '1 рубль'")
-    public static void verifyPriceIsOneRuble() {
+    public void verifyPriceIsOneRuble() {
         step("Сравниваем текст в модальном окне", ()->{
            String actualText = getPriceText();
            assertTrue(actualText.contains("ВСЕГО ЗА 1") && actualText.contains("₽*"),
@@ -38,7 +38,7 @@ public class paymentModal {
         });
 
         step("Заполнение данных карты",
-                CloudPage::fillingWithTestData
+                () -> new CloudPage().fillingWithTestData()
         );
         step("Возврат на сайт после оплаты", () -> {
 

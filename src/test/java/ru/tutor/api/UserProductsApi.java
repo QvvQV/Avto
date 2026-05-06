@@ -1,15 +1,14 @@
 package ru.tutor.api;
 
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.config.TestConfig;
 
 import static io.restassured.RestAssured.given;
 
-public class ProductsApi extends BaseApi {
+public class UserProductsApi extends BaseApi {
 
-    public ProductsApi(String baseUrl) {
+    public UserProductsApi(String baseUrl) {
         super(baseUrl);
     }
 
@@ -33,8 +32,7 @@ public class ProductsApi extends BaseApi {
      */
 
     public Response getProductById(String authToken, String productId) {
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .header("Authorization", "Bearer " + authToken)
                 .header("Accept", "application/json, text/plain, */*")
                 .header("Origin", TestConfig.getCurrentClientDomain())

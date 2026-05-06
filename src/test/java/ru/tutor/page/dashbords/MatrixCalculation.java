@@ -16,21 +16,21 @@ import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class matrixCalculation {
+public class MatrixCalculation {
 
     // Локаторы
-    private static final SelenideElement MATRIX_CALCULATION = $$("p").find(exactText("Расчет матрицы"));
-    private static final SelenideElement MATRIX_FORECAST_FOR_DAY_BUTTON = $$("button").find(exactText("Прогноз по матрице на день"));
-    private static final SelenideElement COMPATIBILITY_MATRIX_BUTTON = $$("button").find(exactText("Матрица совместимости"));
-    private static final SelenideElement CROSS_BUTTON = $("._close_1l2kq_40");
-    private static final SelenideElement TAG_H2 = $("h2");
-    private static final SelenideElement CALCULATE_BUTTON = $$("button").find(exactText("Рассчитать"));
-    private static final SelenideElement OPEN_ALL_BUTTON = $$("button").find(exactText("Открыть полностью"));
-    private static final SelenideElement COLLAPSE_BUTTON = $$("button").find(exactText("Свернуть"));
+    private final SelenideElement MATRIX_CALCULATION = $$("p").find(exactText("Расчет матрицы"));
+    private final SelenideElement MATRIX_FORECAST_FOR_DAY_BUTTON = $$("button").find(exactText("Прогноз по матрице на день"));
+    private final SelenideElement COMPATIBILITY_MATRIX_BUTTON = $$("button").find(exactText("Матрица совместимости"));
+    private final SelenideElement CROSS_BUTTON = $("._close_1l2kq_40");
+    private final SelenideElement TAG_H2 = $("h2");
+    private final SelenideElement CALCULATE_BUTTON = $$("button").find(exactText("Рассчитать"));
+    private final SelenideElement OPEN_ALL_BUTTON = $$("button").find(exactText("Открыть полностью"));
+    private final SelenideElement COLLAPSE_BUTTON = $$("button").find(exactText("Свернуть"));
 
 
     @Step("Кликаем по Расчет матрицы")
-    public static void clickFromMatrixCalculation() {
+    public void clickFromMatrixCalculation() {
         MATRIX_CALCULATION.shouldBe(visible, Duration.ofSeconds(5))
                 .shouldBe(interactable)
                 .click();
@@ -39,13 +39,13 @@ public class matrixCalculation {
     }
 
     @Step("Открытие модальных окон в дашборде")
-    public static void openModalWindowInTheDashboard() {
+    public void openModalWindowInTheDashboard() {
         step("Скролл до конца страницы", () -> {
             OPEN_ALL_BUTTON.scrollTo()
                     .shouldBe(visible, Duration.ofSeconds(3));
             AllureAttachments.attachScreenshot("Страница после скролла");
         });
-        step("Кликаем по кнопке", matrixCalculation::personaleCalendar
+        step("Кликаем по кнопке", new MatrixCalculation()::personaleCalendar
         );
         step("Открываем скрытое меню", () -> {
             openSecretMenu();
@@ -53,19 +53,19 @@ public class matrixCalculation {
             WaitHelper.waitForAnimationComplete();
         });
         step("Переходим на главную страницу",
-            Home::clickMainlink
+                () -> new Home().clickMainlink()
         );
     }
 
     @Step("Закрытие модального окна")
-    private static void closeModalWindow() {
+    private void closeModalWindow() {
         CROSS_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
                 .shouldBe(clickable)
                 .click();
     }
 
     @Step("Персональный календарь")
-    private static void personaleCalendar() {
+    private void personaleCalendar() {
         Map<SelenideElement, String> categoryButtons = Map.of(
                 MATRIX_FORECAST_FOR_DAY_BUTTON, "Прогноз по матрице на день",
                 COMPATIBILITY_MATRIX_BUTTON, "Матрица совместимости",
@@ -83,7 +83,7 @@ public class matrixCalculation {
         }
     }
 
-    private static void testCategory(SelenideElement button, String name) {
+    private void testCategory(SelenideElement button, String name) {
         step("Кнопка: " + name, () -> {
             button.click();
 
@@ -93,7 +93,7 @@ public class matrixCalculation {
         });
     }
 
-    private static void verifyModalText(String expectedText) {
+    private void verifyModalText(String expectedText) {
         step("Проверка текста: '" + expectedText + "'", () -> {
             String actualText = TAG_H2.shouldBe(visible, Duration.ofSeconds(3))
                     .getText()
@@ -109,7 +109,7 @@ public class matrixCalculation {
     }
 
     @Step("открытие скрытого меню")
-    private static void openSecretMenu() {
+    private void openSecretMenu() {
         OPEN_ALL_BUTTON.click();
         WaitHelper.waitForAnimationComplete();
         COLLAPSE_BUTTON.scrollTo()

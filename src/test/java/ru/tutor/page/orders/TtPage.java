@@ -2,7 +2,7 @@ package ru.tutor.page.orders;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -74,14 +74,14 @@ public class TtPage {
 
     @Step("Кликаем по кнопке на главной за 1 руб")
     public TtPage clickBtnOpenFor() {
-        universalMethod.clickButton(btnOpenFor, "Открыть за 1Р");
+        UniversalMethod.clickButton(btnOpenFor, "Открыть за 1Р");
         return this;
     }
 
     @Step("Выбор типа подписки: {type.displayName}")
     public TtPage selectSubscription(SubscriptionType type) {
         step(type.getStepDescription(), () ->
-                universalMethod.safeClick(type.getElement(this), type.getDisplayName())
+                UniversalMethod.safeClick(type.getElement(this), type.getDisplayName())
         );
         return this;
     }
@@ -93,7 +93,7 @@ public class TtPage {
 
     @Step("Закрытие модального окна")
     public TtPage closeModal() {
-        universalMethod.clickButton(closeModal, "Закрытие модального окна");
+        UniversalMethod.clickButton(closeModal, "Закрытие модального окна");
         return this;
     }
 }

@@ -1,4 +1,4 @@
-package ru.tutor.page.api;
+package ru.tutor.api.catalog;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
@@ -9,11 +9,11 @@ import java.util.Base64;
 
 import static io.restassured.RestAssured.given;
 
-public class CatalogApi extends BaseApi {
+public class PageContentApi extends BaseApi {
     private final String encodedAuth;
     private final String authHeader;
 
-    public CatalogApi(String baseUrl, String username, String password) {
+    public PageContentApi(String baseUrl, String username, String password) {
         super(baseUrl);
         String credentials = username + ":" + password;
         this.encodedAuth = Base64.getEncoder()
@@ -21,49 +21,62 @@ public class CatalogApi extends BaseApi {
         this.authHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
     }
 
-    public Response getCatalog(String endpoint) {
+
+    /**
+     * Get страница
+     */
+    public Response getPage(String endpoint) {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + encodedAuth)
                 .when()
-                .get(baseUrl + "/catalog/" + endpoint)
+                .get(baseUrl + endpoint)
                 .then()
                 .extract()
                 .response();
     }
 
-    public Response createCatalogItem(String endpoint, String body) {
+    /**
+     * Post страница
+     */
+    public Response createPage(String endpoint, Object body) {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + encodedAuth)
                 .header("Content-Type", "application/json")
                 .body(body)
                 .when()
-                .post(baseUrl + "/catalog/" + endpoint)
+                .post(baseUrl + endpoint)
                 .then()
                 .extract()
                 .response();
     }
 
-    public Response updateCatalogItem(String endpoint, String body) {
+    /**
+     * Put страница
+     */
+    public Response updatePage(String endpoint, Object body) {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + encodedAuth)
                 .header("Content-Type", "application/json")
                 .body(body)
                 .when()
-                .put(baseUrl + "/catalog/" + endpoint)
+                .put(baseUrl + endpoint)
                 .then()
                 .extract()
                 .response();
     }
 
-    public Response deleteCatalogItem(String endpoint) {
+    /**
+     * Delete страница
+     */
+    public Response deletePage(String endpoint) {
         return given()
                 .filter(new AllureRestAssured())
                 .header("Authorization", "Basic " + encodedAuth)
                 .when()
-                .delete(baseUrl + "/catalog/" + endpoint)
+                .delete(baseUrl + endpoint)
                 .then()
                 .extract()
                 .response();
@@ -76,5 +89,4 @@ public class CatalogApi extends BaseApi {
     public String getAuthHeader() {
         return authHeader;
     }
-
 }

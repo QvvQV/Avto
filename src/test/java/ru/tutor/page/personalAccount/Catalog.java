@@ -4,10 +4,9 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
-import ru.tutor.constants.AddressPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 import java.util.*;
@@ -33,62 +32,62 @@ public class Catalog {
     private static final String CATALOG_PAGE_TITLE = "Каталог курсов";
 
     // Классы и атрибуты
-    private static final String CATEGORY_CONTAINER_CLASS = "._CategoryFilter_dijr2_1";
-    private static final String CATEGORY_ITEM_CLASS = "._category_1cihl_13";
-    private static final String CATEGORY_NANE_CLASS = "._name_1cihl_1";
-    private static final String CATEGORY_IMAGE_CLASS = "img._categoryImg_1cihl_39";
-    private static final String SCROLL_CONTAINER_CLASS = "._scrollContainer_dijr2_13";
-    private static final String NAV_BUTTON_CLASS = "._navButton_dijr2_49";
-    private static final String CATEGORY_PRODUCTS = "._count_121uj_200";
+    private final String CATEGORY_CONTAINER_CLASS = "._CategoryFilter_dijr2_1";
+    private final String CATEGORY_ITEM_CLASS = "._category_1cihl_13";
+    private final String CATEGORY_NANE_CLASS = "._name_1cihl_1";
+    private final String CATEGORY_IMAGE_CLASS = "img._categoryImg_1cihl_39";
+    private final String SCROLL_CONTAINER_CLASS = "._scrollContainer_dijr2_13";
+    private final String NAV_BUTTON_CLASS = "._navButton_dijr2_49";
+    private final String CATEGORY_PRODUCTS = "._count_121uj_200";
 
     // URL паттерны
-    private static final String CATALOG_URL = "/user/catalog";
-    private static final String CATEGORY_URL_PATTERN = "/user/catalog?catalog-category=";
+    private final String CATALOG_URL = "/user/catalog";
+    private final String CATEGORY_URL_PATTERN = "/user/catalog?catalog-category=";
 
     // ==================== ЛОКАТОРЫ ====================
-    private static final SelenideElement CATALOG_LINK = $x("//div[text()='Каталог']");
-    private static final SelenideElement CATALOG_PAGE_HEADER = $$("h2").find(exactText(CATALOG_PAGE_TITLE));
-    private static final SelenideElement CATALOG_PAGE_BUTTON = $$("span").find(exactText(CATALOG_TEXT));
-    private static final SelenideElement CATEGORY_FILTER_CONTAINER = $(CATEGORY_CONTAINER_CLASS);
-    public static final SelenideElement SCROLL_CONTAINER = $(SCROLL_CONTAINER_CLASS);
-    private static final ElementsCollection ALL_CATEGORIES = $$(CATEGORY_ITEM_CLASS);
-    private static final SelenideElement NAV_BUTTON = $(NAV_BUTTON_CLASS);
-    private static final SelenideElement ALL_CARD_CATEGORY_PRODUCTS = $(CATEGORY_PRODUCTS);
+    private final SelenideElement CATALOG_LINK = $x("//div[text()='Каталог']");
+    private final SelenideElement CATALOG_PAGE_HEADER = $$("h2").find(exactText(CATALOG_PAGE_TITLE));
+    private final SelenideElement CATALOG_PAGE_BUTTON = $$("span").find(exactText(CATALOG_TEXT));
+    private final SelenideElement CATEGORY_FILTER_CONTAINER = $(CATEGORY_CONTAINER_CLASS);
+    public final SelenideElement SCROLL_CONTAINER = $(SCROLL_CONTAINER_CLASS);
+    private final ElementsCollection ALL_CATEGORIES = $$(CATEGORY_ITEM_CLASS);
+    private final SelenideElement NAV_BUTTON = $(NAV_BUTTON_CLASS);
+    private final SelenideElement ALL_CARD_CATEGORY_PRODUCTS = $(CATEGORY_PRODUCTS);
 
     // ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ====================
 
     /**
      * Получить элемент категории по названию
      */
-    public static SelenideElement getCategoryByName(String categoryName) {
+    public SelenideElement getCategoryByName(String categoryName) {
         return ALL_CATEGORIES.findBy(com.codeborne.selenide.Condition.text(categoryName));
     }
 
     /**
      * Получить элемент названия категории
      */
-    public static SelenideElement getCategoryNameElement(SelenideElement category) {
+    public SelenideElement getCategoryNameElement(SelenideElement category) {
         return category.$(CATEGORY_NANE_CLASS);
     }
 
     /**
      * Получить элемент изображения категории
      */
-    public static SelenideElement getCategoryImageElement(SelenideElement category) {
+    public SelenideElement getCategoryImageElement(SelenideElement category) {
         return category.$(CATEGORY_IMAGE_CLASS);
     }
 
     /**
      * Получить ссылку категории
      */
-    public static String getCategoryHref(SelenideElement category) {
+    public String getCategoryHref(SelenideElement category) {
         return category.getAttribute("href");
     }
 
     // ==================== НАВИГАЦИЯ И ПРОВЕРКИ КАТАЛОГА ====================
 
     @Step("Проверка доступности каталога")
-    public static void verifyCatalogPresence() {
+    public void verifyCatalogPresence() {
         step("Валидация элемента каталога", () -> {
             CATALOG_LINK.shouldBe(visible, DEFAULT_TIMEOUT)
                     .shouldBe(interactable)
@@ -99,7 +98,7 @@ public class Catalog {
     }
 
     @Step("Проверка заголовка каталога")
-    public static void verifyCatalogHeader() {
+    public void verifyCatalogHeader() {
         step("Валидация текста каталога", () -> {
             String actualText = CATALOG_LINK.getText().trim();
 
@@ -113,7 +112,7 @@ public class Catalog {
     }
 
     @Step("Проверка загрузки страницы каталога")
-    private static void verifyCatalogPageLoaded() {
+    private void verifyCatalogPageLoaded() {
         step("Валидация страницы каталога", () -> {
             CATALOG_PAGE_HEADER.shouldBe(visible, DEFAULT_TIMEOUT);
 
@@ -123,12 +122,12 @@ public class Catalog {
     }
 
     @Step("Клик по кнопке 'Каталог'")
-    public static void clickCatalogButton() {
-        universalMethod.safeClick(CATALOG_PAGE_BUTTON, CATALOG_TEXT);
+    public void clickCatalogButton() {
+        UniversalMethod.safeClick(CATALOG_PAGE_BUTTON, CATALOG_TEXT);
     }
 
     @Step("Проверка наличия категорий")
-    public static void verifyCatalogHasCategory() {
+    public void verifyCatalogHasCategory() {
         clickCatalogButton();
         WaitHelper.waitForPageLoad();
         verifyCategoriesBlockVisible();
@@ -137,7 +136,7 @@ public class Catalog {
     // ==================== ПРОВЕРКИ КАТЕГОРИЙ ====================
 
     @Step("Проверить, что блок категорий отображается")
-    public static Catalog verifyCategoriesBlockVisible() {
+    public Catalog verifyCategoriesBlockVisible() {
         CATEGORY_FILTER_CONTAINER.shouldBe(visible, DEFAULT_TIMEOUT);
         return new Catalog();
     }
@@ -261,7 +260,7 @@ public class Catalog {
 
     @Step("Перейти по категории '{categoryName}'")
     public Catalog clickCategory(String categoryName) {
-        universalMethod.safeClick(getCategoryByName(categoryName), categoryName);
+        UniversalMethod.safeClick(getCategoryByName(categoryName), categoryName);
         WaitHelper.waitForPageLoad();
         return this;
     }
@@ -359,7 +358,7 @@ public class Catalog {
     @Step("Кликнуть по навигационной кнопке")
     public Catalog clickNavigateButton() {
         if (hasNavigationButton()) {
-            universalMethod.safeClick(NAV_BUTTON, "Навигационная кнопка");
+            UniversalMethod.safeClick(NAV_BUTTON, "Навигационная кнопка");
             Duration.ofMillis(1800);
         }
         return this;

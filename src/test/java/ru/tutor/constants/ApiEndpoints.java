@@ -30,8 +30,7 @@ public final class ApiEndpoints {
     public static final String USER_GAME_STATS = "user/game-stats";
 
 
-
-    // ==================== Отписка ====================
+    // ==================== PRODUCT ENDPOINTS ====================
     /** Отписка пользователя до Лайт */
     public static final String ORDERS_TOGGLE_SUBSCRIPTION =  "/user/orders/toggle_subscription/%d";
 
@@ -41,6 +40,8 @@ public final class ApiEndpoints {
     /** Восстановление премиума по ссылке из email-рассылки */
     public static final String ORDERS_REACTIVATE_PREMIUM_BY_EMAIL = "/user/orders/reactivate-premium-by-email";
 
+    /** Тариф Подарок */
+    public static final String ORDERS_GET_PREMIUM_GIFT = "/user/orders/get-premium-gift";
 
 
     // ==================== Игровое колесо ====================
@@ -58,6 +59,9 @@ public final class ApiEndpoints {
 
     /** Получение истории забранных наград пользователя */
     public static final String GAME_REWARD_HISTORY = "/user/reward/history";
+
+    // ==================== PROMO CODE ENDPOINTS ====================
+    public static final String PROMO_CODES_APPLY = "/user/promo-codes/apply";
 
 
     // ==================== Клуб ====================

@@ -11,7 +11,7 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 
 import static com.codeborne.selenide.Condition.*;
@@ -91,7 +91,7 @@ public class AdminToUserLoginSteps {
     @Step("Проводим оплату подписки из письма email-рассылки")
     public void sendEmailPay() {
         WaitHelper.waitForAnimationComplete();
-        universalMethod.clickButton(YES_BUTTON,YES_TEXT);
+        UniversalMethod.clickButton(YES_BUTTON,YES_TEXT);
         WaitHelper.waitForAnimationComplete();
     }
 

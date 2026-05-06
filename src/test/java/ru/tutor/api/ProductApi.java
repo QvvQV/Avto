@@ -1,14 +1,18 @@
 package ru.tutor.api;
 
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
+import ru.tutor.base.BaseApi;
 import ru.tutor.config.ProductConfig;
 
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class ProductApi {
+public class ProductApi extends BaseApi {
+
+    public ProductApi() {
+        super("");
+    }
 
     public Response getProductInfo(String productId) {
         String apiUrl = ProductConfig.getProductApiUrl(productId);
@@ -16,8 +20,7 @@ public class ProductApi {
             throw new IllegalArgumentException("Unknown product ID: " + productId);
         }
 
-        return given()
-                .filter(new AllureRestAssured())
+        return given(baseSpec)
                 .headers(getDefaultHeaders())
                 .queryParams(getQueryParams(productId))
             .when()

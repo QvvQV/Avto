@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
+import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.*;
 import ru.tutor.page.orders.TtPage;
@@ -28,11 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestTtPage extends BaseUiTest {
 
     private final TtPage ttPage = new TtPage();
+    private final Footer footer = new Footer();
 
     //    @BeforeEach
     @BeforeAll
     public static void setupAll() {
-        open(AddressPage.urlMain);
+        open(AddressPage.URL_MAIN);
     }
 
     @AfterAll
@@ -91,7 +93,7 @@ public class TestTtPage extends BaseUiTest {
                     assertEquals("8 (800) 555 32 82", footer.setNumber());
                     assertEquals("Автоинформатор", footer.setInformation());
                     assertEquals("support@tutorplace.ru", footer.setEmailSupport());
-                    assertEquals("По общим вопросам", footer.setQuastions());
+                    assertEquals("По общим вопросам", footer.setQuestions());
                     assertEquals("Все обращения принимаются только в электронном виде\nна почту support@tutorplace.ru или онлайн - чат на сайте", footer.setOnline());
                     assertEquals("© OOO «ДИДЖИТАЛ КОНТЕНТ»\n2022–2026", footer.setDidgital());
                 }
@@ -114,14 +116,14 @@ public class TestTtPage extends BaseUiTest {
             assertEquals("https://static.ttplace.ru/docs/oferta.pdf", footer.atrOffer());
 //        assertEquals("https://static.ttplace.ru/docs/rykovodstvo.pdf", footer.atrManual());
             assertEquals("https://static.ttplace.ru/docs/personal_data.pdf", footer.atrPersonalDate());
-            assertEquals("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/about-company", footer.atrAboutCompany());
-            assertEquals("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/about-subscription", footer.atrAboutSubscription());
-            assertEquals("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/contacts", footer.atrContacts());
-            assertEquals("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/new-horizons", footer.atrNewHorizon());
-            assertEquals("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/webmasters", footer.atrWebmasters());
-            assertEquals("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/for-authors", footer.atrForAuthors());
+            assertEquals(TestConfig.getCurrentUiUrl() + "/about-company", footer.atrAboutCompany());
+            assertEquals(TestConfig.getCurrentUiUrl() + "/about-subscription", footer.atrAboutSubscription());
+            assertEquals(TestConfig.getCurrentUiUrl() + "/contacts", footer.atrContacts());
+            assertEquals(TestConfig.getCurrentUiUrl() + "/new-horizons", footer.atrNewHorizon());
+            assertEquals( TestConfig.getCurrentUiUrl() +"/webmasters", footer.atrWebmasters());
+            assertEquals(TestConfig.getCurrentUiUrl() + "/for-authors", footer.atrForAuthors());
 //        assertEquals("/install", footer.atrInstall());
-            assertEquals("https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/vacancies", footer.atrCareer());
+            assertEquals(TestConfig.getCurrentUiUrl()  + "/vacancies", footer.atrCareer());
             assertEquals("mailto:support@tutorplace.ru", footer.atrEmailSupport());
             assertEquals("tel:+78005553282", footer.atrNumber());
         });

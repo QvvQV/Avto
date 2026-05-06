@@ -3,6 +3,7 @@ package ru.tutor.api;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
+import ru.tutor.model.ApplyPromoCodeRequest;
 import ru.tutor.model.RegistrationRequest;
 
 public class UserApi extends BaseApi {
@@ -33,9 +34,6 @@ public class UserApi extends BaseApi {
 
     /**
      * POST /user/logout - выход пользователя из системы
-     *
-     * @param authToken Bearer токен пользователя
-     * @return Response с результатом логаута
      */
 
     public Response logout(String authToken) {
@@ -55,5 +53,12 @@ public class UserApi extends BaseApi {
      */
     public Response register(RegistrationRequest request) {
         return post(ApiEndpoints.REGISTER, request);
+    }
+
+    /**
+     * POST /user/promo-codes/apply - применение промокода
+     */
+    public Response applyPromoCode(String authToken, ApplyPromoCodeRequest request) {
+        return postWithToken(ApiEndpoints.PROMO_CODES_APPLY , authToken, request);
     }
 }

@@ -17,19 +17,19 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 
-public class memoryTrainer {
+public class MemoryTrainer {
 
     // Локаторы
-        private static final SelenideElement MEMORY_TRAINER = $$("p").find(exactText("Тренажер памяти"));
+        private final SelenideElement MEMORY_TRAINER = $$("p").find(exactText("Тренажер памяти"));
 
         //Локатор внутри приложения
-    private static final ElementsCollection START_BUTTONS = $$("._button_1vvql_1");
-    private static final SelenideElement NAME_TRAINER = $("._title_9skre_66");
+    private final ElementsCollection START_BUTTONS = $$("._button_1vvql_1");
+    private final SelenideElement NAME_TRAINER = $("._title_9skre_66");
 
     private static final SelenideElement BACK_BUTTON = $("a[href*='dashboard']");
 
     @Step("Кликаем по тренажёру памяти")
-    public static void clickFromMemoryTrainer() {
+    public void clickFromMemoryTrainer() {
         step("Кликаем по тренажёру памяти", ()->{
              MEMORY_TRAINER.shouldBe(visible, Duration.ofSeconds(5))
                 .shouldBe(interactable)
@@ -39,17 +39,17 @@ public class memoryTrainer {
         });
     }
 
-        public static void gameNavigationWithCollection(){
+        public void gameNavigationWithCollection(){
         START_BUTTONS.shouldHave(CollectionCondition.size(6), Duration.ofSeconds(7));
         for (int i = 0; i < START_BUTTONS.size(); i++){
             startButtonByIndex(i);
         }
         step("Переход на главную страницу",
-            Home::clickMainlink
+                () -> new Home().clickMainlink()
         );
     }
 
-        private static void startButtonByIndex(int index) {
+        private void startButtonByIndex(int index) {
         String[] trainerNames = {"Плитка", "Стена", "Бусина", "Потеряшка", "Код", "Следопыт",};
         String trainerName = trainerNames[index];
 

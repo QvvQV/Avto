@@ -2,7 +2,7 @@ package ru.tutor.steps;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import ru.tutor.page.api.ResetApi;
+import ru.tutor.api.ResetApi;
 import ru.tutor.utils.ResponseAnalyzer;
 
 public record ResetSteps(ResetApi resetApi) {

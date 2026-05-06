@@ -12,24 +12,24 @@ import ru.tutor.test.context.TestExecutionContext;
 import ru.tutor.test.executor.PaymentCycleExecutor;
 import ru.tutor.utils.DateValidator;
 
-public class RecurrentPaymentTestBase extends BaseUiTest {
+public abstract class RecurrentPaymentTestBase extends BaseUiTest {
 
     // Константы
     protected static final int ALLOWED_TIME_DIFFERENCE_MINUTES = 1;
 
     // Page Objects
-    protected AdminOrderDetails adminOrderDetails = new AdminOrderDetails();
-    protected AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
-    protected TtPage ttPage = new TtPage();
-    protected CloudPage cloudPage = new CloudPage();
-    protected SberPage sberPage = new SberPage();
+    protected AdminOrderDetails adminOrderDetails;
+    protected AdminOrdersPage adminOrdersPage;
+    protected TtPage ttPage;
+    protected CloudPage cloudPage;
+    protected SberPage sberPage;
 
     // Вспомогательные классы
-    protected OrderDatesPage orderDatesPage = new OrderDatesPage(adminOrderDetails);
-    protected DateValidator dateValidator = new DateValidator(ALLOWED_TIME_DIFFERENCE_MINUTES);
+    protected OrderDatesPage orderDatesPage;
+    protected DateValidator dateValidator;
 
-    protected TestExecutionContext context =  new TestExecutionContext();
-    protected PaymentCycleExecutor  paymentCycleExecutor;
+    protected TestExecutionContext context;
+    protected PaymentCycleExecutor paymentCycleExecutor;
 
     @BeforeAll
     public static void setUp() {

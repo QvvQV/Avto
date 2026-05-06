@@ -18,14 +18,14 @@ public class AdminOrderDetails {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
     // Селекторы
-    private static SelenideElement getDateElement(OrderDateType dateType) {
+    private SelenideElement getDateElement(OrderDateType dateType) {
         return $$("div.order-info-entry")
                 .findBy(text(dateType.getDisplayName()))
                 .$("div", 1)
                 .shouldBe(visible, DEFAULT_TIMEOUT);
     }
 
-    private static SelenideElement getProductElement() {
+    private SelenideElement getProductElement() {
         return $$("div.order-info-entry")
                 .findBy(text("Продукт"))
                 .$(".order-info-entry__children")

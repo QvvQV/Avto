@@ -4,10 +4,9 @@ import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import org.openqa.selenium.Keys;
-import ru.tutor.page.dashbords.allDashbords;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -19,30 +18,30 @@ import static io.qameta.allure.Allure.step;
 public class Home {
 
     // Локаторы страницы
-    private static final SelenideElement MAIN_LINK = $x("//div[text()='Главная']");
-    private static final SelenideElement CATALOG_BUTTON = $$("button").find(exactText("Каталог курсов"));
+    private final SelenideElement MAIN_LINK = $x("//div[text()='Главная']");
+    private final SelenideElement CATALOG_BUTTON = $$("button").find(exactText("Каталог курсов"));
 
     // Локаторы меню поиска
-    private static final SelenideElement SEARCH = $("a.tutorial-step-mail + div");
-    private static final SelenideElement SEARCH_INPUT = $("input[placeholder='Поиск...']");
-    private static final SelenideElement PRODUCT_CARD_LIST = $("._ProductCardList_1s81r_1");
+    private final SelenideElement SEARCH = $("a.tutorial-step-mail + div");
+    private final SelenideElement SEARCH_INPUT = $("input[placeholder='Поиск...']");
+    private final SelenideElement PRODUCT_CARD_LIST = $("._ProductCardList_1s81r_1");
 
 
     // Добавление продукта
-    private static final SelenideElement ADD_BUTTON = $$("button").find(exactText("Добавить"));
-    private static final SelenideElement STAY_BUTTON = $$("button").find(exactText("Остаться"));
+    private final SelenideElement ADD_BUTTON = $$("button").find(exactText("Добавить"));
+    private final SelenideElement STAY_BUTTON = $$("button").find(exactText("Остаться"));
 
     // Локаторы в под-меню продукта
-    private static final SelenideElement ELLIPSES_BUTTON = $("._control_sjghz_30");
-    private static final SelenideElement GARBAGE_BUTTON = $("button._bin_sjghz_90");
+    private final SelenideElement ELLIPSES_BUTTON = $("._control_sjghz_30");
+    private final SelenideElement GARBAGE_BUTTON = $("button._bin_sjghz_90");
 
     // Локаторы продукта в модальном окне
-    private static final SelenideElement DELETE_BUTTON = $$("button").find(exactText("Удалить"));
-    private static final SelenideElement CANCEL_BUTTON = $$("button").find(exactText("Отмена"));
+    private final SelenideElement DELETE_BUTTON = $$("button").find(exactText("Удалить"));
+    private final SelenideElement CANCEL_BUTTON = $$("button").find(exactText("Отмена"));
 
 
     @Step("Навигация на главную страницу")
-    public static void navigateToMainPage() {
+    public void navigateToMainPage() {
         step("Переход на главную страницу", () -> {
             String originalUrl = WebDriverRunner.url();
             clickMainlink();
@@ -52,7 +51,7 @@ public class Home {
         });
     }
 
-    public static void clickMainlink(){
+    public void clickMainlink(){
         MAIN_LINK.shouldBe(visible, Duration.ofSeconds(5))
                     .shouldBe(interactable)
                     .click();
@@ -60,7 +59,7 @@ public class Home {
     }
 
     @Step("Проверка загрузки главной страницы")
-    private static void verifyMainPageLoaded(String originalUrl) {
+    private void verifyMainPageLoaded(String originalUrl) {
         step("валидация главной страницы", () -> {
             // Проверяем что URL изменился
             if (!Objects.equals(WebDriverRunner.url(), originalUrl)) {
@@ -76,7 +75,7 @@ public class Home {
     }
 
     @Step("Проверка доступности ссылки 'Главная'")
-    public static void verifyHomeLinkPresence() {
+    public void verifyHomeLinkPresence() {
         step("Валидация навигационного элемента", () -> {
             MAIN_LINK.shouldBe(visible, Duration.ofSeconds(5))
                     .shouldHave(exactText("Главная"));
@@ -86,7 +85,7 @@ public class Home {
     }
 
     @Step("Кликаем по кнопке поиск")
-    private static void clickSearch() {
+    private void clickSearch() {
         step("Выбираем поиск", () ->
                 SEARCH.shouldBe(visible, Duration.ofSeconds(3))
                         .shouldBe(interactable)
@@ -95,7 +94,7 @@ public class Home {
     }
 
     @Step("Вводим курс")
-    private static void addCourse(String productName) {
+    private void addCourse(String productName) {
         step("Вводим курс: " + productName, () -> {
             SEARCH_INPUT.shouldBe(visible, Duration.ofSeconds(2))
                             .sendKeys(Keys.CONTROL + "a");
@@ -108,7 +107,7 @@ public class Home {
     }
 
     @Step("Кликаем по курсу")
-    private static void clickFromCourse() {
+    private void clickFromCourse() {
         step("Кликаем по курсу", () -> {
             PRODUCT_CARD_LIST.shouldBe(visible, Duration.ofSeconds(5))
                     .shouldBe(interactable)
@@ -118,7 +117,7 @@ public class Home {
     }
 
     @Step("Добавляем курс")
-    private static void addCourse() {
+    private void addCourse() {
         step("Добавляем продукт", () -> {
             ADD_BUTTON.shouldBe(visible, Duration.ofSeconds(5))
                     .shouldBe(interactable)
@@ -128,7 +127,7 @@ public class Home {
     }
 
     @Step("Кликаем остаться")
-    private static void stayClick(String productName) {
+    private void stayClick(String productName) {
         step("Кликаем остаться", () -> {
             STAY_BUTTON.shouldBe(visible, Duration.ofSeconds(5))
                     .shouldBe(interactable)
@@ -140,7 +139,7 @@ public class Home {
 
 
     @Step("Прохождение добавления курса")
-    public static void walkthroughtAddingACourse(String productName) {
+    public void walkthroughtAddingACourse(String productName) {
         clickSearch();
         addCourse(productName);
         clickFromCourse();
@@ -149,7 +148,7 @@ public class Home {
     }
 
     @Step("Удаляем курс")
-    public static void deleteCourse() {
+    public void deleteCourse() {
         step("Кликаем по картинке для скрытого меню", () -> {
             ELLIPSES_BUTTON.shouldBe(visible, Duration.ofSeconds(5))
                     .shouldBe(interactable)
@@ -172,10 +171,10 @@ public class Home {
     }
 
     @Step("Удаляем продукт")
-    public static void deleteProduct(String productName) {
+    public void deleteProduct(String productName) {
         step("Удаляем продукт", () -> {
             refresh();
-            universalMethod.safeClick(ELLIPSES_BUTTON, "Круг");
+            UniversalMethod.safeClick(ELLIPSES_BUTTON, "Круг");
 
             GARBAGE_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(interactable)

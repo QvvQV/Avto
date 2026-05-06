@@ -4,7 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
@@ -15,30 +15,30 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class allDashbords {
+public class AllDashbords {
 
     // Таймаут
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
     //локаторы модуля Приложения
 
-    private static final SelenideElement APPLICATION = $$("h2").find(exactText("Приложения"));
-    private static final SelenideElement NUTRITION_TRACKER = $$("p").find(exactText("Трекер питания"));
-    private static final SelenideElement NATAL_CHART = $$("p").find(exactText("Натальная карта"));
-    private static final SelenideElement SPY_HEART = $$("p").find(exactText("SpyHeart"));
-    private static final SelenideElement TARO = $$("p").find(exactText("Таро"));
-    private static final SelenideElement MATRIX_CALCULATION = $$("p").find(exactText("Расчет матрицы"));
-    private static final SelenideElement MEMORY_TRAINER = $$("p").find(exactText("Тренажер памяти"));
-    private static final SelenideElement CHANNEL_ACCOUNTING = $$("p").find(exactText("Учет каналов"));
-    private static final SelenideElement PRODUCT_CARD_EDITOR = $$("p").find(exactText("Редактор карточек товара"));
+    private final SelenideElement APPLICATION = $$("h2").find(exactText("Приложения"));
+    private final SelenideElement NUTRITION_TRACKER = $$("p").find(exactText("Трекер питания"));
+    private final SelenideElement NATAL_CHART = $$("p").find(exactText("Натальная карта"));
+    private final SelenideElement SPY_HEART = $$("p").find(exactText("SpyHeart"));
+    private final SelenideElement TARO = $$("p").find(exactText("Таро"));
+    private final SelenideElement MATRIX_CALCULATION = $$("p").find(exactText("Расчет матрицы"));
+    private final SelenideElement MEMORY_TRAINER = $$("p").find(exactText("Тренажер памяти"));
+    private final SelenideElement CHANNEL_ACCOUNTING = $$("p").find(exactText("Учет каналов"));
+    private final SelenideElement PRODUCT_CARD_EDITOR = $$("p").find(exactText("Редактор карточек товара"));
 
     // Элементы управления каруселью
-    private static final SelenideElement BUTTON_NEXT_SLIDE = $("button[aria-label='Следующий слайд']");
-    private static final SelenideElement BUTTON_PREVIOUS_SLIDE = $("button[aria-label='Предыдущий слайд']");
-    private static final SelenideElement FIRST_DASHBOARD = $$(".tutorial-product-step-4-dash").get(0);
+    private final SelenideElement BUTTON_NEXT_SLIDE = $("button[aria-label='Следующий слайд']");
+    private final SelenideElement BUTTON_PREVIOUS_SLIDE = $("button[aria-label='Предыдущий слайд']");
+    private final SelenideElement FIRST_DASHBOARD = $$(".tutorial-product-step-4-dash").get(0);
 
     // Коллекция дашбордов для удобства проверки
-    private static final Map<String, SelenideElement> DASHBOARDS = new LinkedHashMap<>() {{
+    private final Map<String, SelenideElement> DASHBOARDS = new LinkedHashMap<>() {{
         put("Трекер питания", NUTRITION_TRACKER);
         put("Натальная карта", NATAL_CHART);
         put("SpyHeart", SPY_HEART);
@@ -61,7 +61,7 @@ public class allDashbords {
     }
 
     @Step("Проверка что на первом позиции дашбор: {expectedDashboard}")
-    private static void verifyFirstDashboard(String expectedDashboard) {
+    private void verifyFirstDashboard(String expectedDashboard) {
         FIRST_DASHBOARD.shouldBe(visible, DEFAULT_TIMEOUT);
 
         //Проверяем текст дашборда
@@ -75,19 +75,8 @@ public class allDashbords {
         AllureAttachments.attachScreenshot(actualText);
     }
 
-//    @Step("Безопасный клик по карусели")
-//    public static void safeCarouselClick(SelenideElement button) {
-//        step("Клик по карусели", () -> {
-//            button.shouldBe(visible, Duration.ofSeconds(5))
-//                    .shouldBe(interactable, Duration.ofSeconds(3))
-//                    .click();
-//            WaitHelper.waitForAnimationComplete();
-//            WaitHelper.waitFor(Duration.ofSeconds(1)); // Дополнительная стабилизация
-//        });
-//    }
-
     @Step("Проверка видимости и доступности всех дашбордов")
-    public static void verifyDashboardsVisibility() {
+    public void verifyDashboardsVisibility() {
         step("Прокрутка к разделу 'Приложения'", () -> {
             APPLICATION.scrollTo()
                     .shouldBe(visible, Duration.ofSeconds(10))
@@ -102,7 +91,7 @@ public class allDashbords {
             verifyDashboardVisibility("SpyHeart", SPY_HEART);
         });
 
-        step("Навигация по карусели дашбордов", allDashbords::navigateThroughDashboards);
+        step("Навигация по карусели дашбордов", new AllDashbords()::navigateThroughDashboards);
 
         step("Проверка навигации назад", () -> {
             BUTTON_PREVIOUS_SLIDE.shouldBe(visible).click();
@@ -113,26 +102,26 @@ public class allDashbords {
     }
 
     @Step("Навигация по карусели дашбордов")
-    private static void navigateThroughDashboards() {
+    private void navigateThroughDashboards() {
         step("Переход к следующим слайдам", () -> {
             //Слайд 2: Таро
-            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            UniversalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
             verifyDashboardVisibility("Таро", TARO);
 
             //Слайд 3: Расчёт матрицы
-            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            UniversalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
             verifyDashboardVisibility("Расчет матрицы", MATRIX_CALCULATION);
 
             //Слайд 4: пропускаем повторный SpyHeart
-            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
-            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            UniversalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            UniversalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
 
             //Слайд 5: Тренажёр памяти
             verifyDashboardVisibility("Тренажер памяти", MEMORY_TRAINER);
 
             //Слайд 6: пропускаем повторный SpyHeart
-            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
-            universalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            UniversalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
+            UniversalMethod.safeClick(BUTTON_NEXT_SLIDE, "Следующий слайд");
 
 
             //Слайд 7: Учёт каналов и редактор карточек
@@ -142,7 +131,7 @@ public class allDashbords {
     }
 
     @Step("Получение статистики по дашбордам")
-    public static Map<String, Boolean> getDashboardsStatus() {
+    public Map<String, Boolean> getDashboardsStatus() {
         Map<String, Boolean> status = new LinkedHashMap<>();
 
         for (Map.Entry<String, SelenideElement> entry : DASHBOARDS.entrySet()) {
@@ -157,7 +146,7 @@ public class allDashbords {
         return status;
     }
 
-    private static String formatStatusReport(Map<String, Boolean> status) {
+    private String formatStatusReport(Map<String, Boolean> status) {
         StringBuilder report = new StringBuilder("Статус отображения дашбордов:\n");
         for (Map.Entry<String, Boolean> entry : status.entrySet()) {
             report.append(entry.getValue() ? "✅ " : "❌ ")
@@ -168,7 +157,7 @@ public class allDashbords {
     }
 
     @Step("проверка начального состояния карусели")
-    private static void checkCarouselInitialState() {
+    private void checkCarouselInitialState() {
         System.out.println("H2: ");
         $$("h2").forEach(element ->
             System.out.println(" - " + element.getText())
@@ -176,7 +165,7 @@ public class allDashbords {
     }
 
     @Step("Проверка видимости дашборда на первом слайде")
-    public static void verifyDashboardsVisibilityOnFirstSlide() {
+    public void verifyDashboardsVisibilityOnFirstSlide() {
         step("Проверка дашбордов на первом слайде", () -> {
             verifyDashboardVisibility("Таро", TARO);
             verifyDashboardVisibility("Трекер питания", NUTRITION_TRACKER);
@@ -185,11 +174,7 @@ public class allDashbords {
     }
 
     @Step("Тестирование продукта")
-    public static void testSingleProduct (String productName, String dashboardName) {
-//        step("Тестирование продукта: " + productName, ()->{
-//            step("1. Добавляем продукт", () -> {
-//                Home.walkthroughtAddingACourse(productName);
-//            });
+    public void testSingleProduct (String productName, String dashboardName) {
             step("1. Обновляем страницу", ()->{
                 refresh();
                 WaitHelper.waitForPageLoad();
@@ -197,15 +182,6 @@ public class allDashbords {
             step("2. Проверяем что в карусели на первой позиции дашборд: " + dashboardName, ()->
                 verifyFirstDashboard(dashboardName)
             );
-//            step("4. Удаляем курс", ()->{
-//                Home.deleteProduct(productName);
-//                AllureAttachments.attachText("Продукт удален", "✅ " + productName);
-//               AllureAttachments.attachScreenshot("Главная страница после удаления продукта");
-//            });
-//            step("5. Подготовка к следующему продукту", ()->{
-//                WaitHelper.waitFor(Duration.ofSeconds(1));
-//            });
-//        });
     }
 
 }

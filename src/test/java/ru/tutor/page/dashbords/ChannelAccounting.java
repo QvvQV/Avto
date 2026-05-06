@@ -7,7 +7,7 @@ import org.openqa.selenium.Keys;
 import ru.tutor.page.personalAccount.Home;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.universalMethod;
+import ru.tutor.utils.UniversalMethod;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -17,25 +17,25 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 
-public class channelAccounting {
+public class ChannelAccounting {
 
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
     // Локтоары
-    private static final SelenideElement CHANNEL_ACCOUNTING = $$("p").find(exactText("Учет каналов"));
-    private static final SelenideElement URL_INPUT = $("input[name='url']");
-    private static final SelenideElement BISNESS_PLACEHOLDER = $("[id=\"react-select-2-placeholder\"]");
-    private static final SelenideElement BISNESS_INPUT = $("[id=\"react-select-2-input\"]");
-    private static final SelenideElement DATE_INPUT = $("input[placeholder='Дата создания']");
-    private static final SelenideElement NAME_INPUT = $("[name='name'");
-    private static final SelenideElement COVERAGE_INPUT = $("[name='coverage'");
-    private static final SelenideElement SUBSCRIBERS_INPUT = $("[name='subscribers'");
-    private static final SelenideElement ADD_BUTTON = $$("button").find(exactText("Добавить"));
-    private static final SelenideElement DELETE_BUTTON = $("._tool_1uxgp_1");
+    private final SelenideElement CHANNEL_ACCOUNTING = $$("p").find(exactText("Учет каналов"));
+    private final SelenideElement URL_INPUT = $("input[name='url']");
+    private final SelenideElement BISNESS_PLACEHOLDER = $("[id=\"react-select-2-placeholder\"]");
+    private final SelenideElement BISNESS_INPUT = $("[id=\"react-select-2-input\"]");
+    private final SelenideElement DATE_INPUT = $("input[placeholder='Дата создания']");
+    private final SelenideElement NAME_INPUT = $("[name='name'");
+    private final SelenideElement COVERAGE_INPUT = $("[name='coverage'");
+    private final SelenideElement SUBSCRIBERS_INPUT = $("[name='subscribers'");
+    private final SelenideElement ADD_BUTTON = $$("button").find(exactText("Добавить"));
+    private final SelenideElement DELETE_BUTTON = $("._tool_1uxgp_1");
 
 
     @Step("Кликаем по Учет каналов")
-    public static void clickFromChannelAccounting() {
+    public void clickFromChannelAccounting() {
         CHANNEL_ACCOUNTING.shouldBe(visible, Duration.ofSeconds(5))
                 .shouldBe(interactable)
                 .click();
@@ -44,7 +44,7 @@ public class channelAccounting {
     }
 
     @Step("Заполняем URL")
-    private static void valueURL() {
+    private void valueURL() {
         step("Вводим параметр URL", () -> {
             URL_INPUT.shouldBe(visible, Duration.ofSeconds(3))
                     .setValue("https://client.ttplace.ru/user/telegram/dashboard");
@@ -52,7 +52,7 @@ public class channelAccounting {
     }
 
     @Step("Выбираем тематику")
-    private static void addTematic() {
+    private void addTematic() {
         step("Заполняем тематику", () -> {
             BISNESS_PLACEHOLDER.shouldBe(visible).click();
             BISNESS_INPUT.sendKeys(Keys.ENTER);
@@ -62,7 +62,7 @@ public class channelAccounting {
     }
 
     @Step("Выбираем дату")
-    private static void addDate() {
+    private void addDate() {
         step("Выбираем дату", () -> {
             DATE_INPUT.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(clickable)
@@ -71,7 +71,7 @@ public class channelAccounting {
     }
 
     @Step("Задаём Название")
-    private static void addName() {
+    private void addName() {
         step("Задаём название группы", () -> {
             NAME_INPUT.shouldBe(visible, Duration.ofSeconds(3))
                     .click();
@@ -80,7 +80,7 @@ public class channelAccounting {
     }
 
     @Step("Средний охват")
-    private static void average() {
+    private void average() {
         step("Задаём средний охват", () -> {
             COVERAGE_INPUT.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(clickable)
@@ -89,7 +89,7 @@ public class channelAccounting {
     }
 
     @Step("Количество подписчиков")
-    private static void numberSudscribers() {
+    private void numberSudscribers() {
         step("Задаём количество подписчиков", () -> {
             SUBSCRIBERS_INPUT.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(clickable)
@@ -98,7 +98,7 @@ public class channelAccounting {
     }
 
     @Step("Кнопка добавить")
-    private static void clickButtonAdd() {
+    private void clickButtonAdd() {
         step("Кликаем по кнопке", () -> {
             ADD_BUTTON.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(clickable)
@@ -110,15 +110,15 @@ public class channelAccounting {
     }
 
     @Step("Удаление каналов")
-    private static void deleteCannel() {
+    private void deleteCannel() {
         step("Удаляем канал", () ->
-            universalMethod.safeClick(DELETE_BUTTON, "Удалить канал")
+            UniversalMethod.safeClick(DELETE_BUTTON, "Удалить канал")
         );
     }
 
 
     @Step("Заполняем форму")
-    public static void fillForm() {
+    public void fillForm() {
         step("Кнопка добавить не активна", () -> {
             ADD_BUTTON.shouldHave(disabled);
         });
@@ -137,6 +137,6 @@ public class channelAccounting {
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
         AllureAttachments.attachScreenshot("Дашборд после удаления");
-        step("переход на главную", Home::clickMainlink);
+        step("переход на главную", () -> new Home().clickMainlink());
     }
 }

@@ -27,8 +27,9 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         );
     }
 
-    @Tag("UI" + "API")
     @Test
+    @Tag("UI" + "API")
+    @Tag("aff_rid / aff_rid")
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты")
     void restoreYourPremiumAccountUsingAnInternalEmail() {
         reactivateFlow
@@ -41,8 +42,9 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
                 .verifyAffRid();
     }
 
-    @Tag("UI" + "API")
     @Test
+    @Tag("UI" + "API")
+    @Tag("aff_rid / aff_rid")
     @DisplayName("Восстановление премиума по ссылке из email-рассылки")
     void restoreYourPremiumAccountUsingLinkFromEmailNewsletter() {
         reactivateFlow
@@ -54,9 +56,10 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
                 .verifyAffRid();
     }
 
-    @Tag("UI" + "API")
     @Test
-    @DisplayName("Восстановление Премиума по ссылке из email-рассылки отменённого заказа из Админки")
+    @Tag("UI" + "API")
+    @Tag("aff_rid / aff_rid")
+    @DisplayName("Восстановление Премиума по ссылке из email-рассылки отменённого заказа из Админки ")
     void restorePremiumCancelAdmin() {
         reactivateFlow
                 .createUserWithAffRidAndRecurrent()
@@ -66,19 +69,34 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
                 .verifyAffRid();
     }
 
-    @Tag("UI" + "API")
+//    @Tag("UI" + "API")
+//    @Test
+//    @DisplayName("Восстановление Премиума по ссылке из email-рассылки отменённого заказа из Админки (aff_rid / органика)")
+//    void restorePremiumCancelAdminWithoutAffRid() {
+//        reactivateFlow
+//                .createUserWithAffRidAndRecurrent()
+//                .cancelOrderInAdmin()
+//                .removeAffiliateParameterFromEmail()
+//                .payFromEmailNewsletter()
+//                .verifyAffRid();
+//    }
+
+
     @Test
-    @DisplayName("Офрмление с aff_rid, восстановление Премиума по тарифу Пожизненный доступ без aff_rid в ссылке")
+    @Tag("UI" + "API")
+    @Tag("aff_rid / aff_rid")
+    @DisplayName("Оформление с aff_rid, восстановление Премиума по тарифу Пожизненный доступ без aff_rid")
     void restorePremiumlifeAccess() {
         flow.purchasePremiumSubscriptionAffRid();
         reactivateFlow.openFirstWeek();
-        CloudPage.clickCardPageBtn();
+        cloudPage.clickCardPageBtn();
         flow.processUnlimitedInAdmin();
         reactivateFlow.goToUserPersonalAccount();
     }
 
-    @Tag("UI" + "API")
     @Test
+    @Tag("UI" + "API")
+    @Tag("aff_rid / aff_rid")
     @DisplayName("Оформление Renewal внутри ЛК c Aff_Rid в URL")
     void renewalDesignInsideThePersonalAccount() {
         reactivateFlow
@@ -87,12 +105,12 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
                 .takeCashbackAndFillWelcomeWindow()
                 .addAffiliateParameter()
                 .downgradeToLite()
-                .processRenewalInPersonalAccount()
-                .verifyAffRid();
+                .processRenewalInPersonalAccount();
     }
 
-    @Tag("UI" + "API")
     @Test
+    @Tag("UI" + "API")
+    @Tag("органика/органика")
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты Без африда")
     void restoreYourPremiumAccountUsingAnInternalEmailWithoutAffRid() {
         reactivateFlow
@@ -101,10 +119,12 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
                 .fetchAuthToken()
                 .downgradeToLite()
                 .reactivatePremium();
+//                .verifyAffRid();
     }
 
-    @Tag("UI" + "API")
     @Test
+    @Tag("UI" + "API")
+    @Tag("aff_rid / органика")
     @DisplayName("Оформление билла с потоковой ссылкой. Оформление реневалла без потоковой ссылки в url")
     void restoreYourPremiumAccountUsingWithAffRidRenewalWithoutAffRid() {
         reactivateFlow
@@ -164,6 +184,13 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
         * 7. сверить utm_метку, провести рекуррент
         * 8. проверить записи в offerum
      * _ОР:_ Лиду в офферум отбились сл-ие записи 1) Подписка 2) Регулярный платёж 3) Отписка до Лайта 4) Подписка 5) Регулярный платёж
+     */
+
+    /*
+    Заказ по органике, реневал по органике. Ожидается: Премиум на сисак в воронку органики, реневал на сисак в воронку органики
+Заказ с афридом, реневал по органике. Ожидается: Премиум на веба в воронку африда, реневал на сисак в воронку органики
+Заказ по органике, реневал с афридом (из таски 6417). Ожидается: Премиум на сисак в воронку органики, реневал на веба в воронку африда
+Заказ с афридом, реневал с афридом (из таски 6417). Ожидается: Премиум на веба в воронку африда, реневал на веба в воронку африда
      */
 
 }
