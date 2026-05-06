@@ -70,7 +70,7 @@ public class CategoriesTest extends BaseUiTest {
     @BeforeEach
     public void beforeEach() {
         step("Авторизация пользователя", () -> {
-                    open(AddressPage.login);
+                    open(AddressPage.LOGIN);
                     registration.validEmail();
                     registration.validPass();
                     registration.clickBtnLogin();
