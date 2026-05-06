@@ -327,6 +327,6 @@ public class ReactivatePremiumFlow {
      * Получение aff_rid из конфига
      */
     public String getAffRid() {
-        return AddressPage.value;
+        return AddressPage.VALUE;
     }
 }

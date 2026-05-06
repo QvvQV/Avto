@@ -73,7 +73,7 @@ public class UrlModificationSteps {
     public static void addAffiliateParameter() {
         String currentUrl = getCurrentUrl();
         String modifiedUrl = buildUrlWithParams(currentUrl,
-                AddressPage.PARAM + "=" + AddressPage.value);
+                AddressPage.PARAM + "=" + AddressPage.VALUE);
 
         logUrlModification(currentUrl, modifiedUrl);
         openUrl(modifiedUrl);

@@ -20,7 +20,7 @@ public class LoginTest extends BaseUiTest {
     void beforeEach() {
 
         step("Открытие стр", () ->
-            open(AddressPage.login)
+            open(AddressPage.LOGIN)
         );
         step("Проверяем title", () -> {
             String expected = "TutorPlace";
