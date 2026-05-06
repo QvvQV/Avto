@@ -73,7 +73,7 @@ public class UrlModificationSteps {
     public static void addAffiliateParameter() {
         String currentUrl = getCurrentUrl();
         String modifiedUrl = buildUrlWithParams(currentUrl,
-                AddressPage.param + "=" + AddressPage.value);
+                AddressPage.PARAM + "=" + AddressPage.value);
 
         logUrlModification(currentUrl, modifiedUrl);
         openUrl(modifiedUrl);
@@ -83,8 +83,8 @@ public class UrlModificationSteps {
     public static void addAffiliateParameterByEmail() {
         String currentUrl = getCurrentUrl();
         String modifiedUrl = buildUrlWithParams(currentUrl,
-                AddressPage.param + "=" + AddressPage.value,
-                AddressPage.recovery_from_email);
+                AddressPage.PARAM + "=" + AddressPage.VALUE,
+                AddressPage.RECOVERY_FROM_EMAIL);
 
         logUrlModification(currentUrl, modifiedUrl);
         openUrl(modifiedUrl);
@@ -94,7 +94,7 @@ public class UrlModificationSteps {
     public static void removeAffiliateParameterByEmail() {
         String currentUrl = getCurrentUrl();
         String modifiedUrl = buildUrlWithParams(currentUrl,
-                AddressPage.recovery_from_email);
+                AddressPage.RECOVERY_FROM_EMAIL);
 
         logUrlModification(currentUrl, modifiedUrl);
         openUrl(modifiedUrl);

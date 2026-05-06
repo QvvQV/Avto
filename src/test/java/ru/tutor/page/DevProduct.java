@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Keys;
+import ru.tutor.config.TestConfig;
 
 import java.util.Locale;
 import java.util.Map;
@@ -109,7 +110,7 @@ public class DevProduct {
         Response response = RestAssured
                 .given()
 
-                .baseUri("https://api.dev.tutorplace.ru/admin")
+                .baseUri(TestConfig.getCurrentApiUrl())
 
                 .contentType(ContentType.JSON)
                 .body(requestBody)
@@ -252,7 +253,7 @@ public class DevProduct {
 
             // Отправляем запрос
             given()
-                    .baseUri("https://api.dev.tutorplace.ru/admin")
+                    .baseUri(TestConfig.getCurrentAdminDomain())
                     .contentType(ContentType.JSON)
                     .cookies(token)                                 // твои cookies для авторизации
                     .body(body.toString())                          // сериализованный JSON
@@ -266,7 +267,7 @@ public class DevProduct {
         step("проверяем что навыки добавились", () -> {
 
             given()
-                    .baseUri("https://api.dev.tutorplace.ru/admin")
+                    .baseUri(TestConfig.getCurrentAdminDomain())
                     .cookies(token)
                     .when()
                     .get("/products/525")

@@ -185,10 +185,9 @@ public class TestTtPage extends BaseUiTest {
             for (String url : api) {
                 Response response = given()
 
-                        .baseUri("https://api.dev.tutorplace.ru/promo/")
+                        .baseUri(TestConfig.getCurrentApiUrl() + "/promo/")
 
                         .contentType(ContentType.JSON)
-//                .headers("Authorization", "Basic YWRtaW46Sld3cHBzRUE4NEI0Qm96SmdFNDRzTmlaWg==")
 
                         .when()
                         .get(url)
@@ -212,9 +211,6 @@ public class TestTtPage extends BaseUiTest {
     @DisplayName("api category")
     public void ApiFooterMenuCategory() {
 
-//        List<String> api = Arrays.asList("api/config");
-
-//        for (String url : api){
         Response response = given()
 
                 .baseUri("https://api.dev.tutorplace.ru/products")
@@ -229,10 +225,8 @@ public class TestTtPage extends BaseUiTest {
                 .extract()
                 .response();
 
-//        String title = response.path("listAllCourses");
         response.prettyPrint();
 
-//        System.out.println(title);
         response.jsonPath();
     }
 }

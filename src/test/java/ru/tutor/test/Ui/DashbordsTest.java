@@ -61,7 +61,7 @@ public class DashbordsTest extends BaseUiTest {
 
     private void executeCarouselTest(String productName, String dashboardName) {
         step("Открытие страницы логина", () -> {
-            open(AddressPage.login);
+            open(AddressPage.LOGIN);
             AllureAttachments.attachText("Логин", "Страница логина открыта");
         });
         step("Заполнение валидными данными",
@@ -72,7 +72,7 @@ public class DashbordsTest extends BaseUiTest {
 
     private void chekingInsideTheDashboard(String productName, String dashboard) {
         step("1. Открытие страницы логина", () -> {
-            open(AddressPage.login);
+            open(AddressPage.LOGIN);
             AllureAttachments.attachText("Логин", "Страница логина открыта");
         });
         step("2. Заполнение валидными данными",
@@ -136,7 +136,7 @@ public class DashbordsTest extends BaseUiTest {
     void userRegistrationWithCompleteOnbordingProcess() {
 
         step("1. Открытие страницы регистрации", () -> {
-            open(AddressPage.register);
+            open(AddressPage.REGISTER);
             AllureAttachments.attachText("Регистрация", "Страница регистрации открыта");
         });
         step("2. Заполнение регистрационных данных", () -> {
@@ -176,7 +176,7 @@ public class DashbordsTest extends BaseUiTest {
     @DisplayName("✅ Переход на страницу оплаты зарегистрированного пользователя с модуля Приложения")
     void transitionToThePaymentPageForRegisteredUser() {
         step("1. Открытие страницы регистрации", () -> {
-            open(AddressPage.register);
+            open(AddressPage.REGISTER);
             AllureAttachments.attachText("Регистрация", "Страница регистрации открыта");
         });
         step("2. Заполнение регистрационных данных", () -> {

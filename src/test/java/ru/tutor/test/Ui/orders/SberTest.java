@@ -119,7 +119,7 @@ public class SberTest extends BaseUiTest {
     private class PaymentTestFlow {
         public PaymentTestFlow openProductPage() {
             step("Открытие страницы продукта Excel", () ->
-                open(AddressPage.urlExcel)
+                open(AddressPage.URL_EXCEL)
             );
             return this;
         }

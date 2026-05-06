@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import net.datafaker.Faker;
+import ru.tutor.constants.PaymentConstants;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -33,19 +34,19 @@ public class OrderRequest {
 
     @JsonProperty("currency")
     @JsonSetter(nulls = Nulls.SKIP)
-    private String currency = "RUB";
+    private String currency = PaymentConstants.DEFAULT_CURRENCY;
 
     @JsonProperty("skin")
     @JsonSetter(nulls = Nulls.SKIP)
-    private String skin = "mini";
+    private String skin = PaymentConstants.DEFAULT_SKIN;
 
     @JsonProperty("autoClose")
     @JsonSetter(nulls = Nulls.SKIP)
-    private Integer autoClose = 3;
+    private Integer autoClose = PaymentConstants.DEFAULT_AUTO_CLOSE;
 
     @JsonProperty("language")
     @JsonSetter(nulls = Nulls.SKIP)
-    private String language = "ru-RU";
+    private String language = PaymentConstants.DEFAULT_LANGUAGE;
 
     @JsonProperty("subscriptionType")
     @JsonSetter(nulls = Nulls.SKIP)

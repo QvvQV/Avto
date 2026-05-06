@@ -13,7 +13,7 @@ public final class ApiEndpoints {
     }
 
     // ==================== API URL ====================
-    public static final String apiBaseUrl = TestConfig.getCurrentApiUrl();
+    public static final String API_BASE_URL = TestConfig.getCurrentApiUrl();
 
     // ==================== Аутентификация ====================
     public static final String LOGIN = "/user/login";

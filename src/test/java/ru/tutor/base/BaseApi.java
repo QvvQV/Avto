@@ -42,7 +42,6 @@ public abstract class BaseApi {
         String formattedEndpoint = String.format(endpoint, pathParams);
 
         return given(baseSpec)
-                .header("Content-Type", "application/json")
 //                .header("Origin", "https://client.tutorplace.ru/")
 //                .header("Referer", "https://client.tutorplace.ru/")
                 .body(body)
@@ -89,7 +88,6 @@ public abstract class BaseApi {
     protected Response postFormData(String endpoint, String body) {
         return given(baseSpec)
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                .header("Accept", "application/json")
                 .body(body)
                 .log().all()
                 .when()
