@@ -38,7 +38,7 @@ public class ProductSteps {
                 .header("X-Powered-By", equalTo("PHP/7.4.30"));
         
         ProductResponse domainResponse = response.as(ProductResponse.class);
-        assertNotNull(domainResponse, "Domain response should not be null");
+        assertNotNull(domainResponse, "Доменный ответ не должен быть null");
         
         return domainResponse;
     }

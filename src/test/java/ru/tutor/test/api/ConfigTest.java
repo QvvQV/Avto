@@ -74,18 +74,18 @@ public class ConfigTest {
     @Story("Разрешённые методы")
     void onlyGetMethodShouldBeAllowed() {
         Response getResponse = configSteps.getConfig();
-        assertEquals(200, getResponse.statusCode(), "GET method should return 200");
+        assertEquals(200, getResponse.statusCode(), "GET метод должен возвращать 200");
 
         String testBody = "{\"requestPath\":\"https://test.com\"}";
 
         Response postResponse = configSteps.createConfig(testBody);
-        assertEquals(405, postResponse.statusCode(), "POST method should return 405");
+        assertEquals(405, postResponse.statusCode(), "POST метод должен возвращать 405");
 
         Response putResponse = configSteps.updateConfig(testBody);
-        assertEquals(405, putResponse.statusCode(), "PUT method should return 405");
+        assertEquals(405, putResponse.statusCode(), "PUT метод должен возвращать 405");
 
         Response deleteResponse = configSteps.deleteConfig();
-        assertEquals(405, deleteResponse.statusCode(), "DELETE method should return 405");
+        assertEquals(405, deleteResponse.statusCode(), "DELETE метод должен возвращать 405");
     }
 
     @Nested

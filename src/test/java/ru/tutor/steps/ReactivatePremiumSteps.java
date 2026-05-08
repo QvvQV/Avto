@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ReactivatePremiumApi;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.ReactivatePremiumResponse;
 import ru.tutor.utils.AllureAttachments;
 
@@ -11,10 +12,16 @@ import ru.tutor.utils.AllureAttachments;
  * Шаги по Ручкам для работы восстановления Премиума из письма внутренней почты / по e-mail рассылке
  */
 
-public record ReactivatePremiumSteps(ReactivatePremiumApi reactivatePremiumApi) {
+public class ReactivatePremiumSteps extends BaseApiSteps {
+    private final ReactivatePremiumApi reactivatePremiumApi;
+
+    public ReactivatePremiumSteps(String baseUrl) {
+        super(baseUrl);
+        this.reactivatePremiumApi = new ReactivatePremiumApi(baseUrl);
+    }
 
     public static ReactivatePremiumSteps withBaseUrl(String baseUrl) {
-        return new ReactivatePremiumSteps(new ReactivatePremiumApi(baseUrl));
+        return new ReactivatePremiumSteps(baseUrl);
     }
 
     @Step("Переключение подписки c Лайта на Премиум по внутренней почте")

@@ -15,10 +15,7 @@ import ru.tutor.utils.AllureAttachments;
 import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Epic("Password Reset")
 @Feature("Reset Password Functionality")
@@ -44,9 +41,11 @@ public class ResetTest {
         step("Проверить ошибку 'User not found'", () -> {
             response.then()
                     .statusCode(400)
-                    .contentType("application/json")
-                    .body("message", equalTo("User not found"))
-                    .body("$", hasKey("message"));
+                    .contentType("application/json");
+
+            String message = response.jsonPath().getString("message");
+            assertEquals("User not found", message, "Ожидалось сообщение 'User not found'");
+            assertNotNull(message, "Ответ должен содержать ключ 'message'");
         });
 
         step("Проверить отсутствие чувствительных данных", () -> {
@@ -97,7 +96,7 @@ public class ResetTest {
             if (!responseBody.trim().isEmpty() &&
                     !responseBody.equals("[]") &&
                     response.getContentType().contains("json")) {
-                response.then().body("$", not(hasKey("error")));
+                assertFalse(responseBody.contains("\"error\""), "Ответ не должен содержать ключ 'error'");
             }
         });
     }
@@ -108,10 +107,11 @@ public class ResetTest {
     void basicUnsuccessfulResetCheck() {
         Response response = resetSteps.requestPasswordReset("nonexistent@example.com");
 
-        response.then()
-                .statusCode(400)
-                .contentType("application/json")
-                .body("message", equalTo("User not found"));
+            response.then()
+                    .statusCode(400)
+                    .contentType("application/json");
+            String message = response.jsonPath().getString("message");
+            assertEquals("User not found", message, "Ожидалось сообщение 'User not found'");
     }
 
     @ParameterizedTest
@@ -150,7 +150,8 @@ public class ResetTest {
 
         step("Проверить обработку регистра", () -> {
             int statusCode = response.getStatusCode();
-            assertThat(statusCode, anyOf(is(200), is(400), is(404)));
+            assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 404,
+                    "Ожидался статус 200, 400 или 404, но получен: " + statusCode);
 
             AllureAttachments.attachText("Статус ответа для email в верхнем регистре",
                     String.valueOf(statusCode));
@@ -170,7 +171,7 @@ public class ResetTest {
         step("Проверить обработку спецсимволов", () -> {
             int statusCode = response.getStatusCode();
             assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 422,
-                    "Expected status 200, 400 or 422, but got: " + statusCode);
+                    "Ожидался статус 200, 400 или 422, но получен: " + statusCode);
 
             // Логируем результат для анализа
             AllureAttachments.attachText("Обработка спецсимволов",
@@ -196,11 +197,12 @@ public class ResetTest {
 
         step("Проверить обработку повторного запроса", () -> {
             int statusCode = secondResponse.getStatusCode();
-            assertThat(statusCode, anyOf(is(200), is(429), is(400)));
-
+            assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 429,
+                    "Ожидался статус 200, 400 или 429, но получен: " + statusCode);
+ 
             if (statusCode == 429) {
-                secondResponse.then()
-                        .body("message", equalTo("Too many requests"));
+                String message = secondResponse.jsonPath().getString("message");
+                assertEquals("Too many requests", message, "Ожидалось сообщение 'Too many requests'");
             }
         });
     }
@@ -228,7 +230,7 @@ public class ResetTest {
                 step("Проверить ответ для: " + email, () -> {
                     int statusCode = response.getStatusCode();
                     assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 422,
-                            "For email " + email + " expected status 200, 400 or 422, but got: " + statusCode);
+                            "Для email " + email + " ожидался статус 200, 400 или 422, но получен: " + statusCode);
 
                     // Логируем результат
                     AllureAttachments.attachText("Результат для " + email,

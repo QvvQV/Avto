@@ -9,11 +9,11 @@ import java.util.Map;
 public class ProductConfiguration {
     private static final Map<String, ProductSettings> PRODUCTS_SETTINGS = Map.of(
             "231", new ProductSettings(14, 44, 74, "299"),
-            "247", new ProductSettings(7, 37, 67, "399"),
-            "258", new ProductSettings(7, 37, 67, "399"),
+            "247", new ProductSettings(7, 30, 60, "399"),
+            "258", new ProductSettings(7, 30, 60, "399"),
             "135", new ProductSettings(7,14,21, "294"),
-            "180", new ProductSettings(7, 37, 67, "99"),
-            "755", new ProductSettings(30, 37, 67, "399")
+            "180", new ProductSettings(7, 30, 60, "99"),
+            "755", new ProductSettings(30, 30, 60, "399")
     );
 
     public static ProductSettings getSettings(String productId) {

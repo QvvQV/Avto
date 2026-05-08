@@ -4,23 +4,24 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import ru.tutor.api.RegisterApi;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.ResponseAnalyzer;
 
 import java.util.Locale;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Шаги для тестов по ручке /register
  */
 
-public class RegisterSteps {
+public class RegisterSteps extends BaseApiSteps {
     private final RegisterApi registerApi;
     private final Faker faker = new Faker(Locale.ENGLISH);
 
     public RegisterSteps(String baseUrl) {
+        super(baseUrl);
         this.registerApi = new RegisterApi(baseUrl);
     }
 
@@ -33,46 +34,35 @@ public class RegisterSteps {
 
     @Step("Проверка успешной регистрации")
     public void validateSuccessfulRegistration(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType("application/json")
-                .body("$", anyOf(
-                        hasKey("message"),
-                        hasKey("success"),
-                        hasKey("user_id"),
-                        hasKey("token")
-                ))
-                .body("$", not(hasKey("error")));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+
+        String responseBody = response.getBody().asString();
+        assertJsonFieldExists(response, "message");
+        assertJsonFieldExists(response, "success");
+        assertJsonFieldExists(response, "user_id");
+        assertJsonFieldExists(response, "token");
+        assertFieldNotExists(response, "error");
     }
 
     @Step("Проверка ошибки валидации")
     public void validateValidationError(Response response, int expectedStatus) {
-        response.then()
-                .statusCode(expectedStatus)
-                .contentType("application/json")
-                .body("$", anyOf(
-                        hasKey("errors"),
-                        hasKey("error"),
-                        hasKey("message")
-                ));
+        assertErrorStatusCode(response, expectedStatus);
+        assertContentTypeJson(response);
+        assertAnyFieldExists(response, "errors", "error", "message");
     }
 
     @Step("Проверка конфликта email: {email}")
     public void validateEmailConflict(Response response) {
-        response.then()
-                .statusCode(400)
-                .contentType("application/json")
-                .body("$", anyOf(
-                        hasKey("message"),
-                        hasKey("error")
-                ));
+        assertErrorStatusCode(response, 400);
+        assertContentTypeJson(response);
+        assertAnyFieldExists(response, "message", "error");
     }
 
     @Step("проверка обязательных заголовков")
     public void validateRequireHeaders(Response response) {
-        response.then()
-                .header("Content-Type", containsString("application/json"))
-                .header("Date", notNullValue());
+        assertContentTypeJson(response);
+        assertHeaderExists(response, "Date");
     }
 
     @Step("Проверка времени ответа (максю {maxTimeMs} мс)")

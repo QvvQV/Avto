@@ -5,21 +5,27 @@ import io.qameta.allure.Step;
 import ru.tutor.api.UserOrderApi;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.OrderToggleSubscriptionResponse;
 
 import java.util.*;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /*
  * Класс для переключения на Лайт по API
  */
 
-public record OrderToggleSubscriptionSteps(UserOrderApi orderApi) {
+public class OrderToggleSubscriptionSteps extends BaseApiSteps {
+    private final UserOrderApi orderApi;
+
+    public OrderToggleSubscriptionSteps(String baseUrl) {
+        super(baseUrl);
+        this.orderApi = new UserOrderApi(baseUrl);
+    }
 
     public static OrderToggleSubscriptionSteps withBaseUrl(String baseUrl) {
-        return new OrderToggleSubscriptionSteps(new UserOrderApi(baseUrl));
+        return new OrderToggleSubscriptionSteps(baseUrl);
     }
 
     @Step("Переключение подписки на заказ ID: {orderId}")
@@ -33,8 +39,10 @@ public record OrderToggleSubscriptionSteps(UserOrderApi orderApi) {
                 .statusCode(200)
                 .contentType(ContentType.JSON);
 
-        response.then()
-                .body("$", instanceOf(List.class));
+        // Проверяем что ответ - это список
+        Object body = response.jsonPath().get("$");
+        assertNotNull(body, "Тело ответа не должно быть null");
+        assertTrue(body instanceof List, "Ответ должен быть списком (List)");
 
         // Преобразуем в список
         List<OrderToggleSubscriptionResponse> items = response.jsonPath().getList("$", OrderToggleSubscriptionResponse.class);

@@ -93,7 +93,7 @@ public class ReferralFlow {
         processPostPaymentSteps();
         String token = AdminToUserLoginSteps.switchToTabAndGetToken();
         userTokens.add(token);
-        return getCurrentUserRefferalLink("корневого");
+        return getCurrentUserReferralLink("корневого");
     }
 
     @Step("Создание пользователя {userNumber} по реферальной ссылке")
@@ -112,7 +112,7 @@ public class ReferralFlow {
             String token = AdminToUserLoginSteps.switchToTabAndGetToken();
             userTokens.add(token);
 
-            return getCurrentUserRefferalLink(String.valueOf(userNumber));
+            return getCurrentUserReferralLink(String.valueOf(userNumber));
         });
     }
 
@@ -136,7 +136,7 @@ public class ReferralFlow {
     }
 
     @Step("Получение реферальной ссылки {userDescription} пользователя")
-    private String getCurrentUserRefferalLink(String userDescription) {
+    private String getCurrentUserReferralLink(String userDescription) {
         String token = AdminToUserLoginSteps.switchToTabAndGetToken();
 
         Response response = clubSteps.getClubMember(token);
@@ -145,7 +145,7 @@ public class ReferralFlow {
 
         logMemberInfo(userDescription);
 
-        return currentMemberInfo.getReferralLink();
+        return currentMemberInfo.referralLink();
     }
 
     @Step("Выход текущего пользователя")
@@ -164,12 +164,12 @@ public class ReferralFlow {
                         Реферальная ссылка: %s
                         Детали: %s""",
                 userDescription,
-                currentMemberInfo.getId(),
-                currentMemberInfo.getActive(),
-                currentMemberInfo.getMemberType() != null ? currentMemberInfo.getMemberType() : "не указан",
-                currentMemberInfo.getMembershipDate(),
-                currentMemberInfo.getReferralLink(),
-                currentMemberInfo.getDetails() != null ? currentMemberInfo.getDetails() : "нет"
+                currentMemberInfo.id(),
+                currentMemberInfo.isActive(),
+                currentMemberInfo.memberType() != null ? currentMemberInfo.memberType() : "не указан",
+                currentMemberInfo.membershipDate(),
+                currentMemberInfo.referralLink(),
+                currentMemberInfo.details() != null ? currentMemberInfo.details() : "нет"
         );
 
         Allure.addAttachment("Информация о членстве", "text/plain", memberDetails);
@@ -211,9 +211,9 @@ public class ReferralFlow {
         Allure.addAttachment(String.format("Статистика пользователя (токен: %s...)",
                         token.substring(0, Math.min(10, token.length()))), "text/plain",
                 String.format("Ожидаемые рефералы: %d\nФактические: %d\nБаланс: %d",
-                        expectedReferrals, stats.getReferrals().getAll(), stats.getBalance()));
+                        expectedReferrals, stats.referrals().all(), stats.balance()));
 
-        assertEquals(expectedReferrals, stats.getReferrals().getAll(),
+        assertEquals(expectedReferrals, stats.referrals().all(),
                 "Количество рефералов не соответсвует ожидаемому");
         return stats;
     }

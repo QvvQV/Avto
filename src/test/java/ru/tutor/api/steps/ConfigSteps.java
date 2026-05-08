@@ -64,28 +64,28 @@ public class ConfigSteps {
                 .body("requestPath", startsWith("http"));
 
         ConfigResponse configResponse = response.as(ConfigResponse.class);
-        assertNotNull(configResponse, "Config response should not be null");
+        assertNotNull(configResponse, "Ответ конфигурации не должен быть null");
 
         return configResponse;
     }
 
     @Step("Проверить структуру конфигурации")
     public void validateConfigStructure(ConfigResponse config) {
-        assertAll("Config structure validation",
-                () -> assertNotNull(config.getRequestPath(), "requestPath should not be null"),
-                () -> assertTrue(config.getRequestPath().startsWith("http"),
-                        "requestPath should be a valid URL"),
-                () -> assertTrue(config.getRequestPath().length() > 10,
-                        "requestPath should be meaningful")
+        assertAll("Проверка структуры конфигурации",
+                () -> assertNotNull(config.requestPath(), "requestPath не должен быть null"),
+                () -> assertTrue(config.requestPath().startsWith("http"),
+                        "requestPath должен быть валидным URL"),
+                () -> assertTrue(config.requestPath().length() > 10,
+                        "requestPath должен быть осмысленным")
         );
 
         // Дополнительные проверки если есть другие поля
-        if (config.getTimeout() != null) {
-            assertTrue(config.getTimeout() > 0, "timeout should be positive if present");
+        if (config.timeout() != null) {
+            assertTrue(config.timeout() > 0, "timeout должен быть положительным, если присутствует");
         }
 
-        if (config.getMaxConnections() != null) {
-            assertTrue(config.getMaxConnections() > 0, "maxConnections should be positive if present");
+        if (config.maxConnections() != null) {
+            assertTrue(config.maxConnections() > 0, "maxConnections должен быть положительным, если присутствует");
         }
     }
 
@@ -104,7 +104,7 @@ public class ConfigSteps {
 
             // Проверяем что GET метод разрешен (должен быть в списке)
             assertTrue(allowHeader.toUpperCase().contains("GET"),
-                    "GET method should be allowed according to Allow header: " + allowHeader);
+                    "Метод GET должен быть разрешён согласно заголовку Allow: " + allowHeader);
         } else {
             // Если заголовок Allow отсутствует, просто логируем это
             AllureAttachments.attachText("Allow Header Info",
@@ -146,10 +146,10 @@ public class ConfigSteps {
     public void analyzeConfig(ConfigResponse config) {
         String analysis =
                 "=== АНАЛИЗ КОНФИГУРАЦИИ ===\n\n" +
-                        "Request Path: " + config.getRequestPath() + "\n" +
-                        "Length: " + config.getRequestPath().length() + " chars\n" +
-                        "Is HTTPS: " + config.getRequestPath().startsWith("https") + "\n" +
-                        "Domain: " + extractDomain(config.getRequestPath()) + "\n";
+                        "Request Path: " + config.requestPath() + "\n" +
+                        "Length: " + config.requestPath().length() + " chars\n" +
+                        "Is HTTPS: " + config.requestPath().startsWith("https") + "\n" +
+                        "Domain: " + extractDomain(config.requestPath()) + "\n";
 
         AllureAttachments.attachText("Config Analysis", analysis);
     }
@@ -189,7 +189,7 @@ public class ConfigSteps {
         String strictTransportSecurity = response.getHeader("Strict-Transport-Security");
         if (strictTransportSecurity != null) {
             assertFalse(strictTransportSecurity.trim().isEmpty(),
-                    "Strict-Transport-Security should not be empty if present");
+                    "Strict-Transport-Security не должен быть пустым, если присутствует");
         }
     }
 

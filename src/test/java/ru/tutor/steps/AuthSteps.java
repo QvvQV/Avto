@@ -4,17 +4,24 @@ package ru.tutor.steps;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.AuthApi;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.LoginResponse;
 import ru.tutor.model.ErrorResponse;
 import ru.tutor.utils.AllureAttachments;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public record AuthSteps(AuthApi authApi) {
+public class AuthSteps extends BaseApiSteps {
+    private final AuthApi authApi;
+
+    public AuthSteps (String baseUrl) {
+        super(baseUrl);
+        this.authApi = new AuthApi(baseUrl);
+    }
+
     public static AuthSteps withBaseUrl(String baseUrl) {
-        return new AuthSteps(new AuthApi(baseUrl));
+        return new AuthSteps(baseUrl);
     }
 
     @Step("Логин с валидными credentials: {email}")
@@ -55,15 +62,14 @@ public record AuthSteps(AuthApi authApi) {
 
     @Step("Проверить успешный ответ")
     private void validateSuccessfulResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType("application/json")
-                .body("token", notNullValue())
-                .body("token", not(emptyString()))
-                .body("$", hasKey("token"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+
+        String token = response.jsonPath().getString("token");
+        assertJsonFieldNotEmpty(response, "token");
+
 
         // Проверка формата токена (если он есть)
-        String token = response.jsonPath().getString("token");
         if (token != null && !token.isEmpty()) {
             assertTrue(token.matches("^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]*$"),
                       "Токен должен быть в формате JWT");
@@ -72,30 +78,31 @@ public record AuthSteps(AuthApi authApi) {
 
     @Step("Проверить ответ ошибки")
     private void validateErrorResponse(Response response) {
-        response.then()
-                .statusCode(401)
-                .contentType("application/json")
-                .body("$", anyOf(hasKey("error"), hasKey("message"), hasKey("status")))
-                .body("$", not(hasKey("token")))
-                .body("$", not(hasKey("success")));
+        assertErrorStatusCode(response, 401);
+        assertContentTypeJson(response);
+
+        String responseBody = response.getBody().asString();
+        assertAnyFieldExists(response, "error", "message", "status");
+        assertFieldNotExists(response, "token");
+        assertFieldNotExists(response, "success");
     }
 
     @Step("Проверить структуру LoginResponse")
     public void validateLoginResponse(LoginResponse loginResponse) {
         assertNotNull(loginResponse, "Ответ логина не должен быть null");
-        assertNotNull(loginResponse.getToken(), "Токен не должен быть null");
-        assertTrue(loginResponse.getToken().length() > 10, "Токен должен быть достаточно длинным");
+        assertNotNull(loginResponse.token(), "Токен не должен быть null");
+        assertTrue(loginResponse.token().length() > 10, "Токен должен быть достаточно длинным");
 
-        assertTrue(loginResponse.getToken().matches("^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]*$"),
+        assertTrue(loginResponse.token().matches("^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]*$"),
                    "Токен должен быть в формате JWT");
 
-        if (loginResponse.getRefreshToken() != null) {
-            assertTrue(loginResponse.getRefreshToken().length() > 10,
+        if (loginResponse.refreshToken() != null) {
+            assertTrue(loginResponse.refreshToken().length() > 10,
                       "Refresh token должен быть достаточно длинным");
         }
 
-        if (loginResponse.getExpiresIn() != null) {
-            assertTrue(loginResponse.getExpiresIn() > 0,
+        if (loginResponse.expiresIn() != null) {
+            assertTrue(loginResponse.expiresIn() > 0,
                       "Expires in должен быть положительным числом");
         }
     }
@@ -131,9 +138,7 @@ public record AuthSteps(AuthApi authApi) {
     public void validateEmptyFieldsResponse(Response response) {
         response.then()
                 .statusCode(401)
-                .contentType("application/json")
-                .body("$", anyOf(hasKey("error"), hasKey("message"), hasKey("status")))
-                .body("$", not(hasKey("token")));
+                .contentType("application/json");
 
         // Более гибкая проверка - error может быть null, поэтому проверяем наличие любого из полей
         String responseBody = response.getBody().asString();
@@ -141,28 +146,31 @@ public record AuthSteps(AuthApi authApi) {
             responseBody.contains("error") || responseBody.contains("message") || responseBody.contains("status"),
             "Ответ должен содержать одно из полей: error, message или status"
         );
+        assertFalse(responseBody.contains("token"), "Ответ не должен содержать ключ 'token'");
     }
 
     @Step("Проверить реальные заголовки ответа")
     public void validateResponseHeaders(Response response) {
         // Проверяем только те заголовки, которые реально существуют
-        response.then()
-                .header("Content-Type", equalTo("application/json"))
-                .header("Cache-Control", containsString("no-cache"))
-                .header("X-Powered-By", notNullValue())
-                .header("Server", notNullValue())
-                .header("X-Robots-Tag", equalTo("noindex"));
+        assertContentTypeJson(response);
+        assertHeader(response, "X-Robots-Tag", "noindex");
+
+        // Проверяем заголовки которые должны существовать
+        assertHeaderContains(response, "Cache-Control", "no-cache");
+        assertHeaderExists(response, "X-Powered-By");
+        assertHeaderExists(response, "Server");
 
         // Для 401 ответов проверяем WWW-Authenticate
         if (response.getStatusCode() == 401) {
-            response.then().header("WWW-Authenticate", equalTo("Bearer"));
+            assertHeader(response, "WWW-Authenticate", "Bearer");
         }
 
         // CORS заголовки - проверяем если они есть
         try {
-            if (response.getHeader("Access-Control-Allow-Origin") != null) {
-                response.then().header("Access-Control-Allow-Origin",
-                    equalTo(TestConfig.getCurrentClientDomain()));
+            String corsOrigin = response.getHeader("Access-Control-Allow-Origin");
+            if (corsOrigin != null) {
+                assertEquals(TestConfig.getCurrentClientDomain(), corsOrigin,
+                    "Access-Control-Allow-Origin должен соответствовать текущему домену клиента");
             }
         } catch (AssertionError e) {
             // Игнорируем если CORS заголовков нет
@@ -176,13 +184,16 @@ public record AuthSteps(AuthApi authApi) {
 
     @Step("Проверить базовые заголовки безопасности")
     public void validateSecurityHeaders(Response response) {
-        response.then()
-                .header("X-Robots-Tag", equalTo("noindex"))
-                .header("X-Powered-By", not(emptyOrNullString()));
+        assertHeader(response, "X-Robots-Tag", "noindex");
+        assertHeaderExists(response, "X-Powered-By");
+
+        String poweredBy = response.getHeader("X-Powered-By");
+        assertNotNull(poweredBy, "Заголовок X-Powered-By должен существовать");
+        assertFalse(poweredBy.isEmpty(), "X-Powered-By не должен быть пустым");
 
         // Проверяем WWW-Authenticate для 401 ответов
         if (response.getStatusCode() == 401) {
-            response.then().header("WWW-Authenticate", equalTo("Bearer"));
+            assertHeader(response, "WWW-Authenticate", "Bearer");
         }
     }
 
@@ -190,10 +201,11 @@ public record AuthSteps(AuthApi authApi) {
     public void validateMinimumHeaders(Response response) {
         // Только самые базовые проверки которые точно должны работать
         response.then()
-                .header("Content-Type", equalTo("application/json"))
-                .header("Cache-Control", notNullValue())
-                .header("Strict-Transport-Security", notNullValue())
-                .header("Date", notNullValue());
+                .header("Content-Type", "application/json");
+
+        assertNotNull(response.getHeader("Cache-Control"), "Заголовок Cache-Control должен существовать");
+        assertNotNull(response.getHeader("Strict-Transport-Security"), "Заголовок Strict-Transport-Security должен существовать");
+        assertNotNull(response.getHeader("Date"), "Заголовок Date должен существовать");
     }
 
     public String loginAndGetToken(String email, String password) {

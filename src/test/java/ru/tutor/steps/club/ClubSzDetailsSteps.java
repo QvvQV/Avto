@@ -1,24 +1,27 @@
 package ru.tutor.steps.club;
 
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ClubApi;
-import ru.tutor.config.TestConfig;
+import ru.tutor.base.BaseApiSteps;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tutor.model.club.SzDetailsRequest;
-import ru.tutor.model.club.SzDetailsResponse;
 import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.ClubTestDataGenerator;
-
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-public record ClubSzDetailsSteps(ClubApi clubApi) {
+
+public class ClubSzDetailsSteps extends BaseApiSteps {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private final ClubApi clubApi;
+
+    public ClubSzDetailsSteps(String baseUrl) {
+        super(baseUrl);
+        this.clubApi = new ClubApi(baseUrl);
+    }
 
     public static ClubSzDetailsSteps withBaseUrl(String baseUrl) {
-        return new ClubSzDetailsSteps(new ClubApi(baseUrl));
+        return new ClubSzDetailsSteps(baseUrl);
     }
 
     @Step("POST /user/club/sz-details - сохранение деталей самозанятого")
@@ -32,7 +35,7 @@ public record ClubSzDetailsSteps(ClubApi clubApi) {
 
     @Step("POST /user/club/sz-details - сохранение деталей самозанятого из объекта")
     public Response saveSzDetails(String authToken, SzDetailsRequest request) {
-        Map<String, Object> payload = ClubTestDataGenerator.toMap(request);
+        Map<String, Object> payload = MAPPER.convertValue(request, Map.class);
         return saveSzDetails(authToken, payload);
     }
 
@@ -57,9 +60,9 @@ public record ClubSzDetailsSteps(ClubApi clubApi) {
         return response;
     }
 
-    @Step("POST /user/club/ip-details - охранение деталей ИП из объекта")
+    @Step("POST /user/club/ip-details - сохранение деталей ИП из объекта")
     public Response saveIpDetails(String authToken, SzDetailsRequest request) {
-        Map<String, Object> payload = ClubTestDataGenerator.toMap(request);
+        Map<String, Object> payload = MAPPER.convertValue(request, Map.class);
         return saveIpDetails(authToken, payload);
     }
 }

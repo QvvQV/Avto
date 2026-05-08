@@ -1,4 +1,4 @@
-package ru.tutor.api;
+package ru.tutor.test.api;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -100,12 +99,13 @@ public class OrderApiTest {
     @Step("Валидация статуса и JSON-схемы ответа")
     private void validateResponseStatusAndSchema(Response response) {
         response.then()
-                .assertThat()
                 .statusCode(200)
-                .contentType(ContentType.JSON)
-//                .body("$", hasKey("token"))
-                .body("token", notNullValue())
-                .body("token", containsString(TestConfig.getCurrentClientDomain()));
+                .contentType(ContentType.JSON);
+
+        String token = response.jsonPath().getString("token");
+        assertNotNull(token, "Токен не должен быть null");
+        assertTrue(token.contains(TestConfig.getCurrentClientDomain()),
+                "Token should contain client domain");
     }
 
     @Step("Извлечение и валидация токена из ответа")
@@ -186,7 +186,7 @@ public class OrderApiTest {
                 .when()
                 .post(CREATE_ORDER_ENDPOINT);
 
-        response.then().assertThat().statusCode(400);
+        assertEquals(400, response.getStatusCode(), "Ожидался статус 400 для невалидного email");
 //        AllureAttachments.attachApiResponse("Ответ с ошибкой валидации", response);
     }
 
@@ -205,7 +205,7 @@ public class OrderApiTest {
                 .when()
                 .post(CREATE_ORDER_ENDPOINT);
 
-        response.then().assertThat().statusCode(400);
+        assertEquals(400, response.getStatusCode(), "Ожидался статус 400 для пустого имени");
 //        AllureAttachments.attachApiResponse("Ответ с ошибкой валидации", response);
     }
 

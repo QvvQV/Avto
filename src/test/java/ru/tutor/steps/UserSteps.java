@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserApi;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.PromoCodeTestData;
 import ru.tutor.model.*;
@@ -15,19 +16,19 @@ import java.util.Base64;
 import java.util.List;
 
 import static io.qameta.allure.Allure.step;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Шаги для работы с ЛК пользователя
  */
 
-public class UserSteps {
+public class UserSteps extends BaseApiSteps {
     private final UserApi userApi;
     private UserProfile currentUserProfile;
     private String currentAuthToken;
 
     public UserSteps(String baseUrl) {
+        super(baseUrl);
         this.userApi = new UserApi(baseUrl);
     }
 
@@ -72,14 +73,11 @@ public class UserSteps {
         Response response = login(email, password);
 
         // Проверяем базовую структуру ответа
-        response.then()
-                .statusCode(200)
-                .body("$", hasKey("token"))
-                .body("token", instanceOf(String.class))
-                .body("token", not(emptyOrNullString()));
+        assertSuccessStatusCode(response);
 
-        // Извлекаем токен
         String token = response.jsonPath().getString("token");
+        assertJsonFieldNotEmpty(response, "token");
+
         currentAuthToken = token;
 
         // Логируем часть токена для отладки
@@ -100,17 +98,19 @@ public class UserSteps {
 
     @Step("Проверить ответ профиля")
     public UserProfile validateProfileResponse(Response response, String expectedEmail) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("email", equalTo(expectedEmail))
-                .body("isTariffLifetime", notNullValue())
-                .body("isYtSubscribed", notNullValue())
-                .body("isVkSubscribed", notNullValue())
-                .body("isTgSubscribed", notNullValue());
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+
+        String email = response.jsonPath().getString("email");
+        assertEquals(expectedEmail, email, "Email должен соответствовать ожидаемому значению");
+
+        assertJsonFieldExists(response, "isTariffLifetime");
+        assertJsonFieldExists(response, "isYtSubscribed");
+        assertJsonFieldExists(response, "isVkSubscribed");
+        assertJsonFieldExists(response, "isTgSubscribed");
 
         UserProfile userProfile = response.as(UserProfile.class);
-        assertNotNull(userProfile, "UserProfile should not be null");
+        assertNotNull(userProfile, "UserProfile не должен быть null");
 
         return userProfile;
     }
@@ -157,19 +157,18 @@ public class UserSteps {
     @Step("Валидация успешного логаута")
     public LogoutResponse validateSuccessfulLogout(Response response) {
         // Проверяем базовые заголовки и статус код
-        response.then()
-                .statusCode(200)
-                .contentType("application/json")
-                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
-                .header("Access-Control-Allow-Credentials", equalTo("true"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+
+        assertCorsHeaders(response);
 
         // Парсим ответ
         LogoutResponse logoutResponse = response.as(LogoutResponse.class);
-        assertNotNull(logoutResponse, "Logout response should not be null");
+        assertNotNull(logoutResponse, "Ответ логаута не должен быть null");
 
         // Проверяем успешность операции
-        if (logoutResponse.getSuccess() != null) {
-            assertTrue(logoutResponse.getSuccess(), "Logout should be successful");
+        if (logoutResponse.success() != null) {
+            assertTrue(logoutResponse.success(), "Логаут должен быть успешным");
         }
 
         return logoutResponse;
@@ -193,7 +192,7 @@ public class UserSteps {
     public Response fullAuthCycle(String email, String password) {
         Response response = userApi.login(email, password);
         String token = response.jsonPath().getString("token");
-        assertNotNull(token, "token should not be null");
+        assertNotNull(token, "token не должен быть null");
 
         Response profileResponse = userApi.getProfile(token);
         profileResponse.then()
@@ -213,26 +212,22 @@ public class UserSteps {
     @Step("Валидация ответа игровой статистики")
     public GameStatsResponse validateGameStatsResponse(Response response) {
         // Проверяем статус код и заголовки
-        response.then()
-                .statusCode(200)
-                .contentType("application/json")
-                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
-                .header("Access-Control-Allow-Credentials", equalTo("true"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
 
         // Проверяем основные поля
-        response.then()
-                .body("level", notNullValue())
-                .body("experience", notNullValue())
-                .body("experienceLevel", notNullValue())
-                .body("levelUpLimit", notNullValue())
-                .body("diamond", notNullValue())
-                .body("season", notNullValue())
-                .body("hasLoginToday", notNullValue())
-                .body("days", instanceOf(List.class));
+        assertJsonFieldExists(response, "level");
+        assertJsonFieldExists(response, "experience");
+        assertJsonFieldExists(response, "experienceLevel");
+        assertJsonFieldExists(response, "levelUpLimit");
+        assertJsonFieldExists(response, "diamond");
+        assertJsonFieldExists(response, "season");
+        assertJsonFieldExists(response, "hasLoginToday");
 
         // Парсим в модель
         GameStatsResponse stats = response.as(GameStatsResponse.class);
-        assertNotNull(stats, "Game stats should not be null");
+        assertNotNull(stats, "Игровая статистика не должна быть null");
 
         return stats;
     }
@@ -292,18 +287,15 @@ public class UserSteps {
 
     @Step("Валидация ответа регистрации")
     public RegistrationResponse validateRegistrationResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType("application/json")
-                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
-                .header("Access-Control-Allow-Credentials", equalTo("true"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
 
-        response.then()
-                .body("$", hasKey("message"))
-                .body("message", equalTo("ok"));
+        String message = response.jsonPath().getString("message");
+        assertJsonFieldEquals(response, "message", "ok");
 
         RegistrationResponse registrationResponse = response.as(RegistrationResponse.class);
-        assertNotNull(registrationResponse, "Registration response should not be null");
+        assertNotNull(registrationResponse, "Ответ регистрации не должен быть null");
 
         registrationResponse.setSuccess(true);
 
@@ -313,13 +305,13 @@ public class UserSteps {
     @Step("Проверка успешной регистрации")
     public void validateSuccessfulRegistration(RegistrationResponse response, String expectedEmail) {
         assertTrue(response.isSuccessful() || "ok".equals(response.getMessage()),
-                "Registration response should be: success");
+                "Ответ регистрации должен быть успешным");
         if (response.hasUserId()) {
-            assertTrue(response.getUserId() > 0, "user ID should be positive");
+            assertTrue(response.getUserId() > 0, "ID пользователя должен быть положительным");
         }
 
         if (response.getEmail() != null) {
-            assertEquals(expectedEmail, response.getEmail(), "Email address should match");
+            assertEquals(expectedEmail, response.getEmail(), "Email адрес должен совпадать");
         }
 
         AllureAttachments.attachText("Регистрация успешна",
@@ -351,12 +343,12 @@ public class UserSteps {
                         response.getBody().asString()));
 
         assertTrue(statusCode == expectedStatusCode || statusCode == 400 || statusCode == 422,
-                "Should return error status code. Got: " + statusCode);
+                "Должен вернуть код ошибки. Получен: " + statusCode);
 
         String body = response.getBody().asString();
         if (expectedMessagePart != null && !expectedMessagePart.isEmpty()) {
             assertTrue(body.toLowerCase().contains(expectedMessagePart.toLowerCase()),
-                    "Response should contain: " + expectedMessagePart);
+                    "Ответ должен содержать: " + expectedMessagePart);
         }
     }
 
@@ -429,8 +421,8 @@ public class UserSteps {
 
         AllureAttachments.attachJson("Apply Promo Code Request",
                 String.format("{\"promoCodeName\":\"%s\",\"orderNumber\":\"%s\"}",
-                        request.getPromoCodeName(), request.getOrderNumber()));
-        Response response = userApi.applyPromoCode(authToken, request);
+                        request.promoCodeName(), request.orderNumber()));
+        Response response = userApi.applyPromoCode(effectiveToken, request);
         AllureAttachments.attachJson("Apply Promo Code Response", response.getBody().asString());
         AllureAttachments.attachJson("Apply Promo Code Headers", response.getHeaders().toString());
         return response;
@@ -438,18 +430,16 @@ public class UserSteps {
 
     @Step("Валидация успешного ответа при применении промокода")
     public ApplyPromoCodeResponse validateSuccessfulPromoCodeResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType("application/json")
-                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
-                .header("Access-Control-Allow-Credentials", equalTo("true"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
 
-        response.then()
-                .body("$", hasKey("message"));
+        String message = response.jsonPath().getString("message");
+        assertJsonFieldExists(response, "message");
 
         ApplyPromoCodeResponse promoResponse = response.as(ApplyPromoCodeResponse.class);
-        assertNotNull(promoResponse, "Promo code response should not be null");
-        assertTrue(PromoCodeTestData.isSuccessResponse(promoResponse.getMessage()), "Promo code response should be success");
+        assertNotNull(promoResponse, "Ответ промокода не должен быть null");
+        assertTrue(PromoCodeTestData.isSuccessResponse(promoResponse.getMessage()), "Ответ промокода должен быть успешным");
 //        assertTrue(promoResponse.isSuccessful(), "Promo code response should be: success");
 
         AllureAttachments.attachText("Промокод применен",
@@ -466,22 +456,20 @@ public class UserSteps {
     public ApplyPromoCodeResponse validatePromoCodeErrorResponse(Response response, int expectedStatusCode, String expectedError) {
         int statusCode = response.getStatusCode();
 
-        response.then()
-                .statusCode(expectedStatusCode)
-                .contentType("application/json");
+        assertErrorStatusCode(response, expectedStatusCode);
+        assertContentTypeJson(response);
 
-        response.then()
-                .body("$", hasKey("error"));
+        assertJsonFieldExists(response, "error");
 
         ApplyPromoCodeResponse promoResponse = response.as(ApplyPromoCodeResponse.class);
-        assertNotNull(promoResponse, "Promo code response should not be null");
-        assertTrue(promoResponse.hasError(), "Should have error message");
+        assertNotNull(promoResponse, "Ответ промокода не должен быть null");
+        assertTrue(promoResponse.hasError(), "Должно быть сообщение об ошибке");
 
         String actualErrorType = PromoCodeTestData.getErrorType(promoResponse.getError());
 
         if (expectedError != null && !expectedError.isEmpty()) {
             assertTrue(PromoCodeTestData.isExpectedError(promoResponse.getError(), expectedError),
-                    String.format("Error should contain '%s'. Actual: '%s'",
+                    String.format("Ошибка должна содержать '%s'. Фактически: '%s'",
                             expectedError, actualErrorType, promoResponse.getError()));
         }
 

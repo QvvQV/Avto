@@ -15,7 +15,6 @@ import ru.tutor.utils.ResponseAnalyzer;
 import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Epic("Authentication")
@@ -46,10 +45,10 @@ class LoginResponseTest {
             authSteps.validateLoginResponse(loginResponse);
 
             // Дополнительные проверки
-            assertNotNull(loginResponse.getToken(), "Токен должен присутствовать в ответе");
+            assertNotNull(loginResponse.token(), "Токен должен присутствовать в ответе");
 
             // Проверка частей JWT токена
-            String[] tokenParts = loginResponse.getToken().split("\\.");
+            String[] tokenParts = loginResponse.token().split("\\.");
             assertEquals(3, tokenParts.length, "JWT токен должен содержать 3 части");
             assertTrue(tokenParts[0].length() > 10, "Header часть токена должна быть валидной");
             assertTrue(tokenParts[1].length() > 10, "Payload часть токена должна быть валидной");
@@ -79,9 +78,12 @@ class LoginResponseTest {
         });
 
         step("Проверить тело ответа", () -> {
-            response.then()
-                    .body("$", anyOf(hasKey("error"), hasKey("message"), hasKey("status")))
-                    .body("$", not(hasKey("token")));
+            String responseBody = response.getBody().asString();
+            assertTrue(
+                responseBody.contains("error") || responseBody.contains("message") || responseBody.contains("status"),
+                "Ответ должен содержать хотя бы одно из полей: error, message, status"
+            );
+            assertFalse(responseBody.contains("\"token\""), "Ответ не должен содержать ключ 'token'");
         });
     }
 
@@ -111,14 +113,13 @@ class LoginResponseTest {
         });
 
         step("Проверить тело ответа", () -> {
-            response.then()
-                    .body("$", not(hasKey("token")))
-                    .body("$", not(hasKey("success")))
-                    .body("$", anyOf(
-                        hasKey("error"),
-                        hasKey("message"),
-                        hasKey("status")
-                    ));
+            String responseBody = response.getBody().asString();
+            assertFalse(responseBody.contains("\"token\""), "Ответ не должен содержать ключ 'token'");
+            assertFalse(responseBody.contains("\"success\""), "Ответ не должен содержать ключ 'success'");
+            assertTrue(
+                responseBody.contains("error") || responseBody.contains("message") || responseBody.contains("status"),
+                "Ответ должен содержать хотя бы одно из полей: error, message, status"
+            );
         });
     }
 
@@ -147,9 +148,8 @@ class LoginResponseTest {
                 "Ответ должен содержать информацию об ошибке"
             );
 
-            response.then()
-                    .body("$", not(hasKey("token")));
-        });
+                assertFalse(response.getBody().asString().contains("\"token\""), "Ответ не должен содержать ключ 'token'");
+            });
     }
 
     @Test
@@ -208,9 +208,10 @@ class LoginResponseTest {
 
             // Только проверки которые точно работают
             response.then()
-                    .header("Content-Type", equalTo("application/json"))
-                    .header("Server", notNullValue())
-                    .header("Date", notNullValue());
+                    .header("Content-Type", "application/json");
+
+            assertNotNull(response.getHeader("Server"), "Заголовок Server должен существовать");
+            assertNotNull(response.getHeader("Date"), "Заголовок Date должен существовать");
         });
     }
 
@@ -230,10 +231,11 @@ class LoginResponseTest {
 
             step("Проверить базовую JSON структуру", () -> {
                 response.then()
-                        .statusCode(200)
-                        .body("$", hasKey("token"))
-                        .body("token", instanceOf(String.class))
-                        .body("token", not(emptyOrNullString()));
+                        .statusCode(200);
+
+                String token = response.jsonPath().getString("token");
+                assertNotNull(token, "Токен не должен быть null");
+                assertFalse(token.isEmpty(), "Токен не должен быть пустым");
             });
         }
 
@@ -249,13 +251,14 @@ class LoginResponseTest {
 
             step("Проверить структуру ошибки", () -> {
                 response.then()
-                        .statusCode(401)
-                        .body("$", anyOf(
-                            hasKey("error"),
-                            hasKey("message"),
-                            hasKey("status")
-                        ))
-                        .body("$", not(hasKey("token")));
+                        .statusCode(401);
+
+                String responseBody = response.getBody().asString();
+                assertTrue(
+                    responseBody.contains("error") || responseBody.contains("message") || responseBody.contains("status"),
+                    "Ответ должен содержать хотя бы одно из полей: error, message, status"
+                );
+                assertFalse(responseBody.contains("\"token\""), "Ответ не должен содержать ключ 'token'");
             });
         }
     }
@@ -274,8 +277,9 @@ class LoginResponseTest {
 
             response.then()
                     .statusCode(200)
-                    .contentType("application/json")
-                    .body("token", notNullValue());
+                    .contentType("application/json");
+
+            assertNotNull(response.jsonPath().getString("token"), "Токен не должен быть null");
         }
 
         @Test
@@ -288,8 +292,9 @@ class LoginResponseTest {
 
             response.then()
                     .statusCode(401)
-                    .contentType("application/json")
-                    .body("$", not(hasKey("token")));
+                    .contentType("application/json");
+
+            assertFalse(response.getBody().asString().contains("\"token\""), "Ответ не должен содержать ключ 'token'");
         }
 
         @Test

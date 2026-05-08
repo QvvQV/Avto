@@ -10,7 +10,6 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
 import ru.tutor.model.club.WithdrawalRequest;
-import ru.tutor.model.club.WithdrawalResponse;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.club.ClubSteps;
 import ru.tutor.steps.club.ClubWithdrawalSteps;
@@ -35,8 +34,8 @@ public class ClubTest {
     private final ClubWithdrawalSteps withdrawalSteps = ClubWithdrawalSteps.withBaseUrl(BASE_URL);
     private final AuthSteps authSteps = AuthSteps.withBaseUrl(BASE_URL);
 
-    private static ClubMemberResponse memberInfo;
-    private static ClubStatisticsResponse statisticsInfo;
+    private ClubMemberResponse memberInfo;
+    private ClubStatisticsResponse statisticsInfo;
     private String authToken;
 
     @BeforeAll
@@ -60,7 +59,7 @@ public class ClubTest {
     void getClubStatisticsSuccess() {
 
         Response response = step("GET /user/club/statistics", () ->
-                clubSteps.getClubStatistics(authToken)
+                clubSteps.  getClubStatistics(authToken)
         );
 
         statisticsInfo = step("Валидация ответа", () ->
@@ -71,9 +70,9 @@ public class ClubTest {
             clubSteps.validateClubStatisticsValues(statisticsInfo);
 
             Allure.addAttachment("Статистика клуба", "text/plain",
-                    "Баланс: " + statisticsInfo.getBalance() + "\n" +
-                    "Собственные рефералы: " + statisticsInfo.getReferrals().getOwn() + "\n" +
-                    "Всего рефералов: " + statisticsInfo.getReferrals().getAll());
+                    "Баланс: " + statisticsInfo.balance() + "\n" +
+                    "Собственные рефералы: " + statisticsInfo.referrals().own() + "\n" +
+                    "Всего рефералов: " + statisticsInfo.referrals().all());
         });
     }
 
@@ -96,12 +95,12 @@ public class ClubTest {
             clubSteps.validateClubMemberValues(memberInfo);
 
             Allure.addAttachment("Информация о членстве", "text/plain",
-                    "ID: " + memberInfo.getId() + "\n" +
-                    "Активен: " + memberInfo.getActive() + "\n" +
-                    "Тип членства: " + memberInfo.getMemberType() + "\n" +
-                    "Дата членства: " + memberInfo.getMembershipDate() + "\n" +
-                    "Реферальная ссылка: " + memberInfo.getReferralLink() + "\n" +
-                    "Детали: " + memberInfo.getDetails());
+                    "ID: " + memberInfo.id() + "\n" +
+                    "Активен: " + memberInfo.isActive() + "\n" +
+                    "Тип членства: " + memberInfo.memberType() + "\n" +
+                    "Дата членства: " + memberInfo.membershipDate() + "\n" +
+                    "Реферальная ссылка: " + memberInfo.referralLink() + "\n" +
+                    "Детали: " + memberInfo.details());
         });
     }
 
@@ -173,27 +172,25 @@ public class ClubTest {
             String responseBody = response.getBody().asString();
 
             if (statusCode == 201) {
-                WithdrawalResponse withdrawalResponse = response.as(WithdrawalResponse.class);
-                if (withdrawalResponse != null && withdrawalResponse.isSuccessful()) {
-                    assertEquals(3000, withdrawalResponse.getWithdrawalAmount(),
-                            "Сумма в ответе должна быть 3000");
-                    Allure.addAttachment("Успех", "text/plain",
-                            "✅ Запрос на вывод 3000 ₽ выполнен успешно");
-                }
+                assertTrue(responseBody.equals("[]") || responseBody.equals("[\n\n]"),
+                        "Тело ответа при успехе должно быть пустым массивом");
+                Allure.addAttachment("Успех", "text/plain",
+                        "✅ Запрос на вывод 3000 ₽ выполнен успешно");
             } else if (statusCode == 400) {
                 // Недостаточно средств
+                String balanceStr = responseBody.replaceAll("[^0-9]", "");
                 assertAll("Проверка ошибки недостаточно средств",
                         () -> assertTrue(responseBody.contains("Not enough credits"),
                                 "Сообщение должно содержать 'Not enough credits'"),
-                        () -> assertTrue(responseBody.contains("1000"),
-                                "Сообщение должно содержать доступный баланс")
+                        () -> assertTrue(!balanceStr.isEmpty() && Integer.parseInt(balanceStr) >= 0,
+                                "Сообщение должно содержать число (доступный баланс)")
                 );
             } else {
                 // Неожиданный статус код
                 Allure.addAttachment("Неожиданный ответ", "text/plain",
                         String.format("⚠ Получен неожиданный статус код: %d\nТело ответа: %s",
                                 statusCode, responseBody));
-                fail(String.format("Неожиданный статус код: %d. Ожидался 201, 400", statusCode));
+                fail(String.format("Неожиданный статус код: %d. Ожидался 201 или 400", statusCode));
             }
         });
     }

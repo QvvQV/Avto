@@ -23,7 +23,7 @@ public class ClubDetailsFlow {
     private static final int STATUS_FORBIDDEN = 403;
     private static final int STATUS_NOT_FOUND = 404;
 
-    public  ClubDetailsFlow(String authToken, String baseUrl) {
+    public ClubDetailsFlow(String authToken, String baseUrl) {
         this.authToken = authToken;
         this.szDetailsSteps = ClubSzDetailsSteps.withBaseUrl(baseUrl);
     }
@@ -58,11 +58,11 @@ public class ClubDetailsFlow {
     }
 
     @Step("Множественное удаление (проверка идемпотентности)")
-    public IdempotenceResult testDeleteIdempotence(int attemts) {
+    public IdempotenceResult testDeleteIdempotence(int attempts) {
         IdempotenceResult result = new IdempotenceResult();
 
-        for (int i = 1; i <= attemts; i++) {
-            Response response =szDetailsSteps.deleteClubDetails(authToken);
+        for (int i = 1; i <= attempts; i++) {
+            Response response = szDetailsSteps.deleteClubDetails(authToken);
             result.addAttempt(i, response.getStatusCode());
 
             Allure.addAttachment(String.format("Удаление #%d", i), "text/plain",
@@ -81,8 +81,6 @@ public class ClubDetailsFlow {
         } else {
             result.setCreateResult(saveSelfEmployedDetails(request));
         }
-
-
 
         // 2. Валидация структуры ответа
         result.setStructureValid(validateCreateResponseStructure(result.getCreateResult().getResponse()));
@@ -124,6 +122,8 @@ public class ClubDetailsFlow {
 
             return isValid;
         } catch (Exception e) {
+            Allure.addAttachment("Ошибка валидации ответа", "text/plain",
+                    "Исключение при валидации: " + e.getMessage());
             return false;
         }
     }
@@ -164,7 +164,8 @@ public class ClubDetailsFlow {
                     return response.as(SzDetailsResponse.class);
                 }
             } catch (Exception e) {
-
+                Allure.addAttachment("Ошибка парсинга ответа", "text/plain",
+                        "Не удалось распарсить ответ: " + e.getMessage());
             }
             return null;
         }
@@ -257,7 +258,7 @@ public class ClubDetailsFlow {
             for (int i = 1; i < attempts.size(); i++) {
                 int status = attempts.get(i).statusCode;
                 if (firstSuccess) {
-                    // Если первый успешен, остальные должны быть 200/201 или 400 (должно быть 404)
+                    // Если первый успешен, остальные должны быть 200/201 или 400
                     if (!(status == STATUS_OK || status == STATUS_SUCCESS || status == STATUS_BAD_REQUEST)) {
                         return false;
                     }
@@ -335,7 +336,7 @@ public class ClubDetailsFlow {
                             isSuccess() ? "✅ УСПЕШНО" : "❌ ПРОВАЛЕН"));
         }
 
-        // Геттер и сетеры
+        // Геттеры и сеттеры
         public void setCreateResult (SaveResult createResult) { this.createResult = createResult; }
         public void setDeleteResult (DeleteResult deleteResult) { this.deleteResult = deleteResult; }
         public void setStructureValid (boolean structureValid) { this.structureValid = structureValid; }

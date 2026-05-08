@@ -375,11 +375,11 @@ public class GameWheelTest {
 
         Long rewardId;
         if (rewardToOpen.isPresent()) {
-            rewardId = rewardToOpen.get().getId();
+            rewardId = rewardToOpen.get().id();
             step("Используем существующую награду", () -> {
                 UserRewardResponse reward = rewardToOpen.get();
-                String expiryInfo = reward.getExpiresAt() != null ?
-                        "Истекает: " + reward.getExpiresAt() : "Срок не ограничен";
+                String expiryInfo = reward.expiresAt() != null ?
+                        "Истекает: " + reward.expiresAt() : "Срок не ограничен";
 
                 Allure.addAttachment("Выбранная награда", "text/plain",
                         String.format("""
@@ -389,9 +389,9 @@ public class GameWheelTest {
                                         Значение: %d
                                         %s""",
                                 rewardId,
-                                reward.getName(),
-                                reward.getRewardType(),
-                                reward.getRewardValue(),
+                                reward.name(),
+                                reward.rewardType(),
+                                reward.rewardValue(),
                                 expiryInfo));
             });
         } else {
@@ -403,14 +403,14 @@ public class GameWheelTest {
                 List<UserRewardResponse> updateRewards = userRewardSteps.validateUserRewardsResponse(updateResponse);
 
                 return updateRewards.stream()
-                        .filter(reward -> !"valuation".equals(reward.getRewardType()))
+                        .filter(reward -> !"valuation".equals(reward.rewardType()))
                         .max((r1, r2) -> {
-                            if (r1.getId() != null && r2.getId() != null) {
-                                return Long.compare(r1.getId(), r2.getId());
+                            if (r1.id() != null && r2.id() != null) {
+                                return Long.compare(r1.id(), r2.id());
                             }
                             return 0;
                         })
-                        .map(UserRewardResponse::getId)
+                        .map(UserRewardResponse::id)
                         .orElseThrow(() -> new RuntimeException("не удалось получить новую награду"));
             });
         }
@@ -440,14 +440,14 @@ public class GameWheelTest {
         Assumptions.assumeTrue(valuationReward.isPresent(),
                 "У пользователя нет наград типа 'valuation' ля тестирования");
 
-        Long valuationRewardId = valuationReward.get().getId();
+        Long valuationRewardId = valuationReward.get().id();
 
         step("Найдена valuation наград", () ->
             Allure.addAttachment("Награда valuation", "text/plain",
                     String.format("ID: %d\nНазвание: %s\nТип: %s",
                             valuationRewardId,
-                            valuationReward.get().getName(),
-                            valuationReward.get().getRewardType()))
+                            valuationReward.get().name(),
+                            valuationReward.get().rewardType()))
         );
 
         Response openResponse = step("Попытка открыть valuation награду", () ->
@@ -594,7 +594,7 @@ public class GameWheelTest {
         UserRewardResponse newReward = step("Находим новую награду", () ->
             rewardAfterSpin.stream()
                     .filter(reward -> initionalRewards.stream()
-                            .noneMatch(initial -> initial.getId().equals(reward.getId())))
+                            .noneMatch(initial -> initial.id().equals(reward.id())))
                     .findFirst()
                     .orElseThrow(() -> new AssertionError("Новая награда не найдена в списке"))
         );
@@ -602,17 +602,17 @@ public class GameWheelTest {
         step("Новая награда найдена", () -> {
             Allure.addAttachment("Новая награда", "text/plain",
                     String.format("ID: %d\nНазвание: %s\nТип: %s\nЗначение: %d",
-                            newReward.getId(),
-                            newReward.getName(),
-                            newReward.getRewardType(),
-                            newReward.getRewardValue()));
+                            newReward.id(),
+                            newReward.name(),
+                            newReward.rewardType(),
+                            newReward.rewardValue()));
 
-            assertNotEquals("valuation", newReward.getRewardType(),
+            assertNotEquals("valuation", newReward.rewardType(),
                     "Награда с игрового колеса не должна быть типа 'valuation'");
         });
 
         Response openResponse = step("Открываем новую награду", () ->
-                userRewardSteps.openReward(token, newReward.getId())
+                userRewardSteps.openReward(token, newReward.id())
         );
 
         step("Проверяем успешное открытие", () -> {
@@ -624,7 +624,7 @@ public class GameWheelTest {
                                     ✅ Награда успешно открыта
                                     🎁 ID награды: %d
                                     📊 Статус код: 200 OK""",
-                            newReward.getId()));
+                            newReward.id()));
         });
 
         List<UserRewardResponse> finalRewards = step("Получаем финальный список", () -> {
@@ -655,10 +655,10 @@ public class GameWheelTest {
                             initialCount,
                             afterSpinCount,
                             finalCount,
-                            newReward.getId(),
-                            newReward.getName(),
-                            newReward.getRewardType(),
-                            newReward.getRewardValue()));
+                            newReward.id(),
+                            newReward.name(),
+                            newReward.rewardType(),
+                            newReward.rewardValue()));
         });
     }
 

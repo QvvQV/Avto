@@ -62,7 +62,7 @@ class ProductNameTest {
         
         step("Проверить что products содержит Burnout продукт", () -> {
             List<ProductResponse.Product> products = domainResponse.getProducts();
-            assertFalse(products.isEmpty(), "Products array should not be empty");
+            assertFalse(products.isEmpty(), "Массив products не должен быть пустым");
             
             ProductResponse.Product mainProduct = products.getFirst();
             assertEquals("Как бороться с выгоранием", mainProduct.getName(), 
@@ -71,8 +71,8 @@ class ProductNameTest {
         
         step("Проверить авторов Burnout продукта", () -> {
             ProductResponse.Product mainProduct = domainResponse.getProducts().getFirst();
-            assertNotNull(mainProduct.getAuthors(), "Authors should not be null");
-            assertFalse(mainProduct.getAuthors().isEmpty(), "Authors should not be empty");
+            assertNotNull(mainProduct.getAuthors(), "Авторы не должны быть null");
+            assertFalse(mainProduct.getAuthors().isEmpty(), "Авторы не должны быть пустыми");
             
             ProductResponse.Author firstAuthor = mainProduct.getAuthors().getFirst();
             assertEquals("Игорь Свенторжецкий", firstAuthor.getName(), 

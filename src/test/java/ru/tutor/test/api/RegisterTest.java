@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Story("User Registration and Validation")
 @DisplayName("👤 Тесты регистрации пользователей")
 @Execution(ExecutionMode.CONCURRENT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RegisterTest {
     private final RegisterSteps registerSteps = new RegisterSteps(TestConfig.getCurrentApiUrl());
     private final Faker faker = new Faker(Locale.ENGLISH);

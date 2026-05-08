@@ -213,7 +213,7 @@ public class TestTtPage extends BaseUiTest {
 
         Response response = given()
 
-                .baseUri("https://api.dev.tutorplace.ru/products")
+                .baseUri(TestConfig.getCurrentApiUrl() +"/products")
 
                 .contentType(ContentType.JSON)
 

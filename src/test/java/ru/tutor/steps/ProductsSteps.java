@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserProductsApi;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.ProductsResponse;
 
 import java.util.*;
@@ -13,10 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Collectors;
 
-public record ProductsSteps(UserProductsApi productsApi) {
+public class ProductsSteps extends BaseApiSteps {
+    private final UserProductsApi productsApi;
+
+    public ProductsSteps(String baseUrl) {
+        super(baseUrl);
+        this.productsApi = new UserProductsApi(baseUrl);
+    }
 
     public static ProductsSteps withBaseUrl(String baseUrl) {
-        return new ProductsSteps(new UserProductsApi(baseUrl));
+        return new ProductsSteps(baseUrl);
     }
 
     @Step("Получение списка продуктов")

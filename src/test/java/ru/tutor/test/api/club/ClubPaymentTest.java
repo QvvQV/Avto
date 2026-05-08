@@ -99,7 +99,7 @@ public class ClubPaymentTest {
                 String direction = payment.isIncome() ? "💰 Доход" : "💸 Расход";
                 Allure.addAttachment("Направление платежа", "text/plain",
                         String.format("%s: %s (%d руб.)",
-                                direction, payment.getName() , payment.getAmount())
+                                direction, payment.name() , payment.amount())
                 );
             }
         });
@@ -161,7 +161,7 @@ public class ClubPaymentTest {
 
                 Allure.addAttachment("Проверка даты", "text/plain",
                         String.format("Платеж: %s\nДата: %s\nФормат: ✓",
-                                payment.getName(), payment.getDate()));
+                                payment.name(), payment.date()));
             }
         });
     }

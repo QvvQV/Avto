@@ -159,7 +159,7 @@ public class TestConfig {
 
     // ==================== Метод для получения URL в зависимости от окружения ====================
     public static String getCurrentUiUrl() {
-        String env = System.getProperty("env.ui", "dev2"); // dev1, dev2, prod
+        String env = System.getProperty("env.ui", "dev1"); // dev1, dev2, prod
         return switch (env) {
             case "dev2" -> getDev2BaseUrl();
             case "prod" -> getProdBaseUrl(); // или другой prod URL
@@ -168,7 +168,7 @@ public class TestConfig {
     }
 
     public static String getCurrentApiUrl() {
-        String env = System.getProperty("env.api", "api2"); // api1, api2, prod
+        String env = System.getProperty("env.api", "api1"); // api1, api2, prod
         return switch (env) {
             case "api2" -> getApi2BaseUrl(); // нужно добавить этот метод
             case "prod" -> getApiProdUrl();
@@ -177,7 +177,7 @@ public class TestConfig {
     }
 
     public static String getCurrentClientDomain() {
-        String env = System.getProperty("env.client", "dev2");
+        String env = System.getProperty("env.client", "dev1");
 
         return switch (env) {
             case "dev2" -> getClient2BaseUrl();
@@ -187,7 +187,7 @@ public class TestConfig {
     }
 
     public static String getCurrentAdminDomain() {
-        String env = System.getProperty("env.admin", "admin2");
+        String env = System.getProperty("env.admin", "admin1");
 
         return switch (env) {
             case "admin2" -> getAdmin2BaseUrl();

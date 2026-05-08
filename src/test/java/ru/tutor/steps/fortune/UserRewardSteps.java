@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import ru.tutor.api.GameWheelApi;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.constants.GameWheelRewardsConstants;
 import ru.tutor.model.fortune.GameWheelStartGameResponse;
 import ru.tutor.model.fortune.RewardOpenResponse;
@@ -16,19 +17,24 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public record UserRewardSteps(GameWheelApi gameWheelApi) {
+public class UserRewardSteps extends BaseApiSteps {
+    private final GameWheelApi gameWheelApi;
+
+    public UserRewardSteps(String baseUrl) {
+        super(baseUrl);
+        this.gameWheelApi = new GameWheelApi(baseUrl);
+    }
 
     private static final DateTimeFormatter ISO_FORMATTER =
             DateTimeFormatter.ISO_DATE;
 
     public static UserRewardSteps withBaseUrl(String baseUrl) {
-        return new UserRewardSteps(new GameWheelApi(baseUrl));
+        return new UserRewardSteps(baseUrl);
     }
 
 
@@ -45,10 +51,13 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
     @Step("Валидация успешного ответа со списком наград пользователя")
     public List<UserRewardResponse> validateUserRewardsResponse(Response response) {
         // Базовая валидация ответа
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("$", instanceOf(List.class)); // Проверяем, что это массив
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+
+        // Проверяем что ответ массив
+        Object body = response.jsonPath().get("$");
+        assertNotNull(body, "Тело ответа не должно быть null");
+        assertTrue(body instanceof List, "Ответ должен быть списком (List)");
 
         // Преобразуем в список модели
         List<UserRewardResponse> userRewards = response.jsonPath()
@@ -72,29 +81,29 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
     public void validateUserRewardStructure(List<UserRewardResponse> userRewards) {
         for (int i = 0; i < userRewards.size(); i++) {
             UserRewardResponse reward = userRewards.get(i);
-            String rewardInfo = "Награда пользователя #" + (i + 1) + " (ID: " + reward.getId() + ")";
+            String rewardInfo = "Награда пользователя #" + (i + 1) + " (ID: " + reward.id() + ")";
 
             assertAll(rewardInfo + " - проверка обязательных полей",
-                    () -> assertNotNull(reward.getId(), "id не должен быть null"),
-                    () -> assertNotNull(reward.getName(), "name не должен быть null"),
-                    () -> assertFalse(reward.getName().trim().isEmpty(), "name не должен быть пустым"),
-                    () -> assertNotNull(reward.getRewardValue(), "rewardValue не должен быть null"),
-                    () -> assertNotNull(reward.getRewardType(), "rewardType не должен быть null"),
-                    () -> assertNotNull(reward.getExpiresAt(), "expiresAt не должен быть null"),
-                    () -> assertNotNull(reward.getShowValue(), "isShowValue не должен быть null")
+                    () -> assertNotNull(reward.id(), "id не должен быть null"),
+                    () -> assertNotNull(reward.name(), "name не должен быть null"),
+                    () -> assertFalse(reward.name().trim().isEmpty(), "name не должен быть пустым"),
+                    () -> assertNotNull(reward.rewardValue(), "rewardValue не должен быть null"),
+                    () -> assertNotNull(reward.rewardType(), "rewardType не должен быть null"),
+                    () -> assertNotNull(reward.expiresAt(), "expiresAt не должен быть null"),
+                    () -> assertNotNull(reward.isShowValue(), "isShowValue не должен быть null")
             );
 
             // Дополнительные проверки
-            assertTrue(reward.getId() > 0, "id should be greater than 0");
-            assertTrue(reward.getRewardValue() > 0, "rewardValue should be greater than 0");
+            assertTrue(reward.id() > 0, "id должен быть больше 0");
+            assertTrue(reward.rewardValue() > 0, "rewardValue должен быть больше 0");
 
             // Проверка типа наград
-            assertTrue(Arrays.asList(GameWheelRewardsConstants.ALLOWED_TYPES).contains(reward.getRewardType()),
+            assertTrue(Arrays.asList(GameWheelRewardsConstants.ALLOWED_TYPES).contains(reward.rewardType()),
                     rewardInfo + " - rewardType should be allowed: " +
                             Arrays.toString(GameWheelRewardsConstants.ALLOWED_TYPES));
 
             // Проверка даты истечения (формат YYYY-MM-DD)
-            validateDate(reward.getExpiresAt(), rewardInfo);
+            validateDate(reward.expiresAt(), rewardInfo);
         }
     }
 
@@ -131,20 +140,20 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
 
         // Ищем награду в списке
         Optional<UserRewardResponse> foundReward = userRewards.stream()
-                .filter(reward -> reward.getId().equals(expectedUserRewardId))
+                .filter(reward -> reward.id().equals(expectedUserRewardId))
                 .findFirst();
 
         if (foundReward.isPresent()) {
             UserRewardResponse actualReward = foundReward.get();
 
             assertAll("Проверка соответсвия награды в списке пользователя",
-                    () -> assertEquals(expectedUserRewardId, actualReward.getId(),
+                    () -> assertEquals(expectedUserRewardId, actualReward.id(),
                             "ID награды должно совпадать"),
-                    () -> assertEquals(expectedName, actualReward.getName(),
+                    () -> assertEquals(expectedName, actualReward.name(),
                             "Name награды должно совпадать"),
-                    () -> assertEquals(expectedType, actualReward.getRewardType(),
+                    () -> assertEquals(expectedType, actualReward.rewardType(),
                             "Тип награды должен совпадать"),
-                    () -> assertEquals(expectedValue, actualReward.getRewardValue(),
+                    () -> assertEquals(expectedValue, actualReward.rewardValue(),
                             "Значение награды должно совпадать")
             );
 
@@ -173,8 +182,8 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
         Set<Long> uniqueIds = new HashSet<>();
         List<Long> duplicatedIds = new ArrayList<>();
         for (UserRewardResponse reward : userRewards) {
-            if (!uniqueIds.add(reward.getId())) {
-                duplicatedIds.add(reward.getId());
+            if (!uniqueIds.add(reward.id())) {
+                duplicatedIds.add(reward.id());
             }
         }
 
@@ -198,7 +207,7 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
         // Сортировка по ID
         boolean sortedById = true;
         for (int i = 1; i < userRewards.size(); i++) {
-            if (userRewards.get(i).getId() <= userRewards.get(i - 1).getId()) {
+            if (userRewards.get(i).id() <= userRewards.get(i - 1).id()) {
                 sortedById = false;
                 break;
             }
@@ -226,11 +235,11 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
 
         // Статистика по типам наград
         Map<String, Long> typeStatistics = userRewards.stream()
-                .collect(Collectors.groupingBy(UserRewardResponse::getRewardType, Collectors.counting()));
+                .collect(Collectors.groupingBy(UserRewardResponse::rewardType, Collectors.counting()));
 
         Map<String, Integer> valueStatistics = userRewards.stream()
-                .collect(Collectors.groupingBy(UserRewardResponse::getRewardType,
-                        Collectors.summingInt(UserRewardResponse::getRewardValue)));
+                .collect(Collectors.groupingBy(UserRewardResponse::rewardType,
+                        Collectors.summingInt(UserRewardResponse::rewardValue)));
 
         report.append("📊 СТАТИСТИКА ПО ТИПАМ:\n");
         report.append("-".repeat(40)).append("\n");
@@ -252,23 +261,23 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
         report.append("-".repeat(90)).append("\n");
 
         userRewards.stream()
-                .sorted(Comparator.comparing(UserRewardResponse::getId).reversed())
+                .sorted(Comparator.comparing(UserRewardResponse::id).reversed())
                 .forEach(reward -> {
-                    String name = reward.getName();
+                    String name = reward.name();
                     if (name != null && name.length() > 30) {
                         name = name.substring(0, 27) + "...";
                     }
 
-                    String type = reward.getRewardType() != null ? reward.getRewardType() : "";
-                    String expiresAt = reward.getExpiresAt() != null ? reward.getExpiresAt() : "";
-                    String showValue = reward.getShowValue() != null ?
-                            (reward.getShowValue() ? "Да" : "Нет") : "";
+                    String type = reward.rewardType() != null ? reward.rewardType() : "";
+                    String expiresAt = reward.expiresAt() != null ? reward.expiresAt() : "";
+                    String showValue = reward.isShowValue() != null ?
+                            (reward.isShowValue() ? "Да" : "Нет") : "";
 
                     report.append(String.format("%-8d | %-30s | %-12s | %-10d | %-12s | %s\n",
-                            reward.getId(),
+                            reward.id(),
                             name != null ? name : "",
                             type,
-                            reward.getRewardValue() != null ? reward.getRewardValue() : 0,
+                            reward.rewardValue() != null ? reward.rewardValue() : 0,
                             expiresAt,
                             showValue));
                 });
@@ -278,11 +287,11 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
 
         // Информация о ближайших истечениях
         List<UserRewardResponse> sortedByExpiry = userRewards.stream()
-                .filter(r -> r.getExpiresAt() != null)
+                .filter(r -> r.expiresAt() != null)
                 .sorted((r1, r2) -> {
                     try {
-                        LocalDate date1 = LocalDate.parse(r1.getExpiresAt());
-                        LocalDate date2 = LocalDate.parse(r2.getExpiresAt());
+                        LocalDate date1 = LocalDate.parse(r1.expiresAt());
+                        LocalDate date2 = LocalDate.parse(r2.expiresAt());
                         return date1.compareTo(date2);
                     } catch (Exception e) {
                         return 0;
@@ -303,7 +312,7 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
         }
 
         Set<String> foundTypes = userRewards.stream()
-                .map(UserRewardResponse::getRewardType)
+                .map(UserRewardResponse::rewardType)
                 .collect(Collectors.toSet());
 
         List<String> unexpectedTypes = foundTypes.stream()
@@ -399,7 +408,7 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
     public Optional<UserRewardResponse> findSuitableRewardToOpen(List<UserRewardResponse> rewards) {
         return rewards.stream()
                 .filter(Objects::nonNull)
-                .filter(reward -> reward.getId() != null)
+                .filter(reward -> reward.id() != null)
                 .filter(reward -> !isValuationReward(reward))
                 .filter(this::isRewardNotExpired)
                 .findFirst();
@@ -417,22 +426,22 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
     public Optional<UserRewardResponse> findExpiredReward(List<UserRewardResponse> rewards) {
         return rewards.stream()
                 .filter(Objects::nonNull)
-                .filter(reward -> reward.getExpiresAt() != null && !reward.getExpiresAt().isEmpty())
+                .filter(reward -> reward.expiresAt() != null && !reward.expiresAt().isEmpty())
                 .filter(this::isRewardExpired)
                 .findFirst();
     }
 
     private boolean isValuationReward(UserRewardResponse reward) {
-        return "valuation".equals(reward.getRewardType());
+        return "valuation".equals(reward.rewardType());
     }
 
     private boolean isRewardNotExpired(UserRewardResponse reward) {
-        if (reward.getExpiresAt() == null || reward.getExpiresAt().isEmpty()) {
+        if (reward.expiresAt() == null || reward.expiresAt().isEmpty()) {
             return true;
         }
 
         try {
-            LocalDateTime expiryDate = LocalDateTime.parse(reward.getExpiresAt(), ISO_FORMATTER);
+            LocalDateTime expiryDate = LocalDateTime.parse(reward.expiresAt(), ISO_FORMATTER);
             LocalDateTime now = LocalDateTime.now();
             return expiryDate.isAfter(now);
         } catch (DateTimeParseException e) {
@@ -441,7 +450,7 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
     }
 
     private boolean isRewardExpired(UserRewardResponse reward) {
-        String expiredAt = reward.getExpiresAt();
+        String expiredAt = reward.expiresAt();
 
         if (expiredAt == null || expiredAt.isEmpty()) {
             return false;
@@ -475,7 +484,7 @@ public record UserRewardSteps(GameWheelApi gameWheelApi) {
 
     @Step("Проверить дату истечения")
     public boolean checkExpiryDate(UserRewardResponse reward) {
-        LocalDateTime expiryDate = parseDate(reward.getExpiresAt());
+        LocalDateTime expiryDate = parseDate(reward.expiresAt());
 
         if (expiryDate == null) {
             return true;

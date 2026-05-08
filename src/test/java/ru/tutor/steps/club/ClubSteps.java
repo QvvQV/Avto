@@ -2,10 +2,9 @@ package ru.tutor.steps.club;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ClubApi;
-import ru.tutor.config.TestConfig;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubPaymentResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
@@ -14,13 +13,19 @@ import ru.tutor.utils.AllureAttachments;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public record ClubSteps(ClubApi clubApi){
+public class ClubSteps extends BaseApiSteps {
 
-    public static ClubSteps  withBaseUrl(String baseUrl){
-        return new ClubSteps(new ClubApi(baseUrl));
+    private final ClubApi clubApi;
+
+    public ClubSteps(String baseUrl){
+        super(baseUrl);
+        this.clubApi = new ClubApi(baseUrl);
+    }
+
+    public static ClubSteps withBaseUrl(String baseUrl){
+        return new ClubSteps(baseUrl);
     }
 
     @Step("GET /user/club/statistics - получить статистику клуба")
@@ -41,89 +46,76 @@ public record ClubSteps(ClubApi clubApi){
 
     @Step("Валидация ответа статистики клуба")
     public ClubStatisticsResponse validateClubStatisticsResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
-                .header("Access-Control-Allow-Credentials", equalTo("true"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
 
-        response.then()
-                .body("$", hasKey("balance"))
-                .body("$", hasKey("referrals"))
-                .body("referrals", hasKey("own"))
-                .body("referrals", hasKey("all"));
-
-        response.then()
-                .body("balance", instanceOf(Integer.class))
-                .body("referrals.own", instanceOf(Integer.class))
-                .body("referrals.all", instanceOf(Integer.class));
+        assertJsonFieldExists(response, "balance");
+        assertJsonFieldExists(response, "referrals");
 
         // Преобразуем в модель
         ClubStatisticsResponse statistics = response.as(ClubStatisticsResponse.class);
-        assertNotNull(statistics, "Club statistics should not be null");
+        assertNotNull(statistics, "Статистика клуба не должна быть null");
 
         return statistics;
     }
 
     @Step("Валидация ответа информации о членстве")
     public ClubMemberResponse validateClubMemberResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
-                .header("Access-Control-Allow-Credentials", equalTo("true"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
 
-        response.then()
-                .body("$", hasKey("id"))
-                .body("$", hasKey("isActive"))
-                .body("$", hasKey("memberType"))
-                .body("$", hasKey("membershipDate"))
-                .body("$", hasKey("referralLink"))
-                .body("$", hasKey("details"));
+        assertJsonFieldExists(response, "id");
+        assertJsonFieldExists(response, "isActive");
+        assertJsonKeyExists(response, "memberType");
+        assertJsonFieldExists(response, "membershipDate");
+        assertJsonFieldExists(response, "referralLink");
+        assertJsonKeyExists(response, "details");
 
         ClubMemberResponse member = response.as(ClubMemberResponse.class);
-        assertNotNull(member, "Club member should not be null");
+        assertNotNull(member, "Участник клуба не должен быть null");
 
         return member;
     }
 
     @Step("Проверка знаний статистики клуба")
     public void validateClubStatisticsValues(ClubStatisticsResponse statistics) {
-        assertAll("Club statistics values",
-                () -> assertNotNull(statistics.getBalance(), "balance should not be null"),
-                () -> assertNotNull(statistics.getReferrals(), "referrals object should not be null"),
-                () -> assertNotNull(statistics.getReferrals().getOwn(), "referrals.own should not be null"),
-                () -> assertNotNull(statistics.getReferrals().getAll(), "referrals.all should not be null"),
-                () -> assertTrue(statistics.getBalance() >= 0, "balance should be >= 0"),
-                () -> assertTrue(statistics.getReferrals().getOwn() >= 0, "referrals.own should be >= 0"),
-                () -> assertTrue(statistics.getReferrals().getAll() >= 0, "referrals.all should be >= 0")
+        assertAll("Проверка значений статистики клуба",
+                () -> assertNotNull(statistics.balance(), "balance не должен быть null"),
+                () -> assertNotNull(statistics.referrals(), "referrals не должен быть null"),
+                () -> assertNotNull(statistics.referrals().own(), "referrals.own не должен быть null"),
+                () -> assertNotNull(statistics.referrals().all(), "referrals.all не должен быть null"),
+                () -> assertTrue(statistics.balance() >= 0, "balance должен быть >= 0"),
+                () -> assertTrue(statistics.referrals().own() >= 0, "referrals.own должен быть >= 0"),
+                () -> assertTrue(statistics.referrals().all() >= 0, "referrals.all должен быть >= 0")
         );
 
-        Integer own = statistics.getReferrals().getOwn();
-        Integer all = statistics.getReferrals().getAll();
+        Integer own = statistics.referrals().own();
+        Integer all = statistics.referrals().all();
         if (own != null && all != null) {
-            assertTrue(all >= own, "Total referrals should be >= own referrals");
+            assertTrue(all >= own, "Всего рефералов должно быть >= собственных рефералов");
         }
     }
 
     @Step("Проверка значений информации о членстве")
     public void validateClubMemberValues(ClubMemberResponse member) {
-        assertAll("Club member values",
-                () -> assertNotNull(member.getId(), "id should not be null"),
-                () -> assertTrue(member.getId() > 0, "id should be positive"),
-                () -> assertNotNull(member.getActive(), "isActive should not be null"),
-                () -> assertNotNull(member.getMembershipDate(), "membershipDate should not be null"),
-                () -> assertNotNull(member.getReferralLink(), "referralLink should not be null")
+        assertAll("Проверка значений участника клуба",
+                () -> assertNotNull(member.id(), "id не должен быть null"),
+                () -> assertTrue(member.id() > 0, "id должен быть положительным"),
+                () -> assertNotNull(member.isActive(), "isActive не должен быть null"),
+                () -> assertNotNull(member.membershipDate(), "membershipDate не должен быть null"),
+                () -> assertNotNull(member.referralLink(), "referralLink не должен быть null")
         );
 
-        assertTrue(member.hasReferralLink(), "referralLink should not be empty");
-        assertTrue(member.getReferralLink().length() >= 10, "referralLink should be at least 10 characters");
+        assertTrue(member.hasReferralLink(), "referralLink не должен быть пустым");
+        assertTrue(member.referralLink().length() >= 10, "referralLink должен быть минимум 10 символов");
 
-        assertTrue(member.isMembershipActive(), "membershipDate should be valid date");
+        assertTrue(member.isMembershipActive(), "membershipDate должен быть валидной датой");
 
         LocalDate membershipDate = member.getMembershipDateAsLocalDate();
         if (membershipDate != null) {
-        assertFalse(membershipDate.isAfter(LocalDate.now()), "membershipDate should not be in the future");}
+        assertFalse(membershipDate.isAfter(LocalDate.now()), "membershipDate не должен быть в будущем");}
     }
 
     @Step("Проверка ответа без авторизации")
@@ -134,7 +126,7 @@ public record ClubSteps(ClubApi clubApi){
                 "Ожидается: 401 или 403");
 
         assertTrue(statusCode == 401 || statusCode == 403,
-                "Should return 401 or 403 for missing/invalid token. Got: " + statusCode);
+                "Должен вернуть 401 или 403 для отсутствующего/невалидного токена. Получен: " + statusCode);
     }
 
     @Step("GET /user/club/payments - получить историю платежей клуба")
@@ -147,21 +139,20 @@ public record ClubSteps(ClubApi clubApi){
 
     @Step("Валидация успешного ответа истории платжей клуба")
     public List<ClubPaymentResponse> validateClubPaymentsResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .header("Access-Control-Allow-Origin", equalTo(TestConfig.getCurrentClientDomain()))
-                .header("Access-Control-Allow-Credentials", equalTo("true"));
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
 
         // Проверяем что ответ массив
-        response.then()
-                .body("$", instanceOf(List.class));
+        Object body = response.jsonPath().get("$");
+        assertNotNull(body, "Тело ответа не должно быть null");
+        assertTrue(body instanceof List, "Ответ должен быть списком (List)");
 
         // Преобразуем в список моделей
         List<ClubPaymentResponse> payments = response.jsonPath()
                 .getList("$", ClubPaymentResponse.class);
 
-        assertNotNull(payments, "Payments list should not be null");
+        assertNotNull(payments, "Список платежей не должен быть null");
 
         Allure.addAttachment("Количество платежей", "text/plain", String.valueOf(payments.size()));
 
@@ -175,28 +166,28 @@ public record ClubSteps(ClubApi clubApi){
             String paymentInfo = "Платеж #" + (i + 1);
 
             assertAll(paymentInfo + " - проверка структуры",
-                    () -> assertNotNull(payment.getName(), "name should not be null"),
-                    () -> assertNotNull(payment.getDirection(), "direction should not be null"),
+                    () -> assertNotNull(payment.name(), "name не должен быть null"),
+                    () -> assertNotNull(payment.direction(), "direction не должен быть null"),
                     () -> assertTrue(
                             payment.isIncome() || payment.isOutcome(),
-                            paymentInfo + " - direction should be 'income' or 'outcome'"
+                            paymentInfo + " - direction должен быть 'income' или 'outcome'"
                     ),
-                    () -> assertNotNull(payment.getAmount(), "amount should not be null"),
-                    () -> assertTrue(payment.getAmount() > 0,
-                            paymentInfo + " - amount should be positive"),
-                    () -> assertNotNull(payment.getDate(), "date should not be null"),
+                    () -> assertNotNull(payment.amount(), "amount не должен быть null"),
+                    () -> assertTrue(payment.amount() > 0,
+                            paymentInfo + " - amount должен быть положительным"),
+                    () -> assertNotNull(payment.date(), "date не должен быть null"),
                     () -> assertNotNull(payment.getDateAsLocalDateTime(),
-                            paymentInfo + " - date should be valid ISO format")
+                            paymentInfo + " - date должен быть валидным ISO форматом")
             );
 
             // Дополнительные проверки для income/outcome
             if (payment.isIncome()) {
-                assertAll(paymentInfo + " - income validation",
-                        () -> assertTrue(payment.getAmount() > 0, "Income amount should be positive")
+                assertAll(paymentInfo + " - проверка дохода",
+                        () -> assertTrue(payment.amount() > 0, "Сумма дохода должна быть положительной")
                 );
             } else if (payment.isOutcome()) {
-                assertAll(paymentInfo + " - outcome validation",
-                        () -> assertTrue(payment.getAmount() > 0, "Outcome amount should be positive")
+                assertAll(paymentInfo + " - проверка расхода",
+                        () -> assertTrue(payment.amount() > 0, "Сумма расхода должна быть положительной")
                 );
             }
         }

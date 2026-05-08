@@ -4,74 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WithdrawalResponse {
-
-    @JsonProperty("success")
-    private Boolean success;
-
-    @JsonProperty("message")
-    private String message;
-
-    @JsonProperty("data")
-    private WithdrawalData data;
-
+public record WithdrawalResponse(
+    @JsonProperty("success") Boolean success,
+    @JsonProperty("message") String message,
+    @JsonProperty("data") WithdrawalData data
+) {
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class WithdrawalData {
-        @JsonProperty("id")
-        private Integer id;
+    public record WithdrawalData(
+        @JsonProperty("id") Integer id,
+        @JsonProperty("userId") Integer userId,
+        @JsonProperty("amount") Integer amount,
+        @JsonProperty("status") String status,
+        @JsonProperty("createdAt") String createdAt,
+        @JsonProperty("updatedAt") String updatedAt
+    ) {}
 
-        @JsonProperty("userId")
-        private Integer userId;
-
-        @JsonProperty("amount")
-        private Integer amount;
-
-        @JsonProperty("status")
-        private String status;
-
-        @JsonProperty("createdAt")
-        private String createdAt;
-
-        @JsonProperty("updatedAt")
-        private String updatedAt;
-
-        // Геттеры и сеттеры
-        public Integer getId() { return id; }
-        public void setId(Integer id) { this.id = id; }
-
-        public Integer getAmount() { return amount; }
-
-        public String getStatus() { return status; }
-        public void setStatus(String status) { this.status = status; }
-
-    }
-
-    // Геттеры и сеттеры
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public WithdrawalData getData() {
-        return data;
-    }
-
-    public void setData(WithdrawalData data) {
-        this.data = data;
-    }
-
-    // Дополнительные методы
     public boolean isSuccessful() {
         return Boolean.TRUE.equals(success);
     }
@@ -81,10 +28,10 @@ public class WithdrawalResponse {
     }
 
     public Integer getWithdrawalId() {
-        return hasData() ? data.getId() : null;
+        return hasData() ? data.id() : null;
     }
 
     public Integer getWithdrawalAmount() {
-        return hasData() ? data.getAmount() : null;
+        return hasData() ? data.amount() : null;
     }
 }

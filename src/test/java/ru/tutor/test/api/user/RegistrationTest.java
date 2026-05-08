@@ -48,9 +48,9 @@ public class RegistrationTest {
         );
 
         step("Проверка успешной регистрации", () -> {
-            assertEquals("ok", registrationResponse.getMessage(), "Message should be 'ok'");
+            assertEquals("ok", registrationResponse.getMessage(), "Сообщение должно быть 'ok'");
 
-            assertTrue(registrationResponse.isSuccessful(), "Registration should be successful");
+            assertTrue(registrationResponse.isSuccessful(), "Регистрация должна быть успешной");
 
             registeredEmail = request.getEmail();
 
@@ -76,7 +76,7 @@ public class RegistrationTest {
                 userSteps.registerAndGetResponse(request)
         );
 
-        assertTrue(response.isSuccessful(), "Registration should be successful");
+        assertTrue(response.isSuccessful(), "Регистрация должна быть успешной");
 
         Allure.addAttachment("Минимальные данные", "text/plain",
                 String.format("Создан пользователь: %s", request.getEmail()));
@@ -93,8 +93,8 @@ public class RegistrationTest {
         String token = step("Регистрация и вход", () -> userSteps.registerAndLogin(request)
         );
 
-        assertNotNull(token, "Token should not be null");
-        assertFalse(token.isEmpty(), "Token should not be empty");
+        assertNotNull(token, "Токен не должен быть null");
+        assertFalse(token.isEmpty(), "Токен не должен быть пустым");
 
         Response profileResponse = step("Проверка токена", () ->
                 userSteps.getProfile(token)

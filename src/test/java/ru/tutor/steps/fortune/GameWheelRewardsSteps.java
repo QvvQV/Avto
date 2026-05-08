@@ -46,7 +46,7 @@ public record GameWheelRewardsSteps (GameWheelApi gameWheelApi) {
         List<GameWheelRewardResponse> rewards = response.jsonPath()
                 .getList("$", GameWheelRewardResponse.class);
 
-        assertNotNull(rewards, "Game wheel rewards list is null");
+        assertNotNull(rewards, "Список наград колеса фортуны равен null");
         assertFalse(rewards.isEmpty(), "Game wheel rewards list is empty");
 
         return rewards;
@@ -59,18 +59,18 @@ public record GameWheelRewardsSteps (GameWheelApi gameWheelApi) {
             String rewardInfo = "Награда #" + (i + 1) + " (ID: " + reward.getId() + ")";
 
             assertAll(rewardInfo + " - проверка структуры",
-                    () -> assertNotNull(reward.getId(), "id should not be null"),
-                    () -> assertNotNull(reward.getName(), "name should not be null"),
-                    () -> assertNotNull(reward.getChance(), "chance should not be null"),
-                    () -> assertNotNull(reward.getRewardType(), "rewardType should not be null"),
-                    () -> assertNotNull(reward.getRewardValue(), "rewardValue should not be null")
+                    () -> assertNotNull(reward.getId(), "id не должен быть null"),
+                    () -> assertNotNull(reward.getName(), "name не должен быть null"),
+                    () -> assertNotNull(reward.getChance(), "chance не должен быть null"),
+                    () -> assertNotNull(reward.getRewardType(), "rewardType не должен быть null"),
+                    () -> assertNotNull(reward.getRewardValue(), "rewardValue не должен быть null")
             );
 
             // Проверка значений
             assertTrue(reward.getChance() >= 0 && reward.getChance() <= 100,
-                    rewardInfo + " - chance should be between 0 and 100");
+                    rewardInfo + " - chance должен быть от 0 до 100");
             assertTrue(reward.getRewardValue() >= 0,
-                    rewardInfo + " - rewardValue should be >= 0");
+                    rewardInfo + " - rewardValue должен быть >= 0");
         }
     }
 
@@ -152,7 +152,7 @@ public record GameWheelRewardsSteps (GameWheelApi gameWheelApi) {
                 "Статус код: " + statusCode + "\n" +
                         "Ожидается: 401");
 
-        assertEquals(401, statusCode, "Should return 401 for missing/invalid token. Got: " + statusCode);
+        assertEquals(401, statusCode, "Должен вернуть 401 для отсутствующего/невалидного токена. Получен: " + statusCode);
     }
 
     // Обновленный RewardValidationResult

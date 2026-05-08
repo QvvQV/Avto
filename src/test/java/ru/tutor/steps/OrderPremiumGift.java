@@ -4,22 +4,28 @@ import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserOrderApi;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.OrderToggleSubscriptionResponse;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 /*
  * Класс для переключения на Тариф Подарок по API
  */
 
-public record OrderPremiumGift(UserOrderApi orderApi) {
+public class OrderPremiumGift extends BaseApiSteps {
+    private final UserOrderApi orderApi;
+
+    public OrderPremiumGift(String baseUrl) {
+        super(baseUrl);
+        this.orderApi = new UserOrderApi(baseUrl);
+    }
 
     public static OrderPremiumGift withBaseUrl(String baseUrl) {
-        return new OrderPremiumGift(new UserOrderApi(baseUrl));
+        return new OrderPremiumGift(baseUrl);
     }
 
     @Step("Активация Премиум подписки подарок")
@@ -37,8 +43,10 @@ public record OrderPremiumGift(UserOrderApi orderApi) {
                 .statusCode(200)
                 .contentType(ContentType.JSON);
 
-        response.then()
-                .body("$", instanceOf(List.class));
+        // Проверяем что ответ - это список
+        Object body = response.jsonPath().get("$");
+        assertNotNull(body, "Тело ответа не должно быть null");
+        assertTrue(body instanceof List, "Ответ должен быть списком (List)");
 
         // Преобразуем в список
         List<OrderToggleSubscriptionResponse> items = response.jsonPath().getList("$", OrderToggleSubscriptionResponse.class);
@@ -78,11 +86,11 @@ public record OrderPremiumGift(UserOrderApi orderApi) {
                         responseBody));
 
         assertTrue(statusCode == expectedStatusCode || statusCode == 400 || statusCode == 422,
-                String.format("Should return error status code. Got: %d", statusCode));
+                String.format("Должен вернуть код ошибки. Получен: %d", statusCode));
 
         if (expectedMessagePart != null && !expectedMessagePart.isEmpty()) {
             assertTrue(responseBody.toLowerCase().contains(expectedMessagePart.toLowerCase()),
-                    String.format("Response should contain: %s", expectedMessagePart));
+                    String.format("Ответ должен содержать: %s", expectedMessagePart));
         }
     }
 }

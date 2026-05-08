@@ -125,6 +125,9 @@ public class SubscriptionPurchaseBuilder {
 
         if (paymentSystem == PaymentSystem.CLOUD) {
             name.append("Cloud");
+            if (paymentMethod == PaymentMethod.INSTALLMENTS) {
+                name.append(" в рассрочку");
+            }
         } else if (paymentSystem == PaymentSystem.SBER) {
             name.append("Sber");
 
@@ -135,8 +138,6 @@ public class SubscriptionPurchaseBuilder {
             } else if (paymentMethod == PaymentMethod.EXPIRED_CARD) {
                 name.append(" с просроченной карты");
             }
-        } else if (paymentMethod == PaymentMethod.INSTALLMENTS) {
-            name.append(" в рассрочку");
         }
 
         return name.toString();

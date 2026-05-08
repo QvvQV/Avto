@@ -5,6 +5,7 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.flow.SubscriptionTestFlow;
@@ -51,7 +52,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @AllureId("2")
-//        @RepeatedTest(2)
+//        @RepeatedTest(3)
     @DisplayName("Оплата с главной за 399 руб")
     @Owner("Vadim")
     public void PayMain399() {

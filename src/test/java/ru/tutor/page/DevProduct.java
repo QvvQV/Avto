@@ -9,8 +9,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Keys;
+
+import static org.junit.jupiter.api.Assertions.*;
 import ru.tutor.config.TestConfig;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,7 +21,6 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
 
 public class DevProduct {
     private final Faker faker = new Faker(Locale.ENGLISH);
@@ -265,16 +267,23 @@ public class DevProduct {
         });
 
         step("проверяем что навыки добавились", () -> {
-
-            given()
+            Response skillsResponse = given()
                     .baseUri(TestConfig.getCurrentAdminDomain())
                     .cookies(token)
                     .when()
-                    .get("/products/525")
-                    .then()
+                    .get("/products/525");
+
+            skillsResponse.then()
                     .log().all()
-                    .statusCode(200)
-                    .body("skills", hasItems("шмыга злой хоббит. Кто с этим поспорит", "добавим ещё одного персонажа"));
+                    .statusCode(200);
+
+            // Проверяем содержимое skills
+            List<String> skills = skillsResponse.jsonPath().getList("skills", String.class);
+            assertNotNull(skills, "Skills не должен быть null");
+            assertTrue(skills.contains("шмыга злой хоббит. Кто с этим поспорит"),
+                    "Skills должен содержать 'шмыга злой хоббит. Кто с этим поспорит'");
+            assertTrue(skills.contains("добавим ещё одного персонажа"),
+                    "Skills должен содержать 'добавим ещё одного персонажа'");
         });
     }
 }

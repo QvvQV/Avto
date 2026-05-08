@@ -44,6 +44,7 @@ public abstract class BaseApi {
         return given(baseSpec)
 //                .header("Origin", "https://client.tutorplace.ru/")
 //                .header("Referer", "https://client.tutorplace.ru/")
+                .header("Authorization", "Bearer " + token)
                 .body(body)
                 .log().all() // Логирование запроса
                 .when()

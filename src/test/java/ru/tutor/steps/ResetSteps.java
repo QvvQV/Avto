@@ -3,12 +3,19 @@ package ru.tutor.steps;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.ResetApi;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.utils.ResponseAnalyzer;
 
-public record ResetSteps(ResetApi resetApi) {
+public class ResetSteps extends BaseApiSteps {
+    private final ResetApi resetApi;
+
+    public ResetSteps(String baseUrl) {
+        super(baseUrl);
+        this.resetApi = new ResetApi(baseUrl);
+    }
 
     public static ResetSteps  withBaseUrl(String baseUrl) {
-        return new ResetSteps(new  ResetApi(baseUrl));
+        return new ResetSteps(baseUrl);
     }
 
     @Step("Отправка запроса на сброс пароля для email: {email}")

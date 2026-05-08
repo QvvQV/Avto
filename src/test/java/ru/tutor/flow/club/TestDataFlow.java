@@ -107,7 +107,7 @@ public class TestDataFlow {
         return request;
     }
 
-    @Step("Генерация данных с неверным serId")
+    @Step("Генерация данных с неверным userId")
     public SzDetailsRequest generateDataWithWrongUserId(Integer wrongUserId) {
         SzDetailsRequest request = ClubTestDataGenerator.generateValidSzDetails(wrongUserId, email);
 
@@ -117,7 +117,7 @@ public class TestDataFlow {
         return request;
     }
 
-    private void logGenerateData (String type, SzDetailsRequest request) {
+    private void logGenerateData(String type, SzDetailsRequest request) {
         Allure.addAttachment(String.format("Сгенерированные данные (%s)", type), "text/plain",
                 String.format("""
                         ФИО: %s

@@ -4,38 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClubStatisticsResponse {
-
-    @JsonProperty("balance")
-    private Integer balance;
-
-    @JsonProperty("referrals")
-    private Referrals referrals;
-
+public record ClubStatisticsResponse(
+    @JsonProperty("balance") Integer balance,
+    @JsonProperty("referrals") Referrals referrals
+) {
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Referrals {
-        @JsonProperty("own")
-        private Integer own;
-
-        @JsonProperty("all")
-        private Integer all;
-
-        public Integer getOwn() {
-            return own;
-        }
-
-        public void setOwn(Integer own) {
-            this.own = own;
-        }
-
-        public Integer getAll() {
-            return all;
-        }
-
-        public void setAll(Integer all) {
-            this.all = all;
-        }
-
+    public record Referrals(
+        @JsonProperty("own") Integer own,
+        @JsonProperty("all") Integer all
+    ) {
         public Integer getTotalReferrals() {
             if (own != null && all != null) {
                 return own + all;
@@ -44,23 +21,6 @@ public class ClubStatisticsResponse {
         }
     }
 
-    public Integer getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Integer balance) {
-        this.balance = balance;
-    }
-
-    public Referrals getReferrals() {
-        return referrals;
-    }
-
-    public void setReferrals(Referrals referrals) {
-        this.referrals = referrals;
-    }
-
-    // Дополнительные методы
     public boolean hasBalance() {
         return balance != null;
     }
@@ -71,8 +31,8 @@ public class ClubStatisticsResponse {
 
     public boolean hasReferrals() {
         return referrals != null &&
-                referrals.getOwn() != null &&
-                referrals.getAll() != null &&
-                (referrals.getOwn() > 0 || referrals.getAll() > 0);
+                referrals.own() != null &&
+                referrals.all() != null &&
+                (referrals.own() > 0 || referrals.all() > 0);
     }
 }

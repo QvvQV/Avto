@@ -114,7 +114,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
         );
         step("Проверка ошибки авторизации", () -> {
         int statusCode = response.getStatusCode();
-        assertTrue(statusCode == 401, "Should return 401. Got: " + statusCode);
+        assertTrue(statusCode == 401, "Должен вернуть 401. Получен: " + statusCode);
         });
     }
 
@@ -131,7 +131,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
         );
         step("Проверка ошибки авторизации", () -> {
             int statusCode = response.getStatusCode();
-            assertTrue(statusCode == 401, "Should return 401. Got: " + statusCode);
+            assertTrue(statusCode == 401, "Должен вернуть 401. Получен: " + statusCode);
         });
     }
 

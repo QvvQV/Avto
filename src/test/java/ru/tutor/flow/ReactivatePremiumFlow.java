@@ -192,10 +192,10 @@ public class ReactivatePremiumFlow {
             if (authToken == null) {
                 fetchAuthToken();
             }
-             Response response = step("POST /user/orders/get-premium-gift", () ->
+            Response response = step("POST /user/orders/get-premium-gift", () ->
                     orderStepsPremiumGift.getPremiumGift(authToken));
-             step("Валидация ответа", ()->
-                    orderStepsPremiumGift.validateGetPremiumGiftResponse(response) );
+            step("Валидация ответа", () ->
+                    orderStepsPremiumGift.validateGetPremiumGiftResponse(response));
         });
         return this;
     }
@@ -247,7 +247,7 @@ public class ReactivatePremiumFlow {
      */
     @Step("Проверка aff_rid метки заказа")
     public ReactivatePremiumFlow verifyAffRid() {
-        if(isRenewalInPersonalAccount) {
+        if (isRenewalInPersonalAccount) {
             step("Проверка aff_rid (системная метка после Renewal в ЛК)", () -> {
                 adminOrdersPage.renewal(SYSTEM_UTM);
             });
@@ -285,9 +285,10 @@ public class ReactivatePremiumFlow {
     /**
      * Обработка редиректа и заполнение данных
      */
+    @Step("Обработка редиректа и заполнение данных")
     public static void handlePostPaymentSteps() {
         step("Редирект после оплаты", () -> new RedirectPage().redirectPage());
-        step("Заполнение модалки", new GreetingsModal()::fillAccessInput );
+        step("Заполнение модалки", new GreetingsModal()::fillAccessInput);
     }
 
     /**

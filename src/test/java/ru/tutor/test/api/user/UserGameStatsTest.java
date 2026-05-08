@@ -66,12 +66,12 @@ public class UserGameStatsTest {
         GameStatsResponse stats = userSteps.validateGameStatsResponse(response);
 
         step("Проверка конкретных значений", () ->
-                assertAll("Game stats specific values",
-                        () -> assertEquals(500, stats.getLevelUpLimit(), "LevelUpLimit should be 500"),
-                        () -> assertEquals(18, stats.getSeason(), "Season should be 18"),
-                        () -> assertNotNull(stats.getSeasonEnd(), "SeasonEnd should not be null"),
-                        () -> assertTrue(stats.getSeasonEnd().contains("2026"), "SeasonEnd should be in 2026"),
-                        () -> assertNotNull(stats.getShowModal(), "showModal should not be null"))
+                assertAll("Проверка конкретных значений игровой статистики",
+                        () -> assertEquals(500, stats.getLevelUpLimit(), "LevelUpLimit должен быть 500"),
+                        () -> assertEquals(18, stats.getSeason(), "Season должен быть 18"),
+                        () -> assertNotNull(stats.getSeasonEnd(), "SeasonEnd не должен быть null"),
+                        () -> assertTrue(stats.getSeasonEnd().contains("2026"), "SeasonEnd должен быть в 2026"),
+                        () -> assertNotNull(stats.getShowModal(), "showModal не должен быть null"))
         );
     }
 
@@ -119,12 +119,12 @@ public class UserGameStatsTest {
         Boolean hasGameStatsResponse = gameStatsResponse.jsonPath().getBoolean("hasLoginToday");
 
         // 3. Проверяем согласованность
-        assertNotNull(hasLoginTodayProfile, "Profile should have hasLoginToday");
-        assertNotNull(hasGameStatsResponse, "Game stats should have hasLoginToday");
+        assertNotNull(hasLoginTodayProfile, "Профиль должен содержать hasLoginToday");
+        assertNotNull(hasGameStatsResponse, "Игровая статистика должна содержать hasLoginToday");
 
         // Обычно эти значения должны совпадать
         assertEquals(hasLoginTodayProfile, hasGameStatsResponse,
-                "hasLoginTodayProfile should be consistent between profile and game stats");
+                "hasLoginTodayProfile должен быть согласован между профилем и игровой статистикой");
 
         Allure.addAttachment("Согласованность данных", "text/plain",
                 "Профиль - hasLoginToday: " + hasLoginTodayProfile + "\n" +

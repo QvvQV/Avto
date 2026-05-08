@@ -5,12 +5,12 @@ import io.qameta.allure.Step;
 import ru.tutor.api.GameWheelApi;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.constants.GameWheelRewardsConstants;
 import ru.tutor.model.fortune.GameWheelStartGameResponse;
 
 import java.util.*;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
@@ -20,10 +20,16 @@ import java.util.stream.Collectors;
  * Шаги для запуска колеса, с отчётом
  */
 
-public record  GameWheelStartGameSteps(GameWheelApi gameWheelApi) {
+public class GameWheelStartGameSteps extends BaseApiSteps {
+    private final GameWheelApi gameWheelApi;
+
+    public GameWheelStartGameSteps(String baseUrl) {
+        super(baseUrl);
+        this.gameWheelApi = new GameWheelApi(baseUrl);
+    }
 
     public static GameWheelStartGameSteps withBaseUrl(String baseUrl) {
-        return new GameWheelStartGameSteps(new GameWheelApi(baseUrl));
+        return new GameWheelStartGameSteps(baseUrl);
     }
 
 
@@ -35,17 +41,15 @@ public record  GameWheelStartGameSteps(GameWheelApi gameWheelApi) {
     @Step("Валидация успешного ответа при запуске игры")
     public GameWheelStartGameResponse validateStartGameResponse(Response response) {
         // Базовая валидация ответа
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
 
         // Валидация структуры JSON
-        response.then()
-                .body("id", notNullValue())
-                .body("name", notNullValue())
-                .body("type", notNullValue())
-                .body("value", notNullValue())
-                .body("userRewardId", notNullValue());
+        assertJsonFieldExists(response, "id");
+        assertJsonFieldExists(response, "name");
+        assertJsonFieldExists(response, "type");
+        assertJsonFieldExists(response, "value");
+        assertJsonFieldExists(response, "userRewardId");
 
         // Преобразуем в модель
         GameWheelStartGameResponse prize = response.as(GameWheelStartGameResponse.class);

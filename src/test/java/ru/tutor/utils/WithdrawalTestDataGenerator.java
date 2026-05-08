@@ -49,7 +49,7 @@ public class WithdrawalTestDataGenerator {
      */
     public static Map<String, Object> toMap(WithdrawalRequest request) {
         return Map.of(
-                "amount", request.getAmount()
+                "amount", request.amount()
         );
     }
 
