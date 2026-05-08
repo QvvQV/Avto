@@ -93,6 +93,11 @@ public class CloudPage {
 
             frameHandler.ensurePaymentFrame();
 
+            if (CARD_PAGE_BUTTON.is(visible)) {
+                UniversalMethod.safeClick(CARD_PAGE_BUTTON, "Банковской картой");
+                sleep(2000);
+            }
+
             CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT)
                     .sendKeys(TEST_CARD_NUMBER);
 
@@ -250,9 +255,9 @@ public class CloudPage {
     private class PaymentFrameChecker {
 
         boolean findPaymentFrame() {
-            return checkFrame(0, CloudPage.this::isPaymentFrame) ||
-                    checkFrame(1, CloudPage.this::isPaymentFrame) ||
-                    checkFrame(2, CloudPage.this::isPaymentFrame) ||
+            return checkFrame(0, CloudPage.this::hasPaymentForm) ||
+                    checkFrame(1, CloudPage.this::hasPaymentForm) ||
+                    checkFrame(2, CloudPage.this::hasPaymentForm) ||
                     FrameHelper.switchToFrameByCondition(PaymentFrameChecker.this::isPaymentUrl);
         }
 
@@ -285,10 +290,10 @@ public class CloudPage {
 
     // ==================== МЕТОДЫ ПРОВЕРКИ СОСТОЯНИЯ ====================
 
-    private boolean isPaymentFrame() {
+    private boolean hasPaymentForm() {
         try {
-            return CARD_INPUT.exists() && CARD_INPUT.is(visible) ||
-                    isPaymentUrl(WebDriverRunner.getWebDriver().getCurrentUrl());
+            return (CARD_INPUT.exists() && CARD_INPUT.is(visible)) ||
+                    (CARD_PAGE_BUTTON.exists() && CARD_PAGE_BUTTON.is(visible));
         } catch (Exception e) {
             return false;
         }

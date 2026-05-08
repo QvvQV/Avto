@@ -127,28 +127,6 @@ public class RecurrentPaymentTestExecutor {
     }
 
     /**
-     * Получение ожидаемых дней до платежа.
-     */
-    private int getExpectedDaysBefore(ProductConfiguration.ProductSettings settings, int paymentNumber) {
-        return switch (paymentNumber) {
-            case 1 -> settings.initialExpiresDays();
-            case 2 -> settings.afterFirstPaymentDays();
-            default -> settings.afterSecondPaymentDays();
-        };
-    }
-
-    /**
-     * Получение ожидаемых дней после платежа.
-     */
-    private int getExpectedDaysAfter(ProductConfiguration.ProductSettings settings, int paymentNumber) {
-        return switch (paymentNumber) {
-            case 1 -> settings.initialExpiresDays();
-            case 2 -> settings.afterFirstPaymentDays();
-            default -> settings.afterSecondPaymentDays();
-        };
-    }
-
-    /**
      * Захват состояния при ошибке.
      */
     private void captureFailureState(TestExecutionContext context) {

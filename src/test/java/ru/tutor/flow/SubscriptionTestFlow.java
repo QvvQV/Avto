@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SubscriptionTestFlow {
 
@@ -167,7 +168,7 @@ public class SubscriptionTestFlow {
         return this;
     }
 
-    // Методы для работы с админкой
+    // ==================== Метод для работы в админке ====================
 
     @Step("Рекурент по тарифу Премиум")
     public void processRecurrentInAdmin() {
@@ -243,6 +244,21 @@ public class SubscriptionTestFlow {
             WaitHelper.waitForAnimationComplete();
             WaitHelper.waitForPageLoad();
         });
+    }
+
+    @Step("Проверка существования заказа в админке")
+    public void assertOrderExistsInAdmin(){
+        String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
+        try {
+            TabManager.openAdminInNewWindow(originalWindow);
+            loginToAdmin();
+            adminOrdersPage.navigateToOrders().findOrderByEmail(userEmail);
+            String orderNumber = adminOrdersPage.getLastOrderNumber();
+            assertNotNull(orderNumber, "Заказ для email " + userEmail + " должен существовать в админке");
+            AllureAttachments.attachText("Заказ найден", "Номер заказа: " + orderNumber);
+        } finally {
+            closeWindow();
+        }
     }
 
     // ==================== Методы для перехода в ЛК ====================

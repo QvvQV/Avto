@@ -147,7 +147,7 @@ public class SubscriptionPurchaseBuilder {
 
     // Универсальный метод с параметром для aff_rid
     private void openMainPageAndCheckTitle(boolean useAffRid) {
-        String url = useAffRid ? AddressPage.URL_MAINRev : AddressPage.URL_MAIN;
+        String url = useAffRid ? AddressPage.URL_MAIN_REV : AddressPage.URL_MAIN;
         String stepName = useAffRid ? "с aff_rid параметром" : "без aff_rid параметра";
 
         step(String.format("Открытие главной страницы %s", stepName), () ->

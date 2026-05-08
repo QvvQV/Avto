@@ -17,6 +17,7 @@ import ru.tutor.page.orders.TtPage;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Epic("Платежи через Cloud")
 @Feature("Тестирование различных сценариев оплаты")
@@ -37,6 +38,7 @@ public class CloudTest extends BaseUiTest {
     public void PayFromMainOfferrum() {
 
         flow.purchasePremiumSubscriptionAffRid();
+        flow.assertOrderExistsInAdmin();
 
     }
 
@@ -47,6 +49,7 @@ public class CloudTest extends BaseUiTest {
     public void PayMain99() {
 
         flow.purchaseLiteSubscription();
+        flow.assertOrderExistsInAdmin();
 
     }
 
@@ -58,6 +61,7 @@ public class CloudTest extends BaseUiTest {
     public void PayMain399() {
 
         flow.purchasePremiumSubscription();
+        flow.assertOrderExistsInAdmin();
 
     }
 
@@ -67,6 +71,7 @@ public class CloudTest extends BaseUiTest {
     public void PayMainLife() {
 
         flow.purchaseLifeSubscription();
+        flow.assertOrderExistsInAdmin();
 
     }
 
@@ -76,6 +81,7 @@ public class CloudTest extends BaseUiTest {
     public void PayMainLifeInstallments() {
 
         flow.purchaseLifeInstallmentsSubscription();
+        flow.assertOrderExistsInAdmin();
 
     }
 

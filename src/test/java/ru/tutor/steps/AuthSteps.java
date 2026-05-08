@@ -3,7 +3,7 @@ package ru.tutor.steps;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import ru.tutor.api.AuthApi;
+import ru.tutor.api.UserApi;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.LoginResponse;
@@ -13,11 +13,11 @@ import ru.tutor.utils.AllureAttachments;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthSteps extends BaseApiSteps {
-    private final AuthApi authApi;
+    private final UserApi userApi;
 
     public AuthSteps (String baseUrl) {
         super(baseUrl);
-        this.authApi = new AuthApi(baseUrl);
+        this.userApi = new UserApi(baseUrl);
     }
 
     public static AuthSteps withBaseUrl(String baseUrl) {
@@ -26,7 +26,7 @@ public class AuthSteps extends BaseApiSteps {
 
     @Step("Логин с валидными credentials: {email}")
     public LoginResponse loginWithValidCredentials(String email, String password) {
-        Response response = authApi.login(email, password);
+        Response response = userApi.login(email, password);
 
         // Проверка кода ответа и тела
         validateSuccessfulResponse(response);
@@ -40,7 +40,7 @@ public class AuthSteps extends BaseApiSteps {
 
     @Step("Логин с невалидными credentials: {email}")
     public Response loginWithInvalidCredentials(String email, String password) {
-        Response response = authApi.login(email, password);
+        Response response = userApi.login(email, password);
 
         // Проверка кода ответа ошибки
         validateErrorResponse(response);
@@ -51,7 +51,7 @@ public class AuthSteps extends BaseApiSteps {
 
     @Step("Логин с невалидными credentials и получение ErrorResponse")
     public ErrorResponse loginWithInvalidCredentialsAndGetError(String email, String password) {
-        Response response = authApi.login(email, password);
+        Response response = userApi.login(email, password);
 
         validateErrorResponse(response);
 
@@ -179,7 +179,7 @@ public class AuthSteps extends BaseApiSteps {
 
     @Step("Получить Response для кастомных проверок")
     public Response getLoginResponse(String email, String password) {
-        return authApi.login(email, password);
+        return userApi.login(email, password);
     }
 
     @Step("Проверить базовые заголовки безопасности")

@@ -15,7 +15,7 @@ public class AddressPage {
     // ==================== UI URL ====================
     /** Главная страница */
     public static final String URL_MAIN = TestConfig.getCurrentUiUrl();
-    public static final String URL_MAINRev = URL_MAIN + "?" + PARAM + "=" + VALUE; // Прод
+    public static final String URL_MAIN_REV = URL_MAIN + "?" + PARAM + "=" + VALUE; // Прод
 
     /** Excel продукт */
 

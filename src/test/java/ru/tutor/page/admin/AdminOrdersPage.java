@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AdminOrdersPage {
 
@@ -233,7 +235,7 @@ public class AdminOrdersPage {
         String utmText = UTM_TEXT.shouldBe(visible, DEFAULT_TIMEOUT)
                 .getText();
 
-        assert utmText.contains("utm_medium:") : "Параметр utm_medium не найден";
+        assertTrue(utmText.contains("utm_medium:"), "Параметр utm_medium не найден");
 
         // Извлекаем значение
         Pattern pattern = Pattern.compile("utm_medium:\\s*([^,\\s]+)");
@@ -241,8 +243,8 @@ public class AdminOrdersPage {
 
         if (matcher.find()) {
             String actualValue = matcher.group(1);
-            assert actualValue.equals(expectedValue) :
-                    String.format("UTM medium не совпадает. Ожидалось: %s, Фактически: %s", expectedValue, actualValue);
+            assertEquals(expectedValue, actualValue,
+                    String.format("UTM medium не совпадает. Ожидалось: %s, Фактически: %s", expectedValue, actualValue));
         } else {
             throw new AssertionError("Не удалось извлечь значение utm_medium");
         }

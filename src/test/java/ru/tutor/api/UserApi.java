@@ -6,23 +6,16 @@ import ru.tutor.constants.ApiEndpoints;
 import ru.tutor.model.ApplyPromoCodeRequest;
 import ru.tutor.model.RegistrationRequest;
 
+import java.util.Map;
+
 public class UserApi extends BaseApi {
 
     public UserApi(String baseUrl) {
         super(baseUrl);
     }
 
-    /**
-     * POST /user/login - вход пользователя
-     */
-
     public Response login(String email, String password) {
-        String body = String.format(
-                "{\"email\":\"%s\",\"password\":\"%s\"}",
-                email, password
-        );
-
-        return post(ApiEndpoints.LOGIN, body);
+        return post(ApiEndpoints.LOGIN, Map.of("email", email, "password", password));
     }
 
     /**
