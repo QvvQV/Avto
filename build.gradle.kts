@@ -18,7 +18,7 @@ dependencies {
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.21.0")
 
     // Selenide
-    testImplementation("com.codeborne:selenide:7.14.0")
+    testImplementation("com.codeborne:selenide:7.16.0")
 
 
 //    implementation("io.qameta.allure:allure-commandline:2.35.1")
@@ -42,7 +42,7 @@ dependencies {
 
     // Utils
     implementation("commons-io:commons-io:2.21.0")
-    implementation("net.datafaker:datafaker:2.5.2")
+    implementation("net.datafaker:datafaker:2.5.3")
     implementation("org.json:json:20251224")
     implementation("org.jsoup:jsoup:1.22.1")
 
