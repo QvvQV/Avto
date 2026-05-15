@@ -90,26 +90,6 @@ public class SberPage {
         }
     }
 
-    @Step("Начало оформления заказа с продукта Excel")
-    public void startOrderFromProduct() {
-        step("Клик по кнопке оплатить", () ->
-            UniversalMethod.safeClick(BUY_BUTTON, BUY_TEXT)
-        );
-
-        step("Заполнение email", () -> {
-            String email = faker.internet().emailAddress();
-            EMAIL_INPUT.setValue(email);
-            UniversalMethod.safeClick(ACCESS_BUTTON, "Подтверждение");
-            sleep(9000);
-
-            ERROR_MESSAGE.shouldNotBe(visible);
-            AllureAttachments.attachText("Оплата с продукта Excel", "Email: " + email);
-            System.out.println("Оплата продукта с Excel: " + email);
-        });
-
-        TabManager.switchToNewWindow();
-    }
-
     private void fillCardData(String cardNumber, String expiry, String cvc) {
         step("Заполнение данных карты: " + maskCardNumber(cardNumber), () -> {
             CARD_NUMBER.shouldBe(visible, DEFAULT_TIMEOUT).setValue(cardNumber);

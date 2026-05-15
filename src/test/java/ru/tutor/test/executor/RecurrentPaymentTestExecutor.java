@@ -1,15 +1,13 @@
 package ru.tutor.test.executor;
 
-import ru.tutor.ProductConfiguration;
-import ru.tutor.flow.SubscriptionTestFlow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.tutor.constants.ProductConfiguration;
 import ru.tutor.page.OrderDatesPage;
 import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.test.context.TestExecutionContext;
 import ru.tutor.utils.AllureAttachments;
-
-import java.util.function.Supplier;
-import java.util.function.Consumer;
 
 import static com.codeborne.selenide.Selenide.refresh;
 import static ru.tutor.utils.WaitHelper.waitForAnimationComplete;
@@ -17,6 +15,7 @@ import static ru.tutor.utils.WaitHelper.waitForPageLoad;
 
 public class RecurrentPaymentTestExecutor {
 
+    private static final Logger log = LoggerFactory.getLogger(RecurrentPaymentTestExecutor.class);
     private final OrderDatesPage orderDatesPage;
     private final AdminOrderDetails adminOrderDetails;
     private final PaymentCycleExecutor paymentCycleExecutor;
@@ -35,62 +34,34 @@ public class RecurrentPaymentTestExecutor {
     /**
      * Выполнение теста с рекуррентными платежами.
      */
-    public void executePaymentTest(String testName, Supplier<SubscriptionTestFlow> flowSupplier,
-                                      Consumer<SubscriptionTestFlow> processMethod,
-                                      TestExecutionContext context, int cycles) {
+    public void executePaymentTest(String testName, String email, TestExecutionContext context, int cycles) {
         context.setTestName(testName);
-
         try {
-            // Получаем экземпляр flow
-            SubscriptionTestFlow flow = flowSupplier.get();
-
-            // Выполняем экземпляр рекуррентной оплаты
-            processMethod.accept(flow);
-
-            // Обновляем страницу
             refreshPage();
-
-            // Получаем ID продукта и настройки
             String productId = adminOrderDetails.getFirstProductId();
             context.setCurrentProductId(productId);
             ProductConfiguration.ProductSettings settings = ProductConfiguration.getSettings(productId);
-
             initializeTestContext(context);
 
             switch (cycles) {
-
-                // Для aff_rid ссылки
                 case 1:
-                    // Выполняем первый платежный цикл
                     paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(1),
                             settings.initialExpiresDays(),
                             settings.afterFirstPaymentDays(),
                             context);
                     break;
-                case 2:
-
-                    paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(1),
-                            settings.initialExpiresDays(),
-                            settings.afterFirstPaymentDays(),
-                            context);
-
-                    // Выполняем второй платежный цикл
-                    paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(2),
-                            settings.afterFirstPaymentDays(),
-                            settings.afterSecondPaymentDays(),
-                            context);
-                    // Выполняем финальную проверку
-                    comprehensiveCheckExecutor.performFinalComprehensiveCheck(productId);
-                    break;
-
-                default:
-                    throw new IllegalStateException(
-                            String.format("Неподдерживаемое кол-во циклов: %d. поддерживаются значения: 1, 2", cycles)
-                    );
+                    case 2:
+                        paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(1),
+                                settings.initialExpiresDays(),
+                                settings.afterFirstPaymentDays(),
+                                context);
+                        paymentCycleExecutor.performPaymentCycle(getPaymentNameByNumber(2),
+                                settings.afterFirstPaymentDays(),
+                                settings.afterSecondPaymentDays(),
+                                context);
+                        comprehensiveCheckExecutor.performFinalComprehensiveCheck(productId);
+                        break;
             }
-
-            // Логируем завершение теста
-            flow.logTestCompletion();
         } catch (Exception e) {
             captureFailureState(context);
             throw e;

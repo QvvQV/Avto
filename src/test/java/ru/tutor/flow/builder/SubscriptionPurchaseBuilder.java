@@ -1,5 +1,6 @@
 package ru.tutor.flow.builder;
 
+import com.codeborne.selenide.SelenideElement;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
@@ -26,7 +27,7 @@ public class SubscriptionPurchaseBuilder {
     private String userEmail;
 
     public enum PaymentSystem {
-        CLOUD, SBER
+        CLOUD, SBER, AUTO
     }
 
     public enum PaymentMethod {
@@ -43,13 +44,19 @@ public class SubscriptionPurchaseBuilder {
         WITH_AFF_RID(true);
 
         private final boolean useAffRid;
-        PageVariant (boolean useAffRid) {this.useAffRid = useAffRid;}
-        public boolean useAffRid() { return useAffRid; }
+
+        PageVariant(boolean useAffRid) {
+            this.useAffRid = useAffRid;
+        }
+
+        public boolean useAffRid() {
+            return useAffRid;
+        }
     }
 
     private PageVariant pageVariant = PageVariant.DEFAULT;
 
-    public SubscriptionPurchaseBuilder withAffRid(){
+    public SubscriptionPurchaseBuilder withAffRid() {
         this.pageVariant = PageVariant.WITH_AFF_RID;
         return this;
     }
@@ -84,7 +91,7 @@ public class SubscriptionPurchaseBuilder {
     public SubscriptionPurchaseBuilder withPaymentMethod(PaymentMethod method) {
         this.paymentMethod = method;
         if (method == PaymentMethod.INSUFFICIENT_FUNDS_CARD ||
-        method == PaymentMethod.EXPIRED_CARD) {
+                method == PaymentMethod.EXPIRED_CARD) {
             this.verifyError = true;
         }
         return this;
@@ -170,25 +177,26 @@ public class SubscriptionPurchaseBuilder {
     }
 
     private void processPaymentSystem() {
-        if (paymentSystem == PaymentSystem.CLOUD) {
-            processCloudPayment();
-        } else if (paymentSystem == PaymentSystem.SBER) {
-            processSberPayment();
+
+        switch (paymentSystem) {
+            case CLOUD -> processCloudPayment();
+            case SBER -> processSberPayment();
+            case AUTO -> processAutoPayment();
         }
     }
 
     private void processCloudPayment() {
         if (paymentMethod == PaymentMethod.INSTALLMENTS) {
             cloudPage.setDateModalInstallments();
+            cloudPage.dolyameFormDemo();
         } else {
             cloudPage.setDateModal();
+            cloudPage.clickCardPageBtn();
         }
 
         if (captureEmail) {
             userEmail = cloudPage.atrEmail();
         }
-
-        cloudPage.clickCardPageBtn();
     }
 
     private void processSberPayment() {
@@ -228,5 +236,32 @@ public class SubscriptionPurchaseBuilder {
         assertEquals(expectedError, actualError);
         AllureAttachments.attachText("Проверка ошибки",
                 "Ожидалось: " + expectedError + "\nФактически: " + actualError);
+    }
+
+    // Универсальный метод оплаты Cloud/Sber
+
+    private PaymentSystem detectActiveGateway() {
+        sleep(2000);
+        for (SelenideElement iframe : $$("iframe")) {
+            String src = iframe.getAttribute("src");
+            if (src != null && src.contains("cloudpayments")) {
+                return PaymentSystem.CLOUD;
+            }
+        }
+        return PaymentSystem.SBER;
+    }
+
+    private void processAutoPayment() {
+        userEmail =  cloudPage.setDateModal();
+
+        PaymentSystem detected = detectActiveGateway();
+        AllureAttachments.attachText("Платёжный шлюз", detected.name());
+
+        if (detected == PaymentSystem.CLOUD) {
+            cloudPage.clickCardPageBtn();
+        } else {
+            TabManager.switchToNewWindow();
+            sberPage.payWithApprovedCard();
+        }
     }
 }

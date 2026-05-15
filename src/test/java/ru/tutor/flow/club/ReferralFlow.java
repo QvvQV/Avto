@@ -6,7 +6,9 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
-import ru.tutor.flow.SubscriptionTestFlow;
+import ru.tutor.flow.AdminFlow;
+import ru.tutor.flow.PurchaseFlow;
+import ru.tutor.flow.PurchaseResult;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
 import ru.tutor.page.orders.CloudPage;
@@ -32,30 +34,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReferralFlow {
 
-    private final TtPage ttPage;
-    private final CloudPage cloudPage;
-    private final SberPage sberPage;
-    private final AdminOrdersPage adminOrdersPage;
-    private final AdminOrderDetails adminOrderDetails;
     private final RecurrentPaymentTestExecutor testExecutor;
     private final ClubSteps clubSteps;
     private final TestExecutionContext context;
+    private final PurchaseFlow purchaseFlow;
+    private final AdminFlow adminFlow;
 
     private ClubMemberResponse currentMemberInfo;
 
     private final List<String> userTokens = new ArrayList<>();
 
     public ReferralFlow(TtPage ttPage, CloudPage cloudPage, SberPage sberPage, AdminOrdersPage adminOrdersPage,
-                        AdminOrderDetails adminOrderDetails, RecurrentPaymentTestExecutor testExecutor, TestExecutionContext context) {
+                        AdminOrderDetails adminOrderDetails, RecurrentPaymentTestExecutor testExecutor, TestExecutionContext context,
+                        PurchaseFlow purchaseFlow, AdminFlow adminFlow) {
 
-        this.ttPage = ttPage;
-        this.cloudPage = cloudPage;
-        this.sberPage = sberPage;
-        this.adminOrdersPage = adminOrdersPage;
-        this.adminOrderDetails = adminOrderDetails;
         this.testExecutor = testExecutor;
         this.context = context;
         this.clubSteps = ClubSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+        this.purchaseFlow = purchaseFlow;
+        this.adminFlow = adminFlow;
+
     }
 
     /**
@@ -117,14 +115,11 @@ public class ReferralFlow {
     }
 
     @Step("Выполнение платежа")
-    private void executePayment() {
-        testExecutor.executePaymentTest(
-                "Cloud Premium",
-                () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage)
-                        .purchasePremiumSubscription(),
-                SubscriptionTestFlow::processRecurrentInAdmin,
-                context, 1
-        );
+    private String executePayment() {
+        PurchaseResult result = purchaseFlow.premium();
+        adminFlow.processRecurrent(result.email());
+        testExecutor.executePaymentTest("Cloud Premium", result.email(), context, 1);
+        return result.email();
     }
 
     @Step("Шаги после оплаты (редирект, бонус, регистрация)")

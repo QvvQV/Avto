@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.ReactivatePremiumFlow;
-import ru.tutor.flow.SubscriptionTestFlow;
 import ru.tutor.steps.OrderPremiumGift;
 
 import static io.qameta.allure.Allure.step;
@@ -24,7 +23,6 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private ReactivatePremiumFlow reactivateFlow;
     private OrderPremiumGift  orderPremiumGift = OrderPremiumGift.withBaseUrl(BASE_URL);
-    private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
 
 
     @Override
@@ -42,7 +40,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
     @DisplayName("✅ Успешное получение премиум подарка")
     void restoreYourPremiumAccountUsingAnInternalEmail() {
         reactivateFlow
-                .createUserAndRecurrent()
+                .createUserAndRecurrent(1)
                 .goToUserPersonalAccount()
                 .downgradeToPremiumGift();
     }
@@ -52,7 +50,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
     @DisplayName("❌ Получение премиум подарка без авторизации")
     void getPremiumGift_WithoutAuth_ShouldFail(){
         reactivateFlow
-                .createUserAndRecurrent()
+                .createUserAndRecurrent(1)
                 .goToUserPersonalAccount();
         Response response = step ("Попытка получения подарка без токена", ()-> orderPremiumGift.getPremiumGift("")
         );
@@ -68,7 +66,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
     @DisplayName("❌ Получение премиум подарка с невалидным токеном")
     void getPremiumGift_WithInvalidToken_ShouldFail(){
         reactivateFlow
-                .createUserAndRecurrent()
+                .createUserAndRecurrent(1)
                 .goToUserPersonalAccount();
         Response response = step ("Попытка получения подарка без токена", ()->
                 orderPremiumGift.getPremiumGift("invalid-token")
@@ -80,13 +78,13 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
         });
     }
 
-//    @Test
+    @Test
     @DisplayName("🔄 Повторное получение премиум подарка")
     @Tag("negative")
     @Tag("functional")
     void getPremiumGift_Twice_ShouldFail() {
         reactivateFlow
-                .createUserAndRecurrent()
+                .createUserAndRecurrent(1)
                 .goToUserPersonalAccount()
                 .downgradeToPremiumGift();
     }

@@ -6,6 +6,7 @@ package ru.tutor.page.orders;
 
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.By;
@@ -42,6 +43,8 @@ public class CloudPage {
     private static final String BUY_TEXT = "начать обучение за 1 ₽*";
     private static final String ERROR_MESSAGE_TEXT = "Произошла ошибка. Пожалуйста, попробуйте ещё раз.";
     private static final String SUCCESS_TEXT = "Успех";
+    private static final String CONTINUE_TEXT = "Продолжить";
+    private static final String SUCCESS_PAY_TEXT = "Успешная оплата";
 
     //Локаторы в модальном окне
     private final SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
@@ -63,6 +66,12 @@ public class CloudPage {
     private final SelenideElement CVV_INPUT = $(By.id("cvv"));
     private final SelenideElement CONFIRM_BUTTON = $("button[data-v-59c9a1ad]");
     private final SelenideElement BACK_TO_SHOP_BUTTON = $("button[data-v-c1ac6fa4]");
+
+    //Локаторы для оплаты долями
+    private final SelenideElement FIO_INPUT = $("[data-qa-type='tui/input.field']");
+    private final SelenideElement BIRTHDAY_INPUT = $("[data-qa-type='uikit/input.value.input']");
+    private final SelenideElement CONTINUE_BUTTON = $$("button").find(exactText(CONTINUE_TEXT));
+    private final SelenideElement SUCCESS_PAY_BUTTON = $("[data-qa-type='tui/button.content-wrapper'");
 
     // Внутренние состояния
     private String currentEmail;
@@ -112,6 +121,28 @@ public class CloudPage {
         });
     }
 
+    // Переход на другую страницу, для заполнения анкеты в рассрочку
+    @Step("Заполнение анкеты для оплаты долями/частями")
+    public void dolyameFormDemo() {
+        step("Заполнение анкеты покупки в рассрочку", () -> {
+            WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
+            String currentUrl = WebDriverRunner.getWebDriver().getCurrentUrl();
+            if (currentUrl.contains("/form-demo")) {
+                String name = "Бернард Шоу";
+                String birthday = "01-01-1990";
+                FIO_INPUT.sendKeys(name);
+                BIRTHDAY_INPUT.sendKeys(birthday);
+                UniversalMethod.safeClick(CONTINUE_BUTTON, CONTINUE_TEXT);
+                WaitHelper.waitForAnimationComplete();
+                WaitHelper.waitForPageLoad();
+                UniversalMethod.safeClick(SUCCESS_PAY_BUTTON, SUCCESS_TEXT);
+            } else {
+                Allure.addAttachment("Оплата не произведена", "Что-то пошло не так");
+            }
+        });
+    }
+
     // ==================== МЕТОДЫ ДЛЯ PROD ОКРУЖЕНИЯ ====================
 
     @Step("Заполнение данных модального окна Prod")
@@ -130,9 +161,10 @@ public class CloudPage {
     // ==================== МЕТОДЫ ДЛЯ РАБОТЫ С МОДАЛКАМИ ====================
 
     @Step("Выбор опции 'Рассрочка' в модальном окне")
-    public void setDateModal() {
+    public String setDateModal() {
+        String email = faker.internet().emailAddress();
         step("Ввод email и проверка отсутствия ошибок", () -> {
-            String email = faker.internet().emailAddress();
+
 
             // Заполнение email
             UniversalMethod.safeSetValue(EMAIL_INPUT, email, "Email");
@@ -151,6 +183,7 @@ public class CloudPage {
             AllureAttachments.attachText("Email в модалке", email);
             System.out.println(modalText + ": " + email);
         });
+        return email;
     }
 
     @Step("Выбор опции 'Полная оплата' в модальном окне")
@@ -305,11 +338,5 @@ public class CloudPage {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private boolean isPaymentUrl(String url) {
-        return url.contains("cloudpayments") ||
-                url.contains("payment") ||
-                url.contains("pay");
     }
 }

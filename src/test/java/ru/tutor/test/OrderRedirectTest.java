@@ -4,13 +4,15 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
+import ru.tutor.flow.PurchaseFlow;
+import ru.tutor.flow.PurchaseResult;
 import ru.tutor.page.*;
-import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
 
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Epic("Order Processing")
 @Feature("Order Redirect Handling")
@@ -19,10 +21,9 @@ import static io.qameta.allure.Allure.step;
 class OrderRedirectTest extends BaseUiTest {
 
     private static final TtPage ttPage = new TtPage();
-    private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
-    private final ru.tutor.flow.SubscriptionTestFlow flow = new ru.tutor.flow.SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
+    private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
 
     @Test
 //    @RepeatedTest(5)
@@ -30,7 +31,8 @@ class OrderRedirectTest extends BaseUiTest {
     @DisplayName("✅ Успешное оформление заказа с коррекцией редиректа")
     void successfulOrderWithRedirectCorrection() {
         // 1. Выполняем оформление заказа
-        flow.purchasePremiumSubscription();
+        PurchaseResult result = purchaseFlow.premium();
+        assertNotNull(result.email());
 
         // 2. Обработка редиректа после оплаты
         step("2. Обработка редиректа после оплаты", new RedirectPage()::redirectPage

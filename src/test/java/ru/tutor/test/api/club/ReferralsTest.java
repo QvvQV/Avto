@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
+import ru.tutor.flow.AdminFlow;
+import ru.tutor.flow.PurchaseFlow;
 import ru.tutor.flow.club.ReferralFlow;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
 
@@ -19,10 +21,14 @@ public class ReferralsTest extends RecurrentPaymentTestBase {
 
     private ReferralFlow referralFlow;
     private RecurrentPaymentTestExecutor testExecutor;
+    private PurchaseFlow purchaseFlow;
+    private AdminFlow adminFlow;
 
     @BeforeEach
     void setUpTest() {
         super.initializePaymentCycleExecutor();
+        purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
+        adminFlow = new AdminFlow(adminOrdersPage);
         testExecutor = new RecurrentPaymentTestExecutor(
                 orderDatesPage,
                 adminOrderDetails,
@@ -31,7 +37,7 @@ public class ReferralsTest extends RecurrentPaymentTestBase {
         );
 
         referralFlow = new ReferralFlow(
-                ttPage, cloudPage, sberPage, adminOrdersPage, adminOrderDetails, testExecutor, context
+                ttPage, cloudPage, sberPage, adminOrdersPage, adminOrderDetails, testExecutor, context, purchaseFlow, adminFlow
         );
     }
 

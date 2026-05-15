@@ -6,8 +6,9 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
 import ru.tutor.constants.AddressPage;
+import ru.tutor.flow.PurchaseFlow;
+import ru.tutor.flow.PurchaseResult;
 import ru.tutor.page.*;
-import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.modals.GreetingsModal;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
@@ -20,16 +21,16 @@ import ru.tutor.utils.WaitHelper;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Tag("UI")
 @Story("Отписка пользователя от платформы")
 public class UnsubscribeTest extends BaseUiTest {
 
     private static final TtPage ttPage = new TtPage();
-    private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
-    private final ru.tutor.flow.SubscriptionTestFlow flow = new ru.tutor.flow.SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
+    private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
     SubscriptionTestFlow flow1 = new SubscriptionTestFlow();
     private final RedirectPage redirectPage = new RedirectPage();
 
@@ -51,7 +52,9 @@ public class UnsubscribeTest extends BaseUiTest {
     @DisplayName("✅ Успешное отписка пользователя от Премиума и Лайта")
     void successfulUnsubscriptionOfAUserFromPremiumAndLite() {
 
-        flow.purchasePremiumSubscription();
+//        flow.purchasePremiumSubscription();
+        PurchaseResult result = purchaseFlow.premium();
+        assertNotNull(result.email());
 
         step("3. Обработка редиректа после оплаты",
                 redirectPage::redirectPage
@@ -79,7 +82,9 @@ public class UnsubscribeTest extends BaseUiTest {
     @DisplayName("✅ Успешная отписка Рекурентного пользователя от Премиума и Лайта")
     void successfulUnsubscriptionRecurringOfAUserFromPremiumAndLite() {
 
-        flow.purchasePremiumSubscription();
+//        flow.purchasePremiumSubscription();
+        PurchaseResult result = purchaseFlow.premium();
+        assertNotNull(result.email());
 
         step("3. Обработка редиректа после оплаты",
                 redirectPage::redirectPage

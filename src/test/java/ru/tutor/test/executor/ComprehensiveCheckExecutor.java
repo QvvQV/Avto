@@ -1,7 +1,7 @@
 package ru.tutor.test.executor;
 
 import io.qameta.allure.Allure;
-import ru.tutor.ProductConfiguration;
+import ru.tutor.constants.ProductConfiguration;
 import ru.tutor.page.OrderDatesPage;
 import ru.tutor.page.dto.OrderDates;
 import ru.tutor.utils.AllureAttachments;

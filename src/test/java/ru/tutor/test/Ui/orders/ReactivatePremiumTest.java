@@ -4,22 +4,26 @@ import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import ru.tutor.flow.ReactivatePremiumFlow;
+import ru.tutor.flow.*;
 import ru.tutor.base.RecurrentPaymentTestBase;
-import ru.tutor.flow.SubscriptionTestFlow;
-import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.modals.*;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // TP-6415 (Реализовать работу ссылок типа affrid в личном кабинете) и TP-6417 (Переработать восстановление премиума по кнопке)
 public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
     private ReactivatePremiumFlow reactivateFlow;
-    private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
+    private PurchaseFlow purchaseFlow;
+    private AdminFlow adminFlow;
 
     @Epic("Отписка от подписки")
     @Override
     protected void initializePaymentCycleExecutor() {
         super.initializePaymentCycleExecutor();
+
+        this.purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
+        this.adminFlow = new AdminFlow(adminOrdersPage);
 
         this.reactivateFlow = new ReactivatePremiumFlow(
                 ttPage, cloudPage, sberPage, adminOrdersPage, adminOrderDetails,
@@ -33,7 +37,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты")
     void restoreYourPremiumAccountUsingAnInternalEmail() {
         reactivateFlow
-                .createUserWithAffRidAndRecurrent()
+                .createUserWithAffRidAndRecurrent(1)
                 .goToUserPersonalAccount()
                 .addAffiliateParameter()
                 .fetchAuthToken()
@@ -48,7 +52,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @DisplayName("Восстановление премиума по ссылке из email-рассылки")
     void restoreYourPremiumAccountUsingLinkFromEmailNewsletter() {
         reactivateFlow
-                .createUserWithAffRidAndRecurrent()
+                .createUserWithAffRidAndRecurrent(1)
                 .goToUserPersonalAccount()
                 .downgradeToLite()
                 .addAffiliateParameterFromEmail()
@@ -62,7 +66,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @DisplayName("Восстановление Премиума по ссылке из email-рассылки отменённого заказа из Админки ")
     void restorePremiumCancelAdmin() {
         reactivateFlow
-                .createUserWithAffRidAndRecurrent()
+                .createUserWithAffRidAndRecurrent(1)
                 .cancelOrderInAdmin()
                 .addAffiliateParameterFromEmail()
                 .payFromEmailNewsletter()
@@ -87,10 +91,12 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @Tag("aff_rid / aff_rid")
     @DisplayName("Оформление с aff_rid, восстановление Премиума по тарифу Пожизненный доступ без aff_rid")
     void restorePremiumlifeAccess() {
-        flow.purchasePremiumSubscriptionAffRid();
+
+        PurchaseResult result = purchaseFlow.premiumAffRid();
+        assertNotNull(result.email());
         reactivateFlow.openFirstWeek();
         cloudPage.clickCardPageBtn();
-        flow.processUnlimitedInAdmin();
+        adminFlow.processUnlimited(result.email());
         reactivateFlow.goToUserPersonalAccount();
     }
 
@@ -100,7 +106,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @DisplayName("Оформление Renewal внутри ЛК c Aff_Rid в URL")
     void renewalDesignInsideThePersonalAccount() {
         reactivateFlow
-                .createUserWithAffRidAndRecurrent()
+                .createUserWithAffRidAndRecurrent(1)
                 .goToUserPersonalAccount()
                 .takeCashbackAndFillWelcomeWindow()
                 .addAffiliateParameter()
@@ -114,12 +120,12 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты Без африда")
     void restoreYourPremiumAccountUsingAnInternalEmailWithoutAffRid() {
         reactivateFlow
-                .createUserAndRecurrent()
+                .createUserAndRecurrent(1)
                 .goToUserPersonalAccount()
                 .fetchAuthToken()
                 .downgradeToLite()
-                .reactivatePremium();
-//                .verifyAffRid();
+                .reactivatePremium()
+                .verifyAffRid();
     }
 
     @Test
@@ -128,7 +134,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     @DisplayName("Оформление билла с потоковой ссылкой. Оформление реневалла без потоковой ссылки в url")
     void restoreYourPremiumAccountUsingWithAffRidRenewalWithoutAffRid() {
         reactivateFlow
-                .createUserWithAffRidAndRecurrent()
+                .createUserWithAffRidAndRecurrent(1)
                 .goToUserPersonalAccount()
                 .takeCashbackAndFillWelcomeWindow()
                 .fetchAuthToken()

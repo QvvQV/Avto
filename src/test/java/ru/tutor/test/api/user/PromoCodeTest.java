@@ -1,6 +1,5 @@
 package ru.tutor.test.api.user;
 
-import io.qameta.allure.Allure;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.restassured.response.Response;
@@ -12,12 +11,9 @@ import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.PromoCodeTestData;
 import ru.tutor.flow.ReactivatePremiumFlow;
-import ru.tutor.flow.SubscriptionTestFlow;
 import ru.tutor.model.ApplyPromoCodeRequest;
 import ru.tutor.model.ApplyPromoCodeResponse;
-import ru.tutor.model.UserProfile;
 import ru.tutor.steps.UserSteps;
-import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PromoCodeTest extends RecurrentPaymentTestBase {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private ReactivatePremiumFlow reactivateFlow;
-    private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
 
     private final UserSteps userSteps = new UserSteps(BASE_URL);
 
@@ -47,7 +42,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     @BeforeEach
     void setup() {
         reactivateFlow
-                .createUserAndRecurrent()
+                .createUserAndRecurrent(1)
                 .goToUserPersonalAccount();
     }
 

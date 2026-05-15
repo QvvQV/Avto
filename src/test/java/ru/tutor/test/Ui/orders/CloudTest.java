@@ -8,7 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
-import ru.tutor.flow.SubscriptionTestFlow;
+import ru.tutor.flow.AdminFlow;
+import ru.tutor.flow.PurchaseFlow;
+import ru.tutor.flow.PurchaseResult;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.constants.AddressPage;
@@ -29,17 +31,18 @@ public class CloudTest extends BaseUiTest {
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
 
-    private final SubscriptionTestFlow flow = new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage);
+    private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
+    private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
 
-//    @Test
+    @Test
     @AllureId("1")
 //            @RepeatedTest(2)
     @DisplayName("Оплата с главной на СисАк Oфферум")
     public void PayFromMainOfferrum() {
 
-        flow.purchasePremiumSubscriptionAffRid();
-        flow.assertOrderExistsInAdmin();
-
+        PurchaseResult result = purchaseFlow.premiumAffRid();
+        assertNotNull(result.email());
+        adminFlow.assertOrderExists(result.email());
     }
 
     @Test
@@ -48,9 +51,9 @@ public class CloudTest extends BaseUiTest {
     @DisplayName("Оплата с главной за 99 руб")
     public void PayMain99() {
 
-        flow.purchaseLiteSubscription();
-        flow.assertOrderExistsInAdmin();
-
+        PurchaseResult result = purchaseFlow.lite();
+        assertNotNull(result.email());
+        adminFlow.assertOrderExists(result.email());
     }
 
     @Test
@@ -60,9 +63,9 @@ public class CloudTest extends BaseUiTest {
     @Owner("Vadim")
     public void PayMain399() {
 
-        flow.purchasePremiumSubscription();
-        flow.assertOrderExistsInAdmin();
-
+        PurchaseResult result = purchaseFlow.premium();
+        assertNotNull(result.email());
+        adminFlow.assertOrderExists(result.email());
     }
 
     @Test
@@ -70,27 +73,28 @@ public class CloudTest extends BaseUiTest {
     @DisplayName("Оплата с главной за Пожизненный")
     public void PayMainLife() {
 
-        flow.purchaseLifeSubscription();
-        flow.assertOrderExistsInAdmin();
-
+        PurchaseResult result = purchaseFlow.life();
+        assertNotNull(result.email());
+        adminFlow.assertOrderExists(result.email());
     }
 
-//    @Test
+    @Test
     @AllureId("5")
     @DisplayName("Оплата Долями с главной за Пожизненный")
     public void PayMainLifeInstallments() {
 
-        flow.purchaseLifeInstallmentsSubscription();
-        flow.assertOrderExistsInAdmin();
+        PurchaseResult result = purchaseFlow.lifeInstallments();
+        assertNotNull(result.email());
+        adminFlow.assertOrderExists(result.email());
 
     }
 
-//        @Test
+    //        @Test
 //            @RepeatedTest(5)
     @DisplayName("Оплата по ссылке revshare PROD")
     public void PayFromRevshare() {
         step("Открытие страницы", () ->
-            open(AddressPage.URL_MAIN)
+                open(AddressPage.URL_MAIN)
         );
         cloudPage.clickBtnStartProd();
         cloudPage.clickCardPageBtnProd();

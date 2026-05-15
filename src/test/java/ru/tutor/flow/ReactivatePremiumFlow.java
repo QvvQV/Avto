@@ -26,8 +26,6 @@ import static io.qameta.allure.Allure.step;
 
 public class ReactivatePremiumFlow {
 
-    private final TtPage ttPage;
-    private final SberPage sberPage;
     private final CloudPage cloudPage;
     private final AdminOrdersPage adminOrdersPage;
     private final AdminOrderDetails adminOrderDetails;
@@ -43,6 +41,9 @@ public class ReactivatePremiumFlow {
     private final OrderPremiumGift orderStepsPremiumGift;
     private final Product product = new Product();
 
+    private final PurchaseFlow purchaseFlow;
+    private final AdminFlow adminFlow;
+
     private String authToken;
 
     // Константы UTM меток
@@ -56,15 +57,16 @@ public class ReactivatePremiumFlow {
             TtPage ttPage, CloudPage cloudPage, SberPage sberPage, AdminOrdersPage adminOrdersPage,
             AdminOrderDetails adminOrderDetails, OrderDatesPage orderDatesPage,
             PaymentCycleExecutor paymentCycleExecutor, TestExecutionContext context) {
-
-        this.ttPage = ttPage;
+        
         this.cloudPage = cloudPage;
-        this.sberPage = sberPage;
         this.adminOrdersPage = adminOrdersPage;
         this.adminOrderDetails = adminOrderDetails;
         this.orderDatesPage = orderDatesPage;
         this.paymentCycleExecutor = paymentCycleExecutor;
         this.context = context;
+
+        this.purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
+        this.adminFlow = new AdminFlow(adminOrdersPage);
 
         String baseUrl = TestConfig.getCurrentApiUrl();
         this.orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(baseUrl);
@@ -89,34 +91,25 @@ public class ReactivatePremiumFlow {
      * Базовый шаг: создание пользователя с aff_rid и рекуррент
      */
     @Step("Создание пользователя с aff_rid и проведение рекуррента")
-    public ReactivatePremiumFlow createUserWithAffRidAndRecurrent() {
-        testExecutor.executePaymentTest(
-                "Cloud Premium",
-                () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage)
-                        .purchasePremiumSubscriptionAffRid(),
-                SubscriptionTestFlow::processRecurrentInAdmin,
-                context, 1
-        );
+    public ReactivatePremiumFlow createUserWithAffRidAndRecurrent(int cycles) {
+        PurchaseResult result = purchaseFlow.premiumAffRid();
+        this.userEmail = result.email();
 
-        // Получаем email после создания
-        this.userEmail = adminOrdersPage.getLastSearchedEmail();
+        adminFlow.withUtmCheck(true).processRecurrent(userEmail);
+        testExecutor.executePaymentTest("Cloud Premium", userEmail, context, cycles);
         return this;
     }
 
     /**
      * Базовый шаг: создание пользователя без aff_rid и рекуррент
      */
-    @Step("Создание пользователя без aff_rid и проведение рекуррента")
-    public ReactivatePremiumFlow createUserAndRecurrent() {
-        testExecutor.executePaymentTest(
-                "Cloud Premium",
-                () -> new SubscriptionTestFlow(ttPage, cloudPage, sberPage, adminOrdersPage)
-                        .purchasePremiumSubscription(),
-                SubscriptionTestFlow::processRecurrentInAdmin,
-                context, 1
-        );
+    @Step("Создание пользователя без aff_rid и проведение реккурента")
+    public ReactivatePremiumFlow createUserAndRecurrent(int cycles) {
+        PurchaseResult result = purchaseFlow.premium();
+        this.userEmail = result.email();
 
-        userEmail = adminOrdersPage.getLastSearchedEmail();
+        adminFlow.processRecurrent(userEmail);
+        testExecutor.executePaymentTest("Cloud Premium", userEmail, context, cycles);
         return this;
     }
 

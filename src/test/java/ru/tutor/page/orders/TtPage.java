@@ -44,10 +44,6 @@ public class TtPage {
             this.expectedModalText = expectedModalText;
         }
 
-        public String getDataAttribute() {
-            return dataAttribute;
-        }
-
         public String getDisplayName() {
             return displayName;
         }
