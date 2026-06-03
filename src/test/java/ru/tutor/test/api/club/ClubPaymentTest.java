@@ -1,6 +1,5 @@
 package ru.tutor.test.api.club;
 
-
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.*;

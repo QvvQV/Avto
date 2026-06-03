@@ -13,7 +13,8 @@ public class ProductConfiguration {
             "258", new ProductSettings(7, 30, 30, "399"),
             "135", new ProductSettings(7,14,14, "294"),
             "180", new ProductSettings(7, 30, 30, "99"),
-            "755", new ProductSettings(30, 30, 30, "399")
+            "755", new ProductSettings(30, 30, 30, "399"),
+            "789", new ProductSettings(30, 30, 30, "399")
     );
 
     public static ProductSettings getSettings(String productId) {
