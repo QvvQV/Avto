@@ -12,6 +12,9 @@ public class ProductsResponse {
     @JsonProperty("id")
     private String id;
 
+    @JsonProperty("isOnboarding")
+    private boolean isOnboarding;
+
     @JsonProperty("name")
     private String name;
 
@@ -300,5 +303,20 @@ public class ProductsResponse {
 
     public Object getCard() {
         return additionalProperties.get("card");
+    }
+
+    // ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ====================
+
+    /**
+     * Проверка, является ли продукт onbording
+     */
+    public boolean isOnboardingProduct() {
+        return Boolean.TRUE.equals(isOnboarding) ||
+                "onboarding".equals(id);
+    }
+
+    public boolean isPremiumProduct() {
+        return Boolean.TRUE.equals(isPremium) ||
+                "Премиум подписка 399/30".equals(name);
     }
 }

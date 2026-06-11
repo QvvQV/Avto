@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import ru.tutor.api.UserProductsApi;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.ProductsResponse;
+import ru.tutor.utils.AllureAttachments;
 
 import java.util.*;
 
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 
 public class ProductsSteps extends BaseApiSteps {
     private final UserProductsApi productsApi;
+
+    // Хранилище для сохранения ID продуктов
+    private static final Map<String, Object> productCache = new HashMap<>();
 
     public ProductsSteps(String baseUrl) {
         super(baseUrl);
@@ -27,8 +31,18 @@ public class ProductsSteps extends BaseApiSteps {
     }
 
     @Step("Получение списка продуктов")
-    public Response addProduct(String authToken) {
+    public Response getUserProducts(String authToken) {
         return this.productsApi.getUserProducts(authToken);
+    }
+
+    @Step("Получение списка достижений")
+    public Response getUserAchievements(String authToken) {
+        return this.productsApi.getUserAchievements(authToken);
+    }
+
+    @Step("Получение списка достижений")
+    public Response getAchievementsProductsId(String authToken, String saveProductId) {
+        return this.productsApi.getAchievementsProductById(authToken, saveProductId);
     }
 
     @Step("Валидация ответа списка продуктов")
@@ -38,6 +52,96 @@ public class ProductsSteps extends BaseApiSteps {
                 .contentType(ContentType.JSON);
 
         return Arrays.asList(response.as(ProductsResponse[].class));
+    }
+
+    // ==================== МЕТОДЫ ДЛЯ ПОЛУЧЕНИЯ ID ====================
+
+    /**
+     * Получение ID четвёртого продукта в списке
+     */
+    @Step("Получение ID продукта")
+    public String getProductId(List<ProductsResponse> products) {
+        assertFalse(products.isEmpty(), "Список продуктов не должен быть пустым");
+        String productId = products.get(2).getProductId();
+        Allure.addAttachment("Four Product ID", productId);
+        return productId;
+    }
+
+    /**
+     * Получение ID первого числового продукта (не onbording)
+     */
+    @Step("Получение ID первого числового продукта")
+    public String getFirstNumericOrderNumber(List<ProductsResponse> products) {
+        ProductsResponse product = products.stream()
+                .filter(p -> !p.isOnboardingProduct())
+                .filter(p -> !p.isPremiumProduct())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Нет числовых продуктов"));
+
+        String productId = product.getId();
+        Allure.addAttachment("First Numeric orderNumber", productId);
+        return productId;
+    }
+
+    @Step("Получение деталей продукта по сохранённому ID")
+    public Response getProductDetailsById(String authToken, String savedProductId) {
+        Allure.addAttachment("Используем ID продукта", savedProductId);
+        return this.productsApi.getProductById(authToken, savedProductId);
+    }
+
+    @Step("Валидация ответа с деталями продукта")
+    public void validateProductDetailsResponse(Response response) {
+        response.then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+    }
+
+    @Step("Валидация ответа списка достижений продукта")
+    public void validateAchievementsProductsId(Response response) {
+        response.then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        String body = response.getBody().asString();
+        assertNotNull(body, "Тело не должно быть null");
+    }
+
+    @Step("Валидация ответа списка достижений")
+    public void validateAchievements(Response response) {
+        response.then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        String body = response.getBody().asString();
+        assertNotNull(body, "Тело не должно быть null");
+    }
+
+    @Step("Получение модуля продукта по сохраненному ID продукта и номеру модуля")
+    public Response getProductModuleById(String authToken, String savedProductValue, int moduleNumber) {
+        Allure.addAttachment("Используемый ID продукта", savedProductValue);
+        Allure.addAttachment("Номер модуля", String.valueOf(moduleNumber));
+        return this.productsApi.getProductModule(authToken, savedProductValue, moduleNumber);
+    }
+
+    @Step("Отметка модуля как просмотренного")
+    public Response markModuleWatched(String authToken, String productId, int moduleNumber, int timeline) {
+        Allure.addAttachment("Order Number",  productId);
+        Allure.addAttachment("Module Number", String.valueOf(moduleNumber));
+        Allure.addAttachment("Timeline", String.valueOf(timeline));
+
+        Response response = productsApi.postProductCreate(authToken, productId, moduleNumber, timeline);
+
+        AllureAttachments.attachJson("Mark Watched Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Отметка модуля как завершенного (orderNumber: {orderNumber}, moduleNumber: {moduleNumber})")
+    public Response completeModule(String authToken, String productId, int moduleNumber) {
+        Allure.addAttachment("Order Number",  productId);
+        Allure.addAttachment("Module Number", String.valueOf(moduleNumber));
+
+        Response response = productsApi.putProductUpdate(authToken, productId, moduleNumber);
+
+        AllureAttachments.attachJson("Complete Module Response", response.getBody().asString());
+        return response;
     }
 
     @Step("Проверка базовой структуры продуктов")

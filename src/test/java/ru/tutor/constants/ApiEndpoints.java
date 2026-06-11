@@ -26,9 +26,11 @@ public final class ApiEndpoints {
     /** Получение профиля пользователя */
     public static final String USER_PROFILE =  "/user/profile";
 
-
     /** Получение игровой статистики */
     public static final String USER_GAME_STATS = "user/game-stats";
+
+    /** Страница достижений */
+    public static final String USER_ACHIEVEMENTS = "/user/achievements";
 
 
     // ==================== PRODUCT ENDPOINTS ====================
@@ -44,6 +46,26 @@ public final class ApiEndpoints {
     /** Тариф Подарок */
     public static final String ORDERS_GET_PREMIUM_GIFT = "/user/orders/get-premium-gift";
 
+    /** Список продуктов */
+    public static final String PRODUCTS_LIST = "/user/products";
+
+    /** Номер продукта */
+    public static final String PRODUCTS_ID = "/user/products/%s";
+
+    /** Получение информации по модулю */
+    public static final String PRODUCTS_MODULE = "/user/products/%s/modules/%d";
+
+    /** Тайминг видео */
+    public static final String VIDEOS_WATCHED = "/user/videos/watched/create";
+
+    /** Завершение модуля (пройдено) */
+    public static final String PRODUCTS_COMPLETED_MODULE = "/user/orders/%s/completed_module/%d";
+
+    /** Получение списка всех продуктов */
+    public static final String ALL_PRODUCTS =  "/user/products/all";
+
+    /** Список достижений по продукту*/
+    public static final String ACHIEVEMENTS_PRODUCT_ID = "/user/achievements/%s";
 
     // ==================== Игровое колесо ====================
     /** Запуск игры на колесе */

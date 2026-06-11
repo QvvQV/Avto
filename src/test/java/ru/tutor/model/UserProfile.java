@@ -30,7 +30,6 @@ public class UserProfile {
     @JsonProperty("isTgSubscribed")
     private Boolean isTgSubscribed;
 
-
     public Integer getId() {
         return id;
     }
@@ -94,4 +93,6 @@ public class UserProfile {
     public void setTgSubscribed(Boolean isTgSubscribed) {
         this.isTgSubscribed = isTgSubscribed;
     }
+
+
 }

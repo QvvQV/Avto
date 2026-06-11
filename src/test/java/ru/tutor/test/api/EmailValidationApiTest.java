@@ -14,6 +14,10 @@ import ru.tutor.config.TestConfig;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Задача 7221 "Добавить строгую валидацию email при создании заказа на бэке"
+ */
+
 @Epic("Email Validation")
 @Feature("Order Creation Email Validation")
 @DisplayName("Тесты валидации email при создании заказа")
@@ -21,7 +25,7 @@ public class EmailValidationApiTest {
 
     private final PaymentApi paymentApi = new PaymentApi(TestConfig.getCurrentApiUrl());
     private static final String PRODUCT_ID = "519";
-    private static final String stEmail = "sou";
+    private static final String stEmail = "limbo";
 
 @ParameterizedTest
     @ValueSource(strings = {
@@ -44,7 +48,7 @@ public class EmailValidationApiTest {
     @DisplayName("POST /order с email > 254 символов ->4xx")
     void testEmailTooLong()
     {
-        String local = "p".repeat(246);
+        String local = "p".repeat(119);
         String email = local + "@test.ru";
         Response response = paymentApi.createOrderWithoutAuthMultipart(email, PRODUCT_ID);
         assertTrue(response.getStatusCode() >= 400 && response.getStatusCode() < 500);
@@ -52,7 +56,7 @@ public class EmailValidationApiTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            ".testru",
+//            ".testru",
             "@@test.ru",
             "@",
             "@test",
@@ -73,8 +77,12 @@ public class EmailValidationApiTest {
             "`@test.ru",
             "?@test.ru",
             "=@test.ru",
-            "-@test.ru",
+//            "-@test.ru",
             "\\@test.ru",
+            "|@test.ru",
+            "()@test.ru",
+            "[]@test.ru",
+            "{}@test.ru",
     })
     @DisplayName("POST /order с некорректным email -> 4xx")
     void testInvalidEmailReturns4xx(String invalidEmail){

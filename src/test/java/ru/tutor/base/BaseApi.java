@@ -113,4 +113,17 @@ public abstract class BaseApi {
                 .extract()
                 .response();
     }
+
+    @Step("PUT запрос к {endpoint}")
+    protected Response putWithToken(String endpoint, String token) {
+        return given(baseSpec)
+                .header("Authorization", "Bearer " + token)
+                .log().all()
+                .when()
+                .put(endpoint)
+                .then()
+                .log().ifError()
+                .extract()
+                .response();
+    }
 }
