@@ -2,7 +2,7 @@ package ru.tutor.steps.club;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import ru.tutor.api.ClubApi;
+import ru.tutor.api.club.ClubApi;
 import ru.tutor.base.BaseApiSteps;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tutor.model.club.SzDetailsRequest;
