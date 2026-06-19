@@ -21,9 +21,9 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Epic("Платежи через Cloud")
+@Epic("Платежи через Cloud/валидной картой Sber")
 @Feature("Тестирование различных сценариев оплаты")
-@DisplayName("🧪 Тестирование платежной системы Cloud")
+@DisplayName("🧪 Тестирование платежной системы Cloud/валидной картой Sber")
 public class CloudTest extends BaseUiTest {
 
     private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();

@@ -101,6 +101,10 @@ public class UserSteps extends BaseApiSteps {
         assertSuccessStatusCode(response);
         assertContentTypeJson(response);
 
+        String body = response.getBody().asString();
+        assertNotNull(body, "Тело не должно быть null");
+        assertFalse(body.isEmpty(), "ТЕло ответа не должно быть пустым");
+
         String email = response.jsonPath().getString("email");
         assertEquals(expectedEmail, email, "Email должен соответствовать ожидаемому значению");
 
@@ -108,9 +112,13 @@ public class UserSteps extends BaseApiSteps {
         assertJsonFieldExists(response, "isYtSubscribed");
         assertJsonFieldExists(response, "isVkSubscribed");
         assertJsonFieldExists(response, "isTgSubscribed");
+        assertJsonFieldExists(response, "id");
+        assertJsonFieldExists(response, "name");
 
         UserProfile userProfile = response.as(UserProfile.class);
         assertNotNull(userProfile, "UserProfile не должен быть null");
+        assertNotNull(userProfile.getId(), "id не должен быть null");
+        assertTrue(userProfile.getId() > 0, "id должен быть положительным");
 
         return userProfile;
     }
@@ -128,9 +136,7 @@ public class UserSteps extends BaseApiSteps {
         Response response = userApi.logout(authToken);
 
         step("Проверка ответа логаута", () -> {
-            response.then()
-                    .statusCode(200)
-                    .contentType(ContentType.JSON);
+           assertSuccessStatusCode(response);
 
             Allure.addAttachment("Logout Response",
                     "✅ Статус: 200 OK\n📦 Тело: " + response.getBody().asString());
@@ -195,8 +201,7 @@ public class UserSteps extends BaseApiSteps {
         assertNotNull(token, "token не должен быть null");
 
         Response profileResponse = userApi.getProfile(token);
-        profileResponse.then()
-                .statusCode(200);
+        assertSuccessStatusCode(response);
 
         return userApi.logout(token);
     }
@@ -207,6 +212,17 @@ public class UserSteps extends BaseApiSteps {
         AllureAttachments.attachJson("Game Stats Response", response.getBody().asString());
         AllureAttachments.attachJson("Game Stats Headers", response.getHeaders().toString());
         return response;
+    }
+
+
+    @Step("GET /user/game-leader/rating")
+    public Response getLeaderRating(String authToken) {
+        return this.userApi.getLeaderRating(authToken);
+    }
+
+    @Step("GET /user/tasks - список заданий")
+    public Response getTasks(String authToken) {
+        return this.userApi.getUserTasks(authToken);
     }
 
     @Step("Валидация ответа игровой статистики")

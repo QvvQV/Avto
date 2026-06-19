@@ -39,9 +39,7 @@ public class OrderPremiumGift extends BaseApiSteps {
 
     @Step("Валидация успешного ответа при переключении подписки")
     public List<OrderToggleSubscriptionResponse> validateGetPremiumGiftResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
 
         // Проверяем что ответ - это список
         Object body = response.jsonPath().get("$");

@@ -47,9 +47,7 @@ public class ReactivatePremiumSteps extends BaseApiSteps {
 
     @Step("Валидация успешного ответа при реактивации")
     public ReactivatePremiumResponse reactivatePremiumSuccessfully(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
 
         response.then();
 

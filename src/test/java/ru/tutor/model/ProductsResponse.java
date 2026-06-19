@@ -12,6 +12,9 @@ public class ProductsResponse {
     @JsonProperty("id")
     private String id;
 
+    @JsonProperty("miniCourse")
+    private boolean miniCourse;
+
     @JsonProperty("isOnboarding")
     private boolean isOnboarding;
 
@@ -218,6 +221,10 @@ public class ProductsResponse {
 
     public String getId() {
         return id;
+    }
+
+    public boolean isMiniCourse() {
+        return miniCourse;
     }
 
     public void setId(String id) {

@@ -44,21 +44,6 @@ public class ProductsProfileTest {
         token = step("Логин пользователя", () ->
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
-
-        Response response = step("GET /user/products", () ->
-                productsSteps.getUserProducts(token)
-        );
-
-        List<ProductsResponse> products = step("Валидация ответа", () ->
-                productsSteps.validateProductsResponse(response)
-        );
-
-        productsSteps.validateProductsStructure(products);
-
-        // Пример первого продукта для анализа
-        savedOrderNumber = productsSteps.getFirstNumericOrderNumber(products);
-        savedProductValue = productsSteps.getProductId(products);
-        Allure.addAttachment("Product Report", savedOrderNumber);
     }
 
     @Test
@@ -69,6 +54,7 @@ public class ProductsProfileTest {
     @Tag("positive")
     @Tag("products")
     void getProductsSuccess() {
+        ensureProductsLoaded();
 
         // Детали продукта
         Response response1 = step("Получение информации о продукте", () ->
@@ -109,107 +95,200 @@ public class ProductsProfileTest {
                 productsSteps.validateAchievements(response6));
     }
 
+    @Test
+    @Order(2)
+    @DisplayName("Получение списка всех продуктов платформы")
+    @Tag("positive")
+    void getAllProductsSuccess() {
+        Response response = productsSteps.getAllProducts(token);
+        step("Валидация ответа", () -> {
+            assertEquals(200, response.getStatusCode());
+            assertNotNull(response.getBody().asString());
+        });
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Эндпоинт Премьеры")
+    @Tag("positive")
+    void getPremiersProducts() {
+        Response response = productsSteps.getPremiersProducts(token);
+        step("Валидация ответа", () ->
+                assertEquals(200, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Эндпоинт Топ10")
+    @Tag("positive")
+    void getProductsTop10() {
+        Response response = productsSteps.getProductTop10(token);
+        step("Валидация ответа", ()-> {
+            assertEquals(200, response.getStatusCode());
+            assertNotNull(response.getBody().asString());
+        });
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Эндпоинт Сейчас смотрят")
+    @Tag("positive")
+    void getProductWatchingNow() {
+        Response response = productsSteps.getProductWatchingNow(token);
+        step("Валидация ответа", ()->{
+            assertEquals(200, response.getStatusCode());
+            assertNotNull(response.getBody().asString());
+        });
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Эндпоинт список Избранных продуктов")
+    @Tag("positive")
+    void getFavoriteProducts() {
+        Response response = productsSteps.favoriteProduct(token);
+        step("Валидация ответа", () ->
+                assertEquals(200, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Эндпоинт добавления в Избранное")
+    @Tag("positive")
+    void postFavoriteProducts() {
+        ensureProductsLoaded();
+        Response response = productsSteps.postFavoriteProducts(token, savedProductValue);
+        step("Валидация ответа", () ->{
+            assertEquals(201, response.getStatusCode());
+            assertNotNull(response.getBody().asString());
+        });
+    }
+
+    @Test
+    @Order(27)
+    @DisplayName("Эндпоинт категории платформы")
+    void getCategories() {
+        Response response = productsSteps.getCategories(token);
+        step("Валидация ответа", () ->
+                assertEquals(200, response.getStatusCode()));
+    }
+
     // ==================== Отрицательные тесты ====================
 
     @Test
-    @Order(2)
+    @Order(8)
     @DisplayName("Эндпоинты получение информации о продукте без авторизации")
+    @Tag("negative")
     void getProductsWithoutAuth() {
+        ensureProductsLoaded();
 
         // Детали продукта
         Response response = step("Получение информации о продукте", () ->
                 productsSteps.getProductDetailsById("", savedOrderNumber));
         step("Валидация деталей продукта", () ->
-                assertTrue(response.getStatusCode() == 401));
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
-    @Order(3)
+    @Order(9)
     @DisplayName("Эндпоит modules без авторизации")
+    @Tag("negative")
     void getModulesWithoutAuth() {
+        ensureProductsLoaded();
 
         // Модуль продукта
         Response response = step("GET /user/products/{productValue}/modules/{n}", () ->
                 productsSteps.getProductModuleById("", savedProductValue, MODULE_NUMBER));
 
         step("Валидация модуля продукта", () ->
-                assertTrue(response.getStatusCode() == 401));
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
-    @Order(4)
+    @Order(10)
     @DisplayName("Эндпоинт просмотр модуля без авторизации")
+    @Tag("negative")
     void getModuleWatchedProductsWithoutAuth() {
+        ensureProductsLoaded();
 
         Response response = step("Отметка модулю отсмотренного времени", () ->
                 productsSteps.markModuleWatched("", savedOrderNumber, MODULE_NUMBER, TIMELINE));
 
         step("Валидация отметки тайминга продукта", () ->
-                assertTrue(response.getStatusCode() == 401));
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
-    @Order(5)
+    @Order(11)
     @DisplayName("Эндпоинт completeModule без авторизации")
+    @Tag("negative")
     void putCompleteModuleWithoutAuth() {
+        ensureProductsLoaded();
 
         Response response = step("Отметка модуля как завершенного", () ->
                 productsSteps.completeModule("", savedOrderNumber, MODULE_NUMBER));
 
         step("Валидация отметка о завершении", () ->
-                assertTrue(response.getStatusCode() == 401));
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
-    @Order(6)
+    @Order(12)
     @DisplayName("Эндпоинт список достижений продукта без авторизации")
+    @Tag("negative")
     void getAchievementsProductsWithoutAuth() {
+        ensureProductsLoaded();
 
         Response response = step("Получение списка достижений продукта", () ->
                 productsSteps.getAchievementsProductsId("", savedOrderNumber));
         step("Валидация деталей списка достижений продукта", () ->
-                assertTrue(response.getStatusCode() == 401));
+                assertEquals(401,response.getStatusCode()));
     }
 
     @Test
-    @Order(7)
+    @Order(13)
     @DisplayName("Эндпоинт страница достижений без авторизации")
+    @Tag("negative")
     void getAchievementsWithoutAuth() {
         Response response = step("Страница достижений", () ->
                 productsSteps.getUserAchievements(""));
 
         step("Валидация страницы достижений", () ->
-                assertTrue(response.getStatusCode() == 401));
+                assertEquals(401,response.getStatusCode()));
     }
 
     @Test
-    @Order(8)
+    @Order(14)
     @DisplayName("Эндпоинт modules без номера продукта")
+    @Tag("negative")
     void getUserModulesWithoutProductValue() {
         Response response = step("Пустое значение продукта в модуле просомтра", ()->
                 productsSteps.getProductModuleById(token, "", MODULE_NUMBER));
 
         step("Валидация ответа при пустом продукте", () ->
-                assertTrue(response.getStatusCode() == 404));
+                assertEquals(404, response.getStatusCode()));
 //        step("Валидация отсутствия stack trace для Production/Прод", () ->
 //                assertFalse(response.getBody().asString().contains("trace")));
     }
 
     @Test
-    @Order(9)
+    @Order(15)
     @DisplayName("Невалидный модуль")
+    @Tag("negative")
     void getUserModulesInvalidModule() {
+        ensureProductsLoaded();
 
         Response response = step("Невалидный модуль", ()->
                 productsSteps.getProductModuleById(token, savedProductValue, INVALID_MODULE_NUMBER));
 
         step("Валидация ответа при невалидном модуле", () ->
-                assertTrue(response.getStatusCode() == 404));
+                assertEquals(404,response.getStatusCode()));
     }
 
     @Test
-    @Order(10)
+    @Order(16)
     @DisplayName("Эндпоит modules с невалидным номером продукта")
+    @Tag("negative")
     void getModulesInvalidModuleProduct() {
 
         // Модуль продукта
@@ -217,6 +296,134 @@ public class ProductsProfileTest {
                 productsSteps.getProductModuleById(token, INVALID_PRODUCT_VALUE, MODULE_NUMBER));
 
         step("Валидация модуля продукта", () ->
-                assertTrue(response.getStatusCode() == 404));
+                assertEquals(404, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(17)
+    @DisplayName("Список всех продуктов платформы без авторизации")
+    @Tag("negative")
+    void getAllProductsWithoutAuth() {
+        Response response = productsSteps.getAllProducts("");
+        step("Валидация ответа", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(18)
+    @DisplayName("Премьеры без авторизации")
+    @Tag("negative")
+    void getPremiersWithoutAuth() {
+        Response response = productsSteps.getPremiersProducts("");
+        step("Проверка код ответа", ()->
+                assertEquals(401,response.getStatusCode()));
+    }
+
+    @Test
+    @Order(19)
+    @DisplayName("Топ10 без авторизации")
+    @Tag("negative")
+    void getTop10WithoutAuth() {
+        Response response = productsSteps.getProductTop10("");
+        step("Валидация ответа", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(20)
+    @DisplayName("Сейчас смотрят без авторизации")
+    @Tag("negative")
+    void getWatchingNowWithoutAuth() {
+        Response response = productsSteps.getProductWatchingNow("");
+        step("Валидация ответа", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(21)
+    @DisplayName("Получение избранных продуктов без авторизации")
+    @Tag("negative")
+    void getFavoriteProductsWithoutAuth() {
+        Response response = productsSteps.favoriteProduct("");
+        step("Валидация продукта", ()->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(22)
+    @DisplayName("Список продуктов без авторизации - 401")
+    @Tag("negative")
+    void getUserProductsWithoutAuth() {
+        Response response = productsSteps.getUserProducts("");
+        step("Валидация ответа", () ->
+                assertEquals(401,response.getStatusCode()));
+    }
+
+    @Test
+    @Order(23)
+    @DisplayName("Детали продукта с несуществующим ID - 404")
+    void getProductDetailsByIdNotFound() {
+        Response response = productsSteps.getProductDetailsById(token, INVALID_PRODUCT_VALUE);
+        step("Валидация ответа", () -> {
+                assertEquals(400, response.getStatusCode());
+        String body = response.getBody().asString();
+        assertTrue(body.contains("error"), "Должно быть сообщение об ошибке. Тело: " + body);
+        });
+    }
+
+    @Test
+    @Order(24)
+    @DisplayName("Достижения с несуществующим ID продукта - 404")
+    @Tag("negative")
+    void getAchievementsProductByIdNotFound() {
+        Response response = productsSteps.getAchievementsProductsId(token, INVALID_PRODUCT_VALUE) ;
+        step("Валидация ответа", () -> {
+                assertEquals(404, response.getStatusCode());
+                String body = response.getBody().asString();
+                assertTrue(body.contains("message"), "Должно быть сообщение об ошибке. Тело: " + body);
+        });
+    }
+
+    @Test
+    @Order(25)
+    @DisplayName("Отметка просмотра с пустым orderNumber")
+    @Tag("negative")
+    void getAchievementsProductById() {
+        ensureProductsLoaded();
+        Response response = productsSteps.markModuleWatched(token, "", MODULE_NUMBER, TIMELINE);
+        step("Валидация ответа", () -> {
+                assertEquals(422, response.getStatusCode());
+        String body = response.getBody().asString();
+        assertTrue(body.contains("orderNumber"), "Должна быть ошибка о номере курса. Тело: " + body); });
+    }
+
+    @Test
+    @Order(26)
+    @DisplayName("Завершение модуля с пустым orderNumber")
+    @Tag("negative")
+    void completeModuleEmptyOrder() {
+        ensureProductsLoaded();
+        Response response = productsSteps.completeModule(token, "", MODULE_NUMBER);
+        step("Валидация ответа", () -> {
+            assertEquals(404, response.getStatusCode());
+            String body = response.getBody().asString();
+            assertTrue(body.contains("title"), "Должна быть ошибка о номере курса. Тело: " + body);
+        });
+    }
+
+    private void ensureProductsLoaded() {
+        if (savedProductValue != null) return;
+
+        Response response = step("GET /user/products - подготовка данных", () ->
+                productsSteps.getUserProducts(token));
+        List<ProductsResponse> products = step("Валидация списка пордуктов", () ->
+                productsSteps.validateProductsResponse(response));
+        step("Проверка структуры продуктов", () ->
+                productsSteps.validateProductsStructure(products));
+        savedOrderNumber = step("Получение orderNumber", () ->
+                productsSteps.getFirstNumericOrderNumber(products));
+        savedProductValue = step("Получение productId", () ->
+                productsSteps.getProductId(products));
+        Allure.addAttachment("Product Report", savedOrderNumber);
     }
 }

@@ -18,8 +18,26 @@ public class UserProfile {
     @JsonProperty("premium")
     private Boolean premium;
 
-    @JsonProperty("isTarifflifetime")
-    private Boolean isTarifflifetime;
+    @JsonProperty("gender")
+    private String gender;
+
+    @JsonProperty("hasLoginToday")
+    private Boolean hasLoginToday;
+
+    @JsonProperty("clubMembership")
+    private String clubMembership;
+
+    @JsonProperty("diamondBalance")
+    private Integer diamondBalance;
+
+    @JsonProperty("registrationPlatform")
+    private String registrationPlatform;
+
+    @JsonProperty("isEnabledGameWheel")
+    private Boolean isEnabledGameWheel;
+
+    @JsonProperty("isTariffLifetime")
+    private Boolean isTariffLifetime;
 
     @JsonProperty("isYtSubscribed")
     private Boolean isYtSubscribed;
@@ -62,12 +80,16 @@ public class UserProfile {
         this.premium = premium;
     }
 
-    public Boolean getTarifflifetime() {
-        return isTarifflifetime;
+    public String getGender() {
+        return gender;
     }
 
-    public void setTarifflifetime(Boolean isTarifflifetime) {
-        this.isTarifflifetime = isTarifflifetime;
+    public Boolean getIsTariffLifetime() {
+        return isTariffLifetime;
+    }
+
+    public void setIsTariffLifetime(Boolean isTariffLifetime) {
+        this.isTariffLifetime = isTariffLifetime;
     }
 
     public Boolean getYtSubscribed() {
@@ -92,6 +114,50 @@ public class UserProfile {
 
     public void setTgSubscribed(Boolean isTgSubscribed) {
         this.isTgSubscribed = isTgSubscribed;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Boolean getHasLoginToday() {
+        return hasLoginToday;
+    }
+
+    public void setHasLoginToday(Boolean hasLoginToday) {
+        this.hasLoginToday = hasLoginToday;
+    }
+
+    public String getClubMemberShip() {
+        return clubMembership;
+    }
+
+    public void setClubMemberShip(String clubMemberShip) {
+        this.clubMembership = clubMemberShip;
+    }
+
+    public Integer getDiamondBalance() {
+        return diamondBalance;
+    }
+
+    public void setDiamondBalance(Integer diamondBalance) {
+        this.diamondBalance = diamondBalance;
+    }
+
+    public String getRegistrationPlatform() {
+        return registrationPlatform;
+    }
+
+    public void setRegistrationPlatform(String registrationPlatform) {
+        this.registrationPlatform = registrationPlatform;
+    }
+
+    public Boolean getEnabledGameWheel() {
+        return isEnabledGameWheel;
+    }
+
+    public void setEnabledGameWheel(Boolean enabledGameWheel) {
+        isEnabledGameWheel = enabledGameWheel;
     }
 
 

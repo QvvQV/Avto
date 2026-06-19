@@ -23,90 +23,242 @@ public final class ApiEndpoints {
 
 
     // ==================== Профиль пользователя ====================
-    /** Получение профиля пользователя */
-    public static final String USER_PROFILE =  "/user/profile";
+    /**
+     * Получение профиля пользователя
+     */
+    public static final String USER_PROFILE = "/user/profile";
 
-    /** Получение игровой статистики */
+    /**
+     * Получение игровой статистики
+     */
     public static final String USER_GAME_STATS = "user/game-stats";
 
-    /** Страница достижений */
+    /**
+     * Страница достижений
+     */
     public static final String USER_ACHIEVEMENTS = "/user/achievements";
+
+    /**
+     * Рэйтинг
+     */
+    public static final String USER_GAME_LEADER_RATING = "/user/game-leader/rating";
+
+    /**
+     * Задания пользователя
+     */
+    public static final String USER_TASKS = "/user/tasks";
+
 
 
     // ==================== PRODUCT ENDPOINTS ====================
-    /** Отписка пользователя до Лайт */
-    public static final String ORDERS_TOGGLE_SUBSCRIPTION =  "/user/orders/toggle_subscription/%d";
+    /**
+     * Отписка пользователя до Лайт
+     */
+    public static final String ORDERS_TOGGLE_SUBSCRIPTION = "/user/orders/toggle_subscription/%d";
 
-    /** Реактивация пользователя Лайт по внутренней почте */
-    public static final String ORDERS_REACTIVATE_PREMIUM =  "/user/orders/reactivate-premium";
+    /**
+     * Реактивация пользователя Лайт по внутренней почте
+     */
+    public static final String ORDERS_REACTIVATE_PREMIUM = "/user/orders/reactivate-premium";
 
-    /** Восстановление премиума по ссылке из email-рассылки */
+    /**
+     * Восстановление премиума по ссылке из email-рассылки
+     */
     public static final String ORDERS_REACTIVATE_PREMIUM_BY_EMAIL = "/user/orders/reactivate-premium-by-email";
 
-    /** Тариф Подарок */
+    /**
+     * Тариф Подарок
+     */
     public static final String ORDERS_GET_PREMIUM_GIFT = "/user/orders/get-premium-gift";
 
-    /** Список продуктов */
+    /**
+     * Список продуктов
+     */
     public static final String PRODUCTS_LIST = "/user/products";
 
-    /** Номер продукта */
+    /**
+     * Номер продукта
+     */
     public static final String PRODUCTS_ID = "/user/products/%s";
 
-    /** Получение информации по модулю */
+    /**
+     * Получение информации по модулю
+     */
     public static final String PRODUCTS_MODULE = "/user/products/%s/modules/%d";
 
-    /** Тайминг видео */
+    /**
+     * Тайминг видео
+     */
     public static final String VIDEOS_WATCHED = "/user/videos/watched/create";
 
-    /** Завершение модуля (пройдено) */
+    /**
+     * Завершение модуля (пройдено)
+     */
     public static final String PRODUCTS_COMPLETED_MODULE = "/user/orders/%s/completed_module/%d";
 
-    /** Получение списка всех продуктов */
-    public static final String ALL_PRODUCTS =  "/user/products/all";
+    /**
+     * Получение списка всех продуктов
+     */
+    public static final String ALL_PRODUCTS = "/user/products/all";
 
-    /** Список достижений по продукту*/
+    /**
+     * Получение списка категорий
+     */
+    public static final String CATEGORIES = "/categories";
+
+    /**
+     * Получение списка избранных продуктов
+     */
+    public static final String USER_FAVORITE_PRODUCTS = "/user/favorite-products";
+
+    /**
+     * Добавление продукта в избранные
+     */
+    public static final String USER_FAVORITE_PRODUCTS_ID = "/user/favorite-products/%s";
+
+    /**
+     * Список достижений по продукту
+     */
     public static final String ACHIEVEMENTS_PRODUCT_ID = "/user/achievements/%s";
 
+
+
+
     // ==================== Игровое колесо ====================
-    /** Запуск игры на колесе */
+    /**
+     * Запуск игры на колесе
+     */
     public static final String GAME_WHEEL_START = "/user/game-wheel/start-game";
 
-    /** Получение списка наград игрового колеса */
+    /**
+     * Получение списка наград игрового колеса
+     */
     public static final String GAME_WHEEL_REWARDS = "/user/game-wheel/rewards";
 
-    /** Получение списка наград пользователя */
+    /**
+     * Получение списка наград пользователя
+     */
     public static final String GAME_REWARD_LIST = "/user/reward/list";
 
-    /** Удаление подарка из списка призов */
+    /**
+     * Удаление подарка из списка призов
+     */
     public static final String GAME_REWARD_OPEN_ID = "/user/reward/open/%d";
 
-    /** Получение истории забранных наград пользователя */
+    /**
+     * Получение истории забранных наград пользователя
+     */
     public static final String GAME_REWARD_HISTORY = "/user/reward/history";
+
+    /**
+     * Экран колеса
+     */
+    public static final String USER_STORIES_SCREEN = "/user/stories-screen";
+
 
     // ==================== PROMO CODE ENDPOINTS ====================
     public static final String PROMO_CODES_APPLY = "/user/promo-codes/apply";
 
 
+
     // ==================== Клуб ====================
-    /** Сохранение деталей самозанятого */
+    /**
+     * Сохранение деталей самозанятого
+     */
     public static final String CLUB_SZ_DETAILS = "/user/club/sz-details";
 
-    /** Сохранение деталей ИП */
+    /**
+     * Сохранение деталей ИП
+     */
     public static final String CLUB_IP_DETAILS = "/user/club/ip-details";
 
-    /** Получение деталей */
+    /**
+     * Получение деталей
+     */
     public static final String CLUB_DETAILS = "/user/club/details";
 
-    /** Получение статистики клуба */
+    /**
+     * Получение статистики клуба
+     */
     public static final String CLUB_STATISTICS = "/user/club/statistics";
 
-    /** Получение списка участников клуба */
+    /**
+     * Получение списка участников клуба
+     */
     public static final String CLUB_MEMBER = "/user/club/member";
 
-    /** Запрос на вывод средств */
+    /**
+     * Запрос на вывод средств
+     */
     public static final String CLUB_REQUEST_WITHDRAWAL = "/user/club/request-withdrawal";
 
-    /** Запрос на историю оплат */
+    /**
+     * Запрос на историю оплат
+     */
     public static final String CLUB_PAYMENTS = "/user/club/payments";
+
+
+
+    // ==================== DASHBOARD ENDPOINTS (ПРИЛОЖЕНИЯ) ====================
+
+    /**
+     * Информация о всех приложениях
+     */
+    public static final String USER_DASHBOARD_INFO = "/user/dashboard/info";
+
+
+
+
+    // ==================== ПОДКАСТЫ ENDPOINTS ====================
+
+    /**
+     * Список подкастов
+     */
+    public static final String USER_VIDEOS = "/user/videos";
+
+    /**
+     * Запрос конкретного видео
+     */
+    public static final String USER_VIDEO_DETAILS_BY_ID = "/user/videos/%s";
+
+
+
+
+    // ==================== ENDPOINTS ГЛАВНОЙ СТРАНИЦЫ ====================
+
+    /**
+     * Список историй
+     */
+    public static final String USER_STORIES = "/user/stories";
+
+    /**
+     * Рандомный список тутсов
+     */
+    public static final String USER_TUTS_RANDOM_LIST = "/user/tuts/random-list";
+
+    /**
+     * Категории тутсов
+     */
+    public static final String USER_TUTS_CATEGORIES = "/user/tuts-categories";
+
+    /**
+     * Запуск категории тутсов
+     */
+    public static final String USER_TUTS_CATEGORY_FEED =  "/user/tuts/category/%s/feed";
+
+    /**
+     * Премьеры
+     */
+    public static final String USER_PRODUCTS_PREMIERS = "/user/products/premiers";
+
+    /**
+     * Топ 10 курсов
+     */
+    public static final String USER_PRODUCT_POSITIONS_TOP10 = "/user/product-positions/top10";
+
+    /**
+     * Сейчас смотрят
+     */
+    public static final String USER_PRODUCTS_WATCHING_NOW = "/user/products/watching/now";
 
 }

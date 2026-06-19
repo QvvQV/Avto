@@ -35,21 +35,25 @@ public class ProductsSteps extends BaseApiSteps {
         return this.productsApi.getUserProducts(authToken);
     }
 
-    @Step("Получение списка достижений")
+    @Step("Получение списка достижений для продукта")
     public Response getUserAchievements(String authToken) {
         return this.productsApi.getUserAchievements(authToken);
     }
 
-    @Step("Получение списка достижений")
+    @Step("Получение списка всех достижений")
     public Response getAchievementsProductsId(String authToken, String saveProductId) {
         return this.productsApi.getAchievementsProductById(authToken, saveProductId);
     }
 
+    @Step("Получение всех продуктов")
+    public Response getAllProducts(String authToken) {
+        return this.productsApi.getAllProducts(authToken);
+    }
+
     @Step("Валидация ответа списка продуктов")
     public List<ProductsResponse> validateProductsResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
 
         return Arrays.asList(response.as(ProductsResponse[].class));
     }
@@ -61,6 +65,9 @@ public class ProductsSteps extends BaseApiSteps {
      */
     @Step("Получение ID продукта")
     public String getProductId(List<ProductsResponse> products) {
+        List<ProductsResponse> nonMini = products.stream()
+                .filter(p -> !p.isMiniCourse())
+                        .collect(Collectors.toList());
         assertFalse(products.isEmpty(), "Список продуктов не должен быть пустым");
         String productId = products.get(2).getProductId();
         Allure.addAttachment("Four Product ID", productId);
@@ -91,25 +98,22 @@ public class ProductsSteps extends BaseApiSteps {
 
     @Step("Валидация ответа с деталями продукта")
     public void validateProductDetailsResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
     }
 
     @Step("Валидация ответа списка достижений продукта")
     public void validateAchievementsProductsId(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
         String body = response.getBody().asString();
         assertNotNull(body, "Тело не должно быть null");
     }
 
     @Step("Валидация ответа списка достижений")
     public void validateAchievements(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
         String body = response.getBody().asString();
         assertNotNull(body, "Тело не должно быть null");
     }
@@ -149,14 +153,18 @@ public class ProductsSteps extends BaseApiSteps {
         assertNotNull(products, "Список продуктов не должен быть null");
 
         for (ProductsResponse product : products) {
+
+            if (!product.isMiniCourse()) {
+                assertNotNull(product.getId(), "ID продукта не должен быть null");
+                assertFalse(product.getId().trim().isEmpty(), "ID продукта не должен быть пустым");
+            }
             // Обязательные поля
-            assertNotNull(product.getId(), "ID продукта не должен быть null");
+
             assertNotNull(product.getName(), "Название продукта не должен быть null");
             assertNotNull(product.getAvailable(), "Available е должен быть null");
             assertNotNull(product.getCategoryAsString(), "Категория не должна быть null");
 
             // Валидация значений
-            assertFalse(product.getId().trim().isEmpty(), "ID продукта не должен быть пустым");
             assertFalse(product.getName().trim().isEmpty(), "Название не должно быть пустым");
         }
     }
@@ -243,6 +251,36 @@ public class ProductsSteps extends BaseApiSteps {
             Allure.addAttachment("Ошибка парсинга JSON", "text/plain",
                     "Не удалось распарсить JSON: " + e.getMessage());
         }
+    }
+
+    @Step("Список избранных продуктов")
+    public Response favoriteProduct(String authToken) {
+        return this.productsApi.getFavoriteProducts(authToken);
+    }
+
+    @Step("Добавление продуктов в избранное")
+    public Response postFavoriteProducts(String authToken, String productId) {
+        return this.productsApi.postFavoriteProducts(authToken, productId);
+    }
+
+    @Step("Премьеры")
+    public Response getPremiersProducts(String authToken) {
+        return this.productsApi.productsPremiers(authToken);
+    }
+
+    @Step("Топ 10")
+    public Response getProductTop10(String authToken) {
+        return this.productsApi.productTop10(authToken);
+    }
+
+    @Step("Сейчас смотрят")
+    public Response getProductWatchingNow(String authToken) {
+        return this.productsApi.productWatchingNow(authToken);
+    }
+
+    @Step("Категории платформы")
+    public Response getCategories(String authToken) {
+        return this.productsApi.getCategories(authToken);
     }
 
     private String getJsonNodeType(com.fasterxml.jackson.databind.JsonNode node) {

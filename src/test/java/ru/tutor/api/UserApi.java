@@ -42,6 +42,20 @@ public class UserApi extends BaseApi {
     }
 
     /**
+     * GET /user/game-leader/rating - рейтинг
+     */
+    public Response getLeaderRating(String authToken) {
+        return getWithToken(ApiEndpoints.USER_GAME_LEADER_RATING, authToken);
+    }
+
+    /**
+     * GET /user/tasks - список заданий
+     */
+    public Response getUserTasks(String authToken) {
+        return getWithToken(ApiEndpoints.USER_TASKS, authToken);
+    }
+
+    /**
      * POST /register - регистрация пользователя
      */
     public Response register(RegistrationRequest request) {
@@ -52,6 +66,6 @@ public class UserApi extends BaseApi {
      * POST /user/promo-codes/apply - применение промокода
      */
     public Response applyPromoCode(String authToken, ApplyPromoCodeRequest request) {
-        return postWithToken(ApiEndpoints.PROMO_CODES_APPLY , authToken, request);
+        return postWithToken(ApiEndpoints.PROMO_CODES_APPLY, authToken, request);
     }
 }

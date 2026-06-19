@@ -22,7 +22,7 @@ public class UserProductsApi extends BaseApi {
     }
 
     /**
-     * GET /user/achievements - получение списка продуктов пользователя
+     * GET /user/achievements - получение списка всех достижений продуктов пользователя
      */
     public Response getUserAchievements(String authToken) {
         return getWithToken(ApiEndpoints.USER_ACHIEVEMENTS, authToken);
@@ -63,6 +63,28 @@ public class UserProductsApi extends BaseApi {
     }
 
     /**
+     * GET /user/favorite-products - список избранных продуктов
+     */
+
+    public Response getFavoriteProducts(String authToken) {
+        return getWithToken(ApiEndpoints.USER_FAVORITE_PRODUCTS, authToken);
+    }
+
+    /**
+     * POST /user/favorite-products/{productId} - добавление продукта в избранное
+     */
+    public Response postFavoriteProducts(String authToken, String productId) {
+        return postWithToken(ApiEndpoints.USER_FAVORITE_PRODUCTS_ID, authToken, "", productId);
+    }
+
+    /**
+     * DELETE /user/favorite-products/{productId} - добавление продукта в избранное
+     */
+//    public Response deleteFavoriteProducts(String authToken, String productId) {
+//        ();
+//    }
+
+    /**
      * POST /user/videos/watched/create - тайминг просмотра
      */
 
@@ -82,5 +104,33 @@ public class UserProductsApi extends BaseApi {
     public Response putProductUpdate(String authToken, String productId, int moduleNumber) {
 
         return putWithToken(String.format(ApiEndpoints.PRODUCTS_COMPLETED_MODULE, productId, moduleNumber), authToken);
+    }
+
+    /**
+     * GET user/products/premiers - премьеры
+     */
+    public Response productsPremiers(String authToken) {
+        return getWithToken(ApiEndpoints.USER_PRODUCTS_PREMIERS, authToken);
+    }
+
+    /**
+     * GET user/product-positions/top10 - список топ 10
+     */
+    public Response productTop10(String authToken) {
+        return getWithToken(ApiEndpoints.USER_PRODUCT_POSITIONS_TOP10, authToken);
+    }
+
+    /**
+     * GET user/products/watching/now сейчас смотрят
+     */
+    public Response productWatchingNow(String authToken) {
+        return getWithToken(ApiEndpoints.USER_PRODUCTS_WATCHING_NOW , authToken);
+    }
+
+    /**
+     * GET /categories - категории платформы
+     */
+    public Response getCategories(String authToken) {
+        return getWithToken(ApiEndpoints.CATEGORIES, authToken);
     }
 }

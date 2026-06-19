@@ -9,7 +9,7 @@ import ru.tutor.utils.AllureAttachments;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Базовый класс для всех Steps с общими методами валидации
+ * Базовый класс для всех Steps API с общими методами валидации
  */
 public abstract class BaseApiSteps {
 

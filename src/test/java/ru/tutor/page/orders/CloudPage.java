@@ -44,6 +44,7 @@ public class CloudPage {
     private static final String ERROR_MESSAGE_TEXT = "Произошла ошибка. Пожалуйста, попробуйте ещё раз.";
     private static final String SUCCESS_TEXT = "Успех";
     private static final String CONTINUE_TEXT = "Продолжить";
+    private static final String FULL_PAY = "Оплатить";
     private static final String SUCCESS_PAY_TEXT = "Успешная оплата";
 
     //Локаторы в модальном окне

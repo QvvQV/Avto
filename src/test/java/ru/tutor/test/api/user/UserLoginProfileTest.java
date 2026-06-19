@@ -5,11 +5,14 @@ import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import ru.tutor.model.UserProfile;
 import ru.tutor.steps.UserSteps;
 import ru.tutor.config.TestConfig;
 
+import java.util.List;
+
 import static io.qameta.allure.Allure.step;
-import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(AllureJunit5.class)
@@ -24,52 +27,85 @@ public class UserLoginProfileTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
     private final UserSteps userSteps = new UserSteps(BASE_URL);
 
-//    @BeforeEach
-//    void setUp() {
-//        userSteps = new UserSteps(BASE_URL);
-//    }
+    private UserProfile getProfile() {
+        String token = userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
+        Response response = userSteps.getProfile(token);
+        return userSteps.validateProfileResponse(response, TEST_EMAIL);
+    }
 
     @Test
     @DisplayName("Полный сценарий: Логин → Профиль → Проверка флагов")
     void fullLoginProfileScenario() {
-        // 1. Логин и получение токена
-        String token = userSteps.loginAndGetToken(
-                TEST_EMAIL,
-                TEST_PASSWORD
+
+        UserProfile profile =  getProfile();
+
+        step("Проверка ключевых полей профиля", () -> {
+            assertNotNull(profile.getName(), "name не должен быть null");
+            assertNotNull(profile.getPremium(), "premium не должен быть null");
+            assertNotNull(profile.getDiamondBalance(), "diamondBalance не должен быть null");
+            assertTrue(profile.getDiamondBalance() >= 0, "diamondBalance должен быть => 0");
+        });
+    }
+
+    // ==================== Отрицательные тесты ====================
+
+    @Test
+    @DisplayName("Без токена -> 401")
+    void getProfileWithoutToken() {
+        Response response = step("GET /user/profile без токена", () ->
+                userSteps.getProfile("")
         );
 
-        // 2. Получение профиля
-        Response profileResponse = userSteps.getProfile(token);
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode())
+        );
+    }
 
-        // 3. Проверки
-        step("Проверка кода ответа и email", () -> {
-            profileResponse.then()
-                    .statusCode(200)
-                    .body("email", equalTo(TEST_EMAIL));
-        });
+    @Test
+    @DisplayName("Невалидный токен -> 401")
+    void getProfileWithoutInvalidToken() {
+        Response response = step("GET /user/profile невалидный токен", () ->
+                userSteps.getProfile("invalid_token")
+        );
 
-        step("Проверка name = ugh", () -> {
-            profileResponse.then()
-                    .body("name", equalTo("ugh"));
-        });
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode())
+        );
+    }
 
-        step("Проверка флага isTariffLifetime = false", () -> {
-            profileResponse.then()
-                    .body("isTariffLifetime", equalTo(false));
-        });
+    // ==================== Бизнес логика полей ====================
 
-        step("Проверка флага isYtSubscribed = false", () -> {
-            profileResponse.then()
-                    .body("isYtSubscribed", equalTo(false));
-        });
+    @Test
+    @DisplayName("id должен быть положительным числом")
+    void profileIdPositive() {
+        UserProfile profile = getProfile();
+        assertTrue(profile.getId() > 0, "id должен быть > 0, получено: " + profile.getId());
+    }
 
-        step("Проверка флага isVkSubscribed = false", () -> {
-            profileResponse.then()
-                    .body("isVkSubscribed", equalTo(false));
-        });
-        step("Проверка флага isTgSubscribed = false", () -> {
-            profileResponse.then()
-                    .body("isTgSubscribed", equalTo(false));
-        });
+    @Test
+    @DisplayName("email должен содержать @")
+    void profileEmailFormat() {
+        UserProfile profile = getProfile();
+        assertTrue(profile.getEmail().contains("@"), "email должен содержать '@', получено: " + profile.getEmail());
+    }
+
+    @Test
+    @DisplayName("clubMembership должен быть одним из: full, light, none")
+    void clubMembershipValid() {
+        UserProfile profile = getProfile();
+        assertNotNull(profile.getClubMemberShip(), "clubMemberShip не должен быть null");
+        assertTrue(List.of("full", "light", "none").contains(profile.getClubMemberShip()),
+                "clubMembership должен быть 'full', 'light' или 'none', получено: " + profile.
+                        getClubMemberShip());
+    }
+
+    @Test
+    @DisplayName("isTariffLifetime, isYtSubscribed, isVkSubscribed, isTgSubscribed — boolean")
+    void subscriptionFlagsAreBooleans() {
+        UserProfile profile = getProfile();
+        assertNotNull(profile.getIsTariffLifetime(), "isTariffLifeTime не долежн быть null");
+        assertNotNull(profile.getYtSubscribed(), "isYtSubscribed не должен быть null");
+        assertNotNull(profile.getVkSubscribed(), "isVkSubscribed не должен быть null");
+        assertNotNull(profile.getTgSubscribed(), "isTgSubscribed не должен быть null");
     }
 }

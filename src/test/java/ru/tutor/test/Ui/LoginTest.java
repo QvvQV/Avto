@@ -6,6 +6,7 @@ import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.*;
 
 import ru.tutor.base.BaseUiTest;
+import ru.tutor.base.BaseUiPlaywright;
 import ru.tutor.page.Registration;
 import ru.tutor.constants.AddressPage;
 

@@ -1,7 +1,5 @@
-package ru.tutor.api;
+package ru.tutor.api.club;
 
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import java.util.Map;

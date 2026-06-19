@@ -14,11 +14,14 @@ dependencies {
 
     // REST Assured
     testImplementation("io.rest-assured:rest-assured:6.0.0")
-    testImplementation("commons-codec:commons-codec:1.21.0")
+    testImplementation("commons-codec:commons-codec:1.22.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.21.0")
 
     // Selenide
-    testImplementation("com.codeborne:selenide:7.16.0")
+    testImplementation("com.codeborne:selenide:7.16.2")
+
+    // Playwright
+    testImplementation("com.microsoft.playwright:playwright:1.47.0")
 
 
 //    implementation("io.qameta.allure:allure-commandline:2.35.1")
@@ -30,23 +33,25 @@ dependencies {
     testImplementation("io.qameta.allure:allure-rest-assured:2.32.0")
     testImplementation("io.qameta.allure:allure-java-commons:2.32.0")
 
+    // Для playwright
+    testImplementation("io.qameta.allure:allure-playwright:2.32.0")
+
     implementation("javax.mail:mail:1.4.7")
 
 
     //JUnit 5
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.1.0-M1")
-    testImplementation("org.junit.platform:junit-platform-launcher:6.1.0-M1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.1.0")
+    testImplementation("org.junit.platform:junit-platform-launcher:6.1.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:6.1.0-M1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:6.1.0-M1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.1.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:6.1.0")
 
     // Utils
-    implementation("commons-io:commons-io:2.21.0")
-    implementation("net.datafaker:datafaker:2.5.3")
-    implementation("org.json:json:20251224")
-    implementation("org.jsoup:jsoup:1.22.1")
+    implementation("commons-io:commons-io:2.22.0")
+    implementation("net.datafaker:datafaker:2.5.4")
+    implementation("org.json:json:20260522")
+    implementation("org.jsoup:jsoup:1.22.2")
 
-//    implementation("io.qameta.allure:allure-maven:2.15.2")
 }
 
 tasks.test {

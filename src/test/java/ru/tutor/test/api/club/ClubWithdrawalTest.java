@@ -64,5 +64,20 @@ public class ClubWithdrawalTest {
 
             }
         });
-}
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Запрос на вывод средств без авторизации")
+    @Severity(SeverityLevel.CRITICAL)
+    void requestWithdrawalWithdrawalAmountWithoutAuth() {
+        WithdrawalRequest request = new WithdrawalRequest(100);
+
+        Response response = step("Вывод средст без авторизаии", () ->
+                withdrawalSteps.requestWithdrawal("", request)
+        );
+
+        step("Валидация ответа", () ->
+                assertTrue(response.getStatusCode() == 401));
+    }
 }

@@ -8,7 +8,7 @@ import ru.tutor.config.TestConfig;
 public class AddressPage {
 
     public static final String PARAM = "aff_rid";
-    public static final String VALUE = "1012_EXGs";
+    public static final String VALUE = "1026_EXNb";
     public static final String RECOVERY_FROM_EMAIL = "RECOVERY_FROM_EMAIL_pitanie_v1";
     public static final String UTM_SOURCE = "&utm_source=customutm";
 

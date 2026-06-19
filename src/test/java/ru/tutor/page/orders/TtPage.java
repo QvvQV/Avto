@@ -4,8 +4,10 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.utils.UniversalMethod;
 
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static io.qameta.allure.Allure.step;
 
 /*
@@ -23,8 +25,9 @@ public class TtPage {
     private final SelenideElement premium = $("[data-subscription-type='premium']");
 
     // Модальное окно
-    private final SelenideElement textModal = $(".buy-modal_tarrif__qfojr");
-    private final SelenideElement closeModal = $(".buy-modal_close__kHp6e");
+//    private final SelenideElement textModal = $(".buy-modal_tarrif__qfojr");
+    private final SelenideElement textModal = $(".buy-modal-v2-shell_trialTitlePrimary__klUXB");
+    private final SelenideElement closeModal = $(".buy-modal-v2-shell_closeBtn__j0Cn0");
 
     // Enum для типов подписок
     public enum SubscriptionType {

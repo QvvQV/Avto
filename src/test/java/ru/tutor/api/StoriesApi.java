@@ -1,16 +1,9 @@
 package ru.tutor.api;
 
 import io.qameta.allure.Step;
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
-
-import static io.restassured.RestAssured.given;
-
-/**
- * Ручка для колеса фортуны
- */
+import ru.tutor.constants.ApiEndpoints;
 
 public class StoriesApi extends BaseApi {
 
@@ -18,17 +11,59 @@ public class StoriesApi extends BaseApi {
         super(baseUrl);
     }
 
-    @Step("POST /user/stories/screen - как часто видит пользователь сторис")
+    /**
+     * Ручка для колеса фортуны
+     */
+    @Step("POST /user/stories/screen - видимость колеса для пользователя сторис")
     public Response storyScreen(String authToken) {
-        return given(baseSpec)
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + authToken)
-                .log().all()
-                .when()
-                .post(baseUrl + "/user/stories/screen")
-//                .get(baseUrl + "/user/stories")
-                .then()
-                .log().all()
-                .extract().response();
+
+        return postWithToken(ApiEndpoints.USER_STORIES_SCREEN, authToken, "[fortuna]");
+    }
+
+    /**
+     * GET /user/stories
+     */
+    @Step("GET /user/stories - истории на платформе")
+    public Response showStories(String authToken) {
+        return getWithToken(ApiEndpoints.USER_STORIES, authToken);
+    }
+
+    /**
+     * GET /user/tuts-categories
+     */
+    @Step("GET /user/tuts-categories - список категорий тутсов")
+    public Response showTutsCategories(String authToken) {
+        return getWithToken(ApiEndpoints.USER_TUTS_CATEGORIES, authToken);
+    }
+
+    /**
+     * GET /user/tuts/random-list
+     */
+    @Step("GET /user/tuts/random-list - андомный список тутсов")
+    public Response showTutsRandomList(String authToken) {
+        return getWithToken(ApiEndpoints.USER_TUTS_RANDOM_LIST, authToken);
+    }
+
+    /**
+     * GET /user/tuts/category/feed
+     */
+    @Step("GET /user/tuts/category/{id}/feed - список тутсов определённой категории")
+    public Response showCategoryFeed(String authToken, String id) {
+        return getWithToken(String.format(ApiEndpoints.USER_TUTS_CATEGORY_FEED, id), authToken);
+    }
+
+    /**
+     * GET /user/videos
+     */
+    @Step("GET /user/videos - список видео")
+    public Response showVideos(String authToken) {
+        return getWithToken(ApiEndpoints.USER_VIDEOS, authToken);
+    }
+
+    /**
+     * GET /user/videos/{id} - детали видео
+     */
+    public Response detailsUserVideos(String authToken, String id) {
+        return getWithToken(String.format(ApiEndpoints.USER_VIDEO_DETAILS_BY_ID, id), authToken);
     }
 }

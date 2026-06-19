@@ -397,9 +397,7 @@ public class UserRewardSteps extends BaseApiSteps {
 
     @Step ("Валидация успешного открытия награды")
     public RewardOpenResponse validateOpenRewardResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType("application/json");
+        assertSuccessStatusCode(response);
 
         return response.as(RewardOpenResponse.class);
     }

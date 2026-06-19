@@ -1,4 +1,4 @@
-package ru.tutor.api;
+package ru.tutor.api.club;
 
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
