@@ -3,11 +3,13 @@ package ru.tutor.page.orders;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.utils.UniversalMethod;
+import ru.tutor.utils.WaitHelper;
+
+import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
 /*
@@ -17,16 +19,18 @@ import static io.qameta.allure.Allure.step;
 public class TtPage {
 
     // Локаторы кнопок
-    private final SelenideElement btnOpenFor = $("[data-btn-scroll='subscribe']");
+//    private final SelenideElement btnOpenFor = $("[data-btn-scroll='subscribe']");
+    private final SelenideElement btnOpenFor = $$("h2").find(exactText("Выберите оптимальный тариф"));
+    private final SelenideElement main = $x("//h2[contains(text(),'Выберите оптимальный тариф')]");
 
     // Карточки подписок
     private final SelenideElement lite99 = $("[data-subscription-type='litenew']");
     private final SelenideElement life = $("[data-subscription-type='lifetime']");
-    private final SelenideElement premium = $("[data-subscription-type='premium']");
+    private final SelenideElement premium = $("[data-tariff='premium'] [data-subscription-type='premium']");
 
     // Модальное окно
 //    private final SelenideElement textModal = $(".buy-modal_tarrif__qfojr");
-    private final SelenideElement textModal = $(".buy-modal-v2-shell_trialTitlePrimary__klUXB");
+    private final SelenideElement textModal = $(".buy-modal-v2-shell_tariffTag__Px_HF");
     private final SelenideElement closeModal = $(".buy-modal-v2-shell_closeBtn__j0Cn0");
 
     // Enum для типов подписок
@@ -73,7 +77,12 @@ public class TtPage {
 
     @Step("Кликаем по кнопке на главной за 1 руб")
     public TtPage clickBtnOpenFor() {
-        UniversalMethod.clickButton(btnOpenFor, "Открыть за 1Р");
+
+        WaitHelper.waitForPageLoad();
+        main.scrollTo();
+        System.out.println(main.getText().trim());
+        btnOpenFor.scrollTo().shouldBe(visible, Duration.ofSeconds(20));
+//        UniversalMethod.safeClick(premium, "Попробовать за 1₽*");
         return this;
     }
 

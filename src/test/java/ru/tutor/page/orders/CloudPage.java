@@ -60,6 +60,7 @@ public class CloudPage {
     private final SelenideElement CARD_PAY_BUTTON = $("[data-test='cardpay-button']");
     public final SelenideElement FULL_OPTION = $("[name='full']");
     private final SelenideElement INSTALLMENTS_OPTION = $("[name='installments']");
+    private final SelenideElement INSTALLMENTS_PARTS = $("[name='installmentsParts']");
 
     //Локаторы отдельного окна оплаты
     private final SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));
@@ -173,9 +174,10 @@ public class CloudPage {
             // Логирование
             String modalText = ttPage.getTextModal();
             logModalType(modalText, email);
+            System.out.println(FULL_OPTION.getText().trim());
 
             // Опция
-            UniversalMethod.safeClick(FULL_OPTION, "Оплата");
+            UniversalMethod.safeClick(FULL_OPTION, "Оплатить");
 
             // Проверка отсутсвия ошибок
             ERROR_MESSAGE.shouldNot(visible);
@@ -187,7 +189,7 @@ public class CloudPage {
         return email;
     }
 
-    @Step("Выбор опции 'Полная оплата' в модальном окне")
+    @Step("Выбор опции 'Полная оплата' в модальном окне CLOUD")
     public void setDateModalInstallments(){
         step("Выбор полной оплаты и заполнение email", () -> {
             currentEmail = faker.internet().emailAddress();
@@ -200,7 +202,31 @@ public class CloudPage {
             logModalType(modalText, currentEmail);
 
             // Выбор опции полной оплаты
-            UniversalMethod.safeClick(INSTALLMENTS_OPTION, "Полная оплата");
+            UniversalMethod.safeClick(INSTALLMENTS_OPTION, "Оплатить Долями");
+
+            // Проверка отсутствия ошибок
+            ERROR_MESSAGE.shouldNot(visible);
+
+            // Логирование
+            AllureAttachments.attachText("Email в модалке", currentEmail);
+            System.out.println(modalText + ": " + currentEmail);
+        });
+    }
+
+    @Step("Выбор опции 'Полная оплата' в модальном окне SBER")
+    public void setDateModalInstallmentsParts(){
+        step("Выбор полной оплаты и заполнение email", () -> {
+            currentEmail = faker.internet().emailAddress();
+
+            // Заполнение email
+            UniversalMethod.safeSetValue(EMAIL_INPUT, currentEmail, "Email (полная оплата)");
+
+            // Логирование типа модалки
+            String modalText = ttPage.getTextModal();
+            logModalType(modalText, currentEmail);
+
+            // Выбор опции полной оплаты
+            UniversalMethod.safeClick(INSTALLMENTS_PARTS, "Плати частями");
 
             // Проверка отсутствия ошибок
             ERROR_MESSAGE.shouldNot(visible);

@@ -25,6 +25,7 @@ public class UnlockNextWeek {
     public void openUnlimitedAccess() {
         WaitHelper.waitForAnimationComplete();
         UniversalMethod.clickButton(OPEN_UNLIMITED_ACCESS_BUTTON,OPEN_UNLIMITED_ACCESS_TEXT);
+        System.out.println(BUY_BUTTON);
         UniversalMethod.clickButton(BUY_BUTTON,BUY_TEXT);
     }
 }

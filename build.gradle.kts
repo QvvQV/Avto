@@ -34,7 +34,7 @@ dependencies {
     testImplementation("io.qameta.allure:allure-java-commons:2.32.0")
 
     // Для playwright
-    testImplementation("io.qameta.allure:allure-playwright:2.32.0")
+//    testImplementation("io.qameta.allure:allure-playwright:2.32.0")
 
     implementation("javax.mail:mail:1.4.7")
 

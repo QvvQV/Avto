@@ -68,4 +68,11 @@ public class UserApi extends BaseApi {
     public Response applyPromoCode(String authToken, ApplyPromoCodeRequest request) {
         return postWithToken(ApiEndpoints.PROMO_CODES_APPLY, authToken, request);
     }
+
+    /**
+     * GET /user - проверка авторизации
+     */
+    public Response checkAuth(String authToken) {
+        return getWithToken(ApiEndpoints.USER_CHECK, authToken);
+    }
 }

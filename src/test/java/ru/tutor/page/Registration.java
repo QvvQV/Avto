@@ -32,7 +32,7 @@ public class Registration {
     private static final String REGISTER_TEXT = "Зарегистрироваться";
 
 //    // Селекторы
-    private final SelenideElement EMAIL_INPUT = $("[name='email']");
+    private final SelenideElement EMAIL_INPUT = $("[id='buy-modal-v2-email']");
     private final SelenideElement PASSWORD_INPUT = $("[name='password']");
     private final SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
     private final SelenideElement btnYandex = $("[data-t='personal-button:text']");

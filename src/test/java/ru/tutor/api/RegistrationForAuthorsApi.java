@@ -5,6 +5,7 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
+import ru.tutor.constants.ApiEndpoints;
 
 import static io.restassured.RestAssured.given;
 
@@ -30,7 +31,7 @@ public class RegistrationForAuthorsApi extends BaseApi {
                 .body("{\"isAuthorRegister\":\"" + isAuthorRegister + "\"email\":\"" + email + "\"name\":\"" + name + "\"}")
                 .log().all()
                 .when()
-                .post(baseUrl + "/order")
+                .post(baseUrl + ApiEndpoints.ORDER)
                 .then()
                 .statusCode(200)
                 .log().all()

@@ -2,6 +2,7 @@ package ru.tutor.api;
 
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
+import ru.tutor.constants.ApiEndpoints;
 
 public class RegisterApi extends BaseApi {
 
@@ -15,7 +16,7 @@ public class RegisterApi extends BaseApi {
                 email, name, password, phone, telegram, approvePolicy
         );
 
-        return post("/register", payload);
+        return post(ApiEndpoints.REGISTER, payload);
     }
 
     public Response registerWithAllData(String email, String name, String password, String phone, String telegram){

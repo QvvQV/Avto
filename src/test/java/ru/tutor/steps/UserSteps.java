@@ -521,6 +521,20 @@ public class UserSteps extends BaseApiSteps {
         return validatePromoCodeErrorResponse(response, 400, expectedError);
     }
 
+    @Step("GET /user - проверка атовризации")
+    public Response checkAuth(String authToken) {
+        Response response = userApi.checkAuth(authToken);
+        AllureAttachments.attachJson("Check Auth Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация успешной проверки авторизации")
+    public void validateAuthCheckResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertEquals("\"OK\"", response.getBody().asString().trim(), "Response body should be 'OK'") ;
+    }
+
 //    @Step("Применение промокода текущим пользователем")
 //    public ApplyPromoCodeResponse applyPromoCodeForCurrentUser(String promoCodeName, String orderNumber) {
 //        if (currentAuthToken == null) {
