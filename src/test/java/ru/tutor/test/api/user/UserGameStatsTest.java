@@ -23,18 +23,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты эндпоинта /user/game-stats")
 public class UserGameStatsTest {
 
-    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
+    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
-
+    private static String token;
     private UserProfile profile;
 
     @BeforeEach
         public void setup() {
-            profile = step("Логин", () ->
-                    userSteps.loginAndGetUserProfile(TEST_EMAIL, TEST_PASSWORD)
+            token = step("Логин", () ->
+                    authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
             );
     }
 
@@ -44,7 +44,7 @@ public class UserGameStatsTest {
     void getGameStatsSuccess() {
 
         Response response = step("GET /user/game-stats", () ->
-                userSteps.getGameStats(userSteps.getCurrentAuthToken())
+                userSteps.getGameStats(token)
         );
 
         step("Проверка ответа", () -> {
@@ -62,7 +62,7 @@ public class UserGameStatsTest {
     @DisplayName("Детальная проверка данных игровой статистики")
     @Story("Валидация данных")
     void verifyGameStatsDetails() {
-        Response response = userSteps.getGameStats(userSteps.getCurrentAuthToken());
+        Response response = userSteps.getGameStats(token);
         GameStatsResponse stats = userSteps.validateGameStatsResponse(response);
 
         step("Проверка конкретных значений", () ->
@@ -79,7 +79,7 @@ public class UserGameStatsTest {
     @DisplayName("Проверка структуры массива days")
     void verifyDaysArrayStructure() {
 
-        Response response = userSteps.getGameStats(userSteps.getCurrentAuthToken());
+        Response response = userSteps.getGameStats(token);
 
         response.then()
                 .body("days.size()", equalTo(31))
@@ -111,11 +111,11 @@ public class UserGameStatsTest {
     void verifyConnectionWithUserProfile() {
         // 1. Получаем профиль
 
-        Response profileResponse = userSteps.getGameStats(userSteps.getCurrentAuthToken());
+        Response profileResponse = userSteps.getGameStats(token);
         Boolean hasLoginTodayProfile = profileResponse.jsonPath().getBoolean("hasLoginToday");
 
         // 2. Получаем игровую статистику
-        Response gameStatsResponse = userSteps.getGameStats(userSteps.getCurrentAuthToken());
+        Response gameStatsResponse = userSteps.getGameStats(token);
         Boolean hasGameStatsResponse = gameStatsResponse.jsonPath().getBoolean("hasLoginToday");
 
         // 3. Проверяем согласованность
@@ -130,6 +130,34 @@ public class UserGameStatsTest {
                 "Профиль - hasLoginToday: " + hasLoginTodayProfile + "\n" +
                         "Game Stats - hasGameStatsResponse: " + hasGameStatsResponse + "\n" +
                         "Совпадают: " + (hasLoginTodayProfile.equals(hasGameStatsResponse) ? "✅" : "❌")
+        );
+    }
+
+    @Test
+    @DisplayName("Успешное получение рейтинг лидеров")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("positive")
+    void gameLeaderRatingSuccess()
+    {
+        Response response = step("Получение списка лидеров", () ->
+                userSteps.getLeaderRating(token)
+        );
+        step("Валидация ответа", () ->
+                assertEquals(200, response.getStatusCode())
+        );
+    }
+
+    @Test
+    @DisplayName("Получение списка лидеров без авторизации")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void gameLeaderRatingWithoutAuth()
+    {
+        Response response = step("Получение списка лидеров", () ->
+                userSteps.getLeaderRating("")
+        );
+        step("Валидация ответа", () ->
+                assertEquals(401, response.getStatusCode())
         );
     }
 }

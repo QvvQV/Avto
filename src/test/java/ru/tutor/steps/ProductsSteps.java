@@ -45,6 +45,13 @@ public class ProductsSteps extends BaseApiSteps {
         return this.productsApi.getAchievementsProductById(authToken, saveProductId);
     }
 
+    @Step("GET /user/achievements/last - последние достижения")
+    public Response getAchievementsLast(String authToken) {
+        Response response = productsApi.getAchievementsLast(authToken);
+        AllureAttachments.attachJson("Attached files", response.getBody().asString());
+        return response;
+    }
+
     @Step("Получение всех продуктов")
     public Response getAllProducts(String authToken) {
         return this.productsApi.getAllProducts(authToken);
@@ -94,6 +101,22 @@ public class ProductsSteps extends BaseApiSteps {
     public Response getProductDetailsById(String authToken, String savedProductId) {
         Allure.addAttachment("Используем ID продукта", savedProductId);
         return this.productsApi.getProductById(authToken, savedProductId);
+    }
+
+    @Step("GET /user/products/{orderNumber}/attached-files - получение вложений курса")
+    public Response getAttachedFiles(String authToken, String orderNumber) {
+        Allure.addAttachment("Order Number", orderNumber);
+        Response response = productsApi.getAttachedFiles(authToken, orderNumber);
+        AllureAttachments.attachJson("Attached files", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация ответа списка вложений")
+    public void validateAttachedFilesResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        String body = response.getBody().asString();
+        assertNotNull(body, "Тело не должно быть null");
     }
 
     @Step("Валидация ответа с деталями продукта")

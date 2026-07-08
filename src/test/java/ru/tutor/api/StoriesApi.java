@@ -29,6 +29,22 @@ public class StoriesApi extends BaseApi {
     }
 
     /**
+     * user/stories/{ulid}
+     */
+    @Step("GET /user/stories/{ulid} - детали конкретной истории")
+    public Response showStoriesId(String authToken, String ulid) {
+        return getWithToken(String.format(ApiEndpoints.USER_STORIES_ULID, ulid), authToken);
+    }
+
+    /**
+     * /user/banners/{slug}
+     */
+    @Step("/user/banners/{slug} - детали конкретного баннера")
+    public Response showBanners(String authToken, String slug) {
+        return getWithToken(String.format(ApiEndpoints.USER_BANNERS, slug), authToken);
+    }
+
+    /**
      * GET /user/tuts-categories
      */
     @Step("GET /user/tuts-categories - список категорий тутсов")

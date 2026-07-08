@@ -304,7 +304,7 @@ public final class ApiEndpoints {
     public static final String ACHIEVEMENTS_PRODUCT_ID = "/user/achievements/%s";
 
     /**
-     * она отдает в ответе 6 ачивок по курсам
+     * Она отдает в ответе 6 ачивок по курсам
      */
     public static final String USER_ACHIEVEMENTS_LAST =  "/user/achievements/last";
 
@@ -695,7 +695,7 @@ public final class ApiEndpoints {
     /**
      * детали конкретной истории
      */
-    public static final String USER_STORIES_DETAILS = "/user/stories/%s";
+    public static final String USER_STORIES_ULID = "/user/stories/%s";
 
     /**
      * детали конкретного баннера
@@ -706,11 +706,6 @@ public final class ApiEndpoints {
      * список тутсов с пагинацией
      */
     public static final String USER_TUTS = "/user/tuts";
-
-    /**
-     * возвращает случайно перемешанный список доступных тутсов
-     */
-    public static final String USER_TUTS_RANDOM = "/user/tuts/random";
 
     /**
      * Рандомный список тутсов

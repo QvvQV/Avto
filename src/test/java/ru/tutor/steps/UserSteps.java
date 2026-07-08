@@ -225,6 +225,39 @@ public class UserSteps extends BaseApiSteps {
         return this.userApi.getUserTasks(authToken);
     }
 
+    @Step("POST /user/tasks/change/{id} - заменить задание")
+    public Response changeTask(String authToken, String id) {
+        Response response = this.userApi.postUserTasksChange(authToken, id);
+        AllureAttachments.attachJson("Tasks Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("POST /user/tasks/finish/{id} - отметить задание завершенным")
+    public Response finishTask(String authToken, String id) {
+        Response response = this.userApi.postUserTasksFinish(authToken, id);
+        AllureAttachments.attachJson("Tasks Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация ответа списка заданий")
+    public void validateTasksResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
+        String body = response.getBody().asString();
+        assertNotNull(body, "Тело ответа не должно быть null");
+        assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");
+    }
+
+    @Step("Извлечение id первого задания")
+    public String extractFirstTaskId(Response response) {
+        String taskId = response.jsonPath().getString("day[0].id");
+        assertNotNull(taskId, "id задания не должны быть null");
+        assertFalse(taskId.isEmpty(), "id задания не должны быть пустыми");
+        Allure.addAttachment("Extracted taskId", taskId);
+        return taskId;
+    }
+
     @Step("Валидация ответа игровой статистики")
     public GameStatsResponse validateGameStatsResponse(Response response) {
         // Проверяем статус код и заголовки

@@ -56,6 +56,20 @@ public class UserApi extends BaseApi {
     }
 
     /**
+     * POST /user/tasks/change/{id} - заменить задание
+     */
+    public Response postUserTasksChange(String authToken, String id) {
+        return postWithToken(ApiEndpoints.USER_TASKS_CHANGE, authToken, "", id);
+    }
+
+    /**
+     * POST /user/tasks/finish/{id} - отметить задание завершенным
+     */
+    public Response postUserTasksFinish(String authToken, String id) {
+        return postWithToken(ApiEndpoints.USER_TASKS_FINISH, authToken, "",id);
+    }
+
+    /**
      * POST /register - регистрация пользователя
      */
     public Response register(RegistrationRequest request) {

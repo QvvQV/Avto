@@ -173,6 +173,16 @@ public class ProductsProfileTest {
                 assertEquals(200, response.getStatusCode()));
     }
 
+    @Test
+    @Order(28)
+    @DisplayName("Успешное получение Последних достижений GET /user/achievements/last")
+    void getAchievementsLastSuccess() {
+        Response response = productsSteps.getAchievementsLast(token);
+        step("Валидация ответа", () ->
+                productsSteps.validateProductsResponse(response)
+        );
+    }
+
     // ==================== Отрицательные тесты ====================
 
     @Test
@@ -409,6 +419,55 @@ public class ProductsProfileTest {
             String body = response.getBody().asString();
             assertTrue(body.contains("title"), "Должна быть ошибка о номере курса. Тело: " + body);
         });
+    }
+
+    @Test
+    @Order(27)
+    @DisplayName("Успешный ответ вложенные файлы")
+    @Tag("positive")
+    void getAttachedFilesSuccess() {
+        ensureProductsLoaded();
+        Response response = step("GET /user/products/{orderNumber}/attaches-files", () ->
+                productsSteps.getAttachedFiles(token, savedOrderNumber)
+        );
+        step("Валидация ответа", () ->
+                assertEquals(200, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(28)
+    @DisplayName("Эндпоинт attached-files пустой продукт")
+    @Tag("negative")
+    void getAttachedFilesWithoutProduct() {
+        Response response = step("GET /user/products/{orderNumber}/attached-files без токена", () ->
+                productsSteps.getAttachedFiles(token, "")
+        );
+        step("Проверка статуса 404", () ->
+                assertEquals(404, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(29)
+    @DisplayName("Эндпоинт achievements/last без авторизации")
+    @Tag("negative")
+    void getAchievementsLastWithoutAuth() {
+        Response response = step("GET user/achievements/last без авторизации", () ->
+                productsSteps.getAchievementsLast("")
+        );
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(30)
+    @DisplayName("Эндпоинт achievements/last невалидный токен")
+    @Tag("negative")
+    void getAchievementsLastInvalidToken() {
+        Response response = step("GET user/achievements/last с невалидным токеном", () ->
+                productsSteps.getAchievementsLast("invalidToken")
+        );
+        step("Проверка 401", () ->
+                assertEquals(401, response.getStatusCode()));
     }
 
     private void ensureProductsLoaded() {

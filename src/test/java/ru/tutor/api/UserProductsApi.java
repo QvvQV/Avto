@@ -38,6 +38,13 @@ public class UserProductsApi extends BaseApi {
     }
 
     /**
+     * GET /user/achievements/last
+     */
+    public Response getAchievementsLast(String authToken) {
+        return getWithToken(ApiEndpoints.USER_ACHIEVEMENTS_LAST, authToken);
+    }
+
+    /**
      * GET /user/products/all - получение всех доступных продуктов
      */
     public Response getAllProducts(String authToken) {
@@ -132,5 +139,12 @@ public class UserProductsApi extends BaseApi {
      */
     public Response getCategories(String authToken) {
         return getWithToken(ApiEndpoints.CATEGORIES, authToken);
+    }
+
+    /**
+     * GET /user/products/{orderNumber}/attached-files - список доступных вложений у курса
+     */
+    public Response getAttachedFiles(String authToken, String productId) {
+        return getWithToken(String.format(ApiEndpoints.PRODUCTS_ATTACHED_FILES, productId), authToken);
     }
 }

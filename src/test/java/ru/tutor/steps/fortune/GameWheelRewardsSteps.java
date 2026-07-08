@@ -26,7 +26,7 @@ public record GameWheelRewardsSteps (GameWheelApi gameWheelApi) {
 
     @Step("Получение списка наград")
     public Response getGameWheelRewards(String authToken) {
-        Response response = this.gameWheelApi.getGameWheelRewards(authToken);
+        Response response = gameWheelApi.getGameWheelRewards(authToken);
         AllureAttachments.attachJson("Game wheel Rewards Response", response.getBody().asString());
         AllureAttachments.attachJson("Game wheel Rewards Headers", response.getHeaders().toString());
         return response;
