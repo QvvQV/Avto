@@ -46,4 +46,14 @@ public class UserOrderApi extends BaseApi {
     public Response getSubscriptionState(String authToken) {
         return getWithToken(ApiEndpoints.ORDERS_SUBSCRIPTION_STATE, authToken);
     }
+
+    @Step("PUT /user/orders/pause/{days} - поставить паузу")
+    public Response pauseOrder(String authToken, int days) {
+        return putWithToken(String.format(ApiEndpoints.ORDERS_PAUSE, days), authToken);
+    }
+
+    @Step("PUT /user/orders/unpause - снфть паузу")
+    public Response unpauseOrder(String authToken) {
+        return putWithTokenObject(ApiEndpoints.ORDERS_UNPAUSE, authToken, "[]");
+    }
 }

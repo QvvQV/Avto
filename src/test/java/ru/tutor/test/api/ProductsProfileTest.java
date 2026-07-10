@@ -86,7 +86,7 @@ public class ProductsProfileTest {
         Response response5 = step("Получение списка достижений продукта", () ->
                 productsSteps.getAchievementsProductsId(token, savedOrderNumber));
         step("Валидация деталей списка достижений продукта", () ->
-                productsSteps.validateAchievementsProductsId(response5));
+                productsSteps.validateAchievements(response5));
 
         Response response6 = step("Страница достижений", () ->
                 productsSteps.getUserAchievements(token));

@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import ru.tutor.api.GameWheelApi;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import ru.tutor.base.BaseApiSteps;
 import ru.tutor.constants.GameWheelRewardsConstants;
 import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.utils.AllureAttachments;
@@ -18,10 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * Шаги и логика колеса для тестов колеса фортуны
  */
 
-public record GameWheelRewardsSteps (GameWheelApi gameWheelApi) {
+public class GameWheelRewardsSteps extends BaseApiSteps {
 
-    public static GameWheelRewardsSteps withBaseUrl(String baseUrl) {
-        return new GameWheelRewardsSteps(new GameWheelApi(baseUrl));
+    private final GameWheelApi gameWheelApi;
+
+    public GameWheelRewardsSteps (String baseUrl) {
+        super(baseUrl);
+        this.gameWheelApi = new GameWheelApi(baseUrl);
+    }
+
+    public static GameWheelRewardsSteps withBaseUrl (String baseUrl) {
+        return new GameWheelRewardsSteps(baseUrl);
     }
 
     @Step("Получение списка наград")
@@ -34,9 +42,8 @@ public record GameWheelRewardsSteps (GameWheelApi gameWheelApi) {
 
     @Step("Валидация успешного ответа со списком наград")
     public List<GameWheelRewardResponse> validateGameWheelRewardsResponse(Response response) {
-        response.then()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
 
         response.then()
                 .body("$", instanceOf(List.class))

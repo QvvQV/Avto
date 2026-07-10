@@ -125,14 +125,6 @@ public class ProductsSteps extends BaseApiSteps {
         assertContentTypeJson(response);
     }
 
-    @Step("Валидация ответа списка достижений продукта")
-    public void validateAchievementsProductsId(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        String body = response.getBody().asString();
-        assertNotNull(body, "Тело не должно быть null");
-    }
-
     @Step("Валидация ответа списка достижений")
     public void validateAchievements(Response response) {
         assertSuccessStatusCode(response);

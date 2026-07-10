@@ -40,7 +40,7 @@ public class UserCheckTest {
 
     @Test
     @DisplayName("Проверка авторизации")
-    void checkAutorication() {
+    void checkAuthorization() {
         Response response = step("GET /user с валидным токеном", () ->
                 userSteps.checkAuth(token)
         );
