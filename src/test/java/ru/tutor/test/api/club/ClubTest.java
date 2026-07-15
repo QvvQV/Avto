@@ -36,7 +36,8 @@ public class ClubTest {
 
     private ClubMemberResponse memberInfo;
     private ClubStatisticsResponse statisticsInfo;
-    private String authToken;
+    private String token;
+    private int userId = 47782;
 
     @BeforeAll
     public static void setupAll() {
@@ -46,7 +47,7 @@ public class ClubTest {
 
     @BeforeEach
     public void setup() {
-        authToken = step("Логин", () ->
+        token = step("Логин", () ->
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
@@ -59,7 +60,7 @@ public class ClubTest {
     void getClubStatisticsSuccess() {
 
         Response response = step("GET /user/club/statistics", () ->
-                clubSteps.  getClubStatistics(authToken)
+                clubSteps.  getClubStatistics(token)
         );
 
         statisticsInfo = step("Валидация ответа", () ->
@@ -84,7 +85,7 @@ public class ClubTest {
     void getClubMemberSuccess() {
 
         Response response = step("GET /user/club/member", () ->
-                clubSteps.getClubMember(authToken)
+                clubSteps.getClubMember(token)
         );
 
         memberInfo = step("Валидация ответа", () ->
@@ -112,7 +113,7 @@ public class ClubTest {
     void verifySpecificValuesFromExample() {
 
         Response response = step("GET /user/club/member", () ->
-                clubSteps.getClubMember(authToken)
+                clubSteps.getClubMember(token)
         );
 
         step("Проверка членства", () -> {
@@ -142,7 +143,7 @@ public class ClubTest {
     @Test
     @Order(5)
     @DisplayName("Проверка информации о членстве без авторизации")
-    @Story("негативный сценарий")
+    @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     void getClubMemberWithoutAuth() {
         Response response = step("GET /user/club/member без токена", () ->
@@ -163,7 +164,7 @@ public class ClubTest {
         WithdrawalRequest request = new WithdrawalRequest(3000);
 
         Response response = step("POST с суммой 3000р", () ->
-                withdrawalSteps.requestWithdrawal(authToken, request)
+                withdrawalSteps.requestWithdrawal(token, request)
         );
 
         step("Проверка ответа", () -> {
@@ -193,5 +194,152 @@ public class ClubTest {
                 fail(String.format("Неожиданный статус код: %d. Ожидался 201 или 400", statusCode));
             }
         });
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Успешное получение списка реферралов")
+    @Story("Основной сценарий")
+    @Tag("positive")
+    void getReferralsSuccess() {
+        Response response = step("Список реферралдов пользователя", () ->
+                clubSteps.getUserReferrals(token, userId)
+        );
+        step("Проверка ответа", () ->
+               clubSteps.validateUserReferralsResponse(response)
+        );
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("Получение списка реферралов - без авторизации")
+    @Story("Негативный сценарий")
+    @Tag("negative")
+    void getReferralsWithoutAuth() {
+        Response response = step("Список реферралов без токена", () ->
+                clubSteps.getUserReferrals("", userId)
+        );
+        step("Проверка статуса ответа", () ->
+                assertEquals(401,  response.getStatusCode()));
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("Получение списка реферралов с невалидным токеном")
+    @Story("Негативный сценарий")
+    @Tag("negative")
+    void getReferralsInvalidToken() {
+        Response response = step("Список реферралов с невалидным токеном", () ->
+                clubSteps.getUserReferrals("invalid", userId)
+        );
+        step("Проверка статуса ответа", () ->
+                assertEquals(401,  response.getStatusCode()));
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("GET /user/{userId}/club/referrals/{referralId} - детали реферала")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Основной сценарий")
+    @Tag("positive")
+    void getReferralDetailSuccess() {
+        Response referralsResponse = step("GET /user/" +  userId + "/club/referrals", () ->
+                clubSteps.getUserReferrals(token, userId)
+        );
+        clubSteps.validateUserReferralsResponse(referralsResponse);
+        Integer referralId = step("Извлечение id реферала", () ->
+                clubSteps.extractReferralId(referralsResponse)
+        );
+        Response detailResponse = step("GET /user/" + userId + "/club/referrals/" + referralId, () ->
+                clubSteps.getUserReferralById(token, userId, referralId)
+        );
+        step("Валидация ответа", () ->
+                clubSteps.validateUserReferralsResponse(detailResponse)
+        );
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("GET /user/{userId}/club/referrals/{referralId} - детали реферала без авторизации")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Негативный сценарий")
+    @Tag("negative")
+    void getReferralWithoutAuth() {
+        Response response = step("GET /user/" + userId + "/club/referrals - без токена", () ->
+                clubSteps.getUserReferralById("", userId, 0)
+        );
+        step("Проверка ошибки авторизации", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("GET /user/{userId}/club/referrals/{referralId} - с невалидным токеном")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Негативный сценарий")
+    @Tag("negative")
+    void getReferralInvalidToken() {
+        Response response = step("GET /user/" + userId + "/club/referrals - невалидный токен", () ->
+                clubSteps.getUserReferralById("invalid", userId, 0)
+        );
+        step("Проверк ошибки", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("GET /user/{userId}/club/referrals/{referralId}/referrals - список реферала")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Основной сценарий")
+    @Tag("positive")
+    void getReferralReferralsSuccess() {
+        Response referralsResponse = step("GET /user/" +  userId + "/club/referrals", () ->
+                clubSteps.getUserReferrals(token, userId)
+        );
+        clubSteps.validateUserReferralsResponse(referralsResponse);
+        Integer referralId = step("Извлечение id реферала", () ->
+                clubSteps.extractReferralId(referralsResponse)
+        );
+        Response detailResponse = step("GET /user/" + userId + "/club/referrals/" + referralId, () ->
+                clubSteps.getUserReferralById(token, userId, referralId)
+        );
+        step("Валидация ответа", () ->
+                clubSteps.validateUserReferralsResponse(detailResponse)
+        );
+
+        Response nestedResponse = step ("GET /user/" + userId + "/club/referrals/" + referralId + "/referrals", () ->
+                clubSteps.getUserReferralsReferrals(token, userId, referralId)
+        );
+        step("Валидация ответа", () ->
+                clubSteps.validateUserReferralsResponse(nestedResponse)
+        );
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("GET /user/{userId}/club/referrals/{referralId}/referrals - без авторизации")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Негативный сценарий")
+    @Tag("negative")
+    void getReferralReferralsWithoutAuth() {
+        Response response = step("GET /user/" + userId + "/club/referrals - без токена", () ->
+                clubSteps.getUserReferralById("", userId, 0)
+        );
+        step("Проверка ошибки авторизации", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(15)
+    @DisplayName("GET /user/{userId}/club/referrals/{referralId} - с невалидным токеном")
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Негативный сценарий")
+    @Tag("negative")
+    void getReferralReferralsInvalidToken() {
+        Response response = step("GET /user/" + userId + "/club/referrals - невалидный токен", () ->
+                clubSteps.getUserReferralById("invalid", userId, 0)
+        );
+        step("Проверк ошибки", () ->
+                assertEquals(401, response.getStatusCode()));
     }
 }

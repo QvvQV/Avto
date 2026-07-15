@@ -85,11 +85,11 @@ public class UserProductsApi extends BaseApi {
     }
 
     /**
-     * DELETE /user/favorite-products/{productId} - добавление продукта в избранное
+     * DELETE /user/favorite-products/{productId} - удаление продукта из избранных
      */
-//    public Response deleteFavoriteProducts(String authToken, String productId) {
-//        ();
-//    }
+    public Response deleteFavoriteProducts(String authToken, String productId) {
+        return deleteWithTokenObject(ApiEndpoints.USER_FAVORITE_PRODUCTS_ID, authToken, "", productId);
+    }
 
     /**
      * POST /user/videos/watched/create - тайминг просмотра

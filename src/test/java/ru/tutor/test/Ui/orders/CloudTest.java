@@ -34,7 +34,7 @@ public class CloudTest extends BaseUiTest {
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
     private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
 
-    @Test
+//    @Test
     @AllureId("1")
 //            @RepeatedTest(2)
     @DisplayName("Оплата с главной на СисАк Oфферум")

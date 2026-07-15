@@ -114,6 +114,21 @@ public abstract class BaseApi {
                 .response();
     }
 
+    @Step("DELETE запрос к {endpoint}")
+    protected Response deleteWithTokenObject(String endpoint, String token, Object body, Object... pathParams) {
+        String formattedEndpoint = String.format(endpoint, pathParams);
+
+        return given(baseSpec)
+                .header("Authorization", "Bearer " + token)
+                .log().all()
+                .when()
+                .delete(formattedEndpoint)
+                .then()
+                .log().ifError()
+                .extract()
+                .response();
+    }
+
     @Step("PUT запрос к {endpoint}")
     protected Response putWithToken(String endpoint, String token) {
         return given(baseSpec)
@@ -132,6 +147,7 @@ public abstract class BaseApi {
         String formattedEndpoint = String.format(endpoint, pathParams);
         return given(baseSpec)
                 .header("Authorization", "Bearer " + token)
+                .body(body)
                 .log().all()
                 .when()
                 .put(formattedEndpoint)

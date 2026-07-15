@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.OrderToggleSubscriptionResponse;
+import ru.tutor.utils.AllureAttachments;
 
 import java.util.*;
 
@@ -85,5 +86,19 @@ public class OrderToggleSubscriptionSteps extends BaseApiSteps {
         }
 
         Allure.addAttachment("Анализ формата", "text/plain", analysis.toString());
+    }
+
+    @Step("POST /user/orders/restore-premium - восстановление премиум")
+    public Response restorePremium(String authToken) {
+        Response response = orderApi.restorePremium(authToken);
+        AllureAttachments.attachJson("Restore Premium Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация полей")
+    public void validateRestorePremiumResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
     }
 }

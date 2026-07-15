@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
+import ru.tutor.model.RefundTicketRequest;
 import ru.tutor.utils.AllureAttachments;
 
 import static io.restassured.RestAssured.given;
@@ -52,8 +53,23 @@ public class UserOrderApi extends BaseApi {
         return putWithToken(String.format(ApiEndpoints.ORDERS_PAUSE, days), authToken);
     }
 
-    @Step("PUT /user/orders/unpause - снфть паузу")
+    @Step("PUT /user/orders/unpause - снять паузу")
     public Response unpauseOrder(String authToken) {
         return putWithTokenObject(ApiEndpoints.ORDERS_UNPAUSE, authToken, "[]");
+    }
+
+    @Step("POST /user/refund-tickets/create - создание заявки на возврат")
+    public Response createRefundTicket(String authToken, RefundTicketRequest request) {
+        return postWithToken(ApiEndpoints.REFUND_TICKETS_CREATE, authToken, request);
+    }
+
+    @Step("GET /user/refund-tickets")
+    public Response getRefundTickets(String authToken) {
+        return getWithToken(ApiEndpoints.REFUND_TICKETS, authToken);
+    }
+
+    @Step("POST /user/orders/restore-premium - воссатновление премиум подписки")
+    public Response restorePremium(String authToken) {
+        return postWithToken(ApiEndpoints.ORDERS_RESTORE_PREMIUM, authToken, "[]");
     }
 }

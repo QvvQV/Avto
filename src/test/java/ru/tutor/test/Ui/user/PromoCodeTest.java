@@ -1,4 +1,4 @@
-package ru.tutor.test.api.user;
+package ru.tutor.test.Ui.user;
 
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;

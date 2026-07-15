@@ -278,6 +278,11 @@ public class ProductsSteps extends BaseApiSteps {
         return this.productsApi.postFavoriteProducts(authToken, productId);
     }
 
+    @Step("Удаление продуктов из избранных")
+    public Response deleteFavoriteProducts(String authToken, String productId) {
+        return this.productsApi.deleteFavoriteProducts(authToken, productId);
+    }
+
     @Step("Премьеры")
     public Response getPremiersProducts(String authToken) {
         return this.productsApi.productsPremiers(authToken);

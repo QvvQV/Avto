@@ -158,14 +158,27 @@ public class ProductsProfileTest {
     void postFavoriteProducts() {
         ensureProductsLoaded();
         Response response = productsSteps.postFavoriteProducts(token, savedProductValue);
-        step("Валидация ответа", () ->{
+        step("Валидация ответа", () -> {
             assertEquals(201, response.getStatusCode());
             assertNotNull(response.getBody().asString());
         });
     }
 
     @Test
-    @Order(27)
+    @Order(8)
+    @DisplayName("Эндпоинт удаления продукта из избранных")
+    @Tag("positive")
+    void deleteProducts() {
+        ensureProductsLoaded();
+        Response response = productsSteps.deleteFavoriteProducts(token, savedProductValue);
+        step("Валидация ответа", () -> {
+            assertEquals(204, response.getStatusCode());
+            assertNotNull(response.getBody().asString());
+        });
+    }
+
+    @Test
+    @Order(9)
     @DisplayName("Эндпоинт категории платформы")
     void getCategories() {
         Response response = productsSteps.getCategories(token);
@@ -174,7 +187,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(28)
+    @Order(10)
     @DisplayName("Успешное получение Последних достижений GET /user/achievements/last")
     void getAchievementsLastSuccess() {
         Response response = productsSteps.getAchievementsLast(token);
@@ -186,7 +199,7 @@ public class ProductsProfileTest {
     // ==================== Отрицательные тесты ====================
 
     @Test
-    @Order(8)
+    @Order(11)
     @DisplayName("Эндпоинты получение информации о продукте без авторизации")
     @Tag("negative")
     void getProductsWithoutAuth() {
@@ -200,7 +213,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(9)
+    @Order(12)
     @DisplayName("Эндпоит modules без авторизации")
     @Tag("negative")
     void getModulesWithoutAuth() {
@@ -215,7 +228,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(10)
+    @Order(13)
     @DisplayName("Эндпоинт просмотр модуля без авторизации")
     @Tag("negative")
     void getModuleWatchedProductsWithoutAuth() {
@@ -229,7 +242,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(11)
+    @Order(14)
     @DisplayName("Эндпоинт completeModule без авторизации")
     @Tag("negative")
     void putCompleteModuleWithoutAuth() {
@@ -243,7 +256,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(12)
+    @Order(15)
     @DisplayName("Эндпоинт список достижений продукта без авторизации")
     @Tag("negative")
     void getAchievementsProductsWithoutAuth() {
@@ -256,7 +269,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(13)
+    @Order(16)
     @DisplayName("Эндпоинт страница достижений без авторизации")
     @Tag("negative")
     void getAchievementsWithoutAuth() {
@@ -268,7 +281,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(14)
+    @Order(17)
     @DisplayName("Эндпоинт modules без номера продукта")
     @Tag("negative")
     void getUserModulesWithoutProductValue() {
@@ -282,7 +295,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(15)
+    @Order(18)
     @DisplayName("Невалидный модуль")
     @Tag("negative")
     void getUserModulesInvalidModule() {
@@ -296,7 +309,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(16)
+    @Order(19)
     @DisplayName("Эндпоит modules с невалидным номером продукта")
     @Tag("negative")
     void getModulesInvalidModuleProduct() {
@@ -310,7 +323,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(17)
+    @Order(20)
     @DisplayName("Список всех продуктов платформы без авторизации")
     @Tag("negative")
     void getAllProductsWithoutAuth() {
@@ -320,7 +333,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(18)
+    @Order(21)
     @DisplayName("Премьеры без авторизации")
     @Tag("negative")
     void getPremiersWithoutAuth() {
@@ -330,7 +343,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(19)
+    @Order(22)
     @DisplayName("Топ10 без авторизации")
     @Tag("negative")
     void getTop10WithoutAuth() {
@@ -340,7 +353,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(20)
+    @Order(23)
     @DisplayName("Сейчас смотрят без авторизации")
     @Tag("negative")
     void getWatchingNowWithoutAuth() {
@@ -350,7 +363,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(21)
+    @Order(24)
     @DisplayName("Получение избранных продуктов без авторизации")
     @Tag("negative")
     void getFavoriteProductsWithoutAuth() {
@@ -360,7 +373,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(22)
+    @Order(25)
     @DisplayName("Список продуктов без авторизации - 401")
     @Tag("negative")
     void getUserProductsWithoutAuth() {
@@ -370,7 +383,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(23)
+    @Order(26)
     @DisplayName("Детали продукта с несуществующим ID - 404")
     void getProductDetailsByIdNotFound() {
         Response response = productsSteps.getProductDetailsById(token, INVALID_PRODUCT_VALUE);
@@ -382,7 +395,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(24)
+    @Order(27)
     @DisplayName("Достижения с несуществующим ID продукта - 404")
     @Tag("negative")
     void getAchievementsProductByIdNotFound() {
@@ -395,7 +408,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(25)
+    @Order(28)
     @DisplayName("Отметка просмотра с пустым orderNumber")
     @Tag("negative")
     void getAchievementsProductById() {
@@ -408,7 +421,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(26)
+    @Order(29)
     @DisplayName("Завершение модуля с пустым orderNumber")
     @Tag("negative")
     void completeModuleEmptyOrder() {
@@ -422,7 +435,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(27)
+    @Order(30)
     @DisplayName("Успешный ответ вложенные файлы")
     @Tag("positive")
     void getAttachedFilesSuccess() {
@@ -435,7 +448,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(28)
+    @Order(31)
     @DisplayName("Эндпоинт attached-files пустой продукт")
     @Tag("negative")
     void getAttachedFilesWithoutProduct() {
@@ -447,7 +460,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(29)
+    @Order(32)
     @DisplayName("Эндпоинт achievements/last без авторизации")
     @Tag("negative")
     void getAchievementsLastWithoutAuth() {
@@ -459,7 +472,7 @@ public class ProductsProfileTest {
     }
 
     @Test
-    @Order(30)
+    @Order(33)
     @DisplayName("Эндпоинт achievements/last невалидный токен")
     @Tag("negative")
     void getAchievementsLastInvalidToken() {
@@ -468,6 +481,32 @@ public class ProductsProfileTest {
         );
         step("Проверка 401", () ->
                 assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(34)
+    @DisplayName("Эндпоинт удаления продукта из избранных - без токена")
+    @Tag("negative")
+    void deleteProductsWithoutAuth() {
+        ensureProductsLoaded();
+        Response response = productsSteps.deleteFavoriteProducts("", savedProductValue);
+        step("Валидация ответа", () -> {
+            assertEquals(401, response.getStatusCode());
+            assertNotNull(response.getBody().asString());
+        });
+    }
+
+    @Test
+    @Order(35)
+    @DisplayName("Эндпоинт удаления без указания продукта из избранных")
+    @Tag("negative")
+    void deleteWithoutProducts() {
+        ensureProductsLoaded();
+        Response response = productsSteps.deleteFavoriteProducts(token, "");
+        step("Валидация ответа", () -> {
+            assertEquals(404, response.getStatusCode());
+            assertNotNull(response.getBody().asString());
+        });
     }
 
     private void ensureProductsLoaded() {

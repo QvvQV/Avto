@@ -1,5 +1,7 @@
 package ru.tutor.test.api;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Story;
 import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +12,8 @@ import ru.tutor.config.TestConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Epic("Отправка писем")
+@Story("Отправка письма")
 @ExtendWith(AllureJunit5.class)
 public class SendEmailTest {
     private final SendEmailSteps sendEmailSteps = SendEmailSteps.withBaseUrl(TestConfig.getCurrentApiUrl());

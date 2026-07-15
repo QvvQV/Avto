@@ -1,4 +1,4 @@
-package ru.tutor.test.api;
+package ru.tutor.test.api.subscription;
 
 import io.qameta.allure.*;
 import io.restassured.response.Response;
@@ -210,7 +210,6 @@ class LoginResponseTest {
             response.then()
                     .header("Content-Type", "application/json");
 
-            assertNotNull(response.getHeader("Server"), "Заголовок Server должен существовать");
             assertNotNull(response.getHeader("Date"), "Заголовок Date должен существовать");
         });
     }

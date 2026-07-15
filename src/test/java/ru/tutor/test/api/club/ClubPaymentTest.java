@@ -29,7 +29,7 @@ public class ClubPaymentTest {
 
     // Общие константы
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final String TEST_EMAIL = TestConfig.getTestEmailFortune();
+    private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private final ClubSteps clubSteps = ClubSteps.withBaseUrl(BASE_URL);

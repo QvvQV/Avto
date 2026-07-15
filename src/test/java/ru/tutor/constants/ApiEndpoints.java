@@ -294,7 +294,7 @@ public final class ApiEndpoints {
     public static final String USER_FAVORITE_PRODUCTS = "/user/favorite-products";
 
     /**
-     * Добавление продукта в избранные
+     * Добавление/Удаление продукта в избранные
      */
     public static final String USER_FAVORITE_PRODUCTS_ID = "/user/favorite-products/%s";
 

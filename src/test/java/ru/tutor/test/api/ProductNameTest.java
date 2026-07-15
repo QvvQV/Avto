@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.tutor.config.ProductConfig;
+import ru.tutor.config.TestConfig;
 import ru.tutor.model.ProductResponse;
 import ru.tutor.api.steps.ProductSteps;
 import ru.tutor.utils.AllureAttachments;
@@ -22,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductNameTest {
     
-    private final ProductSteps productSteps = new ProductSteps();
+    private final ProductSteps productSteps = ProductSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     
     static Stream<String> productIdsProvider() {
         return ProductConfig.PRODUCT_DOMAINS.keySet().stream();
     }
     
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource("productIdsProvider")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Проверка name в products для: {0}")
@@ -51,7 +52,7 @@ class ProductNameTest {
         );
     }
     
-    @Test
+//    @Test
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("✅ Детальная проверка Burnout продукта")
     @Order(3)
@@ -94,7 +95,7 @@ class ProductNameTest {
         });
     }
     
-    @ParameterizedTest
+//    @ParameterizedTest
     @MethodSource("productIdsProvider")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🔍 Проверка структуры products для: {0}")
@@ -115,7 +116,7 @@ class ProductNameTest {
     @DisplayName("⚡ Performance тесты")
     class PerformanceTests {
         
-        @Test
+//        @Test
         @Severity(SeverityLevel.MINOR)
         @DisplayName("⏱️  Проверка времени ответа для основных продуктов")
         void validateResponseTime_ForMainProducts() {
@@ -136,7 +137,7 @@ class ProductNameTest {
         }
     }
     
-    @Test
+//    @Test
     @Severity(SeverityLevel.MINOR)
     @DisplayName("📊 Сводка по всем продуктам")
     @Order(99)

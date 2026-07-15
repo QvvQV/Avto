@@ -9,6 +9,13 @@ public class TestConfig {
     private static final Properties cardProperties = new Properties();
 
     /*
+     * Default переменные для выставления окружения
+     */
+    private static final String def = "dev1";
+    private static final String api = "api1";
+    private static final String admin = "admin1";
+
+    /*
      * Домены, url, тестовые данные для Sber/Сбер
      */
 
@@ -98,6 +105,10 @@ public class TestConfig {
         return properties.getProperty("client1.base.url", "config.properties");
     }
 
+    public static String getEmailDev1(){
+        return properties.getProperty("dev1.test.email", "config.properties");
+    }
+
     /**
      * Dev2
      */
@@ -115,6 +126,10 @@ public class TestConfig {
 
     public static String getClient2BaseUrl() {
         return properties.getProperty("client2.base.url", "config.properties");
+    }
+
+    public static String getEmailDev2(){
+        return properties.getProperty("dev2.test.email", "config.properties");
     }
 
     /**
@@ -137,18 +152,8 @@ public class TestConfig {
     // ==================== Валидные тестовые данные ====================
 
     /**
-     * Повседневный пользователь
+     * Email подтягиваеться из config.properties
      */
-    public static String getTestEmail() {
-        return properties.getProperty("test.email");
-    }
-
-    /**
-     * Колесо фортуны
-     */
-    public static String getTestEmailFortune() {
-        return properties.getProperty("test.email_for_fortune");
-    }
 
     /**
      * Пароль
@@ -159,7 +164,7 @@ public class TestConfig {
 
     // ==================== Метод для получения URL в зависимости от окружения ====================
     public static String getCurrentUiUrl() {
-        String env = System.getProperty("env.ui", "dev1"); // dev1, dev2, prod
+        String env = System.getProperty("env.ui", def); // dev1, dev2, prod
         return switch (env) {
             case "dev2" -> getDev2BaseUrl();
             case "prod" -> getProdBaseUrl(); // или другой prod URL
@@ -168,7 +173,7 @@ public class TestConfig {
     }
 
     public static String getCurrentApiUrl() {
-        String env = System.getProperty("env.api", "api1"); // api1, api2, prod
+        String env = System.getProperty("env.api", api); // api1, api2, prod
         return switch (env) {
             case "api2" -> getApi2BaseUrl(); // нужно добавить этот метод
             case "prod" -> getApiProdUrl();
@@ -177,7 +182,7 @@ public class TestConfig {
     }
 
     public static String getCurrentClientDomain() {
-        String env = System.getProperty("env.client", "dev1");
+        String env = System.getProperty("env.client", def);
 
         return switch (env) {
             case "dev2" -> getClient2BaseUrl();
@@ -187,12 +192,22 @@ public class TestConfig {
     }
 
     public static String getCurrentAdminDomain() {
-        String env = System.getProperty("env.admin", "admin1");
+        String env = System.getProperty("env.admin", admin);
 
         return switch (env) {
             case "admin2" -> getAdmin2BaseUrl();
             case "prod" -> null;
             default -> getAdminBaseUrl();
+        };
+    }
+
+    public static String getTestEmail() {
+        String env = System.getProperty("env.email", def);
+
+        return switch (env) {
+            case "dev2" -> getEmailDev2();
+            case "prod" -> null;
+            default -> getEmailDev1();
         };
     }
 

@@ -39,13 +39,13 @@ public class ClubWithdrawalTest {
 
     @Test
     @Order(1)
-    @DisplayName("Запрос на вывод 100р")
+    @DisplayName("Запрос на вывод 3000р")
     @Story("Валидация спецификации")
     @Severity(SeverityLevel.NORMAL)
     void requestWithdrawalExampleAmount() {
-        WithdrawalRequest request = new WithdrawalRequest(100);
+        WithdrawalRequest request = new WithdrawalRequest(3000);
 
-        Response response = step("POST с суммой 100р", () ->
+        Response response = step("POST с суммой 3000р", () ->
                 withdrawalSteps.requestWithdrawal(authToken, request)
         );
 
@@ -55,13 +55,13 @@ public class ClubWithdrawalTest {
             if (statusCode == 201) {
                 WithdrawalResponse withdrawalResponse = response.as(WithdrawalResponse.class);
                 if (withdrawalResponse != null && withdrawalResponse.isSuccessful()) {
-                    assertEquals(100, withdrawalResponse.getWithdrawalAmount(),
-                            "Сумма в отввете должна быть 100");
+                    assertEquals(3000, withdrawalResponse.getWithdrawalAmount(),
+                            "Сумма в отввете должна быть 3000");
                     Allure.addAttachment("Успех", "text/plain",
-                            "✅ Запрос на вывод 100 ₽ выполнен успешно");
+                            "✅ Запрос на вывод 3000 ₽ выполнен успешно");
                 }
             } else if (statusCode == 422) {
-
+                Allure.addAttachment("Недостаточно средств для вывода", "text/plain");
             }
         });
     }

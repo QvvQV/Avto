@@ -31,7 +31,7 @@ public class GameWheelTest {
 
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final String TEST_EMAIL = TestConfig.getTestEmailFortune();
+    private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private final AuthSteps authSteps =  AuthSteps.withBaseUrl(BASE_URL);

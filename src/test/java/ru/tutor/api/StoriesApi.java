@@ -79,7 +79,17 @@ public class StoriesApi extends BaseApi {
     /**
      * GET /user/videos/{id} - детали видео
      */
+    @Step("GET /user/videos/{id} - детали видео")
     public Response detailsUserVideos(String authToken, String id) {
         return getWithToken(String.format(ApiEndpoints.USER_VIDEO_DETAILS_BY_ID, id), authToken);
     }
+
+    /**
+     * GET /user/videos/watched/last` - если просмотр каких-то видео был оборван
+     */
+    @Step("GET /user/videos/watched/last` - если просмотр каких-то видео был оборван")
+    public Response getWatchedLast(String authToken) {
+        return getWithToken(ApiEndpoints.VIDEOS_WATCHED_LAST,  authToken);
+    }
+
 }

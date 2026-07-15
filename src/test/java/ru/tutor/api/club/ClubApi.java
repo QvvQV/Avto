@@ -67,4 +67,29 @@ public class ClubApi extends BaseApi {
     public Response deleteClubDetails(String authToken) {
         return deleteWithToken(ApiEndpoints.CLUB_DETAILS, authToken);
     }
+
+    /**
+     * GET /user/{userId}/club/referrals - список рефералов пользователя"
+     */
+    public Response getUserReferrals(String authToken, int userId) {
+        return getWithToken(String.format(ApiEndpoints.USER_CLUB_REFERRALS, userId), authToken);
+    }
+
+    /**
+     * GET /user/{userId}/club/referrals/{referralId} - детали рефферала
+     */
+    public Response getUserReferralById(String authToken, int userId, int referralId) {
+        return getWithToken(
+                String.format(ApiEndpoints.USER_CLUB_REFERRALS_ID, userId, referralId), authToken
+        );
+    }
+
+    /**
+     * GET /user/{userId}/club/referrals/{referralId}/referrals - рефералы реферала
+     */
+    public Response getUserReferralRefferrals(String authToken, int userId, int referralId) {
+        return getWithToken(
+                String.format(ApiEndpoints.USER_CLUB_REFERRALS_ID_REFERRALS,  userId, referralId), authToken
+        );
+    }
 }

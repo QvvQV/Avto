@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
-@Feature("Игровое колесо")
-@DisplayName("Тесты эндпоинта игрового колеса")
+@Feature("Сторис/Баннер/Тутс")
+@DisplayName("Тесты эндпоинта Сторис/Баннер/Тутс")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StoryTest {
 
     private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private final StoriesSteps storiesSteps = StoriesSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final String TEST_EMAIL = TestConfig.getTestEmailFortune();
+    private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;

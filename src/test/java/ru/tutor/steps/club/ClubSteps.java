@@ -193,4 +193,40 @@ public class ClubSteps extends BaseApiSteps {
         }
     }
 
+    @Step("GET /user/{userId}/club/referrals - список рефералов")
+    public Response getUserReferrals(String authToken, int userId) {
+        Response response = this.clubApi.getUserReferrals(authToken, userId);
+        AllureAttachments.attachJson("User Referrals Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация ответа списка рефералов")
+    public void validateUserReferralsResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
+    }
+
+    @Step("GET /user/{userId}/club/referrals/{referralId} - детали реферала")
+    public Response getUserReferralById(String authToken, int userId, int referralId) {
+        Response response = this.clubApi.getUserReferralById(authToken, userId, referralId);
+        AllureAttachments.attachJson("Club Referral Detail Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Извлечение id первого реферала из списка")
+    public Integer extractReferralId(Response referralsResponse) {
+        Integer referralId = referralsResponse.jsonPath().getInt("[0].userId");
+        assertNotNull(referralId, "id реферала не должен быть null");
+        Allure.addAttachment("Extracted referralId",  String.valueOf(referralId));
+        return referralId;
+    }
+
+    @Step("GET /user/{userId}/club/referrals/{referralId}/referrals")
+    public Response getUserReferralsReferrals(String authToken, int userId, int referralId) {
+        Response response = this.clubApi.getUserReferralRefferrals(authToken, userId, referralId);
+        AllureAttachments.attachJson("Club Referral Detail Response", response.getBody().asString());
+        return response;
+    }
+
 }

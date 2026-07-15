@@ -1,4 +1,4 @@
-package ru.tutor.test.api;
+package ru.tutor.test.Ui.subscription;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;

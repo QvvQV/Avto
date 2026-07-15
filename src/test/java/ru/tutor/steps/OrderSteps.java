@@ -4,10 +4,12 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.UserOrderApi;
 import ru.tutor.base.BaseApiSteps;
+import ru.tutor.model.RefundTicketRequest;
 import ru.tutor.utils.AllureAttachments;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderSteps extends BaseApiSteps {
     private final UserOrderApi orderApi;
@@ -78,7 +80,50 @@ public class OrderSteps extends BaseApiSteps {
         }  else {
             fail("Неожиданный статус: " + code);
         }
+    }
 
+    @Step("POST /user/refund-tickets/create - создание заявки на возврат")
+    public Response createRefundTicket(String authToken, RefundTicketRequest request) {
+        Response response = orderApi.createRefundTicket(authToken, request);
+        AllureAttachments.attachJson("Create Refund Ticket Response", response.getBody().asString());
+        return response;
+    }
 
+    @Step("Валидация ответа создания заявки на возврат")
+    public void validateRefundTicketResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
+        String body = response.getBody().asString();
+        assertNotNull(body, "Тело ответа не должно быть null");
+        assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");
+    }
+
+    @Step("Валидация ошибок валидации полей")
+    public void validateRefundValidationError(Response response) {
+        assertEquals(422, response.getStatusCode());
+        assertContentTypeJson(response);
+
+        assertEquals("Значение не должно быть пустым.",
+                response.jsonPath().getString("error.messages.firstname"));
+        assertEquals("Значение не должно быть пустым.",
+                response.jsonPath().getString("error.messages.lastname"));
+        assertEquals("Значение не должно быть пустым.",
+                response.jsonPath().getString("error.messages.patronymic"));
+        assertEquals("Значение не должно быть пустым.",
+                response.jsonPath().getString("error.messages.email"));
+        assertEquals("Пустое поле card",
+                response.jsonPath().getString("error.messages.card"));
+        assertEquals("Значение не должно быть пустым.",
+                response.jsonPath().getString("error.messages.bank"));
+        assertEquals("Значение не должно быть пустым.",
+                response.jsonPath().getString("error.messages.paymentDate"));
+    }
+
+    @Step("GET /user/refund-tickets - список заявок на возврат")
+    public Response getRefundTickets(String authToken) {
+        Response response = orderApi.getRefundTickets(authToken);
+        AllureAttachments.attachJson("Refund Tickets Response", response.getBody().asString());
+        return response;
     }
 }

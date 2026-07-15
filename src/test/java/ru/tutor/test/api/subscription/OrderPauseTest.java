@@ -1,4 +1,4 @@
-package ru.tutor.test.api.user;
+package ru.tutor.test.api.subscription;
 
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
@@ -106,7 +106,7 @@ public class OrderPauseTest {
 
     @Test
     @Order(6)
-    @DisplayName("PUT /user/orders/unpause с невалдиным токеном")
+    @DisplayName("PUT /user/orders/unpause с невалидным токеном")
     void  unpauseOrderWithInvalidToken() {
         Response response = step ("POST /user/orders/unpause с инвалидным токеном", () ->
                 orderSteps.unpauseOrder("")

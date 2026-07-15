@@ -110,9 +110,9 @@ public class ClubSzDetailsTest {
     @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
     void saveSelfEmployedDetails_WithoutAuth_ShouldFail() {
-        var unauthFlow = new ClubDetailsFlow("invalid_token", BASE_URL);
+        var unAuthFlow = new ClubDetailsFlow("invalid_token", BASE_URL);
         var request = testDataFlow.generateValidSelfEmployedData();
-        var result = unauthFlow.saveSelfEmployedDetails(request);
+        var result = unAuthFlow.saveSelfEmployedDetails(request);
         assertTrue(result.isAuthError(), "Должна быть ошибка авторизации");
         result.log();
     }
@@ -147,7 +147,7 @@ public class ClubSzDetailsTest {
     @DisplayName("❌ ИП: Сохранение с невалидным ОГРНИП")
     @Story("Валидация")
     @Severity(SeverityLevel.NORMAL)
-    void saveIpDetails_InvalidOgrnip_ShouldFail() {
+    void saveIpDetails_InvalidOgrnIp_ShouldFail() {
         var request = testDataFlow.generateDataWithInvalidOgrnip();
         var result = clubFlow.saveIpDetails(request);
         assertTrue(result.isValidationError(), "Ошибка валидации ОГРНИП");
@@ -194,6 +194,7 @@ public class ClubSzDetailsTest {
         var result = unauthFlow.deleteClubDetails();
         assertTrue(result.isAuthError() || result.isNotFound(),
                 "Должна быть ошибка авторизации или 404");
+        assertEquals(401, clubFlow.deleteClubDetails().getStatusCode());
         result.log();
     }
 

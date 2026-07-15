@@ -8,6 +8,8 @@ import ru.tutor.model.RegistrationRequest;
 
 import java.util.Map;
 
+import ru.tutor.model.UserEditDataRequest;
+
 public class UserApi extends BaseApi {
 
     public UserApi(String baseUrl) {
@@ -88,5 +90,19 @@ public class UserApi extends BaseApi {
      */
     public Response checkAuth(String authToken) {
         return getWithToken(ApiEndpoints.USER_CHECK, authToken);
+    }
+
+    /**
+     * PUT /user/edit/pass` - изменение пароля
+     */
+    public Response editPassword(String authToken, Map<String, String> password) {
+        return putWithTokenObject(ApiEndpoints.USER_EDIT_PASSWORD, authToken, password);
+    }
+
+    /**
+     * PUT /user/edit/data - изменение данных пользователя
+     */
+    public Response editData(String authToken, UserEditDataRequest body) {
+        return putWithTokenObject(ApiEndpoints.USER_EDIT_DATA, authToken, body);
     }
 }

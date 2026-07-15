@@ -1,4 +1,4 @@
-package ru.tutor.test.api;
+package ru.tutor.test.api.subscription;
 
 
 import io.qameta.allure.*;
@@ -11,9 +11,8 @@ import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderToggleSubscriptionSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 
-import java.util.*;
-
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -45,6 +44,7 @@ public class OrderToggleSubscriptionTest {
     @BeforeEach
     void setUpAuth() {
         token = step("Логин Пользователя", () ->
+
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
@@ -61,7 +61,13 @@ public class OrderToggleSubscriptionTest {
         );
 
         step("Анализ формата ответа", () ->
-                orderSteps.analyzeResponseFormat(response));
+                orderSteps.analyzeResponseFormat(response)
+        );
+        Response restorePremium = step("POST /user/orders/restore-premium", () ->
+                orderSteps.restorePremium(token)
+        );
+        step("Валидация ответа", () ->
+                orderSteps.validateRestorePremiumResponse(restorePremium));
     }
 
     @Test
@@ -79,5 +85,33 @@ public class OrderToggleSubscriptionTest {
         step("Проверка ошибки авторизации", () ->
                 gameWheelRewardsSteps.validateUnauthorizedResponse(response)
         );
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Восстановление подписки без авторизации")
+    @Story("Негативный сценарий")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void shouldFailWithoutTokenRestorePremium() {
+        Response response = step("POST /user/orders/restore-premium - восстановление премиум без авторизации", () ->
+                orderSteps.restorePremium("")
+        );
+        step("Валидация ответа", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Восстановление подписки с невалдиным токеном")
+    @Story("Негативный сценарий")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void shouldFailInvalidTokenRestorePremium() {
+        Response response = step("POST /user/orders/restore-premium - восстановление премиум без авторизации", () ->
+                orderSteps.restorePremium("invalid")
+        );
+        step("Валидация ответа", () ->
+                assertEquals(401, response.getStatusCode()));
     }
 }

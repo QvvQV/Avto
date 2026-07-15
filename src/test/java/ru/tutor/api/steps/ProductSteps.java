@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import ru.tutor.api.ProductApi;
 import ru.tutor.config.ProductConfig;
 import ru.tutor.model.ProductResponse;
+import ru.tutor.steps.OrderSteps;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.List;
@@ -16,8 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProductSteps {
     private final ProductApi productApi;
     
-    public ProductSteps() {
-        this.productApi = new ProductApi();
+    public ProductSteps(String baseUrl) {
+//        super(baseUrl);
+        this.productApi = new ProductApi(baseUrl);
+    }
+
+    public static ProductSteps withBaseUrl(String baseUrl) {
+        return new ProductSteps(baseUrl);
     }
     
     @Step("Получить доменную информацию для продукта: {productId}")

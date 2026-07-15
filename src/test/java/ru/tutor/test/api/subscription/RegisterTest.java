@@ -1,4 +1,4 @@
-package ru.tutor.test.api;
+package ru.tutor.test.api.subscription;
 
 import io.qameta.allure.*;
 import io.restassured.response.Response;

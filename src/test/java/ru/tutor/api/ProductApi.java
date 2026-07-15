@@ -10,8 +10,8 @@ import static io.restassured.RestAssured.given;
 
 public class ProductApi extends BaseApi {
 
-    public ProductApi() {
-        super("");
+    public ProductApi(String baseUrl) {
+        super(baseUrl);
     }
 
     public Response getProductInfo(String productId) {

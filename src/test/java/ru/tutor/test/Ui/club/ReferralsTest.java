@@ -1,4 +1,4 @@
-package ru.tutor.test.api.club;
+package ru.tutor.test.Ui.club;
 
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.BeforeEach;
