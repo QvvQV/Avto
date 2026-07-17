@@ -1,7 +1,6 @@
 package ru.tutor.steps;
 
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserOrderApi;
 import ru.tutor.base.BaseApiSteps;
@@ -16,16 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * Класс для переключения на Тариф Подарок по API
  */
 
-public class OrderPremiumGift extends BaseApiSteps {
+public class OrderPremiumGiftSteps extends BaseApiSteps {
     private final UserOrderApi orderApi;
 
-    public OrderPremiumGift(String baseUrl) {
+    public OrderPremiumGiftSteps(String baseUrl) {
         super(baseUrl);
         this.orderApi = new UserOrderApi(baseUrl);
-    }
-
-    public static OrderPremiumGift withBaseUrl(String baseUrl) {
-        return new OrderPremiumGift(baseUrl);
     }
 
     @Step("Активация Премиум подписки подарок")

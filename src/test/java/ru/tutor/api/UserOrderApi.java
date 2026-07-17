@@ -5,9 +5,6 @@ import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
 import ru.tutor.model.RefundTicketRequest;
-import ru.tutor.utils.AllureAttachments;
-
-import static io.restassured.RestAssured.given;
 
 /**
  * Ручка для отписки до Лайта. Ручка для тарифа Подарок

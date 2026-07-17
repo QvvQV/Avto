@@ -1,9 +1,11 @@
 package ru.tutor.test.api.subscription;
 
 import io.qameta.allure.*;
+import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,19 +19,19 @@ import java.util.Locale;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Epic("Password Reset")
-@Feature("Reset Password Functionality")
-@Story("Password Reset Request and Validation")
+@Epic("Восстановить Пароль")
+@ExtendWith(AllureJunit5.class)
+@Feature("Функция сброса пароля")
+@Story("Запрос на сброс пароля и его подтверждение")
 @DisplayName("🔐 Тесты сброса пароля")
 @Execution(ExecutionMode.CONCURRENT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 public class ResetTest {
-    private final ResetSteps resetSteps = ResetSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final ResetSteps resetSteps = new ResetSteps(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test
-    @AllureId("90")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Сброс пароля с несуществующим email")
     @Order(2)
@@ -56,7 +58,6 @@ public class ResetTest {
     }
 
     @Test
-    @AllureId("85")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Сброс пароля с пустым email")
     @Order(3)
@@ -77,7 +78,6 @@ public class ResetTest {
     }
 
     @Test
-    @AllureId("87")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Сброс пароля с валидным email")
     @Order(1)
@@ -102,7 +102,6 @@ public class ResetTest {
     }
 
     @Test
-    @AllureId("94")
     @DisplayName("🔴 Базовая проверка неуспешного сброса")
     void basicUnsuccessfulResetCheck() {
         Response response = resetSteps.requestPasswordReset("nonexistent@example.com");
@@ -115,7 +114,6 @@ public class ResetTest {
     }
 
     @ParameterizedTest
-    @AllureId("89")
     @ValueSource(strings = {
             "invalid-email",
             "test@",
@@ -139,7 +137,6 @@ public class ResetTest {
     }
 
     @Test
-    @AllureId("92")
     @Severity(SeverityLevel.MINOR)
     @DisplayName("🔠 Сброс пароля с email в верхнем регистре")
     @Order(6)
@@ -159,7 +156,6 @@ public class ResetTest {
     }
 
     @Test
-    @AllureId("95")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🔣 Сброс пароля с email содержащим спецсимволы")
     @Order(7)
@@ -180,7 +176,6 @@ public class ResetTest {
     }
 
     @Test
-    @AllureId("93")
     @Severity(SeverityLevel.MINOR)
     @DisplayName("🔄 Повторный запрос сброса пароля")
     @Order(8)

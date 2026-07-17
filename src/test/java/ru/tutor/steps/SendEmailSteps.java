@@ -1,16 +1,19 @@
-package ru.tutor.api.steps;
+package ru.tutor.steps;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.catalog.SendEmailApi;
+import ru.tutor.base.BaseApiSteps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public record SendEmailSteps(SendEmailApi sendEmailApi) {
+public class SendEmailSteps extends BaseApiSteps {
+    private final SendEmailApi sendEmailApi;
 
-    public static SendEmailSteps withBaseUrl(String baseUrl) {
-        return new SendEmailSteps(new SendEmailApi(baseUrl));
+    public SendEmailSteps(String baseUrl) {
+        super(baseUrl);
+        sendEmailApi = new SendEmailApi(baseUrl);
     }
 
     @Step("Отправить письмо с name='{name}', email='{email}', content='{content}'")

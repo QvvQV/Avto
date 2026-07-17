@@ -4,23 +4,13 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 import static io.restassured.RestAssured.given;
 
 public class PageContentApi extends BaseApi {
-    private final String encodedAuth;
-    private final String authHeader;
 
-    public PageContentApi(String baseUrl, String username, String password) {
+    public PageContentApi(String baseUrl) {
         super(baseUrl);
-        String credentials = username + ":" + password;
-        this.encodedAuth = Base64.getEncoder()
-                .encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-        this.authHeader = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
     }
-
 
     /**
      * Get страница
@@ -28,7 +18,7 @@ public class PageContentApi extends BaseApi {
     public Response getPage(String endpoint) {
         return given()
                 .filter(new AllureRestAssured())
-                .header("Authorization", "Basic " + encodedAuth)
+                .header("Authorization", "Basic ")
                 .when()
                 .get(baseUrl + endpoint)
                 .then()
@@ -42,7 +32,7 @@ public class PageContentApi extends BaseApi {
     public Response createPage(String endpoint, Object body) {
         return given()
                 .filter(new AllureRestAssured())
-                .header("Authorization", "Basic " + encodedAuth)
+                .header("Authorization", "Basic ")
                 .header("Content-Type", "application/json")
                 .body(body)
                 .when()
@@ -58,7 +48,7 @@ public class PageContentApi extends BaseApi {
     public Response updatePage(String endpoint, Object body) {
         return given()
                 .filter(new AllureRestAssured())
-                .header("Authorization", "Basic " + encodedAuth)
+                .header("Authorization", "Basic ")
                 .header("Content-Type", "application/json")
                 .body(body)
                 .when()
@@ -74,7 +64,7 @@ public class PageContentApi extends BaseApi {
     public Response deletePage(String endpoint) {
         return given()
                 .filter(new AllureRestAssured())
-                .header("Authorization", "Basic " + encodedAuth)
+                .header("Authorization", "Basic ")
                 .when()
                 .delete(baseUrl + endpoint)
                 .then()
@@ -84,9 +74,5 @@ public class PageContentApi extends BaseApi {
 
     public String getBaseUrl() {
         return baseUrl;
-    }
-
-    public String getAuthHeader() {
-        return authHeader;
     }
 }

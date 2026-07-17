@@ -3,12 +3,17 @@ package ru.tutor.test.api.user;
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.RegistrationRequest;
 import ru.tutor.model.RegistrationResponse;
 import ru.tutor.steps.UserSteps;
+
+import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +28,12 @@ public class RegistrationTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final UserSteps userSteps = new UserSteps(BASE_URL);
+
+
+    private final Faker faker = new Faker(Locale.ENGLISH);
+
+    private static final String TEST_PASSWORD = TestConfig.getTestPassword();
+    private final String TEST_FIRST_NAME = faker.name().fullName();
 
     private static String registeredEmail;
 
@@ -176,6 +187,7 @@ public class RegistrationTest {
         step("Проверка ошибки", () ->
                 userSteps.validateRegistrationError(response, 422, "shortPassword")
         );
+        Allure.addAttachment("Ошибка", "Тест падает, потому что на беке нет валидации emails, она на фронте");
     }
 
     @Test
@@ -256,7 +268,7 @@ public class RegistrationTest {
     @DisplayName("✅ Регистрация с пустым номером телефона")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
-    void registerWithEmptyPhone(){
+    void registerWithEmptyPhone() {
         RegistrationRequest request = RegistrationRequest.generateWithEmptyPhone();
 
         RegistrationResponse response = step("Регистрация с пустым номером", () ->
@@ -264,5 +276,161 @@ public class RegistrationTest {
         );
 
         assertTrue(response.isSuccessful(), "Registration should be successful");
+    }
+
+    @Test
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("🚫 Регистрация с существующим email")
+    @Order(12)
+    void registrationWithExistingEmail_ConflictCheck() {
+        RegistrationRequest request = new RegistrationRequest("tp5052_2@test.ru", "Test User", "", TEST_PASSWORD,"", true, 0);
+        Response response = step("Регистрация с существующим email", () ->
+                userSteps.register(request));
+        step("Провера конфликта", () -> {
+            userSteps.validateExistingEmailError(response);
+            userSteps.validateNoSensitiveDate(response);
+        });
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("🚫 Регистрация с пустым email")
+    @Order(13)
+    void registrationWithEmptyEmail_ValidationError() {
+        RegistrationRequest request = new RegistrationRequest("", TEST_FIRST_NAME, "", TEST_PASSWORD, "", true, 0);
+        Response response = step("Регистрация с пустым email", () ->
+                userSteps.register(request));
+        step("Проверить валидацию email", () ->
+                userSteps.validateValidationError(response, 422)
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "invalid-email",
+            "test@",
+            "@domain.com",
+            "test@domain",
+            "test@domain.",
+            "test @domain.com",
+            "test@ domain.com"
+    })
+    @Order(14)
+    @DisplayName("📧 Регистрация с невалидными email форматами")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    @Tag("validation")
+
+    void registrationWithInvalidEmailFormats_ValidationErrors(String invalidEmail) {
+        RegistrationRequest request = RegistrationRequest.generateRandom();
+        RegistrationRequest customRequest = new RegistrationRequest(
+                invalidEmail, request.getName(), request.getPhone(), request.getPassword(), request.getTelegram(), true, 0
+        );
+        Response response = step("Регистрация с невалидным email: " + invalidEmail, () ->
+                userSteps.register(customRequest));
+        step("Проверка валидации", () ->
+                userSteps.validateRegistrationError(response, 422, "email")
+        );
+    }
+
+    @Nested
+    @DisplayName("🔍 Детальные проверки валидации")
+    class DetailValidationCheks {
+
+        @Test
+        @Order(15)
+        @DisplayName("📏 Очень длинное имя пользователя")
+        @Severity(SeverityLevel.MINOR)
+        @Tag("validation")
+        void veryLongUserName_ShouldHandleGracefully() {
+            RegistrationRequest request = RegistrationRequest.generateRandom();
+            String longName = faker.name().firstName().repeat(10);
+            RegistrationRequest  customRequest = new RegistrationRequest(
+                    request.getEmail(), longName, request.getPhone(), request.getPassword(),
+                    request.getTelegram(), true, request.getGender()
+            );
+
+            Response response = step("Регистарция с очень длинным именем", () ->
+                    userSteps.register(customRequest));
+            step("Проверить обработку длинного имени", () -> {
+                int statusCode = response.getStatusCode();
+                assertTrue(statusCode == 200 || statusCode == 422,
+                        "Ожидался статус 200 или 422, но получили: " + statusCode);
+            });
+        }
+
+        @Test
+        @Order(16)
+        @DisplayName("🔣 Спецсимволы в имени")
+        @Severity(SeverityLevel.MINOR)
+        @Tag("validation")
+        void specialCharactersInName_BehaviorCheck() {
+            RegistrationRequest request = RegistrationRequest.generateRandom();
+            String nameWithSpecialChars = "Test-User_Name123";
+            RegistrationRequest customRequest = new RegistrationRequest(
+                    request.getEmail(), nameWithSpecialChars, request.getPhone(),
+                    request.getPassword(), request.getTelegram(), true, request.getGender()
+            );
+
+            Response response = step("Регистрация с спецсимволами в имени", () ->
+                    userSteps.register(customRequest));
+            step("Проверить обработку спецсмволов", () -> {
+                int statusCode = response.getStatusCode();
+                assertTrue(statusCode == 200 || statusCode == 422,
+                        "Ожидался статус 200 или 422, но получили: " + statusCode);
+            });
+        }
+    }
+
+    @Test
+    @Order(17)
+    @DisplayName("📝 Проверка что ответ всегда JSON")
+    @Severity(SeverityLevel.MINOR)
+    @Tag("validation")
+    void responseAlwaysJson() {
+        RegistrationRequest successReq = RegistrationRequest.generateRandom();
+
+        Response successResponse = step("Успешная регистрация", () ->
+                userSteps.register(successReq));
+        successResponse.then().contentType("application/json");
+
+        Response errorResponse = step("Регистрация с существующим email", () ->
+                userSteps.register(new RegistrationRequest("tp5052_2@test.ru",
+                        "Test User", "", TEST_PASSWORD, "", true, 0)));
+        errorResponse.then().contentType("application/json");
+    }
+
+    @Nested
+    @DisplayName("⚡ Performance и Security проверки")
+    class PerformanceAndSecurityChecks {
+
+        @Test
+        @Order(18)
+        @DisplayName("⏱️ Проверка времени ответа для разных сценариев")
+        @Severity(SeverityLevel.MINOR)
+        @Tag("validation")
+        void responseTimeForDifferentScenarios() {
+            step("Проверка времени ответа для успешной регистрации", () -> {
+                RegistrationRequest  request = RegistrationRequest.generateRandom();
+                Response response = step("Регистрация", () -> userSteps.register(request));
+                userSteps.validateResponseTime(response, 3000);
+            });
+        }
+
+        @Test
+        @Order(19)
+        @DisplayName("🔐 Проверка безопасности паролей")
+        @Severity(SeverityLevel.MINOR)
+        @Tag("security")
+        void TEST_PASSWORDSecurityValidation() {
+
+            RegistrationRequest request = RegistrationRequest.generateRandom();
+
+            Response response = userSteps.register(request);
+            String responseBody = response.getBody().asString().toLowerCase();
+
+            // Пароль не должен возвращаться в ответе
+            assertFalse(responseBody.contains(TEST_PASSWORD), "Пароль не должен быть в ответе");
+        }
     }
 }

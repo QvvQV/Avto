@@ -3,7 +3,6 @@ package ru.tutor.steps.fortune;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.api.GameWheelApi;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.constants.GameWheelRewardsConstants;
@@ -26,10 +25,6 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
     public GameWheelStartGameSteps(String baseUrl) {
         super(baseUrl);
         this.gameWheelApi = new GameWheelApi(baseUrl);
-    }
-
-    public static GameWheelStartGameSteps withBaseUrl(String baseUrl) {
-        return new GameWheelStartGameSteps(baseUrl);
     }
 
 

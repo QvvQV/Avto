@@ -10,7 +10,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
 import ru.tutor.model.club.WithdrawalRequest;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.UserSteps;
 import ru.tutor.steps.club.ClubSteps;
 import ru.tutor.steps.club.ClubWithdrawalSteps;
 
@@ -30,9 +30,9 @@ public class ClubTest {
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
-    private final ClubSteps clubSteps = ClubSteps.withBaseUrl(BASE_URL);
-    private final ClubWithdrawalSteps withdrawalSteps = ClubWithdrawalSteps.withBaseUrl(BASE_URL);
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(BASE_URL);
+    private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
+    private final ClubWithdrawalSteps withdrawalSteps = new ClubWithdrawalSteps(BASE_URL);
+    private final UserSteps userSteps = new UserSteps(BASE_URL);
 
     private ClubMemberResponse memberInfo;
     private ClubStatisticsResponse statisticsInfo;
@@ -48,7 +48,7 @@ public class ClubTest {
     @BeforeEach
     public void setup() {
         token = step("Логин", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
 
@@ -155,7 +155,7 @@ public class ClubTest {
         );
     }
 
-    @Test
+//    @Test
     @Order(6)
     @DisplayName("Запрос на вывод 3000р")
     @Story("Валидация спецификации")

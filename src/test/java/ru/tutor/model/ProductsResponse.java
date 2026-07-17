@@ -40,7 +40,7 @@ public class ProductsResponse {
     private String backgroundMini;
 
     @JsonProperty("card")
-    private ProductsResponse card;
+    private Card card;
 
     @JsonProperty("categories")
     private List<Object> categories;
@@ -308,8 +308,8 @@ public class ProductsResponse {
         additionalProperties.put(name, value);
     }
 
-    public Object getCard() {
-        return additionalProperties.get("card");
+    public Card getCard() {
+        return card;
     }
 
     // ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ====================

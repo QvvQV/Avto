@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.club.WithdrawalRequest;
 import ru.tutor.model.club.WithdrawalResponse;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.UserSteps;
 import ru.tutor.steps.club.ClubWithdrawalSteps;
 
 import static io.qameta.allure.Allure.step;
@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("club")
 public class ClubWithdrawalTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final ClubWithdrawalSteps withdrawalSteps = ClubWithdrawalSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final ClubWithdrawalSteps withdrawalSteps = new ClubWithdrawalSteps(TestConfig.getCurrentApiUrl());
+    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
@@ -33,7 +33,7 @@ public class ClubWithdrawalTest {
     @BeforeEach
     public void setup() {
         authToken = step("Логин", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
 
@@ -56,12 +56,17 @@ public class ClubWithdrawalTest {
                 WithdrawalResponse withdrawalResponse = response.as(WithdrawalResponse.class);
                 if (withdrawalResponse != null && withdrawalResponse.isSuccessful()) {
                     assertEquals(3000, withdrawalResponse.getWithdrawalAmount(),
-                            "Сумма в отввете должна быть 3000");
+                            "Сумма в ответе должна быть 3000");
                     Allure.addAttachment("Успех", "text/plain",
                             "✅ Запрос на вывод 3000 ₽ выполнен успешно");
                 }
             } else if (statusCode == 422) {
                 Allure.addAttachment("Недостаточно средств для вывода", "text/plain");
+            } else  if (statusCode == 400) {
+                String error = response.jsonPath().getString("$");
+                assertEquals("[Withdrawal details not found]", error);
+                Allure.addAttachment("Реквизиты не заполнены",
+                        "❌ Не заполнены реквизиты для вывода средств " + error);
             }
         });
     }

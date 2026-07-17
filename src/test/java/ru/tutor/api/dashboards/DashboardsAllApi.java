@@ -4,9 +4,6 @@ import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /** Работа с курсом/продуктом */
 
 public class DashboardsAllApi extends BaseApi {

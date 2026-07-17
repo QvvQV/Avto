@@ -17,4 +17,24 @@ public class StoryScreenResponse {
 
     @JsonProperty("status")
     private String status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getStoryId() {
+        return storyId;
+    }
+
+    public String getScreenId() {
+        return screenId;
+    }
+
+    public String getViewedAt() {
+        return viewedAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 }

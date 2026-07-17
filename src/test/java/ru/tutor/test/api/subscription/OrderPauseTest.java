@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrderPauseTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
-    private final OrderSteps orderSteps = OrderSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
@@ -36,7 +36,7 @@ public class OrderPauseTest {
     @BeforeEach
     void setUpAuth() {
         token = step("Логин пользователя", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
     }
 
     @Test
@@ -88,6 +88,8 @@ public class OrderPauseTest {
         Response response = step("PUT /user/orders/unpause без токена", () ->
                 orderSteps.unpauseOrder("")
         );
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
@@ -109,12 +111,10 @@ public class OrderPauseTest {
     @DisplayName("PUT /user/orders/unpause с невалидным токеном")
     void  unpauseOrderWithInvalidToken() {
         Response response = step ("POST /user/orders/unpause с инвалидным токеном", () ->
-                orderSteps.unpauseOrder("")
+                orderSteps.unpauseOrder("invalid")
         );
         step("Проверка статуса 401", () ->
                 assertEquals(401, response.getStatusCode())
         );
     }
-
-
 }

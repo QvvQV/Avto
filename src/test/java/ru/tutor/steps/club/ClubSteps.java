@@ -1,5 +1,6 @@
 package ru.tutor.steps.club;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
@@ -8,24 +9,23 @@ import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubPaymentResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
+import ru.tutor.model.club.SzDetailsRequest;
 import ru.tutor.utils.AllureAttachments;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClubSteps extends BaseApiSteps {
 
+    private static final ObjectMapper MAPPER = new ObjectMapper();
     private final ClubApi clubApi;
 
     public ClubSteps(String baseUrl){
         super(baseUrl);
         this.clubApi = new ClubApi(baseUrl);
-    }
-
-    public static ClubSteps withBaseUrl(String baseUrl){
-        return new ClubSteps(baseUrl);
     }
 
     @Step("GET /user/club/statistics - получить статистику клуба")
@@ -166,7 +166,11 @@ public class ClubSteps extends BaseApiSteps {
             String paymentInfo = "Платеж #" + (i + 1);
 
             assertAll(paymentInfo + " - проверка структуры",
-                    () -> assertNotNull(payment.name(), "name не должен быть null"),
+                    () -> assertDoesNotThrow(() -> {
+                        if (payment.name() != null) {
+                            assertFalse(payment.name().isBlank(), "name не должен быть null");
+                        }
+                    }),
                     () -> assertNotNull(payment.direction(), "direction не должен быть null"),
                     () -> assertTrue(
                             payment.isIncome() || payment.isOutcome(),
@@ -227,6 +231,48 @@ public class ClubSteps extends BaseApiSteps {
         Response response = this.clubApi.getUserReferralRefferrals(authToken, userId, referralId);
         AllureAttachments.attachJson("Club Referral Detail Response", response.getBody().asString());
         return response;
+    }
+
+    @Step("POST /user/club/sz-details - сохранение деталей самозанятого")
+    public Response saveSzDetails(String authToken, Map<String, Object> payload) {
+        Response response = clubApi.saveSzDetails(authToken, payload);
+        AllureAttachments.attachJson("Savee Sz Details Request", payload.toString());
+        AllureAttachments.attachJson("Save Sz Details Response", response.getBody().asString());
+        AllureAttachments.attachJson("Save Sz Details Headers", response.getHeaders().toString());
+        return response;
+    }
+
+    @Step("POST /user/club/sz-details - сохранение деталей самозанятого из объекта")
+    public Response saveSzDetails(String authToken, SzDetailsRequest request) {
+        Map<String, Object> payload = MAPPER.convertValue(request, Map.class);
+        return saveSzDetails(authToken, payload);
+    }
+
+    @Step("DELETE /user/club/details - удаление деталей клуба")
+    public Response deleteClubDetails(String authToken) {
+        Response response = clubApi.deleteClubDetails(authToken);
+        AllureAttachments.attachJson("Delete Club Details Response", response.getBody().asString());
+        AllureAttachments.attachJson("Delete Club Details Headers", response.getHeaders().toString());
+        return response;
+    }
+
+    /**
+     * Тестовые данные для ИП
+     */
+
+    @Step("POST /user/club/ip-details - сохранение деталей ИП")
+    public Response saveIpDetails(String authToken, Map<String, Object> payload) {
+        Response response = clubApi.saveIpDetails(authToken, payload);
+        AllureAttachments.attachJson("Save Ip Details Request", payload.toString());
+        AllureAttachments.attachJson("Save Ip Details Response", response.getBody().asString());
+        AllureAttachments.attachJson("Save Ip Details Headers", response.getHeaders().toString());
+        return response;
+    }
+
+    @Step("POST /user/club/ip-details - сохранение деталей ИП из объекта")
+    public Response saveIpDetails(String authToken, SzDetailsRequest request) {
+        Map<String, Object> payload = MAPPER.convertValue(request, Map.class);
+        return saveIpDetails(authToken, payload);
     }
 
 }

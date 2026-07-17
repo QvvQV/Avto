@@ -20,10 +20,6 @@ public class ClubWithdrawalSteps extends BaseApiSteps {
         this.withdrawalApi = new ClubApi(baseUrl);
     }
 
-    public static ClubWithdrawalSteps withBaseUrl(String baseUrl) {
-        return new ClubWithdrawalSteps(baseUrl);
-    }
-
     @Step("POST /user/club/request-withdrawal - запрос на вывод средств")
     public Response requestWithdrawal(String authToken, Map<String, Object> payload) {
         Response response = withdrawalApi.requestWithdrawal(authToken, payload);

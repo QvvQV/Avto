@@ -125,6 +125,26 @@ public class UserSteps extends BaseApiSteps {
         return userProfile;
     }
 
+    @Step("Проверить структуру LoginResponse")
+    public void validateLoginResponse(LoginResponse loginResponse) {
+        assertNotNull(loginResponse, "Ответ логина не должен быть null");
+        assertNotNull(loginResponse.token(), "Токен не должен быть null");
+        assertTrue(loginResponse.token().length() > 10, "Токен должен быть достаточно длинным");
+
+        assertTrue(loginResponse.token().matches("^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]*$"),
+                "Токен должен быть в формате JWT");
+
+        if (loginResponse.refreshToken() != null) {
+            assertTrue(loginResponse.refreshToken().length() > 10,
+                    "Refresh token должен быть достаточно длинным");
+        }
+
+        if (loginResponse.expiresIn() != null) {
+            assertTrue(loginResponse.expiresIn() > 0,
+                    "Expires in должен быть положительным числом");
+        }
+    }
+
     @Step("Получить профиль с текущим токеном")
     public String getCurrentAuthToken() {
         if (currentAuthToken == null) {
@@ -623,6 +643,35 @@ public class UserSteps extends BaseApiSteps {
             assertTrue(body.contains(expectedMessage),
                     "Ответ должен содержать: " + expectedMessage);
         }
+    }
+
+    @Step("Валидация конфликта email")
+    public void validateExistingEmailError(Response response) {
+        assertErrorStatusCode(response, 400);
+        assertContentTypeJson(response);
+        assertAnyFieldExists(response, "message", "error");
+    }
+
+    @Step("Проверка ошибки валидации")
+    public void validateValidationError(Response response, int expectedStatus) {
+        assertErrorStatusCode(response, expectedStatus);
+        assertContentTypeJson(response);
+        assertAnyFieldExists(response, "errors", "error", "message");
+    }
+
+    @Step("Проверка отсутствия чувствительных данных")
+    public void validateNoSensitiveDate(Response response) {
+        String responseBody = response.getBody().asString().toLowerCase();
+        assertFalse(responseBody.contains("password"), "Ответ не должен содержать пароли");
+        assertFalse(responseBody.contains("sql"), "Ответ не должен содержать SQL информацию");
+        assertFalse(responseBody.contains("exception"), "Ответ не должен содержать исключения");
+    }
+
+    @Step("Проверка времени ответа (максю {maxTimeMs} мс)")
+    public void validateResponseTime(Response response, long maxTimeMs) {
+        long responseTime = response.getTime();
+        assertTrue(responseTime <= maxTimeMs,
+                "Время ответа должно быть меньше " + maxTimeMs + "мсб но было: " + responseTime + "мс");
     }
 
 //    @Step("Применение промокода текущим пользователем")

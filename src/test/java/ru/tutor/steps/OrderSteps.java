@@ -19,10 +19,6 @@ public class OrderSteps extends BaseApiSteps {
         this.orderApi = new UserOrderApi(baseUrl);
     }
 
-    public static OrderSteps withBaseUrl(String baseUrl) {
-        return new OrderSteps(baseUrl);
-    }
-
     @Step("GET /user/orders/payments - история платежей")
     public Response getOrdersPayments(String authToken) {
         Response response = orderApi.getOrdersPayments(authToken);
@@ -54,7 +50,7 @@ public class OrderSteps extends BaseApiSteps {
 
     @Step("PUT /user/orders/pause/{days} - пауза подписки")
     public Response pauseOrder(String authToken, int days) {
-        Response response = orderApi.pauseOrder(authToken, 7);
+        Response response = orderApi.pauseOrder(authToken, days);
         AllureAttachments.attachJson("Orders Pause Response", response.getBody().asString());
         return response;
     }

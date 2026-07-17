@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
@@ -19,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("Тесты смены пароля")
 public class EditPasswordTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -35,7 +33,7 @@ public class EditPasswordTest {
     @BeforeEach
     void setUpAuth() {
         token = step("Логин пользователя", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
     }
 
     @Test
@@ -111,7 +109,7 @@ public class EditPasswordTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     @DisplayName("PUT /user/edit/pass пустой новый пароль")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")

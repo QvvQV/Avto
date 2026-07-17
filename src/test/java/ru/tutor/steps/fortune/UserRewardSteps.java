@@ -33,11 +33,6 @@ public class UserRewardSteps extends BaseApiSteps {
     private static final DateTimeFormatter ISO_FORMATTER =
             DateTimeFormatter.ISO_DATE;
 
-    public static UserRewardSteps withBaseUrl(String baseUrl) {
-        return new UserRewardSteps(baseUrl);
-    }
-
-
     @Step("GET /user/reward/list - получение списка наград пользователя")
     public Response getUserRewards(String authToken) {
         return this.gameWheelApi.getUserRewards(authToken);

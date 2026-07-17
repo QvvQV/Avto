@@ -5,13 +5,13 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.model.club.SzDetailsRequest;
 import ru.tutor.model.club.SzDetailsResponse;
-import ru.tutor.steps.club.ClubSzDetailsSteps;
+import ru.tutor.steps.club.ClubSteps;
 
 import java.util.Map;
 
 public class ClubDetailsFlow {
 
-    private final ClubSzDetailsSteps szDetailsSteps;
+    private final ClubSteps clubSteps;
     private final String authToken;
 
     // Константы статусов
@@ -25,18 +25,18 @@ public class ClubDetailsFlow {
 
     public ClubDetailsFlow(String authToken, String baseUrl) {
         this.authToken = authToken;
-        this.szDetailsSteps = ClubSzDetailsSteps.withBaseUrl(baseUrl);
+        this.clubSteps = new ClubSteps(baseUrl);
     }
 
     @Step("Создание/сохранение данных самозанятого")
     public SaveResult saveSelfEmployedDetails(SzDetailsRequest request) {
-        Response response = szDetailsSteps.saveSzDetails(authToken, request);
+        Response response = clubSteps.saveSzDetails(authToken, request);
         return new SaveResult(response);
     }
 
     @Step("Создание/сохранение данных ИП")
     public SaveResult saveIpDetails(SzDetailsRequest request) {
-        Response response = szDetailsSteps.saveIpDetails(authToken, request);
+        Response response = clubSteps.saveIpDetails(authToken, request);
         return new SaveResult(response);
     }
 
@@ -44,16 +44,16 @@ public class ClubDetailsFlow {
     public SaveResult saveWithMinimalFields(Map<String, Object> payload, String type) {
         Response response;
         if ("ip".equalsIgnoreCase(type)) {
-            response = szDetailsSteps.saveIpDetails(authToken, payload);
+            response = clubSteps.saveIpDetails(authToken, payload);
         } else {
-            response = szDetailsSteps.saveSzDetails(authToken, payload);
+            response = clubSteps.saveSzDetails(authToken, payload);
         }
         return new SaveResult(response);
     }
 
     @Step("Удаление данных клуба")
     public DeleteResult deleteClubDetails() {
-        Response response = szDetailsSteps.deleteClubDetails(authToken);
+        Response response = clubSteps.deleteClubDetails(authToken);
         return new DeleteResult(response);
     }
 
@@ -62,7 +62,7 @@ public class ClubDetailsFlow {
         IdempotenceResult result = new IdempotenceResult();
 
         for (int i = 1; i <= attempts; i++) {
-            Response response = szDetailsSteps.deleteClubDetails(authToken);
+            Response response = clubSteps.deleteClubDetails(authToken);
             result.addAttempt(i, response.getStatusCode());
 
             Allure.addAttachment(String.format("Удаление #%d", i), "text/plain",

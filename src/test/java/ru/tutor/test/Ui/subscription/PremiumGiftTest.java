@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.ReactivatePremiumFlow;
-import ru.tutor.steps.OrderPremiumGift;
+import ru.tutor.steps.OrderPremiumGiftSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,7 +22,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private ReactivatePremiumFlow reactivateFlow;
-    private OrderPremiumGift  orderPremiumGift = OrderPremiumGift.withBaseUrl(BASE_URL);
+    private OrderPremiumGiftSteps orderPremiumGift = new OrderPremiumGiftSteps(BASE_URL);
 
 
     @Override

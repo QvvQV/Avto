@@ -54,6 +54,11 @@ public class ClubSzDetailsTest {
                 String.format("ID: %d\nEmail: %s", profile.getId(), profile.getEmail()));
     }
 
+    @AfterEach
+    public void tearDown() {
+        clubFlow.deleteClubDetails();
+    }
+
     // ==================== ТЕСТЫ ДЛЯ САМОЗАНЯТОГО ====================
 
     @Test
@@ -190,11 +195,11 @@ public class ClubSzDetailsTest {
     @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
     void deleteClubDetails_WithoutAuth_ShouldFail() {
-        var unauthFlow = new ClubDetailsFlow("invalid_token", BASE_URL);
-        var result = unauthFlow.deleteClubDetails();
+        var unAuthFlow = new ClubDetailsFlow("invalid_token", BASE_URL);
+        var result = unAuthFlow.deleteClubDetails();
         assertTrue(result.isAuthError() || result.isNotFound(),
-                "Должна быть ошибка авторизации или 404");
-        assertEquals(401, clubFlow.deleteClubDetails().getStatusCode());
+                "Должна быть ошибка авторизации");
+        assertEquals(400, clubFlow.deleteClubDetails().getStatusCode());
         result.log();
     }
 

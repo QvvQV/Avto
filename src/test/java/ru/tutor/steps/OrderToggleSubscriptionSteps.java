@@ -25,10 +25,6 @@ public class OrderToggleSubscriptionSteps extends BaseApiSteps {
         this.orderApi = new UserOrderApi(baseUrl);
     }
 
-    public static OrderToggleSubscriptionSteps withBaseUrl(String baseUrl) {
-        return new OrderToggleSubscriptionSteps(baseUrl);
-    }
-
     @Step("Переключение подписки на заказ ID: {orderId}")
     public Response toggleOrderSubscription(String authToken, Integer orderId) {
         return this.orderApi.toggleOrderSubscription(authToken, orderId);

@@ -1,6 +1,5 @@
 package ru.tutor.test.api.user;
 
-
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.http.ContentType;
@@ -8,7 +7,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.model.UserProfile;
-import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.UserSteps;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.fortune.GameStatsResponse;
@@ -23,18 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты эндпоинта /user/game-stats")
 public class UserGameStatsTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
-    private UserProfile profile;
 
     @BeforeEach
         public void setup() {
             token = step("Логин", () ->
-                    authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+                    userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
             );
     }
 

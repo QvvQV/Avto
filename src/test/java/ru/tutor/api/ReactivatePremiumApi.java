@@ -2,7 +2,6 @@ package ru.tutor.api;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;

@@ -28,7 +28,7 @@ public class RegistrationForAuthorsApi extends BaseApi {
 
         return given(baseSpec)
                 .contentType(ContentType.JSON)
-                .body("{\"isAuthorRegister\":\"" + isAuthorRegister + "\"email\":\"" + email + "\"name\":\"" + name + "\"}")
+                .body("{\"isAuthorRegister\":" + isAuthorRegister + ",\"email\":\"" + email + "\",\"name\":\"" + name + "\"}")
                 .log().all()
                 .when()
                 .post(baseUrl + ApiEndpoints.ORDER)

@@ -14,10 +14,6 @@ public class ResetSteps extends BaseApiSteps {
         this.resetApi = new ResetApi(baseUrl);
     }
 
-    public static ResetSteps  withBaseUrl(String baseUrl) {
-        return new ResetSteps(baseUrl);
-    }
-
     @Step("Отправка запроса на сброс пароля для email: {email}")
     public Response requestPasswordReset(String email) {
         Response response = resetApi.resetPassword(email);

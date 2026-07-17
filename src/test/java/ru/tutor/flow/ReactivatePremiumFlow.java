@@ -38,7 +38,7 @@ public class ReactivatePremiumFlow {
     private final OrderToggleSubscriptionSteps orderSteps;
     private final ReactivatePremiumSteps reactivatePremiumSteps;
     private final AdminToUserLoginSteps adminToUserLoginSteps;
-    private final OrderPremiumGift orderStepsPremiumGift;
+    private final OrderPremiumGiftSteps orderStepsPremiumGift;
     private final Product product = new Product();
 
     private final PurchaseFlow purchaseFlow;
@@ -69,9 +69,9 @@ public class ReactivatePremiumFlow {
         this.adminFlow = new AdminFlow(adminOrdersPage);
 
         String baseUrl = TestConfig.getCurrentApiUrl();
-        this.orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(baseUrl);
-        this.orderStepsPremiumGift = OrderPremiumGift.withBaseUrl(baseUrl);
-        this.reactivatePremiumSteps = ReactivatePremiumSteps.withBaseUrl(baseUrl);
+        this.orderSteps = new OrderToggleSubscriptionSteps(baseUrl);
+        this.orderStepsPremiumGift = new OrderPremiumGiftSteps(baseUrl);
+        this.reactivatePremiumSteps = new ReactivatePremiumSteps(baseUrl);
         this.adminToUserLoginSteps = new AdminToUserLoginSteps();
 
         initTestExecutor();

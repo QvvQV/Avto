@@ -1,7 +1,6 @@
 package ru.tutor.steps;
 
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.ReactivatePremiumApi;
 import ru.tutor.base.BaseApiSteps;
@@ -18,10 +17,6 @@ public class ReactivatePremiumSteps extends BaseApiSteps {
     public ReactivatePremiumSteps(String baseUrl) {
         super(baseUrl);
         this.reactivatePremiumApi = new ReactivatePremiumApi(baseUrl);
-    }
-
-    public static ReactivatePremiumSteps withBaseUrl(String baseUrl) {
-        return new ReactivatePremiumSteps(baseUrl);
     }
 
     @Step("Переключение подписки c Лайта на Премиум по внутренней почте")

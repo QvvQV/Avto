@@ -50,7 +50,7 @@ public class ReferralFlow {
 
         this.testExecutor = testExecutor;
         this.context = context;
-        this.clubSteps = ClubSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+        this.clubSteps = new ClubSteps(TestConfig.getCurrentApiUrl());
         this.purchaseFlow = purchaseFlow;
         this.adminFlow = adminFlow;
 

@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
@@ -20,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTasksTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
     private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -37,7 +35,7 @@ public class UserTasksTest {
     void setUpAuth() {
         // Логин перед каждым тестом
         token = step("Логин пользователя", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
 
@@ -82,7 +80,7 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     @DisplayName("POST /user/tasks/change/{id} - замена задания")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
@@ -113,7 +111,7 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     @DisplayName("POST /user/tasks/change/{id} - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -134,7 +132,7 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     @DisplayName("POST /user/tasks/change/{id} - инвалид токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -155,7 +153,7 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("POST /user/tasks/change/{id} - невалидный номер")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -176,7 +174,7 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     @DisplayName("POST /user/tasks/finish/{id} - завершение задания")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
@@ -198,7 +196,7 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     @DisplayName("POST /user/tasks/finish/{id} - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -219,7 +217,7 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     @DisplayName("POST /user/tasks/finish/{id} - пустой номер")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")

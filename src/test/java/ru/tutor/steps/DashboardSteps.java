@@ -19,10 +19,6 @@ public class DashboardSteps extends BaseApiSteps  {
         dashboardsAllApi = new DashboardsAllApi(baseUrl);
     }
 
-    public static DashboardSteps withBaseUrl(String baseUrl) {
-        return new DashboardSteps(baseUrl);
-    }
-
     @Step("GET /user/dashboard/info - список дашбордов")
     public Response getDashboardInfo(String authToken) {
         Response response = dashboardsAllApi.dashboardInfo(authToken);

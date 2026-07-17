@@ -3,7 +3,6 @@ package ru.tutor.steps.fortune;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.api.GameWheelApi;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.constants.GameWheelRewardsConstants;
@@ -26,10 +25,6 @@ public class GameWheelRewardsSteps extends BaseApiSteps {
     public GameWheelRewardsSteps (String baseUrl) {
         super(baseUrl);
         this.gameWheelApi = new GameWheelApi(baseUrl);
-    }
-
-    public static GameWheelRewardsSteps withBaseUrl (String baseUrl) {
-        return new GameWheelRewardsSteps(baseUrl);
     }
 
     @Step("Получение списка наград")

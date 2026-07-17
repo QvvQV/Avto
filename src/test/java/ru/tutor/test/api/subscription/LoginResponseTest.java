@@ -1,14 +1,16 @@
 package ru.tutor.test.api.subscription;
 
 import io.qameta.allure.*;
+import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.LoginResponse;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.UserSteps;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.ResponseAnalyzer;
 
@@ -17,32 +19,32 @@ import java.util.Locale;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Epic("Authentication")
-@Feature("Response Validation")
-@Story("Detailed Response Body and Status Code Checks")
-@DisplayName("📋 Детальные проверки ответов API")
+@Epic("Аутентификация")
+@ExtendWith(AllureJunit5.class)
+@Feature("Проверка корректности ответа")
+@Story("Проверка кода состояния")
+@DisplayName("📋 Проверки ответов API")
 @Execution(ExecutionMode.CONCURRENT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class LoginResponseTest {
 
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(TestConfig.getCurrentApiUrl());
+    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test
-    @AllureId("58")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("✅ Успешный логин - полная проверка ответа")
     @Order(1)
     void successfulLogin_CompleteResponseValidation() {
         LoginResponse loginResponse = step("Выполнить логин и получить полный ответ", () ->
-            authSteps.loginWithValidCredentials(
+            userSteps.login(
                 TestConfig.getTestEmail(),
                 TestConfig.getTestPassword()
-            )
+            ).as(LoginResponse.class)
         );
 
         step("Проверить структуру и содержание ответа", () -> {
-            authSteps.validateLoginResponse(loginResponse);
+            userSteps.validateLoginResponse(loginResponse);
 
             // Дополнительные проверки
             assertNotNull(loginResponse.token(), "Токен должен присутствовать в ответе");
@@ -56,13 +58,12 @@ class LoginResponseTest {
     }
 
     @Test
-    @AllureId("59")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Неверный пароль - проверка тела ошибки")
     @Order(2)
     void wrongPassword_ErrorResponseValidation() {
         Response response = step("Логин с неверным паролем", () ->
-            authSteps.loginWithInvalidCredentials(
+            userSteps.login(
                 TestConfig.getTestEmail(),
                 "wrongPassword123"
             )
@@ -74,7 +75,7 @@ class LoginResponseTest {
                     .contentType("application/json");
 
             // Используем минимальные проверки заголовков
-            authSteps.validateMinimumHeaders(response);
+            assertNotNull(response.getHeader("Date"), "Заголовок Date должен существовать");
         });
 
         step("Проверить тело ответа", () -> {
@@ -88,13 +89,12 @@ class LoginResponseTest {
     }
 
     @Test
-    @AllureId("56")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Неверный email - проверка структуры ошибки")
     @Order(3)
     void wrongEmail_ErrorResponseValidation() {
         Response response = step("Выполнить запрос с неверным email", () ->
-            authSteps.loginWithInvalidCredentials(
+            userSteps.login(
                 "nonexistent@test.ru",
                 TestConfig.getTestPassword()
             )
@@ -109,7 +109,7 @@ class LoginResponseTest {
                     .contentType("application/json");
 
             // Только проверки которые точно работают
-            authSteps.validateMinimumHeaders(response);
+            assertNotNull(response.getHeader("Date"), "Заголовок Date должен существовать");
         });
 
         step("Проверить тело ответа", () -> {
@@ -124,13 +124,12 @@ class LoginResponseTest {
     }
 
     @Test
-    @AllureId("60")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Пустые поля - специальная проверка")
     @Order(4)
     void emptyCredentials_SpecialValidation() {
         Response response = step("Выполнить запрос с пустыми полями", () ->
-            authSteps.loginWithInvalidCredentials("", "")
+            userSteps.login("", "")
         );
 
         // Анализируем реальный ответ
@@ -153,13 +152,12 @@ class LoginResponseTest {
     }
 
     @Test
-    @AllureId("57")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("📧 Email в неверном формате - проверка валидации")
     @Order(5)
     void invalidEmailFormat_ValidationCheck() {
         Response response = step("Логин с email в неверном формате", () ->
-            authSteps.loginWithInvalidCredentials("invalid-email-format", "anyPassword123")
+            userSteps.login("invalid-email-format", "anyPassword123")
         );
 
         step("Проверить валидацию email", () -> {
@@ -170,13 +168,12 @@ class LoginResponseTest {
     }
 
     @Test
-    @AllureId("55")
     @Severity(SeverityLevel.MINOR)
     @DisplayName("⏱️  Проверка времени ответа")
     @Order(6)
     void responseTime_ShouldBeReasonable() {
         Response response = step("Измерить время ответа", () ->
-            authSteps.loginWithInvalidCredentials(
+            userSteps.login(
                 TestConfig.getTestEmail(),
                 "wrongPassword123"
             )
@@ -192,13 +189,12 @@ class LoginResponseTest {
     }
 
     @Test
-    @AllureId("62")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🔧 Проверка реальных заголовков ответа")
     @Order(7)
     void validateActualResponseHeaders() {
         Response response = step("Получить ответ для анализа заголовков", () ->
-            authSteps.getLoginResponse(TestConfig.getTestEmail(), TestConfig.getTestPassword())
+            userSteps.login(TestConfig.getTestEmail(), TestConfig.getTestPassword())
         );
 
         step("Проанализировать фактические заголовки", () -> {
@@ -222,7 +218,7 @@ class LoginResponseTest {
         @DisplayName("📝 Проверка JSON схемы успешного ответа")
         void successfulLogin_JsonSchemaValidation() {
             Response response = step("Получить raw response", () ->
-                authSteps.getLoginResponse(
+                userSteps.login(
                     TestConfig.getTestEmail(),
                     TestConfig.getTestPassword()
                 )
@@ -242,7 +238,7 @@ class LoginResponseTest {
         @DisplayName("📝 Проверка JSON схемы ошибки")
         void errorResponse_JsonSchemaValidation() {
             Response response = step("Получить error response", () ->
-                authSteps.loginWithInvalidCredentials(
+                userSteps.login(
                     "wrong@email.com",
                     "wrongpass"
                 )
@@ -269,7 +265,7 @@ class LoginResponseTest {
         @Test
         @DisplayName("🟢 Базовая проверка успешного логина")
         void basicSuccessfulLoginCheck() {
-            Response response = authSteps.getLoginResponse(
+            Response response = userSteps.login(
                 TestConfig.getTestEmail(),
                 TestConfig.getTestPassword()
             );
@@ -284,7 +280,7 @@ class LoginResponseTest {
         @Test
         @DisplayName("🔴 Базовая проверка неуспешного логина")
         void basicUnsuccessfulLoginCheck() {
-            Response response = authSteps.getLoginResponse(
+            Response response = userSteps.login(
                 TestConfig.getTestEmail(),
                 "wrong_password"
             );
@@ -299,17 +295,18 @@ class LoginResponseTest {
         @Test
         @DisplayName("📝 Проверка что ответ всегда JSON")
         void responseAlwaysJson() {
-            Response successResponse = authSteps.getLoginResponse(
+            Response successResponse = userSteps.login(
                 TestConfig.getTestEmail(),
                 TestConfig.getTestPassword()
             );
 
-            Response errorResponse = authSteps.getLoginResponse(
+            successResponse.then().contentType("application/json");
+
+            Response errorResponse = userSteps.login(
                 TestConfig.getTestEmail(),
                 "wrong_password"
             );
 
-            successResponse.then().contentType("application/json");
             errorResponse.then().contentType("application/json");
         }
 
@@ -319,7 +316,7 @@ class LoginResponseTest {
             String longEmail = "a".repeat(200) + "@test.com";
 
             Response response = step("Логин с очень длинным email", () ->
-                authSteps.loginWithInvalidCredentials(longEmail, "anyPassword123")
+                userSteps.login(longEmail, "anyPassword123")
             );
 
             step("Проверить обработку длинного email", () -> {
@@ -335,7 +332,7 @@ class LoginResponseTest {
             String longPassword = "p".repeat(1000);
 
             Response response = step("Логин с очень длинным паролем", () ->
-                authSteps.loginWithInvalidCredentials(TestConfig.getTestEmail(), longPassword)
+                userSteps.login(TestConfig.getTestEmail(), longPassword)
             );
 
             step("Проверить обработку длинного пароля", () -> {

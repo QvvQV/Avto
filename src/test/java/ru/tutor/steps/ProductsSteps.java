@@ -26,10 +26,6 @@ public class ProductsSteps extends BaseApiSteps {
         this.productsApi = new UserProductsApi(baseUrl);
     }
 
-    public static ProductsSteps withBaseUrl(String baseUrl) {
-        return new ProductsSteps(baseUrl);
-    }
-
     @Step("Получение списка продуктов")
     public Response getUserProducts(String authToken) {
         return this.productsApi.getUserProducts(authToken);

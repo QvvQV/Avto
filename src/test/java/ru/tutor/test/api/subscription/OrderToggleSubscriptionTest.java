@@ -1,14 +1,13 @@
 package ru.tutor.test.api.subscription;
 
-
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderToggleSubscriptionSteps;
+import ru.tutor.steps.UserSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 
 import static io.qameta.allure.Allure.step;
@@ -27,10 +26,9 @@ public class OrderToggleSubscriptionTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
     private final Integer TEST_ORDER_ID = 180;
 
-
-    private final AuthSteps authSteps = AuthSteps.withBaseUrl(BASE_URL);
-    private final GameWheelRewardsSteps gameWheelRewardsSteps = GameWheelRewardsSteps.withBaseUrl(BASE_URL);
-    private final OrderToggleSubscriptionSteps orderSteps = OrderToggleSubscriptionSteps.withBaseUrl(BASE_URL);
+    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final GameWheelRewardsSteps gameWheelRewardsSteps = new GameWheelRewardsSteps(BASE_URL);
+    private final OrderToggleSubscriptionSteps orderSteps = new OrderToggleSubscriptionSteps(BASE_URL);
 
 
     private static String token;
@@ -45,13 +43,13 @@ public class OrderToggleSubscriptionTest {
     void setUpAuth() {
         token = step("Логин Пользователя", () ->
 
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
 
     @Test
     @Order(1)
-    @DisplayName("Успешное переключение подписки (Проверка 200 ОК)")
+    @DisplayName("Успешное переключение Премиум подписки (Проверка 200 ОК)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag("positive")
@@ -103,7 +101,7 @@ public class OrderToggleSubscriptionTest {
 
     @Test
     @Order(4)
-    @DisplayName("Восстановление подписки с невалдиным токеном")
+    @DisplayName("Восстановление подписки с невалидным токеном")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")

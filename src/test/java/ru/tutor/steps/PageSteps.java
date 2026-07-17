@@ -1,4 +1,4 @@
-package ru.tutor.api.steps;
+package ru.tutor.steps;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
@@ -7,17 +7,20 @@ import org.jsoup.Jsoup;
 import ru.tutor.api.catalog.PageContentApi;
 
 import org.jsoup.nodes.Document;
+import ru.tutor.base.BaseApiSteps;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PageSteps {
+public class PageSteps extends BaseApiSteps {
     private final PageContentApi pageApi;
 
-    public PageSteps(String baseUrl, String username, String password){
-        this.pageApi = new PageContentApi(baseUrl, username, password);
+    public PageSteps(String baseUrl){
+        super(baseUrl);
+        pageApi = new PageContentApi(baseUrl);
     }
 
     /**
@@ -43,7 +46,7 @@ public class PageSteps {
                 // Вложенный шаг в Allure с title и кодом ответа
                 Allure.step("title: " + title + " - статус: " + resp.statusCode(), ()->{
                     String requestLog = "Get " + pageApi.getBaseUrl() + endpoint +
-                            "\nAuthorization: " + pageApi.getAuthHeader();
+                            "\nAuthorization: ";
                     Allure.addAttachment("Request", "text/plain", requestLog, ".txt");
                     Allure.addAttachment("Response Body", "text/plain", resp.asPrettyString(), ".txt");
                 });
