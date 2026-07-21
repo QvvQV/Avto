@@ -35,7 +35,6 @@ public class CloudTest extends BaseUiTest {
     private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
 
 //    @Test
-    @AllureId("1")
 //            @RepeatedTest(2)
     @DisplayName("Оплата с главной на СисАк Oфферум")
     public void PayFromMainOfferrum() {
@@ -47,7 +46,6 @@ public class CloudTest extends BaseUiTest {
 
     @Test
 //    @RepeatedTest(3)
-    @AllureId("3")
     @DisplayName("Оплата с главной за 99 руб")
     public void PayMain99() {
 
@@ -57,7 +55,6 @@ public class CloudTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("2")
 //        @RepeatedTest(3)
     @DisplayName("Оплата с главной за 399 руб")
     @Owner("Vadim")
@@ -69,7 +66,6 @@ public class CloudTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("4")
     @DisplayName("Оплата с главной за Пожизненный")
     public void PayMainLife() {
 
@@ -79,7 +75,6 @@ public class CloudTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("5")
     @DisplayName("Оплата Долями с главной за Пожизненный")
     public void PayMainLifeInstallments() {
 

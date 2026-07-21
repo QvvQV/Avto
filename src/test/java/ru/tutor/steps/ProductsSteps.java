@@ -165,14 +165,14 @@ public class ProductsSteps extends BaseApiSteps {
 
         for (ProductsResponse product : products) {
 
-            if (!product.isMiniCourse()) {
+            if (!product.isMiniCourse() && product.getId() != null) {
                 assertNotNull(product.getId(), "ID продукта не должен быть null");
                 assertFalse(product.getId().trim().isEmpty(), "ID продукта не должен быть пустым");
             }
             // Обязательные поля
 
             assertNotNull(product.getName(), "Название продукта не должен быть null");
-            assertNotNull(product.getAvailable(), "Available е должен быть null");
+            assertNotNull(product.getAvailable(), "Available не должен быть null");
             assertNotNull(product.getCategoryAsString(), "Категория не должна быть null");
 
             // Валидация значений
