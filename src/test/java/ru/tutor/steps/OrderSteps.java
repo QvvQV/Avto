@@ -122,4 +122,26 @@ public class OrderSteps extends BaseApiSteps {
         AllureAttachments.attachJson("Refund Tickets Response", response.getBody().asString());
         return response;
     }
+
+    @Step("POST /user/orders/spend-cashback - списание кэшбека")
+    public Response spendCashback(String authToken) {
+        Response response = orderApi.spendCashback(authToken);
+        AllureAttachments.attachJson("Spend Cashback Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация успешного списания кэшбека")
+    public void validateSpendCashbackResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertEquals("OK", response.jsonPath().getString("status"));
+    }
+
+    @Step("Валидация ошибки при недостатке средств")
+    public void validateSpendCashbackValidationError(Response response) {
+        assertEquals(400, response.getStatusCode());
+        String error = response.jsonPath().getString("error");
+        assertTrue(error !=null && error.contains("Not enough diamond balance"),
+                "Ожидалась ошибка о недостатке средств, получено: " + error);
+    }
 }

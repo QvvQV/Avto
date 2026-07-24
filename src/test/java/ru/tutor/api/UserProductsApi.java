@@ -147,4 +147,25 @@ public class UserProductsApi extends BaseApi {
     public Response getAttachedFiles(String authToken, String productId) {
         return getWithToken(String.format(ApiEndpoints.PRODUCTS_ATTACHED_FILES, productId), authToken);
     }
+
+    /**
+     * GET /user/mini-courses — список мини-курсов
+     */
+    public Response getMiniCourses(String authToken) {
+        return getWithToken(ApiEndpoints.MINI_COURSES, authToken);
+    }
+
+    /**
+     * GET /user/mini-workouts
+     */
+    public Response getMiniWorkouts(String authToken) {
+        return getWithToken(ApiEndpoints.MINI_WORKOUTS, authToken);
+    }
+
+    /**
+     * GET /user/show-categories
+     */
+    public Response getShowCategories(String authToken) {
+        return getWithToken(ApiEndpoints.SHOW_CATEGORIES, authToken);
+    }
 }

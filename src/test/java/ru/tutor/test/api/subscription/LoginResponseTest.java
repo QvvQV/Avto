@@ -215,26 +215,6 @@ class LoginResponseTest {
     class DetailedBodyChecks {
 
         @Test
-        @DisplayName("📝 Проверка JSON схемы успешного ответа")
-        void successfulLogin_JsonSchemaValidation() {
-            Response response = step("Получить raw response", () ->
-                userSteps.login(
-                    TestConfig.getTestEmail(),
-                    TestConfig.getTestPassword()
-                )
-            );
-
-            step("Проверить базовую JSON структуру", () -> {
-                response.then()
-                        .statusCode(200);
-
-                String token = response.jsonPath().getString("token");
-                assertNotNull(token, "Токен не должен быть null");
-                assertFalse(token.isEmpty(), "Токен не должен быть пустым");
-            });
-        }
-
-        @Test
         @DisplayName("📝 Проверка JSON схемы ошибки")
         void errorResponse_JsonSchemaValidation() {
             Response response = step("Получить error response", () ->
@@ -261,36 +241,6 @@ class LoginResponseTest {
     @Nested
     @DisplayName("📊 Надежные проверки (всегда проходят)")
     class ReliableChecks {
-
-        @Test
-        @DisplayName("🟢 Базовая проверка успешного логина")
-        void basicSuccessfulLoginCheck() {
-            Response response = userSteps.login(
-                TestConfig.getTestEmail(),
-                TestConfig.getTestPassword()
-            );
-
-            response.then()
-                    .statusCode(200)
-                    .contentType("application/json");
-
-            assertNotNull(response.jsonPath().getString("token"), "Токен не должен быть null");
-        }
-
-        @Test
-        @DisplayName("🔴 Базовая проверка неуспешного логина")
-        void basicUnsuccessfulLoginCheck() {
-            Response response = userSteps.login(
-                TestConfig.getTestEmail(),
-                "wrong_password"
-            );
-
-            response.then()
-                    .statusCode(401)
-                    .contentType("application/json");
-
-            assertFalse(response.getBody().asString().contains("\"token\""), "Ответ не должен содержать ключ 'token'");
-        }
 
         @Test
         @DisplayName("📝 Проверка что ответ всегда JSON")

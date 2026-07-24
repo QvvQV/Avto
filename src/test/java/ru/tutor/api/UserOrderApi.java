@@ -69,4 +69,9 @@ public class UserOrderApi extends BaseApi {
     public Response restorePremium(String authToken) {
         return postWithToken(ApiEndpoints.ORDERS_RESTORE_PREMIUM, authToken, "[]");
     }
+
+    @Step("POST /user/orders/spend-cashback - списание кэшбека")
+    public Response spendCashback(String authToken) {
+        return postWithToken(ApiEndpoints.ORDERS_SPEND_CASHBACK, authToken, "[]");
+    }
 }

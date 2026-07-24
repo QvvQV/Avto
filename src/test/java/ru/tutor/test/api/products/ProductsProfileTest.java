@@ -512,16 +512,24 @@ public class ProductsProfileTest {
     private void ensureProductsLoaded() {
         if (savedProductValue != null) return;
 
-        Response response = step("GET /user/products - подготовка данных", () ->
-                productsSteps.getUserProducts(token));
-        List<ProductsResponse> products = step("Валидация списка пордуктов", () ->
-                productsSteps.validateProductsResponse(response));
-        step("Проверка структуры продуктов", () ->
-                productsSteps.validateProductsStructure(products));
-        savedOrderNumber = step("Получение orderNumber", () ->
-                productsSteps.getFirstNumericOrderNumber(products));
-        savedProductValue = step("Получение productId", () ->
-                productsSteps.getProductId(products));
-        Allure.addAttachment("Product Report", savedOrderNumber);
+        savedOrderNumber = productsSteps.fetchFirstOrderNumber(token);
+
+        Response response = productsSteps.getUserProducts(token);
+        List<ProductsResponse> products = productsSteps.validateProductsResponse(response);
+        step("Проверка структуры продуктов", () -> productsSteps.validateProductsStructure(products));
+        savedProductValue = step("Получение productId", () -> productsSteps.getProductId(products));
+        Allure.addAttachment("Product Report", savedProductValue);
+
+//        Response response = step("GET /user/products - подготовка данных", () ->
+//                productsSteps.getUserProducts(token));
+//        List<ProductsResponse> products = step("Валидация списка пордуктов", () ->
+//                productsSteps.validateProductsResponse(response));
+//        step("Проверка структуры продуктов", () ->
+//                productsSteps.validateProductsStructure(products));
+//        savedOrderNumber = step("Получение orderNumber", () ->
+//                productsSteps.getFirstNumericOrderNumber(products));
+//        savedProductValue = step("Получение productId", () ->
+//                productsSteps.getProductId(products));
+//        Allure.addAttachment("Product Report", savedOrderNumber);
     }
 }

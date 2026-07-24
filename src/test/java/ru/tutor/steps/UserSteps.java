@@ -399,32 +399,6 @@ public class UserSteps extends BaseApiSteps {
         return registrationResponse;
     }
 
-    @Step("Проверка успешной регистрации")
-    public void validateSuccessfulRegistration(RegistrationResponse response, String expectedEmail) {
-        assertTrue(response.isSuccessful() || "ok".equals(response.getMessage()),
-                "Ответ регистрации должен быть успешным");
-        if (response.hasUserId()) {
-            assertTrue(response.getUserId() > 0, "ID пользователя должен быть положительным");
-        }
-
-        if (response.getEmail() != null) {
-            assertEquals(expectedEmail, response.getEmail(), "Email адрес должен совпадать");
-        }
-
-        AllureAttachments.attachText("Регистрация успешна",
-                String.format("""
-                                ✅ Пользователь успешно зарегистрирован
-                                📧 Email: %s
-                                🆔 User ID: %d
-                                🔑 Token: %s
-                                📝 Сообщение: %s
-                                """,
-                        expectedEmail,
-                        response.getUserId() != null ? response.getUserId() : "не указан",
-                        response.getShortToken() != null ? response.getShortToken() : "не получен",
-                        response.getMessage()));
-    }
-
     @Step("Проверка ошибки регистрации")
     public void validateRegistrationError(Response response, int expectedStatusCode, String expectedMessagePart) {
         int statusCode = response.getStatusCode();

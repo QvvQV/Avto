@@ -206,7 +206,7 @@ public final class ApiEndpoints {
     /**
      * список мини-курсов
      */
-    public static final String PRODUCTS_MINI =  "/user/products-mini";
+    public static final String MINI_COURSES =  "/user/mini-courses";
 
     /**
      * действие по мини-курсу
@@ -544,6 +544,11 @@ public final class ApiEndpoints {
     public static final String USER_VIDEOS = "/user/videos";
 
     /**
+     * Список Категорий по шоу
+     */
+    public static final String SHOW_CATEGORIES = "/user/show-categories";
+
+    /**
      * Информация по конкретному видео
      */
     public static final String USER_VIDEO_DETAILS_BY_ID = "/user/videos/%s";
@@ -708,9 +713,14 @@ public final class ApiEndpoints {
     public static final String USER_TUTS = "/user/tuts";
 
     /**
-     * Рандомный список тутсов
+     * Рандомный список категорий тутсов
      */
     public static final String USER_TUTS_RANDOM_LIST = "/user/tuts/random";
+
+    /**
+     * Рандомный список всех доступных тутсов
+     */
+    public static final String TUTS_RANDOM_LIST= "/user/tuts/random-list";
 
     /**
      * Категории тутсов
@@ -755,6 +765,11 @@ public final class ApiEndpoints {
      * Сейчас смотрят
      */
     public static final String USER_PRODUCTS_WATCHING_NOW = "/user/products/watching/now";
+
+    /**
+     * Мини-тренировки
+     */
+    public static final String MINI_WORKOUTS= "/user/mini-workouts";
 
     // ==================== AUTHORS ENDPOINTS ====================
     /**

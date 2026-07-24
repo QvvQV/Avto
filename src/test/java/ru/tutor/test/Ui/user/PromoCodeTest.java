@@ -24,7 +24,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
 
     private final UserSteps userSteps = new UserSteps(BASE_URL);
 
-    private static final String VALID_PROMO_CODE = "новый";
+    private static final String VALID_PROMO_CODE = "FIFA2026";
     private static final String INACTIVE_PROMO_CODE = "333CDRS444GKETSHDL";
     private static final String NON_EXISTENT_PROMO_CODE = "CDRSGKETSHDL";
 

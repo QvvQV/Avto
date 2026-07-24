@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
+import ru.tutor.model.UserProfile;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
 import ru.tutor.model.club.WithdrawalRequest;
@@ -37,7 +38,8 @@ public class ClubTest {
     private ClubMemberResponse memberInfo;
     private ClubStatisticsResponse statisticsInfo;
     private String token;
-    private int userId = 47782;
+    private int userId;
+//     = 47782
 
     @BeforeAll
     public static void setupAll() {
@@ -47,9 +49,12 @@ public class ClubTest {
 
     @BeforeEach
     public void setup() {
-        token = step("Логин", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        ru.tutor.model.UserProfile profile = step("Логин", () ->
+                userSteps.loginAndGetUserProfile(TEST_EMAIL, TEST_PASSWORD)
         );
+        token = userSteps.getCurrentAuthToken();
+        userId = profile.getId();
+
     }
 
     @Test
@@ -79,10 +84,10 @@ public class ClubTest {
 
     @Test
     @Order(2)
-    @DisplayName("Получение информации о членстве в клубе")
-    @Story("Основной сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    void getClubMemberSuccess() {
+    @DisplayName("Проверка информации о членстве в клубе")
+    @Story("Валидация данных")
+    @Severity(SeverityLevel.NORMAL)
+    void verifySpecificValuesFromExample() {
 
         Response response = step("GET /user/club/member", () ->
                 clubSteps.getClubMember(token)
@@ -90,30 +95,6 @@ public class ClubTest {
 
         memberInfo = step("Валидация ответа", () ->
                 clubSteps.validateClubMemberResponse(response)
-        );
-
-        step("Проверка значений членства", () -> {
-            clubSteps.validateClubMemberValues(memberInfo);
-
-            Allure.addAttachment("Информация о членстве", "text/plain",
-                    "ID: " + memberInfo.id() + "\n" +
-                    "Активен: " + memberInfo.isActive() + "\n" +
-                    "Тип членства: " + memberInfo.memberType() + "\n" +
-                    "Дата членства: " + memberInfo.membershipDate() + "\n" +
-                    "Реферальная ссылка: " + memberInfo.referralLink() + "\n" +
-                    "Детали: " + memberInfo.details());
-        });
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("Проверка конкретных значений")
-    @Story("Валидация данных")
-    @Severity(SeverityLevel.NORMAL)
-    void verifySpecificValuesFromExample() {
-
-        Response response = step("GET /user/club/member", () ->
-                clubSteps.getClubMember(token)
         );
 
         step("Проверка членства", () -> {
@@ -125,10 +106,22 @@ public class ClubTest {
                     .body("referralLink", notNullValue())
                     .body("details", nullValue());
         });
+
+        step("Проверка значений членства", () -> {
+            clubSteps.validateClubMemberValues(memberInfo);
+
+            Allure.addAttachment("Информация о членстве", "text/plain",
+                    "ID: " + memberInfo.id() + "\n" +
+                            "Активен: " + memberInfo.isActive() + "\n" +
+                            "Тип членства: " + memberInfo.memberType() + "\n" +
+                            "Дата членства: " + memberInfo.membershipDate() + "\n" +
+                            "Реферальная ссылка: " + memberInfo.referralLink() + "\n" +
+                            "Детали: " + memberInfo.details());
+        });
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     @DisplayName("Проверка статистики без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -141,7 +134,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @DisplayName("Проверка информации о членстве без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -156,7 +149,7 @@ public class ClubTest {
     }
 
 //    @Test
-    @Order(6)
+    @Order(5)
     @DisplayName("Запрос на вывод 3000р")
     @Story("Валидация спецификации")
     @Severity(SeverityLevel.NORMAL)
@@ -197,7 +190,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     @DisplayName("Успешное получение списка реферралов")
     @Story("Основной сценарий")
     @Tag("positive")
@@ -211,7 +204,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(8)
+    @Order(7)
     @DisplayName("Получение списка реферралов - без авторизации")
     @Story("Негативный сценарий")
     @Tag("negative")
@@ -224,7 +217,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(9)
+    @Order(8)
     @DisplayName("Получение списка реферралов с невалидным токеном")
     @Story("Негативный сценарий")
     @Tag("negative")
@@ -237,7 +230,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(10)
+    @Order(9)
     @DisplayName("GET /user/{userId}/club/referrals/{referralId} - детали реферала")
     @Severity(SeverityLevel.NORMAL)
     @Story("Основной сценарий")
@@ -259,7 +252,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(11)
+    @Order(10)
     @DisplayName("GET /user/{userId}/club/referrals/{referralId} - детали реферала без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Story("Негативный сценарий")
@@ -273,7 +266,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(12)
+    @Order(11)
     @DisplayName("GET /user/{userId}/club/referrals/{referralId} - с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Story("Негативный сценарий")
@@ -287,7 +280,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(13)
+    @Order(12)
     @DisplayName("GET /user/{userId}/club/referrals/{referralId}/referrals - список реферала")
     @Severity(SeverityLevel.NORMAL)
     @Story("Основной сценарий")
@@ -316,7 +309,7 @@ public class ClubTest {
     }
 
     @Test
-    @Order(14)
+    @Order(13)
     @DisplayName("GET /user/{userId}/club/referrals/{referralId}/referrals - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Story("Негативный сценарий")
@@ -330,8 +323,8 @@ public class ClubTest {
     }
 
     @Test
-    @Order(15)
-    @DisplayName("GET /user/{userId}/club/referrals/{referralId} - с невалидным токеном")
+    @Order(14)
+    @DisplayName("GET /user/{userId}/club/referrals/{referralId}/referrals  - с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Story("Негативный сценарий")
     @Tag("negative")

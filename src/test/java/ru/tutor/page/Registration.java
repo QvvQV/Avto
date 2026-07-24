@@ -9,7 +9,6 @@ import ru.tutor.utils.UniversalMethod;
 
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Properties;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;

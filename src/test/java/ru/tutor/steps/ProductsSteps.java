@@ -2,7 +2,6 @@ package ru.tutor.steps;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.UserProductsApi;
 import ru.tutor.base.BaseApiSteps;
@@ -307,5 +306,106 @@ public class ProductsSteps extends BaseApiSteps {
         if (node.isBoolean()) return "BOOLEAN";
         if (node.isNull()) return "NULL";
         return "UNKNOWN";
+    }
+
+    @Step("Получение первого orderNumber из /user/products")
+    public String fetchFirstOrderNumber(String authToken) {
+        Response response = getUserProducts(authToken);
+        List<ProductsResponse> products = validateProductsResponse(response);
+        return getFirstNumericOrderNumber(products);
+    }
+
+    @Step("GET user/mini-courses")
+    public Response getMiniCourses(String authToken) {
+        return productsApi.getMiniCourses(authToken);
+    }
+
+    @Step("Валидация ответа мини-курсов")
+    public void validateMiniCoursesResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
+    }
+
+    @Step("Проверка что все элементы - мини-курсы")
+    public void validateAllAreMiniCourses(Response response) {
+        List<Map <String, Object>> items = response.jsonPath().getList("items");
+        assertNotNull(items, "Список мини-курсов не должен быть null");
+        assertFalse(items.isEmpty(), "Список мини-курсов не должен быть пуст");
+
+        for (int i = 0; i < items.size(); i++) {
+            Map <String, Object> item = items.get(i);
+            assertAll("Элемент [" + i + "] «" + item.get("name") + "»",
+                    () -> assertTrue(((Number) item.get("id")).intValue() > 0,
+                            "ID должен быть > 0"),
+                    () -> assertNotNull(item.get("name"),
+                            "Название не должно быть null"),
+                    () -> assertFalse(((String) item.get("name")).trim().isEmpty(),
+                            "Название не должно быть пустым"),
+                    () ->  assertTrue(((Number) item.get("duration")).doubleValue() > 0,
+                            "Длительность должна быть > 0"),
+                    () -> assertNotNull(item.get("kinescopeId"),
+                            "kinescopeId не должен быть null"),
+                    () -> assertNotNull(item.get("createdAt"),
+                            "createdAt не должен быть null")
+            );
+        }
+    }
+
+    @Step("Валидация пагинации мини-курсов")
+    public void validateMiniCoursesPagination(Response response) {
+        int count = response.jsonPath().getInt("pagination.count");
+        int total = response.jsonPath().getInt("pagination.total");
+        int perPage = response.jsonPath().getInt("pagination.per_page");
+        int page = response.jsonPath().getInt("pagination.page");
+        int pages = response.jsonPath().getInt("pagination.pages");
+
+        assertAll("Проверка пагинации",
+
+                () -> assertTrue(count > 0, "count должен быть > 0"),
+                () -> assertTrue(total > 0, "total должен быть > 0"),
+                () -> assertTrue(perPage > 0, "per_page должен быть > 0"),
+                () -> assertTrue(page >= 1, "page должен быть >= 1"),
+                () -> assertTrue(pages >= 1, "pages должен быть >= 1"),
+                () -> assertTrue(count <= perPage, "count не должен превышать per_page")
+        );
+
+        Allure.addAttachment("Пагинация", "text/plain",
+                String.format("count: %d, total: %d, per_page: %d, page: %d, pages: %d",
+                        count, total,
+                        perPage, page, pages));
+    }
+
+    @Step("GET user/mini-workouts")
+    public Response getMiniWorkouts(String authToken) {
+        return productsApi.getMiniWorkouts(authToken);
+    }
+
+    @Step("GET /user/show-categories")
+    public Response getShowCategories(String authToken) {
+        return productsApi.getShowCategories(authToken);
+    }
+
+    @Step("Проверка обязательных полей шоу-категорий")
+    public void validateShowCategoriesItems(Response response) {
+        List<Map <String, Object>> items = response.jsonPath().getList("$");
+        assertNotNull(items, "Список шоу-категорий не должен быть null");
+        assertFalse(items.isEmpty(), "Список шоу-категорий не должен быть пуст");
+
+        for (int i = 0; i < items.size(); i++) {
+            Map <String, Object> item = items.get(i);
+            assertAll("Элемент [" + i + "] «" + item.get("name") + "»",
+                    () -> assertTrue(((Number) item.get("id")).intValue() > 0,
+                            "ID должен быть > 0"),
+                    () -> assertNotNull(item.get("name"),
+                            "Название не должно быть null"),
+                    () -> assertFalse(((String) item.get("name")).trim().isEmpty(),
+                            "Название не должно быть пустым"),
+                    () -> assertNotNull(item.get("icon"),
+                            "Иконка не должна быть null"),
+                    () -> assertTrue(((String) item.get("icon")).startsWith("http"),
+                            "Иконка должна быть URL")
+                    );
+        }
     }
 }

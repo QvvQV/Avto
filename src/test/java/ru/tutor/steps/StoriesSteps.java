@@ -25,7 +25,7 @@ public class StoriesSteps extends BaseApiSteps {
         this.storiesApi = new StoriesApi(baseUrl);
     }
 
-    @Step("видимость сторис")
+    @Step("Видимость сторис")
     public Response showStories(String authToken) {
         Response response = storiesApi.storyScreen(authToken);
         AllureAttachments.attachJson("Story Screen Response", response.getBody().asString());
@@ -116,4 +116,19 @@ public class StoriesSteps extends BaseApiSteps {
         return response;
     }
 
+    @Step("GET /user/tuts/random-list - возвращает список всех тутсов")
+    public Response getRandomListTutsList(String authToken) {
+        return storiesApi.showTutsList(authToken);
+    }
+
+    @Step("Валидация структуры тутса")
+    public void validateRandomTutsItem(Response response) {
+        assertAll("Поверка полей тутса",
+                () -> assertNotNull(response.jsonPath().getString("slug"), "slug не должен быть null"),
+                () -> assertNotNull(response.jsonPath().getString("title"), "title не должен быть null"),
+                () -> assertNotNull(response.jsonPath().getString("link"), "link не должен быть null"),
+                () -> assertNotNull(response.jsonPath().getString("authorName"), "authorName не должен быть null"),
+                () -> assertNotNull(response.jsonPath().getString("authorImage"), "authorImage не должен быть null"),
+                () -> assertNotNull(response.jsonPath().getString("poster.original"), "poster.original не должен быть null"));
+    }
 }

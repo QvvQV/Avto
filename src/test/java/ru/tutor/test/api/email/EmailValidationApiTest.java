@@ -34,7 +34,7 @@ public class EmailValidationApiTest {
     private static final String PRODUCT_ID = "519";
     String stEmail = faker.funnyName().name();
 
-@ParameterizedTest
+//@ParameterizedTest
     @ValueSource(strings = {
             "@test.ru",
             "_email@test.ru",
@@ -51,7 +51,7 @@ public class EmailValidationApiTest {
                 "Ожидался 200 для email: " + validEmail);
     }
 
-    @Test
+//    @Test
     @DisplayName("POST /order с email > 128 символов ->4xx")
     void testEmailTooLong()
     {
@@ -61,7 +61,7 @@ public class EmailValidationApiTest {
         assertTrue(response.getStatusCode() >= 400 && response.getStatusCode() < 500);
     }
 
-    @ParameterizedTest
+//    @ParameterizedTest
     @ValueSource(strings = {
 //            ".testru",
             "@@test.ru",

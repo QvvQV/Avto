@@ -30,8 +30,6 @@ public class StoryTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
-    private static String slug;
-    private static List<GameWheelRewardResponse> rewards;
 
     @BeforeAll
     public static void setUp() {
@@ -47,31 +45,8 @@ public class StoryTest {
         );
     }
 
-    //    @Test
-    @Order(1)
-    @DisplayName("Успешное получение списка наград игрового колеса (Проверка 200 OK)")
-    @Story("Основной сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    void getGameWheelRewardsSuccess() {
-
-        step("POST /user/stories/screen", () ->
-                storiesSteps.showStories(token)
-        );
-
-//        rewards = step("Валидация ответа со списком наград", () ->
-//                gameWheelRewardsSteps.validateGameWheelRewardsResponse(response)
-//        );
-//
-//        step("Проверка структуры наград", () -> {
-//            gameWheelRewardsSteps.validaterewardStructure(rewards);
-//
-//            Allure.addAttachment("Количество наград", "text/plain",
-//                    "Получено наград: " + rewards.size());
-//        });
-    }
-
     @Test
-    @Order(2)
+    @Order(1)
     @DisplayName("Успешное получение списка доступных сторис/историй")
     void getStoriesSuccess() {
         Response response = step("GET /user/stories", () ->
@@ -84,7 +59,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("Список доступных сторис без токена")
     void getStoriesWithoutAuth() {
         Response response = step("GET /user/stories", () ->
@@ -96,7 +71,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     @DisplayName("Список достпуных сторис с невалидным токеном")
     void getStoriesWithInvalidToken() {
         Response response = step("GET /user/stories", () ->
@@ -108,7 +83,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @DisplayName("Интеграционный тест: список сторис → детали истории")
     @Severity(SeverityLevel.CRITICAL)
     @Tag("integration")
@@ -126,13 +101,13 @@ public class StoryTest {
                 storiesSteps.getStoriesUlid(token, ulid)
         );
 
-        step("валидация ответа", () ->
+        step("Валидация ответа", () ->
                 storiesSteps.validateStoriesResponse(detailsResponse)
         );
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     @DisplayName("Список сторис без авторизации")
     @Severity(SeverityLevel.NORMAL)
     void getStoriesUlidWithoutAuth() {
@@ -153,7 +128,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     @DisplayName("Список сторис с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     void getStoriesUlidInvalidToken() {
@@ -174,7 +149,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(8)
+    @Order(7)
     @DisplayName("Список сторис с невалидным Ulid")
     @Severity(SeverityLevel.NORMAL)
     void getStoriesInvalidUlid() {
@@ -188,12 +163,12 @@ public class StoryTest {
     }
 
     @Test
-    @Order(9)
+    @Order(8)
     @DisplayName("Детали баннера")
     @Severity(SeverityLevel.NORMAL)
     void getBannersSuccess() {
         Response bannerResponse = step("GET /user/banners/{slug} — детали баннера", () ->
-                storiesSteps.getBannerDetails(token, "test")
+                storiesSteps.getBannerDetails(token, "youtube")
         );
         step("Валидация ответа", () ->
                 storiesSteps.validateStoriesResponse(bannerResponse)
@@ -201,7 +176,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(10)
+    @Order(9)
     @DisplayName("Детали баннера невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     void getBannersInvalidToken() {
@@ -213,7 +188,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(11)
+    @Order(10)
     @DisplayName("Детали баннера без авторизации")
     @Severity(SeverityLevel.NORMAL)
     void getBannersWithoutAuth() {
@@ -226,7 +201,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(12)
+    @Order(11)
     @DisplayName("Детали невалидного баннера")
     @Severity(SeverityLevel.NORMAL)
     void getBannersWithInvalidSlug() {
@@ -239,7 +214,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(13)
+    @Order(12)
     @DisplayName("Получение списка категорий тутсов")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
@@ -253,7 +228,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(14)
+    @Order(13)
     @DisplayName("Получение категорий тутсов без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -267,7 +242,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(15)
+    @Order(14)
     @DisplayName("Получение категорий тутсов с инвалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -282,7 +257,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(16)
+    @Order(15)
     @DisplayName("Интеграция: категории тутсов → feed по первой категории")
     @Severity(SeverityLevel.CRITICAL)
     @Tag("integration")
@@ -306,7 +281,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(17)
+    @Order(16)
     @DisplayName("Получение категорий тутсов без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -319,7 +294,7 @@ public class StoryTest {
         String categoryId = step("Извлечение id первой категории", () ->
                 storiesSteps.extractFirstCategoryId(categoriesResponse)
         );
-        Response feedResponse = step("GET /user/tuts/category/{id}/feed без токена", () ->
+        Response feedResponse = step("GET /user/tuts/category/{id}/feed - без токена", () ->
                 storiesSteps.getCategoryFeed("", categoryId)
         );
         step("Проверка статуса 401", () ->
@@ -328,7 +303,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(18)
+    @Order(17)
     @DisplayName("Получение категорий тутсов с инвалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -341,7 +316,7 @@ public class StoryTest {
         String categoryId = step("Извлечение id первой категории", () ->
                 storiesSteps.extractFirstCategoryId(categoriesResponse)
         );
-        Response feedResponse = step("GET /user/tuts/category/{id}/feed с инвалидным токеном", () ->
+        Response feedResponse = step("GET /user/tuts/category/{id}/feed - с инвалидным токеном", () ->
                 storiesSteps.getCategoryFeed("invalid_token", categoryId)
         );
         step("Проверка статуса 401", () ->
@@ -350,13 +325,13 @@ public class StoryTest {
     }
 
     @Test
-    @Order(19)
+    @Order(18)
     @DisplayName("Получение категорий тутсов с пустой категорией")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
     void getTutsEmptyCategoriesAndFeed() {
 
-        Response feedResponse = step("GET /user/tuts/category/{id}/feed с пустой категорией", () ->
+        Response feedResponse = step("GET /user/tuts/category/{id}/feed - с пустой категорией", () ->
                 storiesSteps.getCategoryFeed(token, "")
         );
         step("Проверка статуса 404", () ->
@@ -365,12 +340,12 @@ public class StoryTest {
     }
 
     @Test
-    @Order(20)
+    @Order(19)
     @DisplayName("Успешное получение рандомного списка тутсов")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
     void getRandomListTutsSuccess() {
-        Response response = step("GET /user/tuts/random успешное получени списка", () ->
+        Response response = step("GET /user/tuts/random - успешное получени списка", () ->
                 storiesSteps.getRandomListTuts(token)
         );
         step("Валидация ответа", () ->
@@ -379,12 +354,12 @@ public class StoryTest {
     }
 
     @Test
-    @Order(21)
+    @Order(20)
     @DisplayName("Получение списка без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
     void getRandomListTutsWithoutAuth() {
-        Response response = step("GET /user/tuts/random получение списка без авторизации", () ->
+        Response response = step("GET /user/tuts/random - получение списка без авторизации", () ->
                 storiesSteps.getRandomListTuts("")
         );
         step("Проверка статуса 401", () ->
@@ -393,13 +368,69 @@ public class StoryTest {
     }
 
     @Test
-    @Order(22)
+    @Order(21)
     @DisplayName("Получение списка инвалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
     void getRandomListTutsInvalidToken() {
-        Response response = step("GET /user/tuts/random получени списка с инвалидным токеном", () ->
+        Response response = step("GET /user/tuts/random - получени списка с инвалидным токеном", () ->
                 storiesSteps.getRandomListTuts("invalid_token")
+        );
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode())
+        );
+    }
+
+    @Test
+    @Order(22)
+    @DisplayName("Получение списка всех тутсов")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("positive")
+    void getListAllTutsSuccess() {
+        Response response = step("GET /user/tuts/random-list - успешное получение списка всех тутсов", () ->
+                storiesSteps.getRandomListTutsList(token)
+        );
+        step("Валидация ответа", () ->
+                storiesSteps.validateStoriesResponse(response)
+        );
+    }
+
+    @Test
+    @Order(23)
+    @DisplayName("Валидация полей списка тутсов")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("positive")
+    void getValidationListTutsSuccess() {
+        Response response = step("GET /user/tuts/random-list", () ->
+                storiesSteps.getRandomListTutsList(token)
+        );
+        step("Валидация ответа", () ->
+                storiesSteps.validateRandomTutsItem(response)
+        );
+    }
+
+    @Test
+    @Order(24)
+    @DisplayName("Получение списка без авторизации")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void getListTutsWithoutAuth() {
+        Response response = step("GET /user/tuts/random - получение списка без авторизации", () ->
+                storiesSteps.getRandomListTutsList("")
+        );
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode())
+        );
+    }
+
+    @Test
+    @Order(25)
+    @DisplayName("Получение списка инвалидный токен")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void getListTutsInvalidToken() {
+        Response response = step("GET /user/tuts/random - получени списка с инвалидным токеном", () ->
+                storiesSteps.getRandomListTutsList("invalid_token")
         );
         step("Проверка статуса 401", () ->
                 assertEquals(401, response.getStatusCode())

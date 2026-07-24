@@ -53,11 +53,19 @@ public class StoriesApi extends BaseApi {
     }
 
     /**
-     * GET /user/tuts/random-list
+     * GET /user/tuts/random
      */
-    @Step("GET /user/tuts/random-list - андомный список тутсов")
+    @Step("GET /user/tuts/random - рандомный список тутсов")
     public Response showTutsRandomList(String authToken) {
         return getWithToken(ApiEndpoints.USER_TUTS_RANDOM_LIST, authToken);
+    }
+
+    /**
+     * GET /user/tuts/random-list
+     */
+    @Step("GET /user/tuts/random-list - список всех тутсов")
+    public Response showTutsList(String authToken) {
+        return getWithToken(ApiEndpoints.TUTS_RANDOM_LIST, authToken);
     }
 
     /**

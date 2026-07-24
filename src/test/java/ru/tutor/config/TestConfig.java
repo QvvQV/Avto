@@ -2,7 +2,6 @@ package ru.tutor.config;
 
 import java.io.InputStream;
 import java.util.Properties;
-import java.io.IOException;
 
 public class TestConfig {
     private static final Properties properties = new Properties();
@@ -11,9 +10,9 @@ public class TestConfig {
     /*
      * Default переменные для выставления окружения
      */
-    private static final String def = "dev1";
-    private static final String api = "api1";
-    private static final String admin = "admin1";
+    private static final String def = "dev2";
+    private static final String api = "api2";
+    private static final String admin = "admin2";
 
     /*
      * Домены, url, тестовые данные для Sber/Сбер
