@@ -61,8 +61,8 @@ public abstract class BaseUiTest {
     private static void applyCommonConfig(ChromeOptions options) {
         Configuration.browserCapabilities = options;
         Configuration.browserSize = "1920x1080";
-        Configuration.timeout = Long.parseLong(TestConfig.getTimeouts());
-        Configuration.pageLoadTimeout = Long.parseLong(TestConfig.getPageLoadTimeout());
+        Configuration.timeout = TestConfig.getTimeouts();
+        Configuration.pageLoadTimeout = TestConfig.getPageLoadTimeout();
         Configuration.headless = false;
 
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide()

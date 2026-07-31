@@ -195,12 +195,12 @@ public class TestConfig {
         return properties.getProperty("system.utm");
     }
 
-    public static String getTimeouts() {
-        return properties.getProperty("timeout");
+    public static long getTimeouts() {
+        return Long.parseLong(properties.getProperty("timeout"));
     }
 
-    public static String getPageLoadTimeout() {
-        return properties.getProperty("pageLoadTimeout");
+    public static long getPageLoadTimeout() {
+        return Long.parseLong(properties.getProperty("pageLoadTimeout"));
     }
 
 
