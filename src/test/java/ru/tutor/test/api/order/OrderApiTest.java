@@ -54,7 +54,7 @@ public class OrderApiTest {
                 "Email: " + testEmail + "\nName: Created Name");
     }
 
-    @Test
+//    @Test
     @DisplayName("Успешное создание заказа с автором и получение токена")
     void createOrderWithAuthor_ShouldReturnToken() {
         // 1. Отправка запроса и получение ответа

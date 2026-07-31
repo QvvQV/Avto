@@ -41,9 +41,7 @@ public class VideoSteps extends BaseApiSteps {
 
     @Step("Валидация ответа списка видео")
     public void validateVideosResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
         String body = response.getBody().asString();
         assertNotNull(body, "Тело ответа не должно быть null");
         assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");

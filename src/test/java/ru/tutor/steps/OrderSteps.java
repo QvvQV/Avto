@@ -8,6 +8,8 @@ import ru.tutor.model.RefundTicketRequest;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,9 +31,48 @@ public class OrderSteps extends BaseApiSteps {
 
     @Step("Валидация ответа истории платежей")
     public void validateOrdersPaymentsResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
+
+        List<Map<String, Object>> payments = response.jsonPath().getList("payments");
+        assertNotNull(payments, "payments не должен быть null");
+
+        if (payments.isEmpty()) return;
+
+        for (int i = 0; i < payments.size(); i++) {
+            Map<String, Object> p = payments.get(i);
+            assertAll("Платёж [" + i + "]",
+                    () -> assertNotNull(p.get("createdAt"), "createdAt не null"),
+                    () -> assertNotNull(p.get("amount"), "amount не null"),
+                    () -> assertTrue(Double.parseDouble((String) p.get("amount")) > 0,
+                            "amount > 0"),
+                    () -> assertTrue(((Number) p.get("status")).intValue() >= 0,
+                            "status >= 0"),
+                    () -> assertTrue(((Number) p.get("type")).intValue() >= 0,
+                            "type >= 0"),
+                    () -> assertTrue(((Number) p.get("method")).intValue() >= 0,
+                            "method >= 0"),
+                    () -> assertNotNull(p.get("typeName"), "typeName не null"),
+                    () -> assertNotNull(p.get("source"), "source не null"),
+                    () -> assertNotNull(p.get("sourceName"), "sourceName не null")
+            );
+        }
+    }
+
+    @Step("Валидация ответа истории платежей")
+    public void validateBonusAccessInfoResponse(Response response) {
+        assertBasicResponse(response);
+
+        Boolean hasBonusAccess = response.jsonPath().getObject("hasBonusAccess", Boolean.class);
+        assertNotNull(hasBonusAccess, "hasBonusAccess не должен быть null");
+    }
+
+    @Step("Валидация ответа Информации о состоянии подписки")
+    public void validateOrderSubscriptionStateResponse(Response response) {
+        assertBasicResponse(response);
+
+        Integer state = response.jsonPath().getObject("state", Integer.class) ;
+        assertNotNull(state, "state не должен быть null");
+        assertTrue(state >= 0, "state >= 0");
     }
 
     @Step("GET /user/orders/bonus-access-info - информация по бонусному доступу")
@@ -87,9 +128,7 @@ public class OrderSteps extends BaseApiSteps {
 
     @Step("Валидация ответа создания заявки на возврат")
     public void validateRefundTicketResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
         String body = response.getBody().asString();
         assertNotNull(body, "Тело ответа не должно быть null");
         assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");
@@ -132,8 +171,7 @@ public class OrderSteps extends BaseApiSteps {
 
     @Step("Валидация успешного списания кэшбека")
     public void validateSpendCashbackResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
+        assertBasicResponse(response);
         assertEquals("OK", response.jsonPath().getString("status"));
     }
 

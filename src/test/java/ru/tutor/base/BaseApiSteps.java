@@ -53,10 +53,10 @@ public abstract class BaseApiSteps {
     }
 
     @Step("Проверить статус и Content-Type")
-    protected void assertStatusContentType(Response response, int statusCode) {
-        response.then()
-                .statusCode(statusCode)
-                .contentType(ContentType.JSON);
+    protected void assertBasicResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+        assertCorsHeaders(response);
     }
 
     // ==================== ПРОВЕРКИ JSON ПОЛЕЙ ====================

@@ -100,8 +100,7 @@ public class UserSteps extends BaseApiSteps {
 
     @Step("Проверить ответ профиля")
     public UserProfile validateProfileResponse(Response response, String expectedEmail) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
+        assertBasicResponse(response);
 
         String body = response.getBody().asString();
         assertNotNull(body, "Тело не должно быть null");
@@ -185,10 +184,7 @@ public class UserSteps extends BaseApiSteps {
     @Step("Валидация успешного логаута")
     public LogoutResponse validateSuccessfulLogout(Response response) {
         // Проверяем базовые заголовки и статус код
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
 
         // Парсим ответ
         LogoutResponse logoutResponse = response.as(LogoutResponse.class);
@@ -270,9 +266,7 @@ public class UserSteps extends BaseApiSteps {
 
     @Step("Валидация успешного изменения данных пользователя")
     public void validateEditDataSuccess(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
         assertEquals("{\"message\":\"ok\"}", response.getBody().asString().trim());
     }
 
@@ -289,9 +283,7 @@ public class UserSteps extends BaseApiSteps {
 
     @Step("Валидация ответа списка заданий")
     public void validateTasksResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
         String body = response.getBody().asString();
         assertNotNull(body, "Тело ответа не должно быть null");
         assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");
@@ -309,9 +301,7 @@ public class UserSteps extends BaseApiSteps {
     @Step("Валидация ответа игровой статистики")
     public GameStatsResponse validateGameStatsResponse(Response response) {
         // Проверяем статус код и заголовки
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
 
         // Проверяем основные поля
         assertJsonFieldExists(response, "level");
@@ -384,9 +374,7 @@ public class UserSteps extends BaseApiSteps {
 
     @Step("Валидация ответа регистрации")
     public RegistrationResponse validateRegistrationResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
 
         String message = response.jsonPath().getString("message");
         assertJsonFieldEquals(response, "message", "ok");
@@ -585,8 +573,7 @@ public class UserSteps extends BaseApiSteps {
 
     @Step("Валидация успешной проверки авторизации")
     public void validateAuthCheckResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
+        assertBasicResponse(response);
         assertEquals("\"OK\"", response.getBody().asString().trim(), "Response body should be 'OK'") ;
     }
 
@@ -602,8 +589,7 @@ public class UserSteps extends BaseApiSteps {
 
     @Step("Валидация успешной смены пароля")
     public void validateEditPasswordSuccess(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
+        assertBasicResponse(response);
         assertEquals("{\"message\":\"ok\"}", response.getBody().asString().trim(), "Response body should be 'ok'");
         assertCorsHeaders(response);
     }

@@ -61,12 +61,11 @@ public class UserRewardSteps extends BaseApiSteps {
         assertNotNull(userRewards, "Список наград пользователя не должен быть null");
 
         // Может быть пустым, если у пользователя нет наград
-        Allure.addAttachment("Количество наград пользователя", "taxt/plain",
+        Allure.addAttachment("Количество наград пользователя", "text/plain",
                 String.valueOf(userRewards.size()));
 
         return userRewards;
     }
-
     @Step("POST /user/reward/opеn/{id} - удаление подарка из списка призов")
     public Response openReward(String authToken, Long rewardId) {
                 return this.gameWheelApi.openReward(authToken, rewardId);
@@ -190,31 +189,6 @@ public class UserRewardSteps extends BaseApiSteps {
                         userRewards.size(), uniqueIds.size(), 0));
     }
 
-    @Step("Проверка сортировки наград по ID")
-    public void verifyRewardSorting(List<UserRewardResponse> userRewards) {
-        if (userRewards == null || userRewards.size() < 2) {
-            Allure.addAttachment("Проверка сортировки", "text/plain",
-                    "Недостаточно наград для проверки сортировки. Наград: " +
-                            (userRewards != null ? userRewards.size() : "null"));
-            return;
-        }
-
-        // Сортировка по ID
-        boolean sortedById = true;
-        for (int i = 1; i < userRewards.size(); i++) {
-            if (userRewards.get(i).id() <= userRewards.get(i - 1).id()) {
-                sortedById = false;
-                break;
-            }
-        }
-
-        Allure.addAttachment("Сортировка наград", "text/plain",
-                "Отсортировано по ID:" +
-                (sortedById ? "✅ Да" : "❌ Нет"));
-
-        assertTrue(sortedById, "Награды должен быть отсортированы по ID");
-    }
-
     @Step("Генерация отчёта о наградах")
     public void generateUserRewardsReport(List<UserRewardResponse> userRewards) {
         if (userRewards.isEmpty()) {
@@ -298,35 +272,6 @@ public class UserRewardSteps extends BaseApiSteps {
         Allure.addAttachment("Детальный отчет о наградах", "text/plain", report.toString());
     }
 
-    @Step("Сравнение с эталонными типами наград")
-    public void validateAgainstRewardTypes(List<UserRewardResponse> userRewards) {
-        if (userRewards == null || userRewards.isEmpty()) {
-            Allure.addAttachment("Типы наград", "text/plain",
-                    "Список наград пуст, проверка типов пропущена");
-            return;
-        }
-
-        Set<String> foundTypes = userRewards.stream()
-                .map(UserRewardResponse::rewardType)
-                .collect(Collectors.toSet());
-
-        List<String> unexpectedTypes = foundTypes.stream()
-                .filter(type -> !Arrays.asList(GameWheelRewardsConstants.ALLOWED_TYPES).contains(type))
-                .toList();
-
-        if (!unexpectedTypes.isEmpty()) {
-            Allure.addAttachment("Неожиданные типы наград",  "text/plain",
-                    "Найдены типыб не указанные в константах: " + unexpectedTypes);
-        }
-
-        assertTrue(unexpectedTypes.isEmpty(),
-                "Все типы наград должны быть допустимыми. Неожиданные типы: " + unexpectedTypes);
-
-        Allure.addAttachment("Типы наград пользователя", "text/plain",
-                String.format("найдено типов: %d\nТипы: %s",
-                        foundTypes.size(), String.join(", ", foundTypes)));
-    }
-
     @Step("Проверка целостности данных (после запуска игры)")
     public IntegrationTestResult performIntegrationTest(String authToken, GameWheelStartGameSteps startGameSteps) {
         IntegrationTestResult result = new IntegrationTestResult();
@@ -390,13 +335,6 @@ public class UserRewardSteps extends BaseApiSteps {
         public void setRewardsAfter(List<UserRewardResponse> rewardsAfter) { this.rewardsAfter = rewardsAfter; }
     }
 
-    @Step ("Валидация успешного открытия награды")
-    public RewardOpenResponse validateOpenRewardResponse(Response response) {
-        assertSuccessStatusCode(response);
-
-        return response.as(RewardOpenResponse.class);
-    }
-
     @Step("Найти подходящую награду для открытия")
     public Optional<UserRewardResponse> findSuitableRewardToOpen(List<UserRewardResponse> rewards) {
         return rewards.stream()
@@ -412,15 +350,6 @@ public class UserRewardSteps extends BaseApiSteps {
         return rewards.stream()
                 .filter(Objects::nonNull)
                 .filter(this::isValuationReward)
-                .findFirst();
-    }
-
-    @Step("Найти награду с истёкшим сроком")
-    public Optional<UserRewardResponse> findExpiredReward(List<UserRewardResponse> rewards) {
-        return rewards.stream()
-                .filter(Objects::nonNull)
-                .filter(reward -> reward.expiresAt() != null && !reward.expiresAt().isEmpty())
-                .filter(this::isRewardExpired)
                 .findFirst();
     }
 
@@ -458,30 +387,127 @@ public class UserRewardSteps extends BaseApiSteps {
         }
     }
 
-    @Step("Парсинг даты и строки")
-    public LocalDateTime parseDate(String dateString) {
-        if (dateString == null || dateString.isEmpty()) {
-            return null;
-        }
+    @Step("Валидация ошибки `valuation`")
+    public void validateOpenRewardRejected(Response response, long rewardId) {
+        int statusCode = response.statusCode();
+        assertTrue(statusCode !=200,
+                "Для valuation награды должен возвращаться 4хх статус код. Получен: " + statusCode);
 
-        try {
-            return LocalDateTime.parse(dateString, ISO_FORMATTER);
-        } catch (DateTimeParseException e) {
-            try {
-                return LocalDateTime.parse(dateString, DateTimeFormatter. ofPattern("yyyy-MM-dd"));
-            } catch (DateTimeParseException e2) {
-                return null;
-            }
-        }
+        Allure.addAttachment("Результат", "text/plain",
+                String.format("""
+                        ✅ Сервер корректно отклонил запрос
+                        🎁 ID valuation награды: %d
+                        📊 Статус код: %d
+                        📝 Ответ сервера: %s,
+                        """,
+                        rewardId,
+                        statusCode,
+                        response.getBody().asString()));
     }
 
-    @Step("Проверить дату истечения")
-    public boolean checkExpiryDate(UserRewardResponse reward) {
-        LocalDateTime expiryDate = parseDate(reward.expiresAt());
+    @Step("Найти или создать награду для открытия")
+    public Long findOrCreateRewardToOpen(String authToken) {
+        Response response = getUserRewards(authToken);
+        List<UserRewardResponse> userRewards = validateUserRewardsResponse(response);
 
-        if (expiryDate == null) {
-            return true;
+        Optional<UserRewardResponse> rewardToOpen = findSuitableRewardToOpen(userRewards);
+        if (rewardToOpen.isPresent()) {
+            return rewardToOpen.get().id();
         }
-        return expiryDate.isAfter(LocalDateTime.now());
+
+        // Нет подходящего - крутим колесо
+        GameWheelStartGameSteps startGameSteps = new GameWheelStartGameSteps(baseUrl);
+        Response spinResponse = startGameSteps.startGame(authToken);
+        startGameSteps.validateStartGameResponse(spinResponse);
+
+        Response updatedResponse = getUserRewards(authToken);
+        List<UserRewardResponse> updatedRewards = validateUserRewardsResponse(updatedResponse);
+
+        return updatedRewards.stream()
+                .filter(reward -> !"valuation".equals(reward.rewardType()))
+                .filter(reward -> reward.id() != null)
+                .max(Comparator.comparingLong(UserRewardResponse::id))
+                .map(UserRewardResponse::id)
+                .orElseThrow(() -> new RuntimeException("Не удалось получить новую награду"));
+    }
+
+    @Step("Полная валидация списка наград пользователя")
+    public List<UserRewardResponse> validateUserRewardsListComplete(Response response) {
+        List<UserRewardResponse> userRewards = validateUserRewardsResponse(response);
+
+        if (!userRewards.isEmpty()) {
+            validateUserRewardStructure(userRewards);
+            verifyUniqueRewards(userRewards);
+            generateUserRewardsReport(userRewards);
+        }
+        return userRewards;
+    }
+
+    @Step("Найти новую награду в обновлённом списке")
+    public UserRewardResponse findNewReward(List<UserRewardResponse> before, List<UserRewardResponse> after) {
+        return after.stream()
+                .filter(reward -> before.stream()
+                        .noneMatch(initial -> initial.id().equals(reward.id())))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Новая награда не найдена в списке"));
+    }
+
+    @Step("Валдиация успешного открытия награды")
+    public void validateOpenRewardSuccess(Response response, long rewardId) {
+        assertEquals(200, response.getStatusCode(),
+                "Статус код должен быть 200");
+
+        Allure.addAttachment("Награда открыта", "text/plain",
+                String.format("ID награды: %d, статус: 200 ОК", rewardId));
+    }
+
+    @Step("Генерация итогового отчёта Е2Е")
+    public void generateE2EReport(int initialCount, int afterSpinCount, int finalCount, UserRewardResponse newReward) {
+        Allure.addAttachment("ИТОГИ Е2Е ТЕСТА", "text/plain",
+                String.format("""
+                        Статистика:
+                        • До теста: %d                                                                                                             \s
+                        • После спина: %d (+1)                                                                                                     \s
+                        • После открытия: %d
+                        
+                        Награда:
+                        • ID: %d                                                                                                                   \s
+                        • Название: %s                                                                                                             \s
+                        • Тип: %s
+                        • Значение: %d
+                        """,
+                        initialCount, afterSpinCount, finalCount,
+                        newReward.id(), newReward.name(),
+                        newReward.rewardType(), newReward.rewardValue()));
+    }
+
+    @Step("Валидация результата интеграционного теста")
+    public void validateIntegrationTestResult(IntegrationTestResult result) {
+        if (result.isSuccess()) {
+            GameWheelStartGameResponse prize = result.getStartGamePrize();
+            List<UserRewardResponse> before = result.getRewardsBefore();
+            List<UserRewardResponse> after = result.getRewardsAfter();
+
+            Allure.addAttachment("Интеграционный тест пройден", "text/plain",
+                    String.format("""
+                            Приз: %s (ID: %d)
+                            Наград до: %d, после: %d
+                            """,
+                            prize.getName(), prize.getUserRewardId(),
+                            before.size(), after.size()));
+
+            assertEquals(before.size() + 1, after.size(),
+                    "Количество наград должно увеличиться на 1");
+            return;
+        }
+
+        // Не удалось получить приз - допустимо, если нет средств
+        if (result.getStartGamePrize() != null && !result.getStartGamePrize().isSuccess()) {
+            Allure.addAttachment("Причина пропуска", "text/plain",
+                    "Не удалось получить приз: " + result.getStartGamePrize().getErrorMessage());
+            return;
+        }
+
+        fail("интеграционный тест не пройден: " + result.getMessage());
     }
 }

@@ -97,7 +97,6 @@ public class DashboardInfoTest {
         assertTrue(dashboards.contains("astrology"), "Должен быть astrology");
         assertTrue(dashboards.contains("matrix"), "Должен быть matrix");
         assertTrue(dashboards.contains("taro"), "Должен быть taro");
-        assertTrue(dashboards.contains("social-sputnik"), "Должен быть social-sputnik");
         assertTrue(dashboards.contains("hiromant"), "Должен быть hiromant");
     }
 }

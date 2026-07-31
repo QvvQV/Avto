@@ -510,4 +510,20 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
 
         Allure.addAttachment("Сводный отчет по запускам", "text/plain", summary.toString());
     }
+
+    @Step("Валидация результатов множественных запусков")
+    public void validateMultipleStartGameResults(List<GameWheelStartGameResponse> prizes) {
+        Set<String> prizeTypes = new HashSet<>();
+
+        for (GameWheelStartGameResponse prize : prizes) {
+            assertTrue(
+                    GameWheelRewardsConstants.ExpectedStartGamePrize.isValidType(prize.getType()),
+                    String.format("Тип '%s' не является допустимым", prize.getType())
+            );
+            prizeTypes.add(prize.getType());
+        }
+
+        Allure.addAttachment("Тип призов", "text/plain",
+                "Уникальные типы: " + String.join(", ", prizeTypes));
+    }
 }

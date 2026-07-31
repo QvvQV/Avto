@@ -11,12 +11,12 @@ public class AddressPage {
     public static final String utm_source = "&utm_source=customutm";
 
     // eхcel продукт
-    public static final String urlExcel = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/catalog/product/excel?aff_rid=1012_ESVn";
+    public static final String urlExcel = "/catalog/product/excel?aff_rid=1012_ESVn";
 
     // главная страница
-    public static final String urlMain = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru";
+    public static final String urlMain = "";
 
-    public static final String urlMainRev = "https://admin:JWwppsEA84B4BozJgE44sNiZZ@ttplace.ru/?" + param + "=" + value;
+    public static final String urlMainRev = "/?" + param + "=" + value;
 
 //    public static final String URL_MAIN = AUTH_BASE_URL;
 

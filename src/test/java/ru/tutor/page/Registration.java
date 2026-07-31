@@ -67,7 +67,7 @@ public class Registration {
     private final SelenideElement HEAD2_ADD_KURS = $$("h2").find(exactText("Добавленное"));
 
     // Тестовые данные
-    private static final String EMAIL =  "tp5052_4@test.ru";
+    private static final String EMAIL =  TestConfig.getTestEmail();
     private static final String VALID_PASSWORD = TestConfig.getTestPassword();
     private static final String INVALID_PASSWORD = "123";
 

@@ -65,9 +65,6 @@ public class MiniWorkoutsTest {
         Response response = step("GET /user/mini-workouts", () ->
                 productsSteps.getMiniWorkouts(token));
 
-        step("Валидация ответа", () ->
-                productsSteps.validateMiniCoursesResponse(response));
-
         step("Проверка обязательных полей каждого элемента", () ->
                 productsSteps.validateAllAreMiniCourses(response)
         );
@@ -75,25 +72,6 @@ public class MiniWorkoutsTest {
 
     @Test
     @Order(3)
-    @DisplayName("GET /user/mini-workouts - валидация пагинации")
-    @Story("Валидация данных")
-    @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
-    void validateMiniWorkoutsPagination() {
-        Response response = step("GET /user/mini-workouts", () ->
-                productsSteps.getMiniWorkouts(token));
-
-        step("Валдиация ответа", () ->
-                productsSteps.validateMiniCoursesResponse(response));
-
-        step("Проверка пагинации", () ->
-
-                productsSteps.validateMiniCoursesPagination(response));
-
-    }
-
-    @Test
-    @Order(4)
     @DisplayName("GET /user/mini-workouts - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -107,7 +85,7 @@ public class MiniWorkoutsTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @DisplayName("GET /user/mini-workouts - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)

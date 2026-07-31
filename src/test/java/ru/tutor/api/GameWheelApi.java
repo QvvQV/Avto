@@ -44,4 +44,19 @@ public class GameWheelApi extends BaseApi {
     public Response getUserRewardHistory(String authToken) {
         return getWithToken(ApiEndpoints.GAME_REWARD_HISTORY, authToken);
     }
+
+    @Step("GET /user/game-wheel/rewards_groups - группы наград")
+    public Response getRewardsGroups(String authToken) {
+        return getWithToken(ApiEndpoints.GAME_WHEEL_REWARDS_GROUPS, authToken);
+    }
+
+    @Step("GET /user/game-wheel/timer-left-seconds - возвращение кол-ва секунд")
+    public Response getTimarLeftSeconds(String authToken) {
+        return getWithToken(ApiEndpoints.GAME_WHEEL_TIMER_LEFT_SECONDS, authToken);
+    }
+
+    @Step("GET /user/game-wheel/rewards-recently-won-all - список недавних победителей")
+    public Response getRewardsRecentlyWon(String authToken) {
+        return getWithToken(ApiEndpoints.GAME_WHEEL_REWARDS_RECENTLY_WON_ALL, authToken);
+    }
 }

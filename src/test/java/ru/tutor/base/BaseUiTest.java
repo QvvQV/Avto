@@ -5,6 +5,8 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.chrome.ChromeOptions;
+import ru.tutor.config.TestConfig;
+import java.io.IOException;
 
 
 /**
@@ -22,7 +24,7 @@ public abstract class BaseUiTest {
 
 
     @BeforeAll
-    public static void setupSelenide() {
+    public static void setupSelenide() throws IOException {
 //        verifyDriverAvailable();
         setupBrowserWithIncognito(); // По умолчанию с incognito
     }
@@ -59,8 +61,8 @@ public abstract class BaseUiTest {
     private static void applyCommonConfig(ChromeOptions options) {
         Configuration.browserCapabilities = options;
         Configuration.browserSize = "1920x1080";
-        Configuration.timeout = 10000;
-        Configuration.pageLoadTimeout = 30000;
+        Configuration.timeout = Long.parseLong(TestConfig.getTimeouts());
+        Configuration.pageLoadTimeout = Long.parseLong(TestConfig.getPageLoadTimeout());
         Configuration.headless = false;
 
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide()

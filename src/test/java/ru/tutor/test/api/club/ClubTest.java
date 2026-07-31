@@ -7,7 +7,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.UserProfile;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
 import ru.tutor.model.club.WithdrawalRequest;
@@ -65,7 +64,7 @@ public class ClubTest {
     void getClubStatisticsSuccess() {
 
         Response response = step("GET /user/club/statistics", () ->
-                clubSteps.  getClubStatistics(token)
+                clubSteps.getClubStatistics(token)
         );
 
         statisticsInfo = step("Валидация ответа", () ->

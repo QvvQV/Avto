@@ -74,9 +74,98 @@ public class StoriesSteps extends BaseApiSteps {
 
     @Step("Валидация ответа списка историй")
     public void validateStoriesResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
+    }
+
+    @Step("Валидация ответа категорий тутсов")
+    public void validateTutsCategoriesResponse(Response response) {
+        assertBasicResponse(response);
+
+        List<Map<String, Object>> categories = response.jsonPath().getList("$");
+        assertNotNull(categories, "Список категорий не должен быть null");
+        assertFalse(categories.isEmpty(), "Список категорий не должен быть пуст");
+
+        for (int i = 0; i < categories.size(); i++) {
+            Map<String, Object> category = categories.get(i);
+            assertAll("Категория [" + i + "]",
+                    () -> assertTrue(((Number) category.get("id")).intValue() > 0),
+                    () -> assertNotNull(category.get("name")),
+                    () -> assertNotNull(category.get("slug")),
+                    () -> assertTrue(((Number) category.get("totalCount")).intValue() >= 0),
+                    () -> assertTrue(((Number) category.get("unwatchedCount")).intValue() >= 0)
+            );
+        }
+    }
+
+    @Step("Валидация ответа ленты категории")
+    public void validateCategoryFeedResponse(Response response) {
+        assertBasicResponse(response);
+
+        List<Map<String, Object>> items = response.jsonPath().getList("items");
+        assertNotNull(items, "items не должен быть null");
+
+        if (items.isEmpty()) return;
+
+        for (int i = 0; i < items.size(); i++) {
+            Map<String, Object> item = items.get(i);
+            assertAll("Элемент ленты [" +i + "]",
+                    () -> assertNotNull(item.get("slug"), "slug не null"),
+                    () -> assertNotNull(item.get("watched"), "watched не null")
+            );
+        }
+    }
+
+    @Step("Валидация ответа списка сторис")
+    public void validateStoriesListResponse(Response response) {
+        assertBasicResponse(response);
+
+        List<Map<String, Object>> stories = response.jsonPath().getList("$");
+        assertNotNull(stories, "Список сторис не должен быть null");
+        if (stories.isEmpty()) return;
+
+        for (int i = 0; i < stories.size(); i++) {
+            Map<String, Object> story = stories.get(i);
+            assertAll("Сторис [" + i + "]",
+                    () -> assertNotNull(story.get("ulid")),
+                    () -> assertNotNull(story.get("title")),
+                    () -> assertNotNull(story.get("imageUri")),
+                    () -> assertTrue(story.containsKey("imageWideUri")),
+                    () -> assertTrue(story.containsKey("link"))
+            );
+        }
+    }
+
+    @Step("Валидация ответа деталей истории")
+    public void validateStoriesDetailsResponse(Response response) {
+        assertBasicResponse(response);
+
+        Map<String, Object> story = response.jsonPath().getMap("$");
+        assertNotNull(story, "Список сторис не должен быть null");
+
+            assertAll("Детали истории",
+                    () -> assertNotNull(story.get("ulid")),
+                    () -> assertNotNull(story.get("title")),
+                    () -> assertNotNull(story.get("imageUri")),
+                    () -> assertTrue(story.containsKey("imageWideUri")),
+                    () -> assertTrue(story.containsKey("link"))
+            );
+
+        // Проверяем слайды
+        List<Map<String, Object>> slides = response.jsonPath().getList("slides");
+        assertNotNull(slides, "slides не должен быть null");
+        if (slides.isEmpty()) return;
+
+        for (int i = 0; i < slides.size(); i++) {
+            Map<String, Object> slide = slides.get(i);
+            assertAll("Слайд [" + i + "]",
+                    () -> assertNotNull(slide.get("ulid")),
+                    () -> assertNotNull(slide.get("imageUri")),
+                    () -> assertTrue(slide.containsKey("imageWideUri")),
+                    () -> assertTrue(slide.containsKey("kinescopeId")),
+                    () -> assertTrue(slide.containsKey("link")),
+                    () -> assertNotNull(slide.get("customSort"))
+                    );
+        }
     }
 
     @Step("Детали баннера")

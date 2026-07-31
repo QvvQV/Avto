@@ -6,6 +6,7 @@ import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
+import ru.tutor.config.TestConfig;
 import ru.tutor.constants.ProductConfiguration;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
@@ -28,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AdminOrdersPage {
 
     // Константа UTM-метки
-    private static final String DEFAULT_UTM = "1012_966574";
-    private static final String SYSTEM_UTM = "1012_896988";
+    private static final String DEFAULT_UTM = TestConfig.getDefUtm();
+    private static final String SYSTEM_UTM = TestConfig.getSystemUtm();
 
     // Названия кнопок
     private static final String APPLY_TEXT = "Применить";

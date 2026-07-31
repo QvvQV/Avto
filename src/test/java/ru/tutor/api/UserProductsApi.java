@@ -168,4 +168,11 @@ public class UserProductsApi extends BaseApi {
     public Response getShowCategories(String authToken) {
         return getWithToken(ApiEndpoints.SHOW_CATEGORIES, authToken);
     }
+
+    /**
+     * GET /user/shows
+     */
+    public Response getShows(String authToken) {
+        return getWithToken(ApiEndpoints.USER_SHOWS, authToken);
+    }
 }

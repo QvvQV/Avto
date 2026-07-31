@@ -3,7 +3,6 @@ package ru.tutor.steps;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.UserCertificateApi;
-import ru.tutor.base.BaseApi;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.utils.AllureAttachments;
 
@@ -27,9 +26,7 @@ public class CertificateSteps extends BaseApiSteps {
 
     @Step("Валидация успешной генерации сертификата")
     public void validateCertificateGenerateResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
         assertNotNull(response.jsonPath().getString("pdf"), "pdf не должен быть null");
         assertNotNull(response.jsonPath().getString("png"), "png не должен быть null");
         assertTrue(response.jsonPath().getLong("number") > 0, "number должен быть > 0");

@@ -36,7 +36,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("16")
+    @Order(1)
     @DisplayName("Текст ошибки при не зарегистрирован пользователе")
     public void showTextErrorFromNotUser() {
         registration.randomEmail();
@@ -53,7 +53,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("22")
+    @Order(2)
     @DisplayName("Текст ошибки при некорректном логине")
     public void showTextErrorFromNotСorrectLogin() {
         registration.notCorrectEmail();
@@ -67,7 +67,7 @@ public class LoginTest extends BaseUiTest {
     }
 
 //    @Test
-    @AllureId("27")
+
     @DisplayName("открытие стр Recover - восстановление пароля")
     public void OpenPageRecover() {
         registration.clickRecoverPass();
@@ -78,7 +78,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("17")
+    @Order(3)
     @DisplayName("текст ошибки при пустом поле на стр Восстановить пароль")
     public void showTextErrorFromRecoverPass() {
         registration.clickRecoverPass();
@@ -90,7 +90,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("25")
+    @Order(4)
     @DisplayName("текст сообщения после ввода адреса почты")
     public void showTextAfterPutEmail() {
         registration.clickRecoverPass();
@@ -103,7 +103,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("24")
+    @Order(5)
     @DisplayName("переход со стр восстановить пароль на стр логин/пароль")
     public void backRecoveryLogin() {
         registration.clickRecoverPass();
@@ -117,7 +117,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("28")
+    @Order(6)
     @DisplayName("переход на стр регистрации")
     public void goRegister() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -130,7 +130,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("26")
+    @Order(7)
     @DisplayName("заполнение полей")
     public void inputField() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -146,7 +146,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("30")
+    @Order(8)
     @DisplayName("текст ошибки под полем имя")
     public void showTextErrorUnderName() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -171,7 +171,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("21")
+    @Order(9)
     @DisplayName("текст ошибки под полем почта/пароль/повторите пароль на стр регистрация")
     public void showTextErrorUnderEmailPassRepeat() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -199,7 +199,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("29")
+    @Order(10)
     @DisplayName("текст ошибки под полем пароль/повторите пароль на стр регистрация")
     public void showTextErrorUnderPassRepeat() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -224,7 +224,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("32")
+    @Order(11)
     @DisplayName("текст ошибки при пароле из 3-х цифр на стр регистрация")
     public void showTextErrorUnderPassNumber3() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -250,7 +250,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("19")
+    @Order(12)
     @DisplayName("текст ошибки при Пароль != Повторите пароль на стр регистрация")
     public void showTextErrorPassNotEqualRepeatPass() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -277,7 +277,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("23")
+    @Order(13)
     @DisplayName("возвращаемся на стр ввода имени из стр зарегистрироваться")
     public void backFromRegister() {
         step("кликаем по кнопке регистрация", registration::clickRegistr);
@@ -297,7 +297,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("18")
+    @Order(14)
     @DisplayName("переходим со стр зарегистрироваться на стр войти")
     public void RegisterGoEnter() {
 
@@ -317,7 +317,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("54")
+    @Order(15)
     @DisplayName("переход со стр зарегистр на стр ЛК")
     public void EnterForPersonalAccount() {
 
@@ -340,7 +340,7 @@ public class LoginTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("57")
+    @Order(16)
     @DisplayName("регистрируемся с ранее созданного акк")
     public void RegistrationFromEarlyAcc() {
 

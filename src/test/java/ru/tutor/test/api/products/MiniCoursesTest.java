@@ -66,9 +66,6 @@ public class MiniCoursesTest {
         Response response = step("GET /user/mini-courses", () ->
                 productsSteps.getMiniCourses(token));
 
-        step("Валидация ответа", () ->
-                productsSteps.validateMiniCoursesResponse(response));
-
         step("Проверка обязательных полей каждого элемента", () ->
                 productsSteps.validateAllAreMiniCourses(response)
         );

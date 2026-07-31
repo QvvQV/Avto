@@ -93,8 +93,6 @@ public class OrderToggleSubscriptionSteps extends BaseApiSteps {
 
     @Step("Валидация полей")
     public void validateRestorePremiumResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
     }
 }

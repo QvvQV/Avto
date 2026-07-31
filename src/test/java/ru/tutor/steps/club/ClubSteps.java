@@ -1,6 +1,6 @@
 package ru.tutor.steps.club;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
@@ -46,9 +46,7 @@ public class ClubSteps extends BaseApiSteps {
 
     @Step("Валидация ответа статистики клуба")
     public ClubStatisticsResponse validateClubStatisticsResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
 
         assertJsonFieldExists(response, "balance");
         assertJsonFieldExists(response, "referrals");
@@ -62,9 +60,7 @@ public class ClubSteps extends BaseApiSteps {
 
     @Step("Валидация ответа информации о членстве")
     public ClubMemberResponse validateClubMemberResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
 
         assertJsonFieldExists(response, "id");
         assertJsonFieldExists(response, "isActive");
@@ -96,6 +92,8 @@ public class ClubSteps extends BaseApiSteps {
         if (own != null && all != null) {
             assertTrue(all >= own, "Всего рефералов должно быть >= собственных рефералов");
         }
+
+
     }
 
     @Step("Проверка значений информации о членстве")
@@ -139,9 +137,7 @@ public class ClubSteps extends BaseApiSteps {
 
     @Step("Валидация успешного ответа истории платжей клуба")
     public List<ClubPaymentResponse> validateClubPaymentsResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
 
         // Проверяем что ответ массив
         Object body = response.jsonPath().get("$");
@@ -206,9 +202,7 @@ public class ClubSteps extends BaseApiSteps {
 
     @Step("Валидация ответа списка рефералов")
     public void validateUserReferralsResponse(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
-        assertCorsHeaders(response);
+        assertBasicResponse(response);
     }
 
     @Step("GET /user/{userId}/club/referrals/{referralId} - детали реферала")

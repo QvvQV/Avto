@@ -21,7 +21,7 @@ public abstract class BaseApi {
     protected final RequestSpecification baseSpec;
 
     protected BaseApi(String baseUrl) {
-        this.baseUrl = baseUrl;
+        this.baseUrl = TestConfig.getCurrentApiUrl();
         this.baseSpec = new RequestSpecBuilder()
                 .setBaseUri(baseUrl)
                 .addFilter(new AllureRestAssured())

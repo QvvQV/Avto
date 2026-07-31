@@ -33,6 +33,7 @@ public class RegistrationTest {
     private final Faker faker = new Faker(Locale.ENGLISH);
 
     private static final String TEST_PASSWORD = TestConfig.getTestPassword();
+    private static final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_FIRST_NAME = faker.name().fullName();
 
     private static String registeredEmail;

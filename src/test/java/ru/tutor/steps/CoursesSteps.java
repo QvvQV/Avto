@@ -59,8 +59,7 @@ public class CoursesSteps extends BaseApiSteps {
 
     @Step("Валидация ответа списка достижений")
     public void validateCourses(Response response) {
-        assertSuccessStatusCode(response);
-        assertContentTypeJson(response);
+        assertBasicResponse(response);
         String body = response.getBody().asString();
         assertNotNull(body, "Тело не должно быть null");
     }

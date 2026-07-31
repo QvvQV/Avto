@@ -54,7 +54,7 @@ public class StoryTest {
         );
 
         step("Валидация ответа", () ->
-                storiesSteps.validateStoriesResponse(response)
+                storiesSteps.validateStoriesListResponse(response)
         );
     }
 
@@ -91,7 +91,6 @@ public class StoryTest {
         Response listResponse = step("GET /user/stories", () ->
                 storiesSteps.getStories(token)
         );
-        storiesSteps.validateStoriesResponse(listResponse);
 
         String ulid = step("Извлечение ulid из списка", () ->
                 storiesSteps.extractFirstUlid(listResponse)
@@ -102,7 +101,7 @@ public class StoryTest {
         );
 
         step("Валидация ответа", () ->
-                storiesSteps.validateStoriesResponse(detailsResponse)
+                storiesSteps.validateStoriesDetailsResponse(detailsResponse)
         );
     }
 
@@ -265,7 +264,7 @@ public class StoryTest {
         Response categoriesResponse = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
-        storiesSteps.validateStoriesResponse(categoriesResponse);
+        storiesSteps.validateTutsCategoriesResponse(categoriesResponse);
 
         String categoryId = step("Извлечение id первой категории", () ->
                 storiesSteps.extractFirstCategoryId(categoriesResponse)
@@ -276,7 +275,7 @@ public class StoryTest {
         );
 
         step("Валидация ответа ленты", () ->
-                storiesSteps.validateStoriesResponse(feedResponse)
+                storiesSteps.validateCategoryFeedResponse(feedResponse)
         );
     }
 

@@ -95,7 +95,7 @@ public class OrderPaymentsTest {
         );
 
         step("Валидация ответа", () ->
-                orderSteps.validateOrdersPaymentsResponse(response)
+                orderSteps.validateBonusAccessInfoResponse(response)
         );
     }
 
@@ -140,7 +140,7 @@ public class OrderPaymentsTest {
         );
 
         step("Валидация ответа", () ->
-                orderSteps.validateOrdersPaymentsResponse(response)
+                orderSteps.validateOrderSubscriptionStateResponse(response)
         );
     }
 

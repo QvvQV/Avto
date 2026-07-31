@@ -92,7 +92,7 @@ public class ProductsProfileTest {
                 productsSteps.getUserAchievements(token));
 
         step("Валидация страницы достижений", () ->
-                productsSteps.validateAchievements(response6));
+                productsSteps.validateUserAchievementsResponse(response6));
     }
 
     @Test
@@ -102,8 +102,9 @@ public class ProductsProfileTest {
     void getAllProductsSuccess() {
         Response response = productsSteps.getAllProducts(token);
         step("Валидация ответа", () -> {
-            assertEquals(200, response.getStatusCode());
+            productsSteps.validateProductDetailsResponse(response);
             assertNotNull(response.getBody().asString());
+            assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
     }
 
@@ -113,8 +114,11 @@ public class ProductsProfileTest {
     @Tag("positive")
     void getPremiersProducts() {
         Response response = productsSteps.getPremiersProducts(token);
-        step("Валидация ответа", () ->
-                assertEquals(200, response.getStatusCode()));
+        step("Валидация ответа", () -> {
+            productsSteps.validateProductDetailsResponse(response);
+            assertNotNull(response.getBody().asString());
+            assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
+        });
     }
 
     @Test
@@ -123,9 +127,10 @@ public class ProductsProfileTest {
     @Tag("positive")
     void getProductsTop10() {
         Response response = productsSteps.getProductTop10(token);
-        step("Валидация ответа", ()-> {
-            assertEquals(200, response.getStatusCode());
+        step("Валидация ответа", () -> {
+            productsSteps.validateProductDetailsResponse(response);
             assertNotNull(response.getBody().asString());
+            assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
     }
 
@@ -135,9 +140,10 @@ public class ProductsProfileTest {
     @Tag("positive")
     void getProductWatchingNow() {
         Response response = productsSteps.getProductWatchingNow(token);
-        step("Валидация ответа", ()->{
-            assertEquals(200, response.getStatusCode());
+        step("Валидация ответа", () -> {
+            productsSteps.validateProductDetailsResponse(response);
             assertNotNull(response.getBody().asString());
+            assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
     }
 
@@ -148,7 +154,7 @@ public class ProductsProfileTest {
     void getFavoriteProducts() {
         Response response = productsSteps.favoriteProduct(token);
         step("Валидация ответа", () ->
-                assertEquals(200, response.getStatusCode()));
+                productsSteps.validateProductDetailsResponse(response));
     }
 
     @Test
@@ -182,8 +188,11 @@ public class ProductsProfileTest {
     @DisplayName("Эндпоинт категории платформы")
     void getCategories() {
         Response response = productsSteps.getCategories(token);
-        step("Валидация ответа", () ->
-                assertEquals(200, response.getStatusCode()));
+        step("Валидация ответа", () -> {
+            productsSteps.validateProductDetailsResponse(response);
+            assertNotNull(response.getBody().asString());
+            assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
+        });
     }
 
     @Test
@@ -265,7 +274,7 @@ public class ProductsProfileTest {
         Response response = step("Получение списка достижений продукта", () ->
                 productsSteps.getAchievementsProductsId("", savedOrderNumber));
         step("Валидация деталей списка достижений продукта", () ->
-                assertEquals(401,response.getStatusCode()));
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
@@ -277,7 +286,7 @@ public class ProductsProfileTest {
                 productsSteps.getUserAchievements(""));
 
         step("Валидация страницы достижений", () ->
-                assertEquals(401,response.getStatusCode()));
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
@@ -285,7 +294,7 @@ public class ProductsProfileTest {
     @DisplayName("Эндпоинт modules без номера продукта")
     @Tag("negative")
     void getUserModulesWithoutProductValue() {
-        Response response = step("Пустое значение продукта в модуле просомтра", ()->
+        Response response = step("Пустое значение продукта в модуле просомтра", () ->
                 productsSteps.getProductModuleById(token, "", MODULE_NUMBER));
 
         step("Валидация ответа при пустом продукте", () ->
@@ -301,11 +310,11 @@ public class ProductsProfileTest {
     void getUserModulesInvalidModule() {
         ensureProductsLoaded();
 
-        Response response = step("Невалидный модуль", ()->
+        Response response = step("Невалидный модуль", () ->
                 productsSteps.getProductModuleById(token, savedProductValue, INVALID_MODULE_NUMBER));
 
         step("Валидация ответа при невалидном модуле", () ->
-                assertEquals(404,response.getStatusCode()));
+                assertEquals(404, response.getStatusCode()));
     }
 
     @Test
@@ -338,8 +347,8 @@ public class ProductsProfileTest {
     @Tag("negative")
     void getPremiersWithoutAuth() {
         Response response = productsSteps.getPremiersProducts("");
-        step("Проверка код ответа", ()->
-                assertEquals(401,response.getStatusCode()));
+        step("Проверка код ответа", () ->
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
@@ -368,7 +377,7 @@ public class ProductsProfileTest {
     @Tag("negative")
     void getFavoriteProductsWithoutAuth() {
         Response response = productsSteps.favoriteProduct("");
-        step("Валидация продукта", ()->
+        step("Валидация продукта", () ->
                 assertEquals(401, response.getStatusCode()));
     }
 
@@ -379,7 +388,7 @@ public class ProductsProfileTest {
     void getUserProductsWithoutAuth() {
         Response response = productsSteps.getUserProducts("");
         step("Валидация ответа", () ->
-                assertEquals(401,response.getStatusCode()));
+                assertEquals(401, response.getStatusCode()));
     }
 
     @Test
@@ -388,9 +397,9 @@ public class ProductsProfileTest {
     void getProductDetailsByIdNotFound() {
         Response response = productsSteps.getProductDetailsById(token, INVALID_PRODUCT_VALUE);
         step("Валидация ответа", () -> {
-                assertEquals(400, response.getStatusCode());
-        String body = response.getBody().asString();
-        assertTrue(body.contains("error"), "Должно быть сообщение об ошибке. Тело: " + body);
+            assertEquals(400, response.getStatusCode());
+            String body = response.getBody().asString();
+            assertTrue(body.contains("error"), "Должно быть сообщение об ошибке. Тело: " + body);
         });
     }
 
@@ -399,11 +408,11 @@ public class ProductsProfileTest {
     @DisplayName("Достижения с несуществующим ID продукта - 404")
     @Tag("negative")
     void getAchievementsProductByIdNotFound() {
-        Response response = productsSteps.getAchievementsProductsId(token, INVALID_PRODUCT_VALUE) ;
+        Response response = productsSteps.getAchievementsProductsId(token, INVALID_PRODUCT_VALUE);
         step("Валидация ответа", () -> {
-                assertEquals(404, response.getStatusCode());
-                String body = response.getBody().asString();
-                assertTrue(body.contains("message"), "Должно быть сообщение об ошибке. Тело: " + body);
+            assertEquals(404, response.getStatusCode());
+            String body = response.getBody().asString();
+            assertTrue(body.contains("message"), "Должно быть сообщение об ошибке. Тело: " + body);
         });
     }
 
@@ -415,9 +424,10 @@ public class ProductsProfileTest {
         ensureProductsLoaded();
         Response response = productsSteps.markModuleWatched(token, "", MODULE_NUMBER, TIMELINE);
         step("Валидация ответа", () -> {
-                assertEquals(422, response.getStatusCode());
-        String body = response.getBody().asString();
-        assertTrue(body.contains("orderNumber"), "Должна быть ошибка о номере курса. Тело: " + body); });
+            assertEquals(422, response.getStatusCode());
+            String body = response.getBody().asString();
+            assertTrue(body.contains("orderNumber"), "Должна быть ошибка о номере курса. Тело: " + body);
+        });
     }
 
     @Test
@@ -443,8 +453,10 @@ public class ProductsProfileTest {
         Response response = step("GET /user/products/{orderNumber}/attached-files", () ->
                 productsSteps.getAttachedFiles(token, savedOrderNumber)
         );
-        step("Валидация ответа", () ->
-                assertEquals(200, response.getStatusCode()));
+        step("Валидация ответа", () -> {
+            productsSteps.validateProductDetailsResponse(response);
+            assertNotNull(response.getBody().asString());
+        });
     }
 
     @Test
@@ -519,17 +531,5 @@ public class ProductsProfileTest {
         step("Проверка структуры продуктов", () -> productsSteps.validateProductsStructure(products));
         savedProductValue = step("Получение productId", () -> productsSteps.getProductId(products));
         Allure.addAttachment("Product Report", savedProductValue);
-
-//        Response response = step("GET /user/products - подготовка данных", () ->
-//                productsSteps.getUserProducts(token));
-//        List<ProductsResponse> products = step("Валидация списка пордуктов", () ->
-//                productsSteps.validateProductsResponse(response));
-//        step("Проверка структуры продуктов", () ->
-//                productsSteps.validateProductsStructure(products));
-//        savedOrderNumber = step("Получение orderNumber", () ->
-//                productsSteps.getFirstNumericOrderNumber(products));
-//        savedProductValue = step("Получение productId", () ->
-//                productsSteps.getProductId(products));
-//        Allure.addAttachment("Product Report", savedOrderNumber);
     }
 }

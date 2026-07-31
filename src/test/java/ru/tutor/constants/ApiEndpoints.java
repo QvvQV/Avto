@@ -616,6 +616,11 @@ public final class ApiEndpoints {
      */
     public static final String GAME_WHEEL_TIMER_LEFT_SECONDS = "/user/game-wheel/timer-left-seconds";
 
+    /**
+     * Награды колеса по группам
+     */
+    public static final String GAME_WHEEL_REWARDS_GROUPS = "/user/game-wheel/rewards_groups";
+
 
     // ==================== PROMO CODE ENDPOINTS ====================
     /**
@@ -770,6 +775,11 @@ public final class ApiEndpoints {
      * Мини-тренировки
      */
     public static final String MINI_WORKOUTS= "/user/mini-workouts";
+
+    /**
+     * Список Шоу
+     */
+    public static final String USER_SHOWS= "/user/shows";
 
     // ==================== AUTHORS ENDPOINTS ====================
     /**

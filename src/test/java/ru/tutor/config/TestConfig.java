@@ -42,6 +42,25 @@ public class TestConfig {
         } catch (Exception ex) {
             throw new IllegalStateException("Failed to load cards.properties", ex);
         }
+        validateRequiredConfigProperties();
+    }
+
+    private static void validateRequiredConfigProperties() {
+        String[] requiredKeys = {
+                "dev1.base.url", "api1.base.url", "admin1.base.url", "client1.base.url", "dev1.test.email",
+                "dev2.base.url", "api2.base.url", "admin2.base.url", "client2.base.url", "dev2.test.email",
+                "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid", "default.utm",
+                "system.utm", "timeout", "pageLoadTimeout"
+        };
+        for (String key : requiredKeys) {
+            String value = properties.getProperty(key);
+            if (value == null || value.trim().isEmpty()) {
+                throw new IllegalStateException(
+                        "Missing or invalid config property: " + key +
+                                ". Please check config.properties file."
+                );
+            }
+        }
     }
 
     private static void validateRequiredCardsProperties() {
@@ -89,46 +108,46 @@ public class TestConfig {
      * Dev1
      */
     public static String getDev1BaseUrl() {
-        return properties.getProperty("dev1.base.url", "config.properties");
+        return properties.getProperty("dev1.base.url");
     }
 
     public static String getApi1BaseUrl() {
-        return properties.getProperty("api1.base.url", "config.properties");
+        return properties.getProperty("api1.base.url");
     }
 
     public static String getAdminBaseUrl() {
-        return properties.getProperty("admin1.base.url", "config.properties");
+        return properties.getProperty("admin1.base.url");
     }
 
     public static String getClient1BaseUrl() {
-        return properties.getProperty("client1.base.url", "config.properties");
+        return properties.getProperty("client1.base.url");
     }
 
     public static String getEmailDev1(){
-        return properties.getProperty("dev1.test.email", "config.properties");
+        return properties.getProperty("dev1.test.email");
     }
 
     /**
      * Dev2
      */
     public static String getDev2BaseUrl() {
-        return properties.getProperty("dev2.base.url", "config.properties");
+        return properties.getProperty("dev2.base.url");
     }
 
     public static String getApi2BaseUrl() {
-        return properties.getProperty("api2.base.url", "config.properties");
+        return properties.getProperty("api2.base.url");
     }
 
     public static String getAdmin2BaseUrl() {
-        return properties.getProperty("admin2.base.url", "config.properties");
+        return properties.getProperty("admin2.base.url");
     }
 
     public static String getClient2BaseUrl() {
-        return properties.getProperty("client2.base.url", "config.properties");
+        return properties.getProperty("client2.base.url");
     }
 
     public static String getEmailDev2(){
-        return properties.getProperty("dev2.test.email", "config.properties");
+        return properties.getProperty("dev2.test.email");
     }
 
     /**
@@ -136,15 +155,15 @@ public class TestConfig {
      */
 
     public static String getProdBaseUrl() {
-        return properties.getProperty("prod.base.url", "config.properties");
+        return properties.getProperty("prod.base.url");
     }
 
     public static String getApiProdUrl() {
-        return properties.getProperty("api.prod.url", "config.properties");
+        return properties.getProperty("api.prod.url");
     }
 
     public static String getClientBaseUrl() {
-        return properties.getProperty("client.base.url", "config.properties");
+        return properties.getProperty("client.base.url");
     }
 
 
@@ -160,6 +179,30 @@ public class TestConfig {
     public static String getTestPassword() {
         return properties.getProperty("test.password");
     }
+
+    /**
+     * aff_rid метка для тестов
+     */
+    public static String getAffRid() {
+        return properties.getProperty("aff.rid");
+    }
+
+    public static String getDefUtm() {
+        return properties.getProperty("default.utm");
+    }
+
+    public static String getSystemUtm() {
+        return properties.getProperty("system.utm");
+    }
+
+    public static String getTimeouts() {
+        return properties.getProperty("timeout");
+    }
+
+    public static String getPageLoadTimeout() {
+        return properties.getProperty("pageLoadTimeout");
+    }
+
 
     // ==================== Метод для получения URL в зависимости от окружения ====================
     public static String getCurrentUiUrl() {

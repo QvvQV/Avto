@@ -47,8 +47,8 @@ public class ReactivatePremiumFlow {
     private String authToken;
 
     // Константы UTM меток
-    private static final String DEFAULT_UTM = "1012_966574";
-    private static final String SYSTEM_UTM = "1012_896988";
+    private static final String DEFAULT_UTM = TestConfig.getDefUtm();
+    private static final String SYSTEM_UTM = TestConfig.getSystemUtm();
 
     private boolean isRenewalInPersonalAccount = false;
     private String userEmail;
