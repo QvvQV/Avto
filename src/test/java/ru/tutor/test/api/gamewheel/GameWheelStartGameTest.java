@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.model.fortune.GameWheelStartGameResponse;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.fortune.GameWheelStartGameSteps;
 
 import java.util.*;
@@ -24,7 +24,7 @@ import static io.qameta.allure.Allure.step;
 public class GameWheelStartGameTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final GameWheelStartGameSteps gameWheelStartGameSteps = new GameWheelStartGameSteps(BASE_URL);
 
     private final String TEST_EMAIL = TestConfig.getTestEmail();

@@ -10,7 +10,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.model.club.ClubMemberResponse;
 import ru.tutor.model.club.ClubStatisticsResponse;
 import ru.tutor.model.club.WithdrawalRequest;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.club.ClubSteps;
 import ru.tutor.steps.club.ClubWithdrawalSteps;
 
@@ -32,7 +32,7 @@ public class ClubTest {
 
     private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
     private final ClubWithdrawalSteps withdrawalSteps = new ClubWithdrawalSteps(BASE_URL);
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
 
     private ClubMemberResponse memberInfo;
     private ClubStatisticsResponse statisticsInfo;

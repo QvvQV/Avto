@@ -6,8 +6,9 @@ import ru.tutor.api.UserCertificateApi;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.utils.AllureAttachments;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CertificateSteps extends BaseApiSteps {
     private final UserCertificateApi certApi;
@@ -27,8 +28,12 @@ public class CertificateSteps extends BaseApiSteps {
     @Step("Валидация успешной генерации сертификата")
     public void validateCertificateGenerateResponse(Response response) {
         assertBasicResponse(response);
-        assertNotNull(response.jsonPath().getString("pdf"), "pdf не должен быть null");
-        assertNotNull(response.jsonPath().getString("png"), "png не должен быть null");
-        assertTrue(response.jsonPath().getLong("number") > 0, "number должен быть > 0");
+        Map<String, Object> root = response.jsonPath().getMap("$");
+        assertNotNull(root, "Тело должно быть JSON-объектом");
+        assertAll("Сертификат",
+                nonEmptyString(root, "pdf"),
+                nonEmptyString(root, "png"),
+                positiveInt(root, "number")
+    );
     }
 }

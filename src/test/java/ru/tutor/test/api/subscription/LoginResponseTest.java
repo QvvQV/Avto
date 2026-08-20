@@ -10,7 +10,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.LoginResponse;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.ResponseAnalyzer;
 
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class LoginResponseTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test

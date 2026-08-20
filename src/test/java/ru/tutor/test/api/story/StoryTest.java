@@ -7,15 +7,15 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.fortune.GameWheelRewardResponse;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.StoriesSteps;
-import ru.tutor.steps.UserSteps;
 
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StoryTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final StoriesSteps storiesSteps = new StoriesSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -113,7 +113,6 @@ public class StoryTest {
         Response listResponse = step("GET /user/stories", () ->
                 storiesSteps.getStories(token)
         );
-        storiesSteps.validateStoriesResponse(listResponse);
 
         String ulid = step("Извлечение ulid из списка", () ->
                 storiesSteps.extractFirstUlid(listResponse)
@@ -134,7 +133,6 @@ public class StoryTest {
         Response listResponse = step("GET /user/stories", () ->
                 storiesSteps.getStories(token)
         );
-        storiesSteps.validateStoriesResponse(listResponse);
 
         String ulid = step("Извлечение ulid из списка", () ->
                 storiesSteps.extractFirstUlid(listResponse)
@@ -170,7 +168,7 @@ public class StoryTest {
                 storiesSteps.getBannerDetails(token, "youtube")
         );
         step("Валидация ответа", () ->
-                storiesSteps.validateStoriesResponse(bannerResponse)
+                storiesSteps.validateBannerResponse(bannerResponse)
         );
     }
 
@@ -222,7 +220,7 @@ public class StoryTest {
                 storiesSteps.getTutsCategories(token)
         );
         step("Валидация ответа", () ->
-                storiesSteps.validateStoriesResponse(response)
+                storiesSteps.validateTutsCategoriesResponse(response)
         );
     }
 
@@ -264,7 +262,6 @@ public class StoryTest {
         Response categoriesResponse = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
-        storiesSteps.validateTutsCategoriesResponse(categoriesResponse);
 
         String categoryId = step("Извлечение id первой категории", () ->
                 storiesSteps.extractFirstCategoryId(categoriesResponse)
@@ -288,7 +285,6 @@ public class StoryTest {
         Response categoriesResponse = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
-        storiesSteps.validateStoriesResponse(categoriesResponse);
 
         String categoryId = step("Извлечение id первой категории", () ->
                 storiesSteps.extractFirstCategoryId(categoriesResponse)
@@ -310,7 +306,6 @@ public class StoryTest {
         Response categoriesResponse = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
-        storiesSteps.validateStoriesResponse(categoriesResponse);
 
         String categoryId = step("Извлечение id первой категории", () ->
                 storiesSteps.extractFirstCategoryId(categoriesResponse)
@@ -348,7 +343,7 @@ public class StoryTest {
                 storiesSteps.getRandomListTuts(token)
         );
         step("Валидация ответа", () ->
-                storiesSteps.validateStoriesResponse(response)
+                storiesSteps.validateRandomTutsResponse(response)
         );
     }
 
@@ -382,20 +377,6 @@ public class StoryTest {
 
     @Test
     @Order(22)
-    @DisplayName("Получение списка всех тутсов")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    void getListAllTutsSuccess() {
-        Response response = step("GET /user/tuts/random-list - успешное получение списка всех тутсов", () ->
-                storiesSteps.getRandomListTutsList(token)
-        );
-        step("Валидация ответа", () ->
-                storiesSteps.validateStoriesResponse(response)
-        );
-    }
-
-    @Test
-    @Order(23)
     @DisplayName("Валидация полей списка тутсов")
     @Severity(SeverityLevel.CRITICAL)
     @Tag("positive")
@@ -409,7 +390,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(24)
+    @Order(23)
     @DisplayName("Получение списка без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -423,7 +404,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(25)
+    @Order(24)
     @DisplayName("Получение списка инвалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
@@ -433,6 +414,280 @@ public class StoryTest {
         );
         step("Проверка статуса 401", () ->
                 assertEquals(401, response.getStatusCode())
+        );
+    }
+
+    @Test
+    @Order(25)
+    @DisplayName("Успешная фиксация просмотра сторис с одним ULID")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("positive")
+    void markStoriesViewSuccess() {
+        Response listResponse = step("GET /user/stories - получить список", () ->
+                storiesSteps.getStories(token)
+        );
+
+        String ulid = step("Извлечение первого ULID", () ->
+                storiesSteps.extractFirstUlid(listResponse)
+        );
+
+        Response response = step("POST /user/stories/view - фиксация просмотра", () ->
+                storiesSteps.markStoriesViewed(token, List.of(ulid))
+        );
+
+        step("Валидация: статус 201 тело []", () ->
+                storiesSteps.validateStoriesViewResponse(response));
+    }
+
+    @Test
+    @Order(26)
+    @DisplayName("Фиксация просмотра сторис с несколькими ULID")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("positive")
+    void markStoriesViewMultipleUlids() {
+        Response listResponse = step("GET /user/stories - получить список", () ->
+                storiesSteps.getStories(token)
+        );
+
+        List<String> ulids = step("Извлечение первых 3 ULIDs", () -> {
+            List<Map<String, Object>> stories = listResponse.jsonPath().getList("$");
+            assertNotNull(stories, "Список сторис не должен быть null");
+            int count = Math.min(stories.size(), 3);
+            List<String> result = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
+                String u = (String) stories.get(i).get("ulid");
+                assertNotNull(u, "ulid не должен быть null");
+                result.add(u);
+            }
+            assertFalse(result.isEmpty(), "Хотя бы один ULID должен быть извлечён");
+            return result;
+        });
+
+        Response response = step("POST /user/stories/view - фиксация " + ulids.size() + " ULIDs", () ->
+                storiesSteps.markStoriesViewed(token, ulids)
+        );
+
+        step("Валидация: статус 201б тело []", () ->
+                storiesSteps.validateStoriesViewResponse(response)
+        );
+    }
+
+    @Test
+    @Order(27)
+    @DisplayName("Фиксация просмотра сторис без токена авторизации")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markStoriesViewWithoutAuth() {
+        Response response = step("POST /user/stories/view - без токена", () ->
+                storiesSteps.markStoriesViewed("", List.of("019e8dad-7ac5-5d96-51ec-ac6dd64d4e2c"))
+        );
+
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(28)
+    @DisplayName("Фиксация просмотра сторис с невалидным токеном")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markStoriesViewWithInvalidToken() {
+        Response response = step("POST /user/stories/view - невалидный токен", () ->
+                storiesSteps.markStoriesViewed("invalid_token", List.of("019e8dad-7ac5-5d96-51ec-ac6dd64d4e2c"))
+        );
+
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(29)
+    @DisplayName("Фиксация просмотра сторис c пустым массивом ULID")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markStoriesViewEmptyArray() {
+        Response response = step("POST /user/stories/view - пустой массив", () ->
+                storiesSteps.markStoriesViewed(token, List.of())
+        );
+
+        step("Проверка статуса 201", () ->
+                assertEquals(201, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(30)
+    @DisplayName("Фиксация показа экрана сторис с произвольным ULID (сервер не валидирует)")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markStoriesViewInvalidUlids() {
+        Response response = step("POST /user/stories/view - невалидный Ulid", () ->
+                storiesSteps.markStoriesViewed(token, List.of("not-a-valid-ulid"))
+        );
+
+        step("Проверка статуса 201", () ->
+                assertEquals(201, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(31)
+    @DisplayName("Успешная фиксация показа экрана с payload fortuna")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("positive")
+    void markStoryScreenSuccess() {
+        Response response = step("POST /user/stories/screen - с payload fortuna", () ->
+                storiesSteps.markStoryScreen(token, List.of("fortuna"))
+        );
+
+        step("Валидация: статус 201, тело []", () ->
+                storiesSteps.validateStoryScreenResponse(response)
+        );
+    }
+
+    @Test
+    @Order(32)
+    @DisplayName("Фиксация показа экрана сторис с несколькими payload")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("positive")
+    void markStoryScreenMultiplePayloads() {
+        Response response = step("POST /user/stories/screen - с payload fortuna", () ->
+                storiesSteps.markStoryScreen(token, List.of("fortuna", "bonus", "promo"))
+        );
+
+        step("Валидация: статус 201, тело []", () ->
+                storiesSteps.validateStoryScreenResponse(response)
+        );
+    }
+
+    @Test
+    @Order(33)
+    @DisplayName("Фиксация показа экрана сторис без токена авторизации")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markStoryScreenWithoutAuth() {
+        Response response = step("POST /user/stories/screen - без токена", () ->
+                storiesSteps.markStoryScreen("", List.of("fortuna")));
+
+        step("Проверка статуса 401", ()->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(34)
+    @DisplayName("Фиксация показа экрана сторис с невалидным токеном")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markStoryScreenInvalidToken() {
+        Response response = step("POST /user/stories/screen - без токена", () ->
+                storiesSteps.markStoryScreen("invalid_token", List.of("fortuna")));
+
+        step("Проверка статуса 401", ()->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(35)
+    @DisplayName("Фиксация показа экрана сторис с пустым массивом payload")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("edge-case")
+    void markStoryScreenEmptyArray() {
+        Response response = step("POST /user/stories/screen - пустой массив", () ->
+                storiesSteps.markStoryScreen(token, List.of()));
+
+        step("Проверка статуса 201", ()->
+                assertEquals(201, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(36)
+    @DisplayName("Фиксация показа экрана сторис с произвольным payload (сервер не валидирует)")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("edge-case")
+    void markStoryScreenInvalidPayload() {
+        Response response = step("POST /user/stories/screen - невалидный payload", () ->
+                storiesSteps.markStoryScreen(token, List.of("invalid_payload_value")));
+
+        step("Проверка статуса 201", ()->
+                assertEquals(201, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(37)
+    @DisplayName("Успешная фиксация просмотра тутса")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("positive")
+    @Tag("integration")
+    void markTutsViewSuccess() {
+        Response categoriesResponse = step("GET /user/tuts-categories", () ->
+                storiesSteps.getTutsCategories(token)
+        );
+
+        String categoryId = step("Извлечение id первой категории", () ->
+                storiesSteps.extractFirstCategoryId(categoriesResponse)
+        );
+
+        Response feedResponse = step ("GET /user/tuts/category/{id}/feed", () ->
+                storiesSteps.getCategoryFeed(token, categoryId)
+        );
+
+        String slug = step("Извлечение slug первого тутса", () -> {
+            List<Map<String, Object>> items = feedResponse.jsonPath().getList("items");
+            assertNotNull(items, "Список items не должен быть null");
+            assertFalse(items.isEmpty(), "Список items не должен быть пуст");
+            String s =(String) items.get(0).get("slug");
+            assertNotNull(s, "slug не должен быть null");
+            return s;
+        });
+
+        Response response = step("POST /user/tuts/{slug}/view - фиксация просмотра", () ->
+                storiesSteps.markTutsViewed(token, slug)
+        );
+
+        step("проверка статуса 204", () ->
+                assertEquals(204, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(38)
+    @DisplayName("Фиксация просмотра тутса без токена")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markTutsViewWithoutAuth() {
+        Response response = step("POST /user/tuts/{slug}/view - без токена", () ->
+                storiesSteps.markTutsViewed("", "test-slug")
+        );
+
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode())
+        );
+    }
+
+    @Test
+    @Order(39)
+    @DisplayName("Фиксация просмотра тутса с невалидным токеном")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markTutsViewWithInvalidToken() {
+        Response response = step("POST /user/tuts/{slug}/view - невалдиный токен", () ->
+                storiesSteps.markTutsViewed("invalid_token", "test-slug")
+        );
+
+        step("Проверка статуса 401", () ->
+                assertEquals(401, response.getStatusCode())
+        );
+    }
+
+    @Test
+    @Order(40)
+    @DisplayName("Фиксация просмотра тутса с несуществующим slug")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag("negative")
+    void markTutsViewWithInvalidSlug() {
+        Response response = step("POST /user/tuts/{slug}/view - несуществующий slug", () ->
+                storiesSteps.markTutsViewed(token, "test-slug-125")
+        );
+
+        step("Проверка статуса 404", () ->
+                assertEquals(404, response.getStatusCode())
         );
     }
 }

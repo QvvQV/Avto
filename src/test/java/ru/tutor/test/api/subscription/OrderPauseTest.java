@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
-import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrderPauseTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();

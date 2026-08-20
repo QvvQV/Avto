@@ -7,9 +7,9 @@ import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.CertificateSteps;
 import ru.tutor.steps.ProductsSteps;
-import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +27,7 @@ public class CertificateTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
     private final Faker faker = new Faker();
 
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final ProductsSteps productsSteps = new ProductsSteps(BASE_URL);
     private final CertificateSteps certificateSteps = new CertificateSteps(BASE_URL);
 
@@ -141,5 +141,4 @@ public class CertificateTest {
                 }
         );
     }
-
 }

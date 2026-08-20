@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.ProductsSteps;
-import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MiniWorkoutsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final ProductsSteps productsSteps = new ProductsSteps(BASE_URL);
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -42,21 +42,6 @@ public class MiniWorkoutsTest {
 
     @Test
     @Order(1)
-    @DisplayName("GET /user/mini-workouts - успешное получение списка")
-    @Story("Основной сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    void getMiniWorkoutsSuccess() {
-        Response response = step("GET /user/mini-workouts", () ->
-                productsSteps.getMiniWorkouts(token));
-
-        step("Валидация ответа", () -> {
-            productsSteps.validateMiniCoursesResponse(response);
-        });
-    }
-
-    @Test
-    @Order(2)
     @DisplayName("GET /user/mini-workouts - валидация элементов списка")
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
@@ -71,7 +56,7 @@ public class MiniWorkoutsTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("GET /user/mini-workouts - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -85,7 +70,7 @@ public class MiniWorkoutsTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     @DisplayName("GET /user/mini-workouts - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)

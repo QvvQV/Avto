@@ -8,7 +8,7 @@ import ru.tutor.config.TestConfig;
 
 import ru.tutor.model.club.ClubPaymentResponse;
 
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.club.ClubSteps;
 import io.restassured.response.Response;
 
@@ -33,7 +33,7 @@ public class ClubPaymentTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
 
     private String authToken;
     private static List<ClubPaymentResponse> payments;

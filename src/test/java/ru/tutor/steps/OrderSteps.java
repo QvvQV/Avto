@@ -41,19 +41,16 @@ public class OrderSteps extends BaseApiSteps {
         for (int i = 0; i < payments.size(); i++) {
             Map<String, Object> p = payments.get(i);
             assertAll("Платёж [" + i + "]",
-                    () -> assertNotNull(p.get("createdAt"), "createdAt не null"),
-                    () -> assertNotNull(p.get("amount"), "amount не null"),
+                    notNull(p,"createdAt"),
+                    notNull(p,"amount"),
                     () -> assertTrue(Double.parseDouble((String) p.get("amount")) > 0,
                             "amount > 0"),
-                    () -> assertTrue(((Number) p.get("status")).intValue() >= 0,
-                            "status >= 0"),
-                    () -> assertTrue(((Number) p.get("type")).intValue() >= 0,
-                            "type >= 0"),
-                    () -> assertTrue(((Number) p.get("method")).intValue() >= 0,
-                            "method >= 0"),
-                    () -> assertNotNull(p.get("typeName"), "typeName не null"),
-                    () -> assertNotNull(p.get("source"), "source не null"),
-                    () -> assertNotNull(p.get("sourceName"), "sourceName не null")
+                    nonNegative(p,"status"),
+                    nonNegative(p,"type"),
+                    nonNegative(p,"method"),
+                    notNull(p,"typeName"),
+                    notNull(p,"source"),
+                    notNull(p,"sourceName")
             );
         }
     }
@@ -70,9 +67,9 @@ public class OrderSteps extends BaseApiSteps {
     public void validateOrderSubscriptionStateResponse(Response response) {
         assertBasicResponse(response);
 
-        Integer state = response.jsonPath().getObject("state", Integer.class) ;
-        assertNotNull(state, "state не должен быть null");
-        assertTrue(state >= 0, "state >= 0");
+        Map<String, Object> root = response.jsonPath().getMap("$");
+        assertNotNull(root, "Тело должно быть JSON-объектом");
+        assertAll("Состояние подписки", nonNegative(root, "state"));
     }
 
     @Step("GET /user/orders/bonus-access-info - информация по бонусному доступу")
@@ -96,7 +93,7 @@ public class OrderSteps extends BaseApiSteps {
         return response;
     }
 
-    @Step("PUT /user/orders/unpause - снфтие паузы")
+    @Step("PUT /user/orders/unpause - снятие паузы")
     public Response unpauseOrder(String authToken) {
         Response response = orderApi.unpauseOrder(authToken);
         AllureAttachments.attachJson("Orders UnpauseResponse", response.getBody().asString());
@@ -112,8 +109,7 @@ public class OrderSteps extends BaseApiSteps {
             assertEquals("[]", response.getBody().asString().trim(),
                     "Тело ответа должно быть пустым массивом");
         } else if (code == 400) {
-            assertEquals("ERR_CANT_FIND_SUBSCRIPTION_ORDER", response.jsonPath().getString("error")
-            );
+            assertJsonFieldEquals(response, "error", "ERR_CANT_FIND_SUBSCRIPTION_ORDER");
         }  else {
             fail("Неожиданный статус: " + code);
         }
@@ -129,9 +125,7 @@ public class OrderSteps extends BaseApiSteps {
     @Step("Валидация ответа создания заявки на возврат")
     public void validateRefundTicketResponse(Response response) {
         assertBasicResponse(response);
-        String body = response.getBody().asString();
-        assertNotNull(body, "Тело ответа не должно быть null");
-        assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");
+        assertJsonFieldEquals(response, "success", "OK");
     }
 
     @Step("Валидация ошибок валидации полей")
@@ -139,20 +133,13 @@ public class OrderSteps extends BaseApiSteps {
         assertEquals(422, response.getStatusCode());
         assertContentTypeJson(response);
 
-        assertEquals("Значение не должно быть пустым.",
-                response.jsonPath().getString("error.messages.firstname"));
-        assertEquals("Значение не должно быть пустым.",
-                response.jsonPath().getString("error.messages.lastname"));
-        assertEquals("Значение не должно быть пустым.",
-                response.jsonPath().getString("error.messages.patronymic"));
-        assertEquals("Значение не должно быть пустым.",
-                response.jsonPath().getString("error.messages.email"));
-        assertEquals("Пустое поле card",
-                response.jsonPath().getString("error.messages.card"));
-        assertEquals("Значение не должно быть пустым.",
-                response.jsonPath().getString("error.messages.bank"));
-        assertEquals("Значение не должно быть пустым.",
-                response.jsonPath().getString("error.messages.paymentDate"));
+        assertJsonFieldEquals(response, "error.messages.firstname", "Значение не должно быть пустым.");
+        assertJsonFieldEquals(response, "error.messages.lastname", "Значение не должно быть пустым.");
+        assertJsonFieldEquals(response, "error.messages.patronymic", "Значение не должно быть пустым.");
+        assertJsonFieldEquals(response, "error.messages.email", "Значение не должно быть пустым.");
+        assertJsonFieldEquals(response, "error.messages.card", "Пустое поле card");
+        assertJsonFieldEquals(response, "error.messages.bank", "Значение не должно быть пустым.");
+        assertJsonFieldEquals(response, "error.messages.paymentDate", "Значение не должно быть пустым.");
     }
 
     @Step("GET /user/refund-tickets - список заявок на возврат")
@@ -181,5 +168,32 @@ public class OrderSteps extends BaseApiSteps {
         String error = response.jsonPath().getString("error");
         assertTrue(error !=null && error.contains("Not enough diamond balance"),
                 "Ожидалась ошибка о недостатке средств, получено: " + error);
+    }
+
+    @Step("POST /user/orders/store-feedback-unsubscribe/{orderNumber} - сохранение отзыва")
+    public Response storeFeedbackUnsubscribe(String authToken, String orderNumber, String message, int rating) {
+        Map<String, String> fields = new HashMap<>();
+        fields.put("message", message);
+        fields.put("rating", String.valueOf(rating));
+
+        Response response = orderApi.storeFeedBackUnsubscribe(authToken, orderNumber, fields);
+        AllureAttachments.attachJson("Feedback Unsubscribe Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация успешного ответа сохранения отзыва")
+    public void validateStoreFeedbackSuccess(Response response) {
+        assertEquals(200, response.getStatusCode(),
+                "Ожидался статус 200, но получен: " + response.getStatusCode());
+        assertContentTypeJson(response);
+        assertJsonFieldEquals(response, "message", "Feedback stored successfully");
+        assertJsonFieldExists(response, "order_id");
+    }
+
+    @Step("Валидация ошибки 'Order not found'")
+    public void validateOrderNotFound(Response response) {
+        assertEquals(400, response.getStatusCode(),
+                "Ожидался статус 400, но получен: " + response.getStatusCode());
+        assertJsonFieldEquals(response, "error.message", "Order not found");
     }
 }

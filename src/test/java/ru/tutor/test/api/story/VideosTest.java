@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.VideoSteps;
 
 import static io.qameta.allure.Allure.step;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VideosTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final VideoSteps videoSteps = new VideoSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -49,7 +49,7 @@ public class VideosTest {
                 videoSteps.getVideos(token)
         );
         step("Валидация ответа", () ->
-                videoSteps.validateVideosResponse(response)
+                videoSteps.validateVideosListResponse(response)
         );
     }
 
@@ -83,7 +83,6 @@ public class VideosTest {
         Response response = step("GET /user/videos", () ->
                 videoSteps.getVideos(token)
         );
-        videoSteps.validateVideosResponse(response);
 
         String videoId = step("Извлечение id первого видео", () ->
                 videoSteps.extractFirstVideoId(response)
@@ -93,7 +92,7 @@ public class VideosTest {
                 videoSteps.getVideosDetails(token, videoId)
         );
         step("Валидация ответа", () ->
-                videoSteps.validateVideosResponse(detailsResponse)
+                videoSteps.validateVideosDetailsResponse(detailsResponse)
         );
     }
 
@@ -115,12 +114,12 @@ public class VideosTest {
     @DisplayName("GET /user/videos/watched/last - последний просмотр")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
-    void getWathedLastSuccess() {
+    void getWatchedLastSuccess() {
         Response response = step ("GET /user/videos/watched/last", () ->
                 videoSteps.getWatchedLast(token)
         );
         step("Валидация ответа", () ->
-                videoSteps.validateVideosResponse(response));
+                videoSteps.validateVideosWatchedLastResponse(response));
     }
 
     @Test

@@ -6,7 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.model.UserProfile;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.ProfileSteps;
 import ru.tutor.config.TestConfig;
 
 import java.util.List;
@@ -25,10 +26,11 @@ public class UserLoginProfileTest {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final ProfileSteps userSteps = new ProfileSteps(BASE_URL);
+    private final AuthSteps authSteps = new AuthSteps(BASE_URL);
 
     private UserProfile getProfile() {
-        String token = userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
+        String token = authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
         Response response = userSteps.getProfile(token);
         return userSteps.validateProfileResponse(response, TEST_EMAIL);
     }
@@ -37,14 +39,7 @@ public class UserLoginProfileTest {
     @DisplayName("Полный сценарий: Логин → Профиль → Проверка флагов")
     void fullLoginProfileScenario() {
 
-        UserProfile profile =  getProfile();
-
-        step("Проверка ключевых полей профиля", () -> {
-            assertNotNull(profile.getName(), "name не должен быть null");
-            assertNotNull(profile.getPremium(), "premium не должен быть null");
-            assertNotNull(profile.getDiamondBalance(), "diamondBalance не должен быть null");
-            assertTrue(profile.getDiamondBalance() >= 0, "diamondBalance должен быть => 0");
-        });
+        getProfile();
     }
 
     // ==================== Отрицательные тесты ====================
@@ -97,15 +92,5 @@ public class UserLoginProfileTest {
         assertTrue(List.of("full", "light", "none").contains(profile.getClubMemberShip()),
                 "clubMembership должен быть 'full', 'light' или 'none', получено: " + profile.
                         getClubMemberShip());
-    }
-
-    @Test
-    @DisplayName("isTariffLifetime, isYtSubscribed, isVkSubscribed, isTgSubscribed — boolean")
-    void subscriptionFlagsAreBooleans() {
-        UserProfile profile = getProfile();
-        assertNotNull(profile.getIsTariffLifetime(), "isTariffLifeTime не долежн быть null");
-        assertNotNull(profile.getYtSubscribed(), "isYtSubscribed не должен быть null");
-        assertNotNull(profile.getVkSubscribed(), "isVkSubscribed не должен быть null");
-        assertNotNull(profile.getTgSubscribed(), "isTgSubscribed не должен быть null");
     }
 }

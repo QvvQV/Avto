@@ -7,8 +7,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.CoursesSteps;
-import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CoursesTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final CoursesSteps coursesSteps = new CoursesSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -42,7 +42,7 @@ public class CoursesTest {
 
     @Test
     @Order(1)
-    @DisplayName("GET /user/couses/{productId} - информаия о курсе")
+    @DisplayName("GET /user/courses/{productId} - информаия о курсе")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
     void getCoursesByIdSuccess() {
@@ -50,7 +50,7 @@ public class CoursesTest {
                 coursesSteps.getAllProducts(token)
         );
         step("Валидация ответа продуктов", () ->
-                coursesSteps.validateCourses(allProducts)
+                coursesSteps.validateProductsResponse(allProducts)
         );
 
         int productId = step("Извлечение случайного productId", () ->
@@ -82,7 +82,7 @@ public class CoursesTest {
                 coursesSteps.getCourseReviews(token, productId)
         );
         step("Валидация ответа отзывов", () ->
-                coursesSteps.validateCourses(reviewsResponse)
+                coursesSteps.validateReviewsResponse(reviewsResponse)
         );
     }
 
@@ -103,7 +103,7 @@ public class CoursesTest {
                 coursesSteps.getCourseRecommendations(token, productId)
         );
         step("Валидация ответа рекомендаций", () ->
-                coursesSteps.validateCourses(recResponse)
+                coursesSteps.validateRecommendationsResponse(recResponse)
         );
     }
 
@@ -153,7 +153,7 @@ public class CoursesTest {
     @Tag("negative")
     void getCoursesByIdWithInvalidToken() {
         Response response = step ("GET /user/courses/666", () ->
-                coursesSteps.getCourseById("invalid_tpken", 666)
+                coursesSteps.getCourseById("invalid_token", 666)
         );
         step("Проверка статуса 401", ()->
                 assertEquals(401, response.getStatusCode()));

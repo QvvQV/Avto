@@ -6,6 +6,9 @@ import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
 import ru.tutor.model.RefundTicketRequest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Ручка для отписки до Лайта. Ручка для тарифа Подарок
  */
@@ -73,5 +76,16 @@ public class UserOrderApi extends BaseApi {
     @Step("POST /user/orders/spend-cashback - списание кэшбека")
     public Response spendCashback(String authToken) {
         return postWithToken(ApiEndpoints.ORDERS_SPEND_CASHBACK, authToken, "[]");
+    }
+
+    // Отзыв
+
+    @Step("POST /user/orders/store-feedback-unsubscribe/{orderNumber} - сохранение отзыва")
+    public Response storeFeedBackUnsubscribe(String authToken, String orderNumber, Map<String, String> fields) {
+        return postFormData(
+                String.format(ApiEndpoints.ORDERS_STORE_FEEDBACK_UNSUBSCRIBE, orderNumber),
+                authToken,
+                fields
+        );
     }
 }

@@ -7,9 +7,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.ProductsResponse;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.ProductsSteps;
-import ru.tutor.steps.UserSteps;
-
 
 import java.util.*;
 
@@ -25,7 +24,7 @@ public class ProductsProfileTest {
 
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final ProductsSteps productsSteps = new ProductsSteps(BASE_URL);
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -67,21 +66,21 @@ public class ProductsProfileTest {
                 productsSteps.getProductModuleById(token, savedProductValue, MODULE_NUMBER));
 
         step("Валидация модуля продукта", () ->
-                assertEquals(200, response2.getStatusCode()));
+                productsSteps.validateProductModuleResponse(response2));
 
         // Отметка просмотра модуля
         Response response3 = step("Отметка модулю отсмотренного времени", () ->
                 productsSteps.markModuleWatched(token, savedOrderNumber, MODULE_NUMBER, TIMELINE));
 
         step("Валидация отметки тайминга продукта", () ->
-                assertEquals(200, response3.getStatusCode()));
+                productsSteps.validateUniversity(response3));
 
         // Отметка о завершении модуля
         Response response4 = step("Отметка модуля как завершенного", () ->
                 productsSteps.completeModule(token, savedOrderNumber, MODULE_NUMBER));
 
         step("Валидация отметка о завершении", () ->
-                assertEquals(200, response4.getStatusCode()));
+                productsSteps.validateUniversity(response4));
 
         Response response5 = step("Получение списка достижений продукта", () ->
                 productsSteps.getAchievementsProductsId(token, savedOrderNumber));
@@ -102,7 +101,8 @@ public class ProductsProfileTest {
     void getAllProductsSuccess() {
         Response response = productsSteps.getAllProducts(token);
         step("Валидация ответа", () -> {
-            productsSteps.validateProductDetailsResponse(response);
+            List<ProductsResponse> products = productsSteps.validateProductsResponse(response);
+            productsSteps.validateProductsStructure(products);
             assertNotNull(response.getBody().asString());
             assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
@@ -115,7 +115,7 @@ public class ProductsProfileTest {
     void getPremiersProducts() {
         Response response = productsSteps.getPremiersProducts(token);
         step("Валидация ответа", () -> {
-            productsSteps.validateProductDetailsResponse(response);
+            productsSteps.validatePremiersResponse(response);
             assertNotNull(response.getBody().asString());
             assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
@@ -128,7 +128,7 @@ public class ProductsProfileTest {
     void getProductsTop10() {
         Response response = productsSteps.getProductTop10(token);
         step("Валидация ответа", () -> {
-            productsSteps.validateProductDetailsResponse(response);
+            productsSteps.validateTop10Response(response);
             assertNotNull(response.getBody().asString());
             assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
@@ -141,7 +141,7 @@ public class ProductsProfileTest {
     void getProductWatchingNow() {
         Response response = productsSteps.getProductWatchingNow(token);
         step("Валидация ответа", () -> {
-            productsSteps.validateProductDetailsResponse(response);
+            productsSteps.validateWatchingNowResponse(response);
             assertNotNull(response.getBody().asString());
             assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
@@ -154,7 +154,7 @@ public class ProductsProfileTest {
     void getFavoriteProducts() {
         Response response = productsSteps.favoriteProduct(token);
         step("Валидация ответа", () ->
-                productsSteps.validateProductDetailsResponse(response));
+                productsSteps.validateFavoriteProductsResponse(response));
     }
 
     @Test
@@ -189,7 +189,7 @@ public class ProductsProfileTest {
     void getCategories() {
         Response response = productsSteps.getCategories(token);
         step("Валидация ответа", () -> {
-            productsSteps.validateProductDetailsResponse(response);
+            productsSteps.validateCategoriesResponse(response);
             assertNotNull(response.getBody().asString());
             assertFalse(response.getBody().asString().isEmpty(), "Тело запроса не должно быть пустым");
         });
@@ -454,7 +454,7 @@ public class ProductsProfileTest {
                 productsSteps.getAttachedFiles(token, savedOrderNumber)
         );
         step("Валидация ответа", () -> {
-            productsSteps.validateProductDetailsResponse(response);
+            productsSteps.validateAttachedFilesResponse(response);
             assertNotNull(response.getBody().asString());
         });
     }

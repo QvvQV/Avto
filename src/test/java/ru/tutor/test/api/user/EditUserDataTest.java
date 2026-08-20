@@ -8,7 +8,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.UserEditDataRequest;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AccountSteps;
+import ru.tutor.steps.AuthSteps;
 
 import java.util.Locale;
 
@@ -22,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("Тесты изменения данных пользователя")
 public class EditUserDataTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AccountSteps userSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
     private static final Faker faker = new Faker(Locale.ENGLISH);
@@ -38,7 +40,7 @@ public class EditUserDataTest {
     @BeforeEach
     void setUpAuth() {
         token = step("Логин пользователя", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
     }
 
     private UserEditDataRequest validRequest() {

@@ -5,6 +5,8 @@ import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.ApiEndpoints;
 
+import java.util.List;
+
 public class StoriesApi extends BaseApi {
 
     public StoriesApi(String baseUrl) {
@@ -100,4 +102,24 @@ public class StoriesApi extends BaseApi {
         return getWithToken(ApiEndpoints.VIDEOS_WATCHED_LAST,  authToken);
     }
 
+    /**
+     * POST /user/stories/view - фиксация просмотра сторис
+     */
+    public Response markStoriesViewed(String authToken, List<String> ulids) {
+        return postWithToken(ApiEndpoints.USER_STORIES_VIEW, authToken, ulids);
+    }
+
+    /**
+     * POST /user/stories/screen - фиксация показа экрана сторис
+     */
+    public Response storyScreenPost(String authToken, List<String> payloads) {
+        return postWithToken(ApiEndpoints.USER_STORIES_SCREEN_POST, authToken, payloads);
+    }
+
+    /**
+     * POST /user/tuts/{slug}/view - фиксация просмотра тутса
+     */
+    public Response markTutsViewed(String authToken, String slug) {
+        return postWithToken(String.format(ApiEndpoints.USER_TUTS_VIEW, slug), authToken, "");
+    }
 }

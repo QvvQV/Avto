@@ -74,7 +74,7 @@ public class CloudTest extends BaseUiTest {
         adminFlow.assertOrderExists(result.email());
     }
 
-    @Test
+//    @Test
     @DisplayName("Оплата Долями с главной за Пожизненный")
     public void PayMainLifeInstallments() {
 

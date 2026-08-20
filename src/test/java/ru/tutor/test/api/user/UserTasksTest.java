@@ -6,7 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.TasksSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTasksTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final TasksSteps userSteps = new TasksSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
@@ -35,7 +37,7 @@ public class UserTasksTest {
     void setUpAuth() {
         // Логин перед каждым тестом
         token = step("Логин пользователя", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
     }
 

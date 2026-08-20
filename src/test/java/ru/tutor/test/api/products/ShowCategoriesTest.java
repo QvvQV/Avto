@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.ProductsSteps;
-import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ShowCategoriesTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final ProductsSteps productsSteps = new ProductsSteps(BASE_URL);
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -43,20 +43,6 @@ public class ShowCategoriesTest {
 
     @Test
     @Order(1)
-    @DisplayName("GET /user/show-categories - успешное получение списка")
-    @Story("Основной сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    void getShowCategoriesSuccess() {
-        Response response = step("GET /user/show-categories", () ->
-                productsSteps.getShowCategories(token));
-
-        step("Валидация", () ->
-                productsSteps.validateMiniCoursesResponse(response));
-    }
-
-    @Test
-    @Order(2)
     @DisplayName("GET /user/show-categories - валидация элементов списка")
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
@@ -70,7 +56,7 @@ public class ShowCategoriesTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("GET /user/show-categories - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -84,7 +70,7 @@ public class ShowCategoriesTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     @DisplayName("GET /user/show-categories - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -98,7 +84,7 @@ public class ShowCategoriesTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @DisplayName("GET /user/shows - успешное получение списка всех шоу, валидация")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -112,7 +98,7 @@ public class ShowCategoriesTest {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     @DisplayName("GET /user/shows - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -126,7 +112,7 @@ public class ShowCategoriesTest {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     @DisplayName("GET /user/shows - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -140,7 +126,7 @@ public class ShowCategoriesTest {
     }
 
     @Test
-    @Order(8)
+    @Order(7)
     @DisplayName("GET /user/shows - валидация пагинации")
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
@@ -149,13 +135,8 @@ public class ShowCategoriesTest {
         Response response = step("GET /user/shows", () ->
                 productsSteps.getShows(token));
 
-        step("Валдиация ответа", () ->
-                productsSteps.validateMiniCoursesResponse(response));
-
         step("Проверка пагинации", () ->
 
                 productsSteps.validateMiniCoursesPagination(response));
-
     }
-
 }

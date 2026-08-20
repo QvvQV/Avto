@@ -1,10 +1,15 @@
 package ru.tutor.base;
 
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import ru.tutor.utils.AllureAttachments;
+
+import org.junit.jupiter.api.function.Executable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -155,5 +160,60 @@ public abstract class BaseApiSteps {
     protected void attachResponseToAllure(Response response, String description) {
         AllureAttachments.attachJson(description, response.getBody().asString());
         AllureAttachments.attachJson(description + " Headers", response.getHeaders().toString());
+    }
+
+    // ==================== ХЕЛПЕРЫ ВАЛИДАЦИИ ПОЛЕЙ (МАР) ====================
+    protected Executable notNull(Map<String, Object> item, String field){
+        return () -> assertNotNull(item.get(field), field + " не null");
+    }
+
+    protected Executable nonEmptyString(Map<String, Object> item, String field){
+        return () -> {
+            assertNotNull(item.get(field), field + " не null");
+            assertFalse(((String) item.get(field)).trim().isEmpty(), field + " не пустой");
+        };
+    }
+
+    protected Executable positiveInt(Map<String, Object> item, String field){
+        return () -> assertTrue(((Number) item.get(field)).intValue() > 0, field + " > 0");
+    }
+
+    protected Executable nonNegative(Map<String, Object> item, String field){
+        return () -> assertTrue(((Number) item.get(field)).doubleValue() >= 0, field + " >= 0");
+    }
+
+    protected Executable containsKey(Map<String, Object> item, String field){
+        return () -> assertTrue(item.containsKey(field), field + " должен быть в ответе");
+    }
+
+    protected Executable url(Object value, String label){
+        return () -> assertTrue(value instanceof String && ((String) value).startsWith("http"),
+                label + " должен быть URL");
+    }
+
+    protected Executable optionalUrl(Object value, String label){
+        return () -> assertOptionalUrl(value, label);
+    }
+
+    protected Executable optionalField(Map<String, Object> item, String field, Class<?> type){
+        return () -> {
+            if (item.get(field) != null) {
+                assertTrue(type.isInstance(item.get(field)), field + " должен быть " + type.getSimpleName());
+            }
+        };
+    }
+
+    protected void assertOptionalUrl(Object value, String label){
+        if (value != null) {
+            assertTrue(value instanceof String && ((String) value).startsWith("http"),
+                    label + " должен быть URL");
+        }
+    }
+
+    protected List<Map<String, Object>> assertJsonArray(Response response, String what) {
+        List<Map<String, Object>> items = response.jsonPath().getList("$");
+        assertNotNull(items, "Тело должно быть JSON-массивом");
+        assertFalse(items.isEmpty(), what + " не должен быть пустым");
+        return items;
     }
 }

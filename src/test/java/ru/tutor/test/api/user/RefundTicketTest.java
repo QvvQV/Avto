@@ -8,8 +8,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.RefundTicketRequest;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
-import ru.tutor.steps.UserSteps;
 
 import java.util.Locale;
 
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RefundTicketTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -86,7 +86,7 @@ public class RefundTicketTest {
                 createRefundRequest()
         );
 
-        Response response = step("POST / user/refund-tickets/create", () ->
+        Response response = step("POST /user/refund-tickets/create", () ->
                 orderSteps.createRefundTicket(token, request)
         );
         step("Валидация ответа", () ->

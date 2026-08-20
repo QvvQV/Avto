@@ -5,10 +5,8 @@ import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.config.TestConfig;
-
-import java.util.List;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +22,7 @@ public class UserCheckTest {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private static String token;
 
     @BeforeEach

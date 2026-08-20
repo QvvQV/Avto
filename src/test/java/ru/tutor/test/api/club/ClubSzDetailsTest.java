@@ -9,7 +9,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.flow.club.ClubDetailsFlow;
 import ru.tutor.flow.club.TestDataFlow;
 import ru.tutor.model.UserProfile;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AuthSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +28,7 @@ public class ClubSzDetailsTest {
     private static final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     // ==================== ПОЛЯ ====================
-    private UserSteps userSteps;
+    private AuthSteps authSteps = new AuthSteps(BASE_URL);
     private ClubDetailsFlow clubFlow;
     private TestDataFlow testDataFlow;
     private UserProfile profile;
@@ -37,13 +37,12 @@ public class ClubSzDetailsTest {
 
     @BeforeEach
     public void setup() {
-        userSteps = new UserSteps(BASE_URL);
 
         profile = step("🔐 Авторизация пользователя", () ->
-                userSteps.loginAndGetUserProfile(TEST_EMAIL, TEST_PASSWORD)
+                authSteps.loginAndGetUserProfile(TEST_EMAIL, TEST_PASSWORD)
         );
 
-        clubFlow = new ClubDetailsFlow(userSteps.getCurrentAuthToken(), BASE_URL);
+        clubFlow = new ClubDetailsFlow(authSteps.getCurrentAuthToken(), BASE_URL);
         testDataFlow = new TestDataFlow(profile.getId(), profile.getEmail());
 
         logUserInfo();

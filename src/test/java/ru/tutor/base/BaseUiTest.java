@@ -54,7 +54,7 @@ public abstract class BaseUiTest {
                 "--no-sandbox",
                 "--disable-gpu",
                 "--log-level=3");
-//        options.addArguments("--headless=new");
+        options.addArguments("--headless=new");
         applyCommonConfig(options);
     }
 

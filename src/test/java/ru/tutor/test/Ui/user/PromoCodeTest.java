@@ -13,7 +13,7 @@ import ru.tutor.constants.PromoCodeTestData;
 import ru.tutor.flow.ReactivatePremiumFlow;
 import ru.tutor.model.ApplyPromoCodeRequest;
 import ru.tutor.model.ApplyPromoCodeResponse;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.PromoCodeSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,7 +22,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private ReactivatePremiumFlow reactivateFlow;
 
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final PromoCodeSteps userSteps = new PromoCodeSteps(BASE_URL);
 
     private static final String VALID_PROMO_CODE = "FIFA2026";
     private static final String INACTIVE_PROMO_CODE = "333CDRS444GKETSHDL";

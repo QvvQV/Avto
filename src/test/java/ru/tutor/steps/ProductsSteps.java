@@ -59,6 +59,196 @@ public class ProductsSteps extends BaseApiSteps {
         return Arrays.asList(response.as(ProductsResponse[].class));
     }
 
+    private void validateAuthors(List<Map<String, Object>> authors, boolean withShowOtherCoursesButton) {
+        assertNotNull(authors, "authors не null");
+        for (int i = 0; i < authors.size(); i++) {
+            Map<String, Object> a = authors.get(i);
+            assertAll("Автор [" + i + "]",
+                    positiveInt(a, "id"),
+                    notNull(a, "name"),
+                    notNull(a, "profession"),
+                    url(a.get("photoUrl"), "photoUrl"),
+                    () -> {if (withShowOtherCoursesButton) notNull(a, "showOtherCoursesButton");
+            });
+        }
+    }
+
+    private void validateReviews(List<Map<String, Object>> reviews, boolean withPhotoName) {
+        assertNotNull(reviews, "reviews не null");
+        for (int i = 0; i < reviews.size(); i++) {
+            Map<String, Object> r = reviews.get(i);
+            assertAll("Отзыв [" + i + "]",
+                    positiveInt(r, "id"),
+                    notNull(r, "reviewerName"),
+                    notNull(r, "reviewerProfession"),
+                    url(r.get("reviewerPhotoUrl"), "reviewerPhotoUrl"),
+                    notNull(r, "text"),
+                    () -> {if (withPhotoName) url(r.get("reviewerPhotoName"), "reviewerPhotoName");
+            });
+        }
+    }
+
+    private void validateModulesSummary(Map<String, Object> modules, String label) {
+        assertNotNull(modules, label + " не null");
+        assertTrue(((Number) modules.get("total")).intValue() > 0, label + ".total > 0");
+        assertTrue(modules.containsKey("progress"), label + ".progress должен быть в ответе");
+    }
+
+    private void validateCategoryItem(Map<String, Object> cat, int index) {
+        assertAll("Категория [" + index + "]",
+                positiveInt(cat, "id"),
+                notNull(cat, "name"),
+                notNull(cat, "slug"),
+                notNull(cat, "is18Plus"));
+    }
+
+    @Step("Валидация ответа премьер /user/products/premiers")
+    public void validatePremiersResponse(Response response) {
+        assertBasicResponse(response);
+        List<Map<String, Object>> items = assertJsonArray(response, "Список премьер");
+
+        for (int i =0; i < items.size(); i++) {
+            Map<String, Object> p = items.get(i);
+            assertAll("Премьера [" + i + "]",
+                    nonEmptyString(p, "name"),
+                    notNull(p, "slug"),
+                    positiveInt(p, "productId"),
+                    notNull(p, "description"),
+                    notNull(p, "shortDescription"),
+                    optionalUrl(p.get("cover"), "cover"),
+                    optionalUrl(p.get("coverMobile"), "coverMobile"),
+                    optionalUrl(p.get("background"), "background"),
+                    optionalUrl(p.get("backgroundMini"), "backgroundMini"),
+                    notNull(p, "isPremium"),
+                    notNull(p, "isLite"),
+                    notNull(p, "notifyMe"),
+                    nonNegative(p, "rating"),
+                    nonNegative(p, "price"),
+                    nonNegative(p, "oldPrice"),
+                    notNull(p, "createdAt"),
+                    optionalField(p, "previewKinescopeId", String.class),
+                    nonNegative(p, "courseNovelty"),
+                    notNull(p, "publicAt"),
+                    notNull(p, "isCourseOfWeek"),
+                    notNull(p, "isRecommendedHidden"),
+                    notNull(p, "isPopular"),
+                    containsKey(p, "modal"),
+                    containsKey(p, "modalMobile"),
+                    containsKey(p, "link")
+            );
+            validateModulesSummary((Map<String, Object>) p.get("modules"), "modules");
+
+            assertNotNull(p.get("skills"), "skills не null");
+            assertFalse(((List<?>) p.get("skills")).isEmpty(), "skills не должен быть пустым");
+
+            List<Map<String, Object>> categories = (List<Map<String, Object>>) p.get("categories");
+            assertNotNull(categories, "categories не null");
+            for (int c = 0; c < categories.size(); c++) validateCategoryItem(categories.get(c), c);
+
+            validateAuthors((List<Map<String, Object>>) p.get("authors"), true);
+
+            assertNotNull(p.get("reviews"), "reviews не null");
+            assertNotNull(p.get("previews"), "previews не null");
+        }
+
+    }
+
+    @Step("Валидация ответа Топ-10 /user/product-positions/top10")
+    public void validateTop10Response(Response response) {
+        assertBasicResponse(response);
+        List<Map<String, Object>> items = assertJsonArray(response, "Топ-10");
+
+        for (int i =0; i < items.size(); i++) {
+            Map<String, Object> entry = items.get(i);
+            assertTrue(((Number) entry.get("position")).intValue() >= 1, "position должен быть >= 1");
+
+            Map<String, Object> product = (Map<String, Object>) entry.get("product");
+            assertNotNull(product, "product не null");
+            assertAll("Продукт [" + i + "]",
+                    nonEmptyString(product, "name"),
+                    notNull(product, "shortDescription"),
+                    notNull(product, "description"),
+                    notNull(product, "top10description"),
+                    positiveInt(product, "productId"),
+                    nonNegative(product, "rating"),
+                    nonNegative(product, "price"),
+                    nonNegative(product, "renewalProductPrice"),
+                    notNull(product, "subscribed"),
+                    notNull(product, "isPremium"),
+                    notNull(product, "isLite"),
+                    notNull(product, "isActive"),
+                    notNull(product, "isAvailable"),
+                    optionalUrl(product.get("background"), "background"),
+                    optionalUrl(product.get("backgroundMini"), "backgroundMini"),
+                    optionalUrl(product.get("coverMobile"), "coverMobile"),
+                    optionalField(product, "previewKinescopeId", String.class),
+                    optionalField(product, "isVideoPreviewEnabled", Boolean.class),
+                    notNull(product, "createdAt")
+            );
+            validateModulesSummary((Map<String, Object>) product.get("modules"), "product.modules");
+            validateReviews((List<Map<String, Object>>) product.get("reviewers"), false);
+            validateAuthors((List<Map<String, Object>>) product.get("authors"), false);
+        }
+
+    }
+
+    @Step("Валидация ответа «Сейчас смотрят» /user/products/watching/now")
+    public void validateWatchingNowResponse(Response response) {
+        assertBasicResponse(response);
+        List<Map<String, Object>> items = assertJsonArray(response, "Список «Сейчас смотрят»");
+
+        for (int i =0; i < items.size(); i++) {
+            Map<String, Object> item = items.get(i);
+            assertAll("Просмотр [" + i + "]",
+                    nonEmptyString(item, "productTitle"),
+                    positiveInt(item, "productId"),
+                    () -> assertTrue(((Number) item.get("duration")).doubleValue() > 0, "duration > 0")
+            );
+
+            Map<String, Object> poster = (Map<String, Object>) item.get("poster");
+            assertNotNull(poster, "poster не null");
+            assertAll("Poster [" + i + "]",
+                    notNull(poster, "id"),
+                    notNull(poster, "type"),
+                    notNull(poster, "media_id"),
+                    notNull(poster, "status"),
+                    notNull(poster, "active"),
+                    url(poster.get("original"), "original"),
+                    url(poster.get("md"), "md"),
+                    url(poster.get("sm"), "sm"),
+                    url(poster.get("xs"), "xs"),
+                    nonNegative(poster, "from_time"),
+                    nonNegative(poster, "to_time"),
+                    notNull(poster, "download_filename")
+                    );
+        }
+    }
+
+    @Step("Валидация ответа избранных продуктов /user/favorite-products")
+    public void validateFavoriteProductsResponse(Response response) {
+        assertBasicResponse(response);
+        assertNotNull(response.jsonPath().getList("$"), "Тело должно быть JSON-массивом");
+    }
+
+    @Step("Валидация ответа категорий /categories")
+    public void validateCategoriesResponse(Response response) {
+        assertBasicResponse(response);
+        List<Map<String, Object>> items = assertJsonArray(response, "Список категорий");
+
+        for (int i = 0; i < items.size(); i++) {
+            Map<String, Object> c = items.get(i);
+            assertAll("Категория [" + i + "]",
+                    positiveInt(c,"id"),
+                    nonEmptyString(c,"name"),
+                    notNull(c,"slug"),
+                    url(c.get("background"), "background"),
+                    notNull(c,"is18Plus"),
+                    containsKey(c,"icon"),
+                    containsKey(c,"iconMini")
+            );
+        }
+    }
+
     // ==================== МЕТОДЫ ДЛЯ ПОЛУЧЕНИЯ ID ====================
 
     /**
@@ -105,16 +295,68 @@ public class ProductsSteps extends BaseApiSteps {
         return response;
     }
 
-    @Step("Валидация ответа списка вложений")
+    @Step("Валидация ответа вложений /user/products/{orderNumber}/attached-files")
     public void validateAttachedFilesResponse(Response response) {
         assertBasicResponse(response);
         String body = response.getBody().asString();
         assertNotNull(body, "Тело не должно быть null");
+        assertFalse(body.isEmpty(), "Тело не должно быть пустым");
     }
 
     @Step("Валидация ответа с деталями продукта")
     public void validateProductDetailsResponse(Response response) {
         assertBasicResponse(response);
+        Map<String, Object> root = response.jsonPath().getMap("$");
+        assertNotNull(root, "Тело должно быть JSON-объектом");
+
+        assertAll("Детали продукта",
+                nonEmptyString(root,"id"),
+                nonEmptyString(root,"name"),
+                notNull(root,"slug"),
+                nonNegative(root,"rating"),
+                positiveInt(root,"productId"),
+                notNull(root,"shortDescription"),
+                notNull(root,"language"),
+                notNull(root,"firstCheckbox"),
+                notNull(root,"secondCheckbox"),
+                optionalUrl(root.get("background"), "background") ,
+                optionalUrl(root.get("backgroundMini"), "backgroundMini") ,
+                optionalUrl(root.get("cover"), "cover") ,
+                optionalUrl(root.get("coverMobile"), "coverMobile") ,
+                optionalField(root, "isVideoPreviewEnabled", Boolean.class) ,
+                notNull(root,"miniCourse"),
+                notNull(root,"previewKinescopeId"),
+                notNull(root,"reviewsCount"),
+                nonNegative(root,"reviewsCount") ,
+                notNull(root,"isActive"),
+                notNull(root,"contentAvailable"),
+                nonNegative(root,"countFiles") ,
+                () -> assertTrue(((Number) root.get("duration")).intValue() > 0, "duration > 0"),
+                () -> assertTrue(((Number) root.get("activeDays")).intValue() > 0, "activeDays > 0"),
+                nonNegative(root,"updatePrice"),
+                notNull(root,"isAvailable"),
+                notNull(root,"isTariffFreeRegistration")
+                );
+
+        validateAuthors(response.jsonPath().getList("authors"), true);
+        validateReviews(response.jsonPath().getList("reviews"), true);
+
+        Map<String, Object> lastModule = response.jsonPath().getMap("lastModuleShowInfo");
+        if (lastModule != null) {
+            assertTrue(((Number) lastModule.get("module")).intValue() > 0, "lastModule.module > 0");
+            notNull(lastModule, "timeline");
+        }
+
+        List<Map<String, Object>> modules = response.jsonPath().getList("modules");
+        assertNotNull(modules, "modules не должен быть null");
+        for (int i = 0; i < modules.size(); i++) {
+            Map<String, Object> m = modules.get(i);
+            assertAll("Модуль [" + i + "]",
+                    positiveInt(m,"module"),
+                    notNull(m,"isDone"),
+                    containsKey(m,"viewedAt")
+            );
+        }
     }
 
     private void validateAchievementItem(Map<String, Object> item, int index, boolean idNullable) {
@@ -126,16 +368,45 @@ public class ProductsSteps extends BaseApiSteps {
                     assertTrue(((Number) item.get("id")).intValue() > 0, "id > 0");
                 }
         },
-                () -> assertTrue(((Number) item.get("productId")).intValue() > 0, "productId > 0"),
-                () -> assertNotNull(item.get("name"), "name не null"),
-                () -> assertNotNull(item.get("description"), "description не null"),
-                () -> assertTrue(((Number) item.get("score")).intValue() >= 0, "score >= 0"),
-                () -> assertNotNull(item.get("isNew"), "isNew не null"),
-                () -> assertNotNull(item.get("progress"), "progress не null"),
-                () -> assertTrue(((Number) item.get("daysNeeded")).intValue() > 0, "daysNeeded > 0"),
+                positiveInt(item,"productId"),
+                notNull(item,"name"),
+                notNull(item,"description"),
+                nonNegative(item,"score"),
+                notNull(item,"isNew"),
+                notNull(item,"progress"),
+                positiveInt(item,"daysNeeded"),
                 () -> assertTrue(List.of(1, 2, 3, 4).contains(item.get("type"))),
-                () -> assertTrue(((Number) item.get("category")).intValue() > 0, "category > 0")
+                positiveInt(item,"category"),
+                nonNegative(item,"peoplePercent"),
+                url(item.get("pic"),"pic"),
+                url(item.get("picAchievement"),
+                        "picAchievement"),
+                containsKey(item,"dateReceived"),
+                () -> {
+            List<?> progress = (List<?>) item.get("progress");
+            assertNotNull(progress, "progress не null");
+            assertTrue(progress.size() >= 2, "progress содержит минимум 2 элемента");
+            assertTrue(((Number) progress.get(0)).intValue() <= ((Number) progress.get(1)).intValue(),
+                    "progress: текущее значение <= целевого");
+                }
                 );
+    }
+
+    @Step("Валидация ответа модуля продукта /user/products/{productValue}/modules/{n}")
+    public void validateProductModuleResponse(Response response) {
+        assertBasicResponse(response);
+        Map<String, Object> root = response.jsonPath().getMap("$");
+        assertNotNull(root, "Тело должно быть JSON-объектом");
+        assertAll("Модуль продукта",
+        containsKey(root,"videoAds"),
+        notNull(root, "videoAds")
+        );
+    }
+
+    @Step("Валидация ответа отметки тайминга/зевершение модуля")
+    public void validateUniversity(Response response) {
+        assertBasicResponse(response);
+        assertNotNull(response.jsonPath().getMap("$"), "Тело должно быть JSON-объектом");
     }
 
     @Step("Валидация ответа списка достижений")
@@ -151,9 +422,11 @@ public class ProductsSteps extends BaseApiSteps {
 
         Map<String, Object> task = response.jsonPath().getMap("game_task");
         assertNotNull(task, "game_task не должен быть null");
-        assertTrue(task.containsKey("day"), "game_task должен содержать day");
-        assertTrue(task.containsKey("week"), "game_task должен содержать week");
-        assertTrue(task.containsKey("special"), "game_task должен содержать special");
+        assertAll("game_task",
+                containsKey(task, "day"),
+                containsKey(task, "week"),
+                containsKey(task, "special")
+        );
     }
 
     @Step("Валидация ответа списка достижений пользователя")
@@ -230,48 +503,6 @@ public class ProductsSteps extends BaseApiSteps {
         }
     }
 
-    @Step("Фильтрация продуктов по категории")
-    public List<ProductsResponse> filterByCategory(List<ProductsResponse> products, String category) {
-        return products.stream()
-                .filter(product -> category.equals(product.getCategoryAsString()))
-                .collect(Collectors.toList());
-    }
-
-    @Step("Поиск продукта по ID")
-    public ProductsResponse findProductById(List<ProductsResponse> products, String id) {
-        return products.stream()
-                .filter(product -> id.equals(product.getId()))
-                .findFirst()
-                .orElse(null);
-    }
-
-    @Step("Генерация отчёта по продуктам")
-    public void generateProductsReport(List<ProductsResponse> products) {
-        if (products.isEmpty()) {
-            Allure.addAttachment("Отчет", "text/plain", "Список продуктов пуст");
-            return;
-        }
-
-        StringBuilder report = new StringBuilder();
-        report.append("🛍️ ОТЧЕТ ПО ПРОДУКТАМ\n");
-        report.append("==================\n\n");
-
-        long totalProducts = products.size();
-        long availableProducts = products.stream()
-                .filter(p -> Boolean.TRUE.equals(p.getAvailable()))
-                .count();
-
-        report.append("📊 ОБЩАЯ СТАТИСТИКА:\n");
-        report.append(String.format("• Всего продуктов: %d\n", totalProducts));
-        report.append(String.format("• Доступно: %d (%.1f%%)\n",
-                availableProducts, (availableProducts * 100.0) / totalProducts));
-
-        Allure.addAttachment("Product Report", report.toString());
-
-        // Статистика по категориям
-
-    }
-
     @Step("Список избранных продуктов")
     public Response favoriteProduct(String authToken) {
         return this.productsApi.getFavoriteProducts(authToken);
@@ -307,16 +538,6 @@ public class ProductsSteps extends BaseApiSteps {
         return this.productsApi.getCategories(authToken);
     }
 
-    private String getJsonNodeType(tools.jackson.databind.JsonNode node) {
-        if (node.isObject()) return "OBJECT";
-        if (node.isArray()) return "ARRAY";
-        if (node.isTextual()) return "STRING";
-        if (node.isNumber()) return "NUMBER";
-        if (node.isBoolean()) return "BOOLEAN";
-        if (node.isNull()) return "NULL";
-        return "UNKNOWN";
-    }
-
     @Step("Получение первого orderNumber из /user/products")
     public String fetchFirstOrderNumber(String authToken) {
         Response response = getUserProducts(authToken);
@@ -324,18 +545,29 @@ public class ProductsSteps extends BaseApiSteps {
         return getFirstNumericOrderNumber(products);
     }
 
+    @Step("Получение orderNumber премиум-продукта из /user/products")
+    public String fetchPremiumOrderNumber(String authToken) {
+        Response response = getUserProducts(authToken);
+        List<ProductsResponse> products = validateProductsResponse(response);
+
+        ProductsResponse premium = products.stream()
+                .filter(ProductsResponse::isPremiumProduct)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Премиум-продукт не найден в профиле"));
+
+        String orderNumber = premium.getId();
+        Allure.addAttachment("Premium orderNumber", orderNumber);
+        return orderNumber;
+    }
+
     @Step("GET user/mini-courses")
     public Response getMiniCourses(String authToken) {
         return productsApi.getMiniCourses(authToken);
     }
 
-    @Step("Валидация ответа мини-курсов")
-    public void validateMiniCoursesResponse(Response response) {
-        assertBasicResponse(response);
-    }
-
     @Step("Проверка что все элементы - мини-курсы")
     public void validateAllAreMiniCourses(Response response) {
+        assertBasicResponse(response);
         List<Map <String, Object>> items = response.jsonPath().getList("items");
         assertNotNull(items, "Список мини-курсов не должен быть null");
         assertFalse(items.isEmpty(), "Список мини-курсов не должен быть пуст");
@@ -343,18 +575,11 @@ public class ProductsSteps extends BaseApiSteps {
         for (int i = 0; i < items.size(); i++) {
             Map <String, Object> item = items.get(i);
             assertAll("Элемент [" + i + "] «" + item.get("name") + "»",
-                    () -> assertTrue(((Number) item.get("id")).intValue() > 0,
-                            "ID должен быть > 0"),
-                    () -> assertNotNull(item.get("name"),
-                            "Название не должно быть null"),
-                    () -> assertFalse(((String) item.get("name")).trim().isEmpty(),
-                            "Название не должно быть пустым"),
-                    () ->  assertTrue(((Number) item.get("duration")).doubleValue() > 0,
-                            "Длительность должна быть > 0"),
-                    () -> assertNotNull(item.get("kinescopeId"),
-                            "kinescopeId не должен быть null"),
-                    () -> assertNotNull(item.get("createdAt"),
-                            "createdAt не должен быть null")
+                    positiveInt(item,"id"),
+                    nonEmptyString(item,"name"),
+                    positiveInt(item,"duration"),
+                    notNull(item,"kinescopeId"),
+                    notNull(item,"createdAt")
             );
         }
 
@@ -372,30 +597,20 @@ public class ProductsSteps extends BaseApiSteps {
         for (int i = 0; i < items.size(); i++) {
             Map <String, Object> item = items.get(i);
             assertAll("Элемент [" + i + "] «" + item.get("name") + "»",
-                    () -> assertTrue(((Number) item.get("id")).intValue() > 0,
-                            "ID должен быть > 0"),
-                    () -> assertNotNull(item.get("name"),
-                            "Название не должно быть null"),
-                    () -> assertFalse(((String) item.get("name")).trim().isEmpty(),
-                            "Название не должно быть пустым"),
-                    () ->  assertTrue(((Number) item.get("duration")).doubleValue() > 0,
-                            "Длительность должна быть > 0"),
-                    () -> assertNotNull(item.get("kinescopeId"),
-                            "kinescopeId не должен быть null"),
-                    () -> assertNotNull(item.get("createdAt"),
-                            "createdAt не должен быть null"),
-                    () -> assertNotNull(item.get("category"),
-                            "category не должен быть null")
+                    positiveInt(item,"id"),
+                    nonEmptyString(item,"name"),
+                    positiveInt(item,"duration"),
+                    notNull(item,"kinescopeId"),
+                    notNull(item,"createdAt"),
+                    notNull(item,"category")
             );
 
             // Валидация вложенного category
             Map<String, Object> category = (Map<String, Object>) item.get("category");
             if (category != null) {
                 assertAll("category элемента [" + i + "]",
-                        () -> assertTrue(((Number) category.get("id")).intValue() > 0,
-                                "category.id должен быть > 0"),
-                        () -> assertNotNull(category.get("name"),
-                                "category.name не должен быть null")
+                        positiveInt(category,"id"),
+                        notNull(category,"name")
                 );
             }
         }
@@ -403,26 +618,26 @@ public class ProductsSteps extends BaseApiSteps {
 
     @Step("Валидация пагинации мини-курсов")
     public void validateMiniCoursesPagination(Response response) {
-        int count = response.jsonPath().getInt("pagination.count");
-        int total = response.jsonPath().getInt("pagination.total");
-        int perPage = response.jsonPath().getInt("pagination.per_page");
-        int page = response.jsonPath().getInt("pagination.page");
-        int pages = response.jsonPath().getInt("pagination.pages");
+        assertBasicResponse(response);
+        Map<String, Object> pagination = response.jsonPath().getMap("pagination");
+        assertNotNull(pagination, "pagination не должен быть null");
 
         assertAll("Проверка пагинации",
 
-                () -> assertTrue(count > 0, "count должен быть > 0"),
-                () -> assertTrue(total > 0, "total должен быть > 0"),
-                () -> assertTrue(perPage > 0, "per_page должен быть > 0"),
-                () -> assertTrue(page >= 1, "page должен быть >= 1"),
-                () -> assertTrue(pages >= 1, "pages должен быть >= 1"),
-                () -> assertTrue(count <= perPage, "count не должен превышать per_page")
+                positiveInt(pagination, "count"),
+                positiveInt(pagination, "total"),
+                positiveInt(pagination, "per_page"),
+                positiveInt(pagination, "page"),
+                positiveInt(pagination, "pages"),
+                () -> assertTrue(((Number) pagination.get("count")).intValue()
+                                <= ((Number) pagination.get("per_page")).intValue(),
+                        "count не должен превышать per_page")
         );
 
         Allure.addAttachment("Пагинация", "text/plain",
                 String.format("count: %d, total: %d, per_page: %d, page: %d, pages: %d",
-                        count, total,
-                        perPage, page, pages));
+                        pagination.get("count"), pagination.get("total"), pagination.get("per_page"),
+                        pagination.get("page"), pagination.get("pages")));
     }
 
     @Step("GET user/mini-workouts")
@@ -442,23 +657,17 @@ public class ProductsSteps extends BaseApiSteps {
 
     @Step("Проверка обязательных полей шоу-категорий")
     public void validateShowCategoriesItems(Response response) {
-        List<Map <String, Object>> items = response.jsonPath().getList("$");
-        assertNotNull(items, "Список шоу-категорий не должен быть null");
-        assertFalse(items.isEmpty(), "Список шоу-категорий не должен быть пуст");
+        assertBasicResponse(response);
+        List<Map <String, Object>> items = assertJsonArray(response, "Список шоу-категорий");
 
         for (int i = 0; i < items.size(); i++) {
             Map <String, Object> item = items.get(i);
             assertAll("Элемент [" + i + "] «" + item.get("name") + "»",
-                    () -> assertTrue(((Number) item.get("id")).intValue() > 0,
-                            "ID должен быть > 0"),
-                    () -> assertNotNull(item.get("name"),
-                            "Название не должно быть null"),
-                    () -> assertFalse(((String) item.get("name")).trim().isEmpty(),
-                            "Название не должно быть пустым"),
-                    () -> assertNotNull(item.get("icon"),
-                            "Иконка не должна быть null"),
-                    () -> assertTrue(((String) item.get("icon")).startsWith("http"),
-                            "Иконка должна быть URL")
+                    positiveInt(item,"id"),
+                    nonEmptyString(item,"name"),
+                    url(item.get("icon"),
+                            "Иконка"),
+                    containsKey(item, "cover")
                     );
         }
     }

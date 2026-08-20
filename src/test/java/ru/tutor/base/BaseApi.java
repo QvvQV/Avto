@@ -11,6 +11,8 @@ import io.restassured.specification.RequestSpecification;
 import ru.tutor.constants.ApiEndpoints;
 import ru.tutor.model.RegistrationRequest;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 /**
@@ -88,10 +90,16 @@ public abstract class BaseApi {
 
     // Дополнительные методы для разных типов контента
     @Step("POST запрос с form-data к {endpoint}")
-    protected Response postFormData(String endpoint, String body) {
-        return given(baseSpec)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .body(body)
+    protected Response postFormData(String endpoint, String token, Map<String, String> fields) {
+        RequestSpecification spec = given(baseSpec)
+                .header("Authorization", "Bearer " + token)
+                .contentType("multipart/form-data");
+
+        for (Map.Entry<String, String> entry : fields.entrySet()) {
+            spec = spec.multiPart(entry.getKey(), entry.getValue());
+        }
+
+        return spec
                 .log().all()
                 .when()
                 .post(endpoint)

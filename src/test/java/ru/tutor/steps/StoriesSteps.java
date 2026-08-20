@@ -3,6 +3,7 @@ package ru.tutor.steps;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import ru.tutor.api.StoriesApi;
 import ru.tutor.base.BaseApiSteps;
@@ -72,15 +73,9 @@ public class StoriesSteps extends BaseApiSteps {
         return ulid;
     }
 
-    @Step("Валидация ответа списка историй")
-    public void validateStoriesResponse(Response response) {
-        assertBasicResponse(response);
-    }
-
     @Step("Валидация ответа категорий тутсов")
     public void validateTutsCategoriesResponse(Response response) {
         assertBasicResponse(response);
-
         List<Map<String, Object>> categories = response.jsonPath().getList("$");
         assertNotNull(categories, "Список категорий не должен быть null");
         assertFalse(categories.isEmpty(), "Список категорий не должен быть пуст");
@@ -88,11 +83,11 @@ public class StoriesSteps extends BaseApiSteps {
         for (int i = 0; i < categories.size(); i++) {
             Map<String, Object> category = categories.get(i);
             assertAll("Категория [" + i + "]",
-                    () -> assertTrue(((Number) category.get("id")).intValue() > 0),
-                    () -> assertNotNull(category.get("name")),
-                    () -> assertNotNull(category.get("slug")),
-                    () -> assertTrue(((Number) category.get("totalCount")).intValue() >= 0),
-                    () -> assertTrue(((Number) category.get("unwatchedCount")).intValue() >= 0)
+                    positiveInt(category,"id"),
+                    notNull(category,"name"),
+                    notNull(category,"slug"),
+                    nonNegative(category,"totalCount"),
+                    nonNegative(category,"unwatchedCount")
             );
         }
     }
@@ -109,8 +104,8 @@ public class StoriesSteps extends BaseApiSteps {
         for (int i = 0; i < items.size(); i++) {
             Map<String, Object> item = items.get(i);
             assertAll("Элемент ленты [" +i + "]",
-                    () -> assertNotNull(item.get("slug"), "slug не null"),
-                    () -> assertNotNull(item.get("watched"), "watched не null")
+                    notNull(item,"slug"),
+                    notNull(item,"watched")
             );
         }
     }
@@ -126,11 +121,11 @@ public class StoriesSteps extends BaseApiSteps {
         for (int i = 0; i < stories.size(); i++) {
             Map<String, Object> story = stories.get(i);
             assertAll("Сторис [" + i + "]",
-                    () -> assertNotNull(story.get("ulid")),
-                    () -> assertNotNull(story.get("title")),
-                    () -> assertNotNull(story.get("imageUri")),
-                    () -> assertTrue(story.containsKey("imageWideUri")),
-                    () -> assertTrue(story.containsKey("link"))
+                    notNull(story,"ulid"),
+                    notNull(story,"title"),
+                    notNull(story,"imageUri"),
+                    containsKey(story,"imageWideUri"),
+                    containsKey(story,"link")
             );
         }
     }
@@ -143,11 +138,11 @@ public class StoriesSteps extends BaseApiSteps {
         assertNotNull(story, "Список сторис не должен быть null");
 
             assertAll("Детали истории",
-                    () -> assertNotNull(story.get("ulid")),
-                    () -> assertNotNull(story.get("title")),
-                    () -> assertNotNull(story.get("imageUri")),
-                    () -> assertTrue(story.containsKey("imageWideUri")),
-                    () -> assertTrue(story.containsKey("link"))
+                    notNull(story,"ulid"),
+                    notNull(story,"title"),
+                    notNull(story,"imageUri"),
+                    containsKey(story,"imageWideUri"),
+                    containsKey(story,"link")
             );
 
         // Проверяем слайды
@@ -158,12 +153,12 @@ public class StoriesSteps extends BaseApiSteps {
         for (int i = 0; i < slides.size(); i++) {
             Map<String, Object> slide = slides.get(i);
             assertAll("Слайд [" + i + "]",
-                    () -> assertNotNull(slide.get("ulid")),
-                    () -> assertNotNull(slide.get("imageUri")),
-                    () -> assertTrue(slide.containsKey("imageWideUri")),
-                    () -> assertTrue(slide.containsKey("kinescopeId")),
-                    () -> assertTrue(slide.containsKey("link")),
-                    () -> assertNotNull(slide.get("customSort"))
+                    notNull(slide,"ulid"),
+                    notNull(slide,"imageUri"),
+                    containsKey(slide,"imageWideUri"),
+                    containsKey(slide,"kinescopeId"),
+                    containsKey(slide,"link"),
+                    notNull(slide,"customSort")
                     );
         }
     }
@@ -212,12 +207,77 @@ public class StoriesSteps extends BaseApiSteps {
 
     @Step("Валидация структуры тутса")
     public void validateRandomTutsItem(Response response) {
-        assertAll("Поверка полей тутса",
-                () -> assertNotNull(response.jsonPath().getString("slug"), "slug не должен быть null"),
-                () -> assertNotNull(response.jsonPath().getString("title"), "title не должен быть null"),
-                () -> assertNotNull(response.jsonPath().getString("link"), "link не должен быть null"),
-                () -> assertNotNull(response.jsonPath().getString("authorName"), "authorName не должен быть null"),
-                () -> assertNotNull(response.jsonPath().getString("authorImage"), "authorImage не должен быть null"),
-                () -> assertNotNull(response.jsonPath().getString("poster.original"), "poster.original не должен быть null"));
+        assertBasicResponse(response);
+        assertAll("Проверка полей тутса",
+                () -> assertJsonFieldExists(response,"slug"),
+                () -> assertJsonFieldExists(response,"title"),
+                () -> assertJsonFieldExists(response,"link"),
+                () -> assertJsonFieldExists(response,"authorName"),
+                () -> assertJsonFieldExists(response,"authorImage"),
+                () -> assertJsonFieldExists(response,"poster.original")
+        );
+    }
+
+    @Step("Валидация ответа рандомного списка тутсов /user/tuts/random")
+    public void validateRandomTutsResponse(Response response) {
+        assertBasicResponse(response);
+        List<String> slugs = response.jsonPath().getList("$", String.class);
+        assertNotNull(slugs, "Список тутсов не должен быть null");
+        assertFalse(slugs.isEmpty(), "Список тутсов не должен быть пустым");
+        for (int i =0; i < slugs.size(); i++) {
+            assertNotNull(slugs.get(i), "slug [" + i + "] не должен быть null");
+            assertFalse(slugs.get(i).isBlank(), "slug [" + i + "] не должен быть пустым");
+        }
+    }
+
+    @Step("Валидация ответа баннера /user/banners/{slug}")
+    public void validateBannerResponse(Response response) {
+        assertBasicResponse(response);
+        Map<String, Object> root = response.jsonPath().getMap("$");
+        assertNotNull(root, "Тело должно быть JSON-объектом");
+
+        assertAll("Баннер",
+                nonEmptyString(root, "slug"),
+                nonEmptyString(root, "link")
+        );
+    }
+
+    @Step("POST /user/stories/view - фиксация просмотра сторис")
+    public Response markStoriesViewed(String authToken, List<String> ulids) {
+        Response response = storiesApi.markStoriesViewed(authToken, ulids);
+        AllureAttachments.attachJson("Stories View Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация успешного ответа фиксации просмотра")
+    public void validateStoriesViewResponse(Response response) {
+        assertEquals(201, response.getStatusCode(),
+                "Ожидался статус 201, но полдучен: " + response.getStatusCode());
+        assertContentTypeJson(response);
+        List<?> body = response.jsonPath().getList("$");
+        assertNotNull(body, "Тело ответа не должно быть null");
+    }
+
+    @Step("POST /user/stories/screen - фиксация показа экрана сторис")
+    public Response markStoryScreen(String authToken, List<String> payloads) {
+        Response response = storiesApi.storyScreenPost(authToken, payloads);
+        AllureAttachments.attachJson("Story Screen Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация цспешного ответа фиксации показа экрана (201)")
+    public void validateStoryScreenResponse(Response response) {
+        assertEquals(201, response.getStatusCode(),
+                "Ожидался статус 201, но получен: " + response.getStatusCode());
+        assertContentTypeJson(response);
+        List<?> body = response.jsonPath().getList("$");
+        assertNotNull(body, "Тело ответа не должно быть null");
+    }
+
+    @Step("POST /user/tuts/{slug}/view - фиксация просмотра тутса")
+    public Response markTutsViewed(String authToken, String slug) {
+        Response response = storiesApi.markTutsViewed(authToken, slug);
+        AllureAttachments.attachJson("Tuts View Response", response.getBody().asString());
+        return response;
     }
 }

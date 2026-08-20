@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.ProductsSteps;
-import ru.tutor.steps.UserSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MiniCoursesTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final ProductsSteps productsSteps = new ProductsSteps(BASE_URL);
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
@@ -43,21 +43,6 @@ public class MiniCoursesTest {
 
     @Test
     @Order(1)
-    @DisplayName("GET /user/mini-courses - успешное получение списка")
-    @Story("Основной сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    void getMiniCoursesSuccess() {
-        Response response = step("GET /user/mini-courses", () ->
-                productsSteps.getMiniCourses(token));
-
-        step("Валидация ответа", () -> {
-            productsSteps.validateMiniCoursesResponse(response);
-        });
-    }
-
-    @Test
-    @Order(2)
     @DisplayName("GET /user/mini-courses - валидация элементов списка")
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
@@ -72,7 +57,7 @@ public class MiniCoursesTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("GET /user/mini-courses - валидация пагинации")
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
@@ -81,9 +66,6 @@ public class MiniCoursesTest {
         Response response = step("GET /user/mini-courses", () ->
                 productsSteps.getMiniCourses(token));
 
-        step("Валдиация ответа", () ->
-                productsSteps.validateMiniCoursesResponse(response));
-
         step("Проверка пагинации", () ->
 
             productsSteps.validateMiniCoursesPagination(response));
@@ -91,7 +73,7 @@ public class MiniCoursesTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     @DisplayName("GET /user/mini-courses - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -105,7 +87,7 @@ public class MiniCoursesTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @DisplayName("GET /user/mini-courses - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
@@ -113,6 +95,49 @@ public class MiniCoursesTest {
     void getMiniCoursesInvalidToken() {
         Response response = step("GET /user/mini-courses невалидный токен", () ->
                 productsSteps.getMiniCourses("invalid_token"));
+
+        step("Проверка ошибки авторизации", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("GET /user/mini-workouts - валидация элементов списка")
+    @Story("Валидация данных")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("positive")
+    void validateMiniWorkoutsItems() {
+        Response response = step("GET /user/mini-workouts", () ->
+                productsSteps.getMiniWorkouts(token));
+
+        step("Проверка обязательных полей каждого элемента", () ->
+                productsSteps.validateAllAreMiniCourses(response)
+        );
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("GET /user/mini-workouts - без авторизации")
+    @Story("Негативный сценарий")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("negative")
+    void getMiniWorkoutsWithoutAuth() {
+        Response response = step("GET /user/mini-workouts без токена", () ->
+                productsSteps.getMiniWorkouts(""));
+
+        step("Проверка ошибки авторизации", () ->
+                assertEquals(401, response.getStatusCode()));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("GET /user/mini-workouts - невалидный токен")
+    @Story("Негативный сценарий")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag("negative")
+    void getMiniWorkoutsInvalidToken() {
+        Response response = step("GET /user/mini-workouts невалидный токен", () ->
+                productsSteps.getMiniWorkouts("invalid_token"));
 
         step("Проверка ошибки авторизации", () ->
                 assertEquals(401, response.getStatusCode()));

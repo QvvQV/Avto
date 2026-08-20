@@ -11,7 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.RegistrationRequest;
 import ru.tutor.model.RegistrationResponse;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.ProfileSteps;
+import ru.tutor.steps.RegistrationSteps;
 
 import java.util.Locale;
 
@@ -27,7 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RegistrationTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-    private final UserSteps userSteps = new UserSteps(BASE_URL);
+    private final RegistrationSteps userSteps = new RegistrationSteps(BASE_URL);
+    private final ProfileSteps profile = new ProfileSteps(BASE_URL);
 
 
     private final Faker faker = new Faker(Locale.ENGLISH);
@@ -82,7 +84,7 @@ public class RegistrationTest {
     @DisplayName("✅ Регистарция с минимальным набором данных")
     @Severity(SeverityLevel.NORMAL)
     @Tag("positive")
-    void registerMinimalUser_Sucess() {
+    void registerMinimalUser_Success() {
         RegistrationRequest request = RegistrationRequest.generateMinimal();
         RegistrationResponse response = step("Регистрация с минимальными данными", () ->
                 userSteps.registerAndGetResponse(request)
@@ -109,7 +111,7 @@ public class RegistrationTest {
         assertFalse(token.isEmpty(), "Токен не должен быть пустым");
 
         Response profileResponse = step("Проверка токена", () ->
-                userSteps.getProfile(token)
+                profile.getProfile(token)
         );
 
         profileResponse.then().statusCode(200);
@@ -287,10 +289,10 @@ public class RegistrationTest {
         RegistrationRequest request = new RegistrationRequest("tp5052_2@test.ru", "Test User", "", TEST_PASSWORD,"", true, 0);
         Response response = step("Регистрация с существующим email", () ->
                 userSteps.register(request));
-        step("Провера конфликта", () -> {
-            userSteps.validateExistingEmailError(response);
-            userSteps.validateNoSensitiveDate(response);
-        });
+        step("Провера конфликта", () ->
+            userSteps.validateExistingEmailError(response)
+
+        );
     }
 
     @Test

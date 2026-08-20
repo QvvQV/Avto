@@ -6,7 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.UserSteps;
+import ru.tutor.steps.AccountSteps;
+import ru.tutor.steps.AuthSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DisplayName("Тесты смены пароля")
 public class EditPasswordTest {
 
-    private final UserSteps userSteps = new UserSteps(TestConfig.getCurrentApiUrl());
+    private final AccountSteps userSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
+    private final AuthSteps authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
@@ -33,7 +35,7 @@ public class EditPasswordTest {
     @BeforeEach
     void setUpAuth() {
         token = step("Логин пользователя", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
     }
 
     @Test
