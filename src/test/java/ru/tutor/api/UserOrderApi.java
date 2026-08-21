@@ -88,4 +88,24 @@ public class UserOrderApi extends BaseApi {
                 fields
         );
     }
+
+    @Step("GET /user/orders/upsale-content-diamond/{orderNumber} - апсейл за алмазы")
+    public Response getUpsaleContentDiamond(String authToken, String orderNumber) {
+        return getWithToken(String.format(ApiEndpoints.ORDERS_UPSALE_CONTENT_DIAMOND, orderNumber), authToken);
+    }
+
+    @Step("GET /user/orders/upsale-content-invoice/{productOrderNumber} - апсейл за деньги")
+    public Response getUpsaleContentMoney(String authToken, String orderNumber) {
+        return getWithToken(String.format(ApiEndpoints.ORDERS_UPSALE_CONTENT_INVOICE, orderNumber), authToken);
+    }
+
+    @Step("GET /user/orders/{productOrderNumber}/upsell-variant - вариант модального окна")
+    public Response getUpsaleVariant(String authToken, String orderNumber) {
+        return getWithToken(String.format(ApiEndpoints.ORDERS_UPSELL_VARIANT, orderNumber), authToken);
+    }
+
+    @Step("POST /user/orders/{productOrderNumber}/upsell-modal-opened - открытие модального окна апсейлов")
+    public Response upsellModalOpened(String authToken, String orderNumber) {
+        return postWithToken(String.format(ApiEndpoints.ORDERS_UPSELL_MODAL_OPENED, orderNumber), authToken, "[]");
+    }
 }

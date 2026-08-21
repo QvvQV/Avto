@@ -196,4 +196,93 @@ public class OrderSteps extends BaseApiSteps {
                 "Ожидался статус 400, но получен: " + response.getStatusCode());
         assertJsonFieldEquals(response, "error.message", "Order not found");
     }
+
+    @Step("GET /user/orders/upsale-content-diamond/{orderNumber} - апсейл за алмазы")
+    public Response getUpsaleContentDiamond(String authToken, String orderNumber) {
+        Response response = orderApi.getUpsaleContentDiamond(authToken, orderNumber);
+        AllureAttachments.attachJson("Upsale Content Diamond Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация ответа за алмазы (пустой массив)")
+    public void validateUpsaleContentDiamondResponse(Response response) {
+        assertBasicResponse(response);
+        List<?> body = response.jsonPath().getList("$");
+        assertNotNull(body, "Тело ответа не должно быть null");
+    }
+
+    @Step("Валидация ошибки 'Product order not found' (404)")
+    public void validateProductOrderNotFound(Response response) {
+        assertEquals(404, response.getStatusCode(),
+                "Ожидался статус 404, но получен: " + response.getStatusCode());
+        assertJsonFieldEquals(response, "message", "Product order not found");
+    }
+
+    @Step("GET /user/orders/upsale-content-invoice/{productOrderNumber} - апсейл за деньги")
+    public Response getUpsaleContentMoney(String authToken, String orderNumber) {
+        Response response = orderApi.getUpsaleContentMoney(authToken, orderNumber);
+        AllureAttachments.attachJson("Upsale Content Money Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация ответа за деньги (пустой массив)")
+    public void validateUpsaleContentInvoiceResponse(Response response) {
+        assertEquals(200, response.getStatusCode(),
+                "Ожидался статус 200, но получен: " + response.getStatusCode());
+        assertContentTypeJson(response);
+
+        Map<String, Object> root = response.jsonPath().getMap("$");
+        assertNotNull(root, "Тело должно быть JSON-объектом");
+
+        assertAll("Структура ответа апсейла за деньги",
+                () -> assertNotNull(root.get("paymentSystem"), "paymentSystem не null"),
+                () -> assertNotNull(root.get("data"), "data не null"),
+                () -> assertNotNull(root.get("params"), "params не null"),
+                () -> assertNotNull(root.get("url"), "url не null")
+        );
+
+        Map<String, Object> data = (Map<String, Object>) root.get("data");
+        assertAll("Поля data",
+                () -> assertNotNull(data.get("publicId"), "data.publicId не null"),
+                () -> assertNotNull(data.get("amount"), "data.amount не null"),
+                () -> assertNotNull(data.get("currency"), "data.currency не null"),
+                () -> assertNotNull(data.get("invoiceId"), "data.invoiceId не null")
+        );
+
+        Map<String, Object> url = (Map<String, Object>) root.get("url");
+        assertAll("Поля url",
+                () -> assertNotNull(url.get("result"), "url.result не null"),
+                () -> assertNotNull(url.get("success"), "url.success не null"),
+                () -> assertNotNull(url.get("fail"), "url.fail не null")
+        );
+    }
+
+    @Step("GET /user/orders/{productOrderNumber}/upsell-variant - вариант модального окна")
+    public Response getUpsaleVariant(String authToken, String orderNumber) {
+        Response response = orderApi.getUpsaleVariant(authToken, orderNumber);
+        AllureAttachments.attachJson("Upsale variant Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация успешного ответа upsell-variant (200)")
+    public void validateUpsellVariantResponse(Response response) {
+        assertEquals(200, response.getStatusCode(),
+                "Ожидался статус 200, но получен: " + response.getStatusCode());
+        assertContentTypeJson(response);
+
+        Map<String, Object> root = response.jsonPath().getMap("$");
+        assertNotNull(root, "Тело должно быть JSON-объектом");
+
+        assertAll("Поля upsell-variant",
+                () -> assertNotNull(root.get("upsellVariant"), "upsellVariant не null"),
+                () -> assertNotNull(root.get("onboardingFinished"), "onboardingFinished не null")
+        );
+    }
+
+    @Step("POST /user/orders/{productOrderNumber}/upsell-modal-opened - открытие модального окна апсейлов")
+    public Response postUpsellModalOpened(String authToken, String orderNumber) {
+        Response response = orderApi.upsellModalOpened(authToken, orderNumber);
+        AllureAttachments.attachJson("Upsell Modal Opened Response", response.getBody().asString());
+        return response;
+    }
 }
