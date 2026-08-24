@@ -3,12 +3,13 @@ package ru.tutor.api;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.json.JSONObject;
+import ru.tutor.config.TestConfig;
 
 import static io.restassured.RestAssured.given;
 
 public class ABTestApiClient {
 
-    private static final String BASE_URL = "https://api.tutorplace.ru";
+    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
 
     @Step("Получить конфигурацию A/B теста для landingId = {landingId}")
     public ABTestConfig getABTestConfig(int landingId) {

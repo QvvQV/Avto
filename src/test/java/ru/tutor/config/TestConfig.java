@@ -10,9 +10,9 @@ public class TestConfig {
     /*
      * Default переменные для выставления окружения
      */
-    private static final String def = "dev2";
-    private static final String api = "api2";
-    private static final String admin = "admin2";
+    private static final String def = "dev1";
+    private static final String api = "api1";
+    private static final String admin = "admin1";
 
     /*
      * Домены, url, тестовые данные для Sber/Сбер

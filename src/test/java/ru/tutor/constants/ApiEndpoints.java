@@ -484,6 +484,16 @@ public final class ApiEndpoints {
     public static final String ORDERS_UPSALE_CONTENT_INVOICE = "/user/orders/upsale-content-invoice/%s";
 
     /**
+     * Вариант модального окна апсейлов
+     */
+    public static final String ORDERS_UPSELL_VARIANT = "/user/orders/%s/upsell-variant";
+
+    /**
+     * Открытие модального окна апсейлов
+     */
+     public static final String ORDERS_UPSELL_MODAL_OPENED = "/user/orders/%s/upsell-modal-opened";
+
+    /**
      * Апсейл за алмазы
      */
     public static final String ORDERS_UPSALE_CONTENT_DIAMOND = "/user/orders/upsale-content-diamond/%s";

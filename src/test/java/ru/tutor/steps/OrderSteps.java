@@ -225,6 +225,7 @@ public class OrderSteps extends BaseApiSteps {
         return response;
     }
 
+    @SuppressWarnings("unchecked")
     @Step("Валидация ответа за деньги (пустой массив)")
     public void validateUpsaleContentInvoiceResponse(Response response) {
         assertEquals(200, response.getStatusCode(),
