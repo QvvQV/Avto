@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
-@DisplayName("Тесты эндпоинта игрового колеса")
+@DisplayName("Тесты эндпоинта игрового колеса победители, таймер, группы")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GameWheelMiscTest {
 

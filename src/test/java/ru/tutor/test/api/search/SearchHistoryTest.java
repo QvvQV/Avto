@@ -105,7 +105,7 @@ public class SearchHistoryTest {
         );
 
         step("Проверка допустимого статуса", () ->
-                assertEquals(201,  response.getStatusCode()));
+                searchSteps.validateSearchHistoryResponse(response));
     }
 
     @Test

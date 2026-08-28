@@ -99,6 +99,22 @@ public class GameWheelRewardResponse {
         return winCount != null && winCount > 0;
     }
 
+    public String getIconSmallUrl() {
+        return iconSmallUrl;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public Boolean getShowValue() {
+        return showValue;
+    }
+
+    public String getIconSmallAltUrl() {
+        return iconSmallAltUrl;
+    }
+
     public boolean isWinLimitReached() {
         if (winLimit == null || winCount == null) return false;
         return winCount >= winLimit;

@@ -511,7 +511,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 201", () ->
-                assertEquals(201, response.getStatusCode()));
+                storiesSteps.validateStoriesViewResponse(response));
     }
 
     @Test
@@ -525,7 +525,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 201", () ->
-                assertEquals(201, response.getStatusCode()));
+                storiesSteps.validateStoriesViewResponse(response));
     }
 
     @Test
@@ -594,7 +594,7 @@ public class StoryTest {
                 storiesSteps.markStoryScreen(token, List.of()));
 
         step("Проверка статуса 201", ()->
-                assertEquals(201, response.getStatusCode()));
+                storiesSteps.validateStoryScreenResponse(response));
     }
 
     @Test
@@ -607,7 +607,7 @@ public class StoryTest {
                 storiesSteps.markStoryScreen(token, List.of("invalid_payload_value")));
 
         step("Проверка статуса 201", ()->
-                assertEquals(201, response.getStatusCode()));
+                storiesSteps.validateStoryScreenResponse(response));
     }
 
     @Test

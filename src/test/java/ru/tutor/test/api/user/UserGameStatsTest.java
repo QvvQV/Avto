@@ -83,7 +83,7 @@ public class UserGameStatsTest {
                 userSteps.getLeaderRating(token)
         );
         step("Валидация ответа", () ->
-                assertEquals(200, response.getStatusCode())
+                userSteps.validateLeaderRatingResponse(response)
         );
     }
 

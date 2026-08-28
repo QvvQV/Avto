@@ -32,10 +32,10 @@ public class DashboardSteps extends BaseApiSteps  {
         String body = response.getBody().asString();
         assertNotNull(body, "Тело ответа не должно быть null");
         assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");
-        List<String> dashboars = response.jsonPath().getList("$", String.class);
-        assertNotNull(dashboars, "Список дашбордов не должен быть null");
-        assertFalse(dashboars.isEmpty(), "Список дашбордов не должен быть пустым");
-        for (String dashboard : dashboars) {
+        List<String> dashboards = response.jsonPath().getList("$", String.class);
+        assertNotNull(dashboards, "Список дашбордов не должен быть null");
+        assertFalse(dashboards.isEmpty(), "Список дашбордов не должен быть пустым");
+        for (String dashboard : dashboards) {
             assertNotNull(dashboard, "Элемент дашборда не должен быть null");
             assertFalse(dashboard.trim().isEmpty(), "Элемент дашборда не должен быть пустым");
         }

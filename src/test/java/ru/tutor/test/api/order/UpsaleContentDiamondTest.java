@@ -166,7 +166,7 @@ public class UpsaleContentDiamondTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag("negative")
     void getUpsaleVariantInvalidToken() {
-        Response response = step("GET /user/orders/{productOrderNumber}/upsell-variant - невалдиный токен", () ->
+        Response response = step("GET /user/orders/{productOrderNumber}/upsell-variant - невалидный токен", () ->
                 orderSteps.getUpsaleVariant("invalid_token", orderNumber)
         );
         step("Проверка статуса 401", () ->
@@ -209,7 +209,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.postUpsellModalOpened(token, orderNumber)
         );
         step("Проверка статуса 200", () ->
-                assertEquals(200, response.getStatusCode()));
+                orderSteps.validateUpsellModalOpenedResponse(response));
     }
 
     @Test

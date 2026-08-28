@@ -56,7 +56,10 @@ public class GameWheelMiscSteps extends BaseApiSteps {
 
     @Step("Валидация таймера")
     public void validateTimerLeftSeconds(Response response) {
+
         assertBasicResponse(response);
+        int seconds = response.jsonPath().getInt("$");
+        assertTrue(seconds >= 0, "timer-left-seconds должен быть >= 0, получен: " + seconds);
     }
 
     @Step("GET /user/game-wheel/rewards-recently-won-all")

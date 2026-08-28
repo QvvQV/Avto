@@ -8,11 +8,12 @@ public class TestConfig {
     private static final Properties cardProperties = new Properties();
 
     /*
-     * Default переменные для выставления окружения
+     * Default переменные для выставления окружения dev1; dev2; dev3; prod; prodMain
      */
-    private static final String def = "dev1";
+    private static final String def = "prodMain";
     private static final String api = "api1";
     private static final String admin = "admin1";
+
 
     /*
      * Домены, url, тестовые данные для Sber/Сбер
@@ -45,11 +46,18 @@ public class TestConfig {
         validateRequiredConfigProperties();
     }
 
+    public static boolean isProd() {
+        String env = System.getProperty("env.ui", def);
+        return "prod".equals(env) || "prodMain".equals(env);
+    }
+
     private static void validateRequiredConfigProperties() {
         String[] requiredKeys = {
                 "dev1.base.url", "api1.base.url", "admin1.base.url", "client1.base.url", "dev1.test.email",
                 "dev2.base.url", "api2.base.url", "admin2.base.url", "client2.base.url", "dev2.test.email",
+                "dev3.base.url", "api3.base.url", "admin3.base.url", "client3.base.url", "dev3.test.email",
                 "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid", "default.utm",
+                "prod.main.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid", "default.utm",
                 "system.utm", "timeout", "pageLoadTimeout"
         };
         for (String key : requiredKeys) {
@@ -151,12 +159,37 @@ public class TestConfig {
     }
 
     /**
+     * Dev3
+     */
+    public static String getDev3BaseUrl() {
+        return properties.getProperty("dev3.base.url");
+    }
+
+    public static String getApi3BaseUrl() {
+        return properties.getProperty("api3.base.url");
+    }
+
+    public static String getAdmin3BaseUrl() {
+        return properties.getProperty("admin3.base.url");
+    }
+
+    public static String getClient3BaseUrl() {
+        return properties.getProperty("client3.base.url");
+    }
+
+    public static String getEmailDev3(){
+        return properties.getProperty("dev3.test.email");
+    }
+
+    /**
      * Prod
      */
 
     public static String getProdBaseUrl() {
         return properties.getProperty("prod.base.url");
     }
+
+    public static String getProdMainBaseUrl() {return properties.getProperty("prod.main.base.url");}
 
     public static String getApiProdUrl() {
         return properties.getProperty("api.prod.url");
@@ -206,18 +239,21 @@ public class TestConfig {
 
     // ==================== Метод для получения URL в зависимости от окружения ====================
     public static String getCurrentUiUrl() {
-        String env = System.getProperty("env.ui", def); // dev1, dev2, prod
+        String env = System.getProperty("env.ui", def); // dev1, dev2, dev3, prod, prodMain
         return switch (env) {
             case "dev2" -> getDev2BaseUrl();
+            case "dev3" -> getDev3BaseUrl();
             case "prod" -> getProdBaseUrl(); // или другой prod URL
+            case "prodMain" -> getProdMainBaseUrl();
             default -> getDev1BaseUrl();
         };
     }
 
     public static String getCurrentApiUrl() {
-        String env = System.getProperty("env.api", api); // api1, api2, prod
+        String env = System.getProperty("env.api", api); // api1, api2, api3, prod
         return switch (env) {
             case "api2" -> getApi2BaseUrl(); // нужно добавить этот метод
+            case "api3" -> getApi3BaseUrl();
             case "prod" -> getApiProdUrl();
             default -> getApi1BaseUrl();
         };
@@ -228,6 +264,7 @@ public class TestConfig {
 
         return switch (env) {
             case "dev2" -> getClient2BaseUrl();
+            case "dev3" -> getClient3BaseUrl();
             case "prod" -> getClientBaseUrl();
             default -> getClient1BaseUrl();
         };
@@ -238,6 +275,7 @@ public class TestConfig {
 
         return switch (env) {
             case "admin2" -> getAdmin2BaseUrl();
+            case "admin3" -> getAdmin3BaseUrl();
             case "prod" -> null;
             default -> getAdminBaseUrl();
         };
@@ -248,6 +286,7 @@ public class TestConfig {
 
         return switch (env) {
             case "dev2" -> getEmailDev2();
+            case "dev3" -> getEmailDev3();
             case "prod" -> null;
             default -> getEmailDev1();
         };

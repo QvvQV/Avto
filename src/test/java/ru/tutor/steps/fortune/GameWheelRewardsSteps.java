@@ -65,7 +65,12 @@ public class GameWheelRewardsSteps extends BaseApiSteps {
                     () -> assertNotNull(reward.getName(), "name не должен быть null"),
                     () -> assertNotNull(reward.getChance(), "chance не должен быть null"),
                     () -> assertNotNull(reward.getRewardType(), "rewardType не должен быть null"),
-                    () -> assertNotNull(reward.getRewardValue(), "rewardValue не должен быть null")
+                    () -> assertNotNull(reward.getRewardValue(), "rewardValue не должен быть null"),
+
+                    () -> assertNotNull(reward.getIconSmallUrl(), "iconSmallUrl не должен быть null"),
+                    () -> assertNotNull(reward.getIconUrl(), "iconUrl не должен быть null"),
+                    () -> assertNotNull(reward.getShowValue(), "iconShowValue не должен быть null"),
+                    () -> assertNotNull(reward.getIconSmallAltUrl(), "iconSmallAltUrl не должен быть null")
             );
 
             // Проверка значений

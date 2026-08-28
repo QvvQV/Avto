@@ -1,17 +1,21 @@
 package ru.tutor.flow.builder;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.FrameHelper;
 import ru.tutor.utils.TabManager;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SubscriptionPurchaseBuilder {
     private TtPage.SubscriptionType subscriptionType;
@@ -25,6 +29,7 @@ public class SubscriptionPurchaseBuilder {
     private final CloudPage cloudPage;
     private final SberPage sberPage;
     private String userEmail;
+    private boolean modalOnly = false;
 
     public enum PaymentSystem {
         CLOUD, SBER, AUTO
@@ -63,6 +68,12 @@ public class SubscriptionPurchaseBuilder {
 
     public boolean hasAffRid() {
         return pageVariant == PageVariant.WITH_AFF_RID;
+    }
+
+    @Step("Включить режим проверки только открытия модального окна")
+    public SubscriptionPurchaseBuilder modalOnly() {
+        this.modalOnly = true;
+        return this;
     }
 
     private SubscriptionPurchaseBuilder(TtPage ttPage, CloudPage cloudPage, SberPage sberPage) {
@@ -107,14 +118,18 @@ public class SubscriptionPurchaseBuilder {
         step(stepName, () -> {
             openMainPageAndCheckTitle(pageVariant.useAffRid());
             ttPage.clickBtnOpenFor();
-            selectSubscriptionType();
-            processPaymentSystem();
+            selectSubscriptionType(); // открытие модалки
+            if (modalOnly) {
+                verifyModalOpened(); // только проверить и закрыть
+                openPaymentModalOnly(); // email + клик оплатить + проверка открытия окна
+            } else {
+            processPaymentSystem(); // иначе продолжить оплату
 
-            if (captureEmail) {
+            if (captureEmail)
                 captureUserEmail();
-            }
 
-            if (verifyError && expectedError != null) {
+
+            if (verifyError && expectedError != null)
                 verifyErrorMessage();
             }
         });
@@ -236,6 +251,48 @@ public class SubscriptionPurchaseBuilder {
         assertEquals(expectedError, actualError);
         AllureAttachments.attachText("Проверка ошибки",
                 "Ожидалось: " + expectedError + "\nФактически: " + actualError);
+    }
+
+    // Только открытие мод. окон платёжных систем Прод
+    private void verifyModalOpened() {
+        step("Проверка открытия модального окна для " + subscriptionType.getDisplayName(), () -> {
+            assertEquals(subscriptionType.getExpectedModalText(), ttPage.getTextModal(),
+                    "Текст модального окна не совпадает для " + subscriptionType.getDisplayName());
+            AllureAttachments.attachText("Модальное окно открыто",
+                    subscriptionType.getDisplayName() + " - " + subscriptionType.getExpectedModalText());
+            AllureAttachments.attachScreenshot("Модальное окно: " + subscriptionType.getDisplayName());
+        });
+    }
+
+    private void openPaymentModalOnly() {
+        step("Ввод почты и открытия окна оплаты", () -> {
+            userEmail = cloudPage.setDateModal();
+
+            PaymentSystem detected = detectActiveGateway();
+            AllureAttachments.attachText("Платёжный шлюз", detected.name());
+
+            if (detected == PaymentSystem.CLOUD) {
+                verifyCloudPaymentWindow();         // iframe cloudpayments открыт
+                AllureAttachments.attachScreenshot("Окно оплаты Cloud"); // фото
+            } else {
+                TabManager.switchToNewWindow();
+                verifySberPaymentWindow();          // URL = sber/ -> факт открытия
+                AllureAttachments.attachScreenshot("Окно оплаты Sber");
+            }
+        });
+    }
+
+    private void verifyCloudPaymentWindow() {
+        boolean found = $$("iframe").stream().anyMatch(frame -> {
+            String src = frame.getAttribute("src");
+            return src != null && src.contains("cloudpayments");
+        });
+        assertTrue(found, "Окно оплаты Cloud не открылось (iframe cloudpayments не найден)");
+        AllureAttachments.attachText("Окно оплаты Cloud", "✓ iframe cloudpayments открыт");
+    }
+
+    private void verifySberPaymentWindow() {
+        TabManager.switchToPaymentPageAndVerify(); // ждёт окно, проверяет URL, скриншот внутри
     }
 
     // Универсальный метод оплаты Cloud/Sber

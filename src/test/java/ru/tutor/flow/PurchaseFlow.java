@@ -87,4 +87,12 @@ public class PurchaseFlow {
                 .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.EXPIRED_CARD)
                 .withExpectedError(TestConfig.Texts.ERROR_MESSAGE));
     }
+
+    @Step("Проверка открытия модального окна {type}")
+    public void verifyModalOpens(TtPage.SubscriptionType type) {
+        SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
+                .forSubscription(type)
+                .modalOnly()
+                .execute();
+    }
 }

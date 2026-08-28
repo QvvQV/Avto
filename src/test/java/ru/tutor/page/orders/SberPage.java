@@ -76,13 +76,13 @@ public class SberPage {
 
     public static void logModalType(String modalText, String email) {
         switch (modalText) {
-            case "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ЛАЙТ”":
+            case "Тариф «Лайт»":
                 AllureAttachments.attachText("Оплата продукта", "Лайт тариф, email: " + email);
                 break;
-            case "ПОПРОБУЙ ПЕРВУЮ НЕДЕЛЮ ТАРИФА “ПРЕМИУМ”":
+            case "Тариф «Премиум»":
                 AllureAttachments.attachText("Оплата продукта", "Премиум тариф, email: " + email);
                 break;
-            case "ОФОРМИ ПОЖИЗНЕННЫЙ ДОСТУП К БОЛЕЕ ЧЕМ К 400 КУРСАМ":
+            case "Тариф «Навсегда»":
                 AllureAttachments.attachText("Оплата продукта", "Пожизненный доступ, email: " + email);
                 break;
             default:

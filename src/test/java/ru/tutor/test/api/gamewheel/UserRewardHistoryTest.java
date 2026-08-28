@@ -21,7 +21,7 @@ import static io.qameta.allure.Allure.step;
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
-@DisplayName("Тесты эндпоинта игрового колеса")
+@DisplayName("Тесты эндпоинта игрового колес. История получения призов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserRewardHistoryTest {
 

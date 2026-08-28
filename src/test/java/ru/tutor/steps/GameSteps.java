@@ -1,6 +1,7 @@
 package ru.tutor.steps;
 
 import io.qameta.allure.Step;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import ru.tutor.api.UserApi;
 import ru.tutor.base.BaseApiSteps;
@@ -33,7 +34,50 @@ public class GameSteps extends BaseApiSteps {
 
     @Step("GET /user/game-leader/rating")
     public Response getLeaderRating(String authToken) {
-        return this.userApi.getLeaderRating(authToken);
+        Response response = this.userApi.getLeaderRating(authToken);
+        AllureAttachments.attachJson("Game Leader Rating", response.getBody().asString());
+        AllureAttachments.attachJson("Game Leader Rating", response.getHeaders().toString());
+        return response;
+    }
+
+    @Step("Валидация ответа рейтинга лидеров")
+    public void validateLeaderRatingResponse(Response response) {
+        assertBasicResponse(response);
+
+        JsonPath json = response.jsonPath();
+        Map<String, Object> root = json.getMap("$");
+        assertNotNull(root, "Root response should not be null");
+
+        assertAll("Rating table version",
+                () -> assertNotNull(json.getString("ratingTableVersion"), "ratingTableVersion should exist"));
+
+        assertAll("User object",
+                () -> assertNotNull(json.getMap("user"), "user object should exist"),
+                () -> assertNotNull(json.getMap("user.today"), "user.today should exist"),
+                () -> assertNotNull(json.getMap("user.week"), "user.week should exist"),
+                () -> assertNotNull(json.getMap("user.month"), "user.month should exist"),
+                () -> assertNotNull(json.getList("user.prize"), "user.prize should exist")
+        );
+
+        assertAll("Leaders object",
+                () -> assertNotNull(json.getMap("leaders"), "leaders object should exist"),
+                () -> assertNotNull(json.getList("leaders.today"), "leaders.today should exist"),
+                () -> assertNotNull(json.getList("leaders.week"), "leaders.week should exist"),
+                () -> assertNotNull(json.getList("leaders.month"), "leaders.month should exist")
+        );
+
+        List<Map<String, Object>> leadersMonth = json.getList("leaders.month");
+        if (leadersMonth != null && !leadersMonth.isEmpty()) {
+            for (int i =0 ; i < leadersMonth.size(); i++) {
+                Map<String, Object> leader = leadersMonth.get(i);
+                assertAll("Leader [" + i + "]",
+                        nonEmptyString(leader, "name"),
+                        nonEmptyString(leader, "level"),
+                        nonEmptyString(leader, "progress"),
+                        nonEmptyString(leader, "score")
+                );
+            }
+        }
     }
 
     @Step("Валидация ответа игровой статистики")
@@ -55,7 +99,7 @@ public class GameSteps extends BaseApiSteps {
                 nonEmptyString(root, "seasonEnd"),
                 notNull(root, "hasLoginToday"),
                 notNull(root, "showModal"),
-                () -> assertNotNull(root.get("days"), "days не долежн быть null")
+                () -> assertNotNull(root.get("days"), "days не должен быть null")
         );
 
         List<Map<String, Object>> days = response.jsonPath().getList("days");

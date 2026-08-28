@@ -265,7 +265,7 @@ public class StoriesSteps extends BaseApiSteps {
         return response;
     }
 
-    @Step("Валидация цспешного ответа фиксации показа экрана (201)")
+    @Step("Валидация успешного ответа фиксации показа экрана (201)")
     public void validateStoryScreenResponse(Response response) {
         assertEquals(201, response.getStatusCode(),
                 "Ожидался статус 201, но получен: " + response.getStatusCode());

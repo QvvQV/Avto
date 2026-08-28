@@ -1,6 +1,5 @@
 package ru.tutor.test.Ui.orders;
 
-import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
+import ru.tutor.config.TestConfig;
 import ru.tutor.flow.AdminFlow;
 import ru.tutor.flow.PurchaseFlow;
 import ru.tutor.flow.PurchaseResult;
@@ -45,33 +45,43 @@ public class CloudTest extends BaseUiTest {
     }
 
     @Test
-//    @RepeatedTest(3)
+//    @RepeatedTest(5)
     @DisplayName("Оплата с главной за 99 руб")
     public void PayMain99() {
-
-        PurchaseResult result = purchaseFlow.lite();
-        assertNotNull(result.email());
-        adminFlow.assertOrderExists(result.email());
+        if (TestConfig.isProd()) {
+            purchaseFlow.verifyModalOpens(TtPage.SubscriptionType.LITE);
+        } else {
+            PurchaseResult result = purchaseFlow.lite();
+            assertNotNull(result.email());
+            adminFlow.assertOrderExists(result.email());
+        }
     }
 
     @Test
 //        @RepeatedTest(3)
     @DisplayName("Оплата с главной за 399 руб")
-    @Owner("Vadim")
     public void PayMain399() {
+        if (TestConfig.isProd()) {
+            purchaseFlow.verifyModalOpens(TtPage.SubscriptionType.PREMIUM);
+        } else {
 
-        PurchaseResult result = purchaseFlow.premium();
-        assertNotNull(result.email());
-        adminFlow.assertOrderExists(result.email());
+            PurchaseResult result = purchaseFlow.premium();
+            assertNotNull(result.email());
+            adminFlow.assertOrderExists(result.email());
+        }
     }
 
     @Test
     @DisplayName("Оплата с главной за Пожизненный")
     public void PayMainLife() {
+        if (TestConfig.isProd()) {
+            purchaseFlow.verifyModalOpens(TtPage.SubscriptionType.LIFE);
+        } else {
 
-        PurchaseResult result = purchaseFlow.life();
-        assertNotNull(result.email());
-        adminFlow.assertOrderExists(result.email());
+            PurchaseResult result = purchaseFlow.life();
+            assertNotNull(result.email());
+            adminFlow.assertOrderExists(result.email());
+        }
     }
 
 //    @Test

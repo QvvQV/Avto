@@ -32,7 +32,7 @@ public class EmailValidationApiTest {
     private final PaymentApi paymentApi = new PaymentApi(TestConfig.getCurrentApiUrl());
     private final Faker faker = new Faker(Locale.ENGLISH);
     private static final String PRODUCT_ID = "519";
-    String stEmail = faker.funnyName().name();
+    String stEmail = faker.name().firstName();
 
 //@ParameterizedTest
     @ValueSource(strings = {

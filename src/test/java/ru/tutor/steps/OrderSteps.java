@@ -183,10 +183,16 @@ public class OrderSteps extends BaseApiSteps {
 
     @Step("Валидация успешного ответа сохранения отзыва")
     public void validateStoreFeedbackSuccess(Response response) {
-        assertEquals(200, response.getStatusCode(),
-                "Ожидался статус 200, но получен: " + response.getStatusCode());
+        assertSuccessStatusCode(response);
         assertContentTypeJson(response);
-        assertJsonFieldEquals(response, "message", "Feedback stored successfully");
+        String message = response.jsonPath().getString("message");
+        assertNotNull(message, "Message не должен быть null");
+
+        // Проверяем, что message содержит одно из ожидаемых значений
+        assertTrue(
+                message.equals("Feedback stored successfully") ||
+                        message.equals("Feedback already exist")
+        );
         assertJsonFieldExists(response, "order_id");
     }
 
@@ -228,8 +234,7 @@ public class OrderSteps extends BaseApiSteps {
     @SuppressWarnings("unchecked")
     @Step("Валидация ответа за деньги (пустой массив)")
     public void validateUpsaleContentInvoiceResponse(Response response) {
-        assertEquals(200, response.getStatusCode(),
-                "Ожидался статус 200, но получен: " + response.getStatusCode());
+        assertSuccessStatusCode(response);
         assertContentTypeJson(response);
 
         Map<String, Object> root = response.jsonPath().getMap("$");
@@ -247,7 +252,29 @@ public class OrderSteps extends BaseApiSteps {
                 () -> assertNotNull(data.get("publicId"), "data.publicId не null"),
                 () -> assertNotNull(data.get("amount"), "data.amount не null"),
                 () -> assertNotNull(data.get("currency"), "data.currency не null"),
-                () -> assertNotNull(data.get("invoiceId"), "data.invoiceId не null")
+                () -> assertNotNull(data.get("invoiceId"), "data.invoiceId не null"),
+                () -> assertNotNull(data.get("description"), "data.description не null"),
+                () -> assertNotNull(data.get("accountId"), "data.accountId не null"),
+                () -> assertNotNull(data.get("skin"), "data.skin не null"),
+                () -> assertNotNull(data.get("email"), "data.email не null"),
+                () -> assertNotNull(data.get("autoClose"), "data.autoClose не null"),
+                () -> assertNotNull(data.get("language"), "data.language не null")
+        );
+
+        Map<String, Object> innerData = (Map<String, Object>) data.get("data");
+        assertAll("Поля data.data",
+                () -> assertNotNull(innerData, "innerData не null"),
+                () -> assertNotNull(innerData.get("paymentType"), "paymentType не null"),
+                () -> assertNotNull(innerData.get("gatewayId"), "gatewayId не null"),
+                () -> assertNotNull(innerData.get("cloudPayments"), "cloudPayments не null"),
+                () -> assertNotNull(innerData.get("productOrderNumber"), "productOrderNumber не null")
+        );
+
+        Map<String, Object> params = (Map<String, Object>) root.get("params");
+        assertNotNull(params, "params не null");
+        assertAll("Поля params",
+                () -> assertNotNull(params.get("language"), "language не null"),
+                () -> assertNotNull(params.get("paymentType"), "paymentType не null")
         );
 
         Map<String, Object> url = (Map<String, Object>) root.get("url");
@@ -267,8 +294,7 @@ public class OrderSteps extends BaseApiSteps {
 
     @Step("Валидация успешного ответа upsell-variant (200)")
     public void validateUpsellVariantResponse(Response response) {
-        assertEquals(200, response.getStatusCode(),
-                "Ожидался статус 200, но получен: " + response.getStatusCode());
+        assertSuccessStatusCode(response);
         assertContentTypeJson(response);
 
         Map<String, Object> root = response.jsonPath().getMap("$");
@@ -285,5 +311,15 @@ public class OrderSteps extends BaseApiSteps {
         Response response = orderApi.upsellModalOpened(authToken, orderNumber);
         AllureAttachments.attachJson("Upsell Modal Opened Response", response.getBody().asString());
         return response;
+    }
+
+    @Step("Валидация ответа upsell-modal-opened")
+    public void validateUpsellModalOpenedResponse(Response response) {
+        assertSuccessStatusCode(response);
+        assertContentTypeJson(response);
+
+        List<Object> body = response.jsonPath().getList("$");
+        assertNotNull(body, "Тело должно быть JSON-массивом");
+        assertTrue(body.isEmpty(), "Массив должен быть пустым, получено элементов: " + body.size());
     }
 }

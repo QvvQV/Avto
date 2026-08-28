@@ -117,7 +117,7 @@ public class StoreFeedbackUnsubscribeTest {
         );
 
         step("Проверка допустимого статуса (200)", () ->
-                assertEquals(200, response.getStatusCode()));
+                orderSteps.validateStoreFeedbackSuccess(response));
     }
 
     @Test
