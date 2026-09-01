@@ -46,6 +46,7 @@ public class CloudPage {
     private static final String CONTINUE_TEXT = "Продолжить";
     private static final String FULL_PAY = "Оплатить";
     private static final String SUCCESS_PAY_TEXT = "Успешная оплата";
+    private static final String GO_TO_PERSONAL_ACCOUNT = "Перейти в личный кабинет";
 
     //Локаторы в модальном окне
     private final SelenideElement BUY_BUTTON = $$("button").find(exactText(BUY_TEXT));
@@ -61,6 +62,7 @@ public class CloudPage {
     public final SelenideElement FULL_OPTION = $("[name='full']");
     private final SelenideElement INSTALLMENTS_OPTION = $("[name='installments']");
     private final SelenideElement INSTALLMENTS_PARTS = $("[name='installmentsParts']");
+    private final SelenideElement PHONE_INPUT_INSTALLMENTS = $("input[automation-id='phone-input']");
 
     //Локаторы отдельного окна оплаты
     private final SelenideElement CARD_INPUT_NEW_WINDOW = $(By.id("card"));
@@ -68,6 +70,7 @@ public class CloudPage {
     private final SelenideElement CVV_INPUT = $(By.id("cvv"));
     private final SelenideElement CONFIRM_BUTTON = $("button[data-v-59c9a1ad]");
     private final SelenideElement BACK_TO_SHOP_BUTTON = $("button[data-v-c1ac6fa4]");
+    private final SelenideElement SUCCESS_PROFILE_LINK = $$("a").find(exactText(GO_TO_PERSONAL_ACCOUNT));
 
     //Локаторы для оплаты долями
     private final SelenideElement FIO_INPUT = $("[data-qa-type='tui/input.field']");
@@ -93,6 +96,10 @@ public class CloudPage {
 
     public String atrEmail() {
         return EMAIL_INPUT.shouldBe(visible).getValue();
+    }
+
+    public String getCurrentEmail() {
+        return currentEmail;
     }
 
     // ввод банковских данных в модалку Cloud
@@ -237,6 +244,15 @@ public class CloudPage {
         });
     }
 
+    @Step("Ожидание анкеты (поле телефона) и скриншот")
+    public void verifyInstallmentsPhoneForm() {
+        step("Ожидание поля телефона на анкете долями", () -> {
+            PHONE_INPUT_INSTALLMENTS.shouldBe(visible, DEFAULT_TIMEOUT);
+            AllureAttachments.attachScreenshot("Анкета оплаты долями (поле телеона)");
+            AllureAttachments.attachText("Статус", "Анкета оплаты долями открыта");
+        });
+    }
+
     // ==================== МЕТОДЫ ДЛЯ НОВОГО ОКНА ОПЛАТЫ ====================
 
     @Step("Наполнение тестовыми данными в новом окне")
@@ -281,6 +297,23 @@ public class CloudPage {
         AllureAttachments.attachText("Проверка текста кнопки",
                 "✓ Текст кнопки корректен: " + actualText);
         AllureAttachments.attachScreenshot("Страница после оплаты");
+    }
+
+    @Step("Проверка страницы успешной оплаты и скриншот")
+    public String verifySuccessProfilePage() {
+        final String[] hrefHolder = new String[1];
+        step("Ожидание кнопки 'Перейти в личный кабинет'", () -> {
+            FrameHelper.switchToDefaultContent(); // Выходим из iframe Cloud после оплаты
+
+            SUCCESS_PROFILE_LINK.shouldBe(visible, Duration.ofSeconds(15));
+
+            hrefHolder[0] = UniversalMethod.getElementHref(
+                    SUCCESS_PROFILE_LINK, "Перейти в личный кабинет");
+            AllureAttachments.attachText("Ссылка входа в личный кабинет", hrefHolder[0]);
+
+            AllureAttachments.attachScreenshot("Страница успешной оплаты");
+        });
+        return hrefHolder[0];
     }
 
     // ==================== ВНУТРЕННИЙ КЛАСС ДЛЯ РАБОТЫ С IFrame ====================

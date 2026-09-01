@@ -18,6 +18,16 @@ public final class ApiEndpoints {
     // ==================== Аутентификация ====================
 
     /**
+     * Статуса заказа после создания
+     */
+    public static final String ORDER_STATUS = "/order/status/%s";
+
+    /**
+     * Проверка успешного создания заказа бек
+     */
+    public static final String ORDER_SUCCESS = "/order/success/%s";
+
+    /**
      * вход в систему с email и паролем
      */
     public static final String LOGIN = "/user/login";

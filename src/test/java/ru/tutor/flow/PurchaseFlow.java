@@ -95,4 +95,31 @@ public class PurchaseFlow {
                 .modalOnly()
                 .execute();
     }
+
+    @Step("Проверка открытия модального окна {type}")
+    public void verifyInstallmentOpens(TtPage.SubscriptionType type) {
+        SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
+                .forSubscription(type)
+                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.INSTALLMENTS)
+                .modalOnly()
+                .execute();
+    }
+
+
+    @Step("Проверка открытия 'Плати частями' для {type}")
+    public void verifyPartPaymentOpens(TtPage.SubscriptionType type) {
+        SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
+                .forSubscription(type)
+                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.PARTS)
+                .modalOnly()
+                .execute();
+    }
+
+    @Step("Оплата 'лати частями' по Sber")
+    public PurchaseResult partPayment() {
+        return purchase(b -> b.forSubscription(TtPage.SubscriptionType.LIFE)
+        .via(SubscriptionPurchaseBuilder.PaymentSystem.AUTO)
+        .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.PARTS)
+        );
+    }
 }

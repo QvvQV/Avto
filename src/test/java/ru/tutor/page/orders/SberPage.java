@@ -30,6 +30,8 @@ public class SberPage {
     private final String PAY_TEXT = "Оплатить";
     private final String SHOP_TEXT = "Перейти в магазин";
     private final String ERROR_TEXT = "Операция отклонена. Проверьте введенные данные, достаточность средств на карте и повторите операцию";
+    private final String CONFIRM = "Подтвердить";
+    private final String BACK_TO_SHOP_TEXT = "Вернуться в магазин";
 
     // Таймаут
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
@@ -48,6 +50,19 @@ public class SberPage {
     private final SelenideElement TEXT_ERROR = $$("span").find(exactText(ERROR_TEXT));
     private final SelenideElement GO_SHOP = $$("button").find(exactText(SHOP_TEXT));
     private final TtPage ttPage = new TtPage();
+
+    // Локатор плати частями
+    private final SelenideElement PHONE_INPUT = $("input[type='tel'][class*='PhoneNumberInput']");
+    private final SelenideElement SUBMIT_BUTTON = $$("button[type='submit']").find(exactText(CONFIRM));
+    private final SelenideElement SMS_INPUT = $("input[type='tel'][class*='OtpInput']");
+    private final SelenideElement FIO_INPUT = $("input[type='text'][placeholder='ФИО']");
+    private final SelenideElement BIRTHDAY_INPUT = $("input[type='tel'][placeholder='Дата рождения']");
+    private final SelenideElement BACK_TO_SHOP = $$("button").find(exactText(BACK_TO_SHOP_TEXT));
+    private final SelenideElement CARD_INSTALLMENTS = $("input[data-test-id='pan']");
+    private final SelenideElement EXPIRY_INSTALLMENTS = $("input[data-test-id='expiry']");
+    private final SelenideElement CVC_INSTALLMENTS = $("input[data-test-id='cvc']");
+    private final SelenideElement SUBMIT_INSTALLMENTS_BUTTON = $("button[data-test-id='submit-payment']");
+
 
     private String email;
 
@@ -169,5 +184,81 @@ public class SberPage {
 
     public String getErrorText() {
         return TEXT_ERROR.shouldBe(visible, DEFAULT_TIMEOUT).getText().trim();
+    }
+
+    private void fillCardInstallmentData(String cardNumber, String expiry, String cvc) {
+        step("Заполнение данных карты: " + maskCardNumber(cardNumber), () -> {
+            CARD_INSTALLMENTS.shouldBe(visible, DEFAULT_TIMEOUT).setValue(cardNumber);
+            EXPIRY_INSTALLMENTS.setValue(expiry);
+            CVC_INSTALLMENTS.setValue(cvc);
+            UniversalMethod.safeClick(SUBMIT_INSTALLMENTS_BUTTON, PAY_TEXT);
+
+            AllureAttachments.attachText("Данные карты",
+                    "Карта: " + maskCardNumber(cardNumber) + "\nСрок: " + expiry + "\nCVC: " + cvc);
+        });
+    }
+
+    @Step("Заполнение номера телефона")
+    private void fillPhone(Faker faker) {
+        step("Ввод тестового номера телефона", () -> {
+            String phone = "974 789-40-55";
+            UniversalMethod.safeSetValue(PHONE_INPUT, phone, "Телефон");
+            AllureAttachments.attachText("Телефон", phone);
+            UniversalMethod.safeClick(SUBMIT_BUTTON, "Подтвердить телефон");
+            WaitHelper.waitForPageLoad();
+        });
+
+    }
+
+    @Step("Заполнение SMS-кода")
+    private void fillSmsCode() {
+        step("Ввод кода из SMS", () -> {
+            UniversalMethod.safeSetValue(SMS_INPUT, "1111", "SMS-код");
+            WaitHelper.waitForPageLoad();
+        });
+
+    }
+
+    @Step("Заполнение ФИО и даты рождения")
+    private void fillPersonalData(Faker faker) {
+        step("Ввод персональных данных", () -> {
+            String fullName = "Иванов Аркадий";
+            UniversalMethod.safeSetValue(FIO_INPUT, fullName, "ФИО");
+            UniversalMethod.safeSetValue(BIRTHDAY_INPUT, "02.02.2000", "Дата рождения");
+            AllureAttachments.attachText("ФИО/Дата", fullName + " / " + "02.02.2000");
+            UniversalMethod.safeClick(SUBMIT_BUTTON, "Подтвердить данные");
+            WaitHelper.waitForPageLoad();
+        });
+    }
+
+    @Step("Проверка кнопки 'Вернуться в магазин'")
+    private void verifyBackToShop() {
+        step("Ожидание завершения оплаты", () -> {
+            BACK_TO_SHOP.shouldBe(visible, DEFAULT_TIMEOUT);
+            AllureAttachments.attachScreenshot("Кнопка 'Вернуться в магазин'");
+            AllureAttachments.attachText("Статус", "Оплата 'Плати частями' завершена успешно");
+        });
+    }
+
+    @Step("Ожидание редиректа 'Плати частями' (поле телефона) и скриншот")
+    public void verifyPartsPhoneForm() {
+        step("Ожидание поля телефона после редиректа", () -> {
+            PHONE_INPUT.shouldBe(visible, DEFAULT_TIMEOUT);
+            AllureAttachments.attachScreenshot("Анкета 'Плати частями' (телефон)");
+            AllureAttachments.attachText("Статус", "Редирект 'Плати частями' выполнен");
+        });
+    }
+
+    @Step("Полный.flow 'Плати частями' (телефон -> SMS -> ФИО -> карта)")
+    public void executeFullFlow() {
+        fillPhone(faker);
+        fillSmsCode();
+//        fillPersonalData(faker);
+        fillCardInstallmentData(
+                TestConfig.Cards.getApproved(),
+                TestConfig.Cards.getApprovedExpiry(),
+                TestConfig.Cards.getApprovedCvc()
+        );
+        verifyBackToShop();
     }
 }

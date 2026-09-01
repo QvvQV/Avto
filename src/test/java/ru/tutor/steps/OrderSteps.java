@@ -2,23 +2,35 @@ package ru.tutor.steps;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import ru.tutor.api.PaymentSuccessApi;
 import ru.tutor.api.UserOrderApi;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.model.RefundTicketRequest;
 import ru.tutor.utils.AllureAttachments;
 
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderSteps extends BaseApiSteps {
     private final UserOrderApi orderApi;
 
+    private static final Pattern ORDER_NUMBER_PATTERN = Pattern.compile("/success/([A-Z0-9]+)");
+    private final PaymentSuccessApi siteApi; //site домен (order/status)
+    private final PaymentSuccessApi apiApi; //API домен (order/success)
+
     public OrderSteps (String baseUrl) {
         super(baseUrl);
         this.orderApi = new UserOrderApi(baseUrl);
+        this.siteApi = new PaymentSuccessApi(baseUrl);
+        this.apiApi = new PaymentSuccessApi(baseUrl);
     }
 
     @Step("GET /user/orders/payments - история платежей")
@@ -321,5 +333,55 @@ public class OrderSteps extends BaseApiSteps {
         List<Object> body = response.jsonPath().getList("$");
         assertNotNull(body, "Тело должно быть JSON-массивом");
         assertTrue(body.isEmpty(), "Массив должен быть пустым, получено элементов: " + body.size());
+    }
+
+    @Step ("Извлечение orderNumber из URL страницы (/order/status/{orderNumber})")
+    public static String extractOrderNumberFromUrl(String url) {
+        Matcher matcher = ORDER_NUMBER_PATTERN.matcher(url);
+        assertTrue(matcher.find(), "orderNumber не найден в URL: " + url);
+        return matcher.group(1);
+    }
+
+    @Step ("Извлечение параметра из href кнопки (loginToken, password, orderNumber)")
+    public static String extractQueryParam(String url, String paramName) {
+        String query = URI.create(url).getQuery();
+        if(query == null) return null;
+        for (String pair : query.split("&")) {
+            String[] kv = pair.split("=", 2);
+            if(kv.length == 2 && kv[0].equals(paramName))
+                return URLDecoder.decode(kv[1], StandardCharsets.UTF_8);
+        }
+        return null;
+    }
+
+    @Step("GET /order/status/{orderNumber}")
+    public Response getOrderStatus(String orderNumber) {
+        Response response = siteApi.getOrderStatus(orderNumber);
+        AllureAttachments.attachJson("order/status Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("GET /order/success/{orderNumber}")
+    public Response getOrderSuccess(String orderNumber) {
+        Response response = apiApi.getOrderSuccess(orderNumber);
+        AllureAttachments.attachJson("order/success Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация order/status")
+    public void validateOrderStatusResponse(Response response) {
+        assertBasicResponse(response);
+        assertJsonFieldEquals(response, "status", "ok");
+    }
+
+    @Step("Валидация order/success и согласованность с href кнопки")
+    public void validateOrderSuccessResponse(Response response, String orderNumber,
+                                             String expectedLoginToken, String expectedPassword) {
+
+        assertBasicResponse(response);
+
+        assertJsonFieldNotEmpty(response, "login");
+        assertJsonFieldNotEmpty(response, "password");
+        assertJsonFieldNotEmpty(response, "loginToken");
     }
 }

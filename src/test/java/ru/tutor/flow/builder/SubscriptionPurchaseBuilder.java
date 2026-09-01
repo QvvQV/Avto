@@ -41,7 +41,8 @@ public class SubscriptionPurchaseBuilder {
         APPROVED_CARD,
         FIXED_BALANCE_CARD,
         INSUFFICIENT_FUNDS_CARD,
-        EXPIRED_CARD
+        EXPIRED_CARD,
+        PARTS
     }
 
     public enum PageVariant {
@@ -123,14 +124,14 @@ public class SubscriptionPurchaseBuilder {
                 verifyModalOpened(); // только проверить и закрыть
                 openPaymentModalOnly(); // email + клик оплатить + проверка открытия окна
             } else {
-            processPaymentSystem(); // иначе продолжить оплату
+                processPaymentSystem(); // иначе продолжить оплату
 
-            if (captureEmail)
-                captureUserEmail();
+                if (captureEmail)
+                    captureUserEmail();
 
 
-            if (verifyError && expectedError != null)
-                verifyErrorMessage();
+                if (verifyError && expectedError != null)
+                    verifyErrorMessage();
             }
         });
 
@@ -210,7 +211,9 @@ public class SubscriptionPurchaseBuilder {
         }
 
         if (captureEmail) {
-            userEmail = cloudPage.atrEmail();
+            userEmail = (paymentMethod == PaymentMethod.INSTALLMENTS)
+                    ? cloudPage.getCurrentEmail()
+                    : cloudPage.atrEmail();
         }
     }
 
@@ -266,7 +269,20 @@ public class SubscriptionPurchaseBuilder {
 
     private void openPaymentModalOnly() {
         step("Ввод почты и открытия окна оплаты", () -> {
-            userEmail = cloudPage.setDateModal();
+            boolean installments = paymentMethod == PaymentMethod.INSTALLMENTS;
+            boolean installmentsSber = paymentMethod == PaymentMethod.PARTS;
+
+            if (TestConfig.isProd() && installments) {
+                cloudPage.setDateModalInstallments(); //оплатить долями
+                cloudPage.verifyInstallmentsPhoneForm(); // ждём телефона (10с) + скриншот
+                return;
+            }
+            if (TestConfig.isProd() && installmentsSber) {
+                cloudPage.setDateModalInstallmentsParts();
+                sberPage.verifyPartsPhoneForm();
+                return;
+            }
+            userEmail = cloudPage.setDateModal(); // клик оплатить
 
             PaymentSystem detected = detectActiveGateway();
             AllureAttachments.attachText("Платёжный шлюз", detected.name());
@@ -309,7 +325,19 @@ public class SubscriptionPurchaseBuilder {
     }
 
     private void processAutoPayment() {
-        userEmail =  cloudPage.setDateModal();
+        if (paymentMethod == PaymentMethod.INSTALLMENTS) {
+            cloudPage.setDateModalInstallments(); // клик оплатить Долями CLOUD
+            cloudPage.dolyameFormDemo();
+            userEmail = cloudPage.getCurrentEmail();
+            return;
+        }
+        if (paymentMethod == PaymentMethod.PARTS) {
+            cloudPage.setDateModalInstallmentsParts(); // email + "Плати частями"
+            sberPage.executeFullFlow();
+            userEmail = cloudPage.getCurrentEmail();
+            return;
+        }
+        userEmail = cloudPage.setDateModal();
 
         PaymentSystem detected = detectActiveGateway();
         AllureAttachments.attachText("Платёжный шлюз", detected.name());

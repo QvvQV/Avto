@@ -10,8 +10,8 @@ public class TestConfig {
     /*
      * Default переменные для выставления окружения dev1; dev2; dev3; prod; prodMain
      */
-    private static final String def = "prodMain";
-    private static final String api = "api1";
+    private static final String def = "dev1";
+    private static final String api = "client1";
     private static final String admin = "admin1";
 
 
@@ -57,7 +57,7 @@ public class TestConfig {
                 "dev2.base.url", "api2.base.url", "admin2.base.url", "client2.base.url", "dev2.test.email",
                 "dev3.base.url", "api3.base.url", "admin3.base.url", "client3.base.url", "dev3.test.email",
                 "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid", "default.utm",
-                "prod.main.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid", "default.utm",
+                "prod.main.base.url",
                 "system.utm", "timeout", "pageLoadTimeout"
         };
         for (String key : requiredKeys) {

@@ -148,7 +148,7 @@ public class RefundTicketTest {
                 orderSteps.getRefundTickets(token)
         );
         step("Валидация ответа", () ->
-                orderSteps.validateRefundTicketResponse(response)
+                orderSteps.validateRefundTicketResponse(response) // эндпоинт после создания /user/refund-tickets/create POST
         );
     }
 
