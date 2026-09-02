@@ -10,10 +10,9 @@ public class TestConfig {
     /*
      * Default переменные для выставления окружения dev1; dev2; dev3; prod; prodMain
      */
-    private static final String def = "dev1";
-    private static final String api = "client1";
+    private static final String def = "prod";
+    private static final String api = "prod";
     private static final String admin = "admin1";
-
 
     /*
      * Домены, url, тестовые данные для Sber/Сбер
@@ -56,8 +55,8 @@ public class TestConfig {
                 "dev1.base.url", "api1.base.url", "admin1.base.url", "client1.base.url", "dev1.test.email",
                 "dev2.base.url", "api2.base.url", "admin2.base.url", "client2.base.url", "dev2.test.email",
                 "dev3.base.url", "api3.base.url", "admin3.base.url", "client3.base.url", "dev3.test.email",
-                "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid", "default.utm",
-                "prod.main.base.url",
+                "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid.dev", "aff.rid.prod", "default.utm",
+                "prod.main.base.url", "aff.rid.url",
                 "system.utm", "timeout", "pageLoadTimeout"
         };
         for (String key : requiredKeys) {
@@ -216,9 +215,15 @@ public class TestConfig {
     /**
      * aff_rid метка для тестов
      */
-    public static String getAffRid() {
-        return properties.getProperty("aff.rid");
+    public static String getAffRidDev() {
+        return properties.getProperty("aff.rid.dev");
     }
+
+    public static String getAffRidProd() {
+        return properties.getProperty("aff.rid.prod");
+    }
+
+    public static String getCurrentAffRidUrl() {return properties.getProperty("aff.rid.url");}
 
     public static String getDefUtm() {
         return properties.getProperty("default.utm");
@@ -254,7 +259,7 @@ public class TestConfig {
         return switch (env) {
             case "api2" -> getApi2BaseUrl(); // нужно добавить этот метод
             case "api3" -> getApi3BaseUrl();
-            case "prod" -> getApiProdUrl();
+            case "prod", "prodMain" -> getApiProdUrl();
             default -> getApi1BaseUrl();
         };
     }
@@ -265,7 +270,7 @@ public class TestConfig {
         return switch (env) {
             case "dev2" -> getClient2BaseUrl();
             case "dev3" -> getClient3BaseUrl();
-            case "prod" -> getClientBaseUrl();
+            case "prod", "prodMain" -> getClientBaseUrl();
             default -> getClient1BaseUrl();
         };
     }
@@ -289,6 +294,15 @@ public class TestConfig {
             case "dev3" -> getEmailDev3();
             case "prod" -> null;
             default -> getEmailDev1();
+        };
+    }
+
+    public static String getAffRid() {
+        String env = System.getProperty("env.ui", def);
+
+        return switch (env) {
+            case "prod", "prodMain" -> getAffRidProd();
+            default -> getAffRidDev();
         };
     }
 

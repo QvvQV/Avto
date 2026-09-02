@@ -8,12 +8,15 @@ import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import ru.tutor.api.PaymentApi;
 import ru.tutor.config.TestConfig;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
 
+import java.util.List;
+
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -172,4 +175,6 @@ public class OrderPaymentsTest {
                 assertEquals(401, response.getStatusCode())
         );
     }
+
+
 }

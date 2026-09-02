@@ -6,7 +6,12 @@ import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
+import ru.tutor.config.TestConfig;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.constants.ApiEndpoints;
+import ru.tutor.utils.AllureAttachments;
+
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
@@ -32,5 +37,35 @@ public class PaymentApi extends BaseApi {
                 .then()
                 .log().all()
                 .extract().response();
+    }
+
+
+    @Step("GET /available-payment-systems - доступные платёжные системы")
+    public Response getAvailablePaymentSystems() {
+
+        return given(baseSpec)
+                .queryParam("aff_rid", TestConfig.getAffRid())
+                .log().all()
+                .when()
+                .get(ApiEndpoints.AVAILABLE_PAYMENT_SYSTEMS)
+                .then()
+                .log().all()
+                .extract()
+                .response();
+    }
+
+    @Step("GET /domain - информация по домену cardio")
+    public Response getDomain() {
+
+        return given(baseSpec)
+                .header("Referer", AddressPage.CARDIO_DOMAIN_URL_AFF_RID)
+                .queryParam("aff_rid", TestConfig.getAffRid())
+                .log().all()
+                .when()
+                .get(AddressPage.CARDIO_DOMAIN_URL)
+                .then()
+                .log().all()
+                .extract()
+                .response();
     }
 }
