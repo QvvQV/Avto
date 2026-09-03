@@ -25,23 +25,31 @@ public class RevshareFlow {
 
         cloudPage.clickBtnStartProd();
         cloudPage.clickCardPageBtnProd();
-        String href = cloudPage.verifySuccessProfilePage();
+        orderSteps.validateSuccessfulPayment(cloudPage);
 
-        String orderNumber = orderSteps.extractOrderNumberFromUrl(
-                com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl()
-        );
-        String loginToken = orderSteps.extractQueryParam(href, "loginToken");
-        String password = orderSteps.extractQueryParam(href, "password");
-
-        sleep(3000);
-
-        orderSteps.validateOrderStatusResponse(
-                orderSteps.getOrderStatus(orderNumber)
-        );
-
-        orderSteps.validateOrderSuccessResponse(
-                orderSteps.getOrderSuccess(orderNumber),
-                orderNumber,  loginToken, password
-        );
+//        validateSuccessfulPayment();
     }
+
+//    @Step("Полная проверка успешной оплаты")
+//    public void validateSuccessfulPayment() {
+//        OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
+//
+//        String href = cloudPage.verifySuccessProfilePage();
+//        String orderNumber = orderSteps.extractOrderNumberFromUrl(
+//                com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl()
+//        );
+//        String loginToken = orderSteps.extractQueryParam(href, "loginToken");
+//        String password = orderSteps.extractQueryParam(href, "password");
+//
+//        sleep(4000);
+//
+//        orderSteps.validateOrderStatusResponse(
+//                orderSteps.getOrderStatus(orderNumber)
+//        );
+//
+//        orderSteps.validateOrderSuccessResponse(
+//                orderSteps.getOrderSuccess(orderNumber),
+//                orderNumber, loginToken, password
+//        );
+//    }
 }

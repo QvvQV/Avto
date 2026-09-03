@@ -4,10 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.config.TestConfig;
-import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.TabManager;
-import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.UniversalMethod;
+import ru.tutor.utils.*;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -62,6 +59,9 @@ public class SberPage {
     private final SelenideElement EXPIRY_INSTALLMENTS = $("input[data-test-id='expiry']");
     private final SelenideElement CVC_INSTALLMENTS = $("input[data-test-id='cvc']");
     private final SelenideElement SUBMIT_INSTALLMENTS_BUTTON = $("button[data-test-id='submit-payment']");
+
+    // Локатор aff__rid
+    private final SelenideElement SBER_CARD_BTN = $("button.sberCard");
 
 
     private String email;
@@ -143,6 +143,7 @@ public class SberPage {
             UniversalMethod.safeClick(GO_SHOP, SHOP_TEXT);
             AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
         });
+        FrameHelper.switchToDefaultContent();
     }
 
     @Step("Оплата картой с недостаточными средствами")
@@ -260,5 +261,16 @@ public class SberPage {
                 TestConfig.Cards.getApprovedCvc()
         );
         verifyBackToShop();
+    }
+
+    @Step("Клик по кнопке Sber")
+    public void clickSber(boolean payByCard) {
+        UniversalMethod.safeClick(SBER_CARD_BTN, "Кнопка «Sber картой»");
+        sleep(2000);
+        AllureAttachments.attachScreenshot("Переход по кнопке «Sber картой»");
+        FrameHelper.switchToDefaultContent();
+        if (payByCard) {
+            payWithApprovedCard(); // dev Проводим оплату
+        }
     }
 }

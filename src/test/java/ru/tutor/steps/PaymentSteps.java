@@ -2,7 +2,6 @@ package ru.tutor.steps;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import org.openqa.selenium.WebDriver;
 import ru.tutor.base.BaseApiSteps;
 
 import java.util.List;

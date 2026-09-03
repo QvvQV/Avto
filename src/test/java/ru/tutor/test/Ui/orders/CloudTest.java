@@ -1,32 +1,22 @@
 package ru.tutor.test.Ui.orders;
 
-import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
 import ru.tutor.api.PaymentApi;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
-import ru.tutor.flow.AdminFlow;
-import ru.tutor.flow.PurchaseFlow;
-import ru.tutor.flow.PurchaseResult;
-import ru.tutor.flow.RevshareFlow;
+import ru.tutor.flow.*;
+import ru.tutor.page.CardioLandingPage;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
-import ru.tutor.constants.AddressPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.OrderSteps;
 import ru.tutor.steps.PaymentSteps;
-import ru.tutor.utils.AllureAttachments;
 
-import java.util.List;
-
-import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Epic("Платежи через Cloud/валидной картой Sber")
@@ -38,19 +28,25 @@ public class CloudTest extends BaseUiTest {
     private final TtPage ttPage = new TtPage();
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
+    private final CardioLandingPage cardioLandingPage = new CardioLandingPage();
 
     private final OrderSteps orderSteps = new OrderSteps(
-            TestConfig.getApiProdUrl()
+            TestConfig.getCurrentApiUrl()
     );
-
-    private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
-    private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
-    private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
 
     // ====API====
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final PaymentApi paymentApi = new PaymentApi(BASE_URL);
     private final PaymentSteps paymentSteps = new PaymentSteps(BASE_URL);
+
+    // ====FLOW====
+    private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
+    private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
+    private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
+    private final CardioLandingFlow  cardioLandingFlow = new CardioLandingFlow(cardioLandingPage, paymentApi, paymentSteps);
+    private final PaymentMethodFlow paymentMethodFlow = new PaymentMethodFlow(ttPage, cloudPage, paymentApi, paymentSteps, sberPage);
+
+
 
 
     //    @Test
@@ -120,7 +116,7 @@ public class CloudTest extends BaseUiTest {
     @DisplayName("Оплата 'Плати частями' через Sber")
     public void PayInstallmentsPartsSber() {
         if (TestConfig.isProd()) {
-           purchaseFlow.verifyPartPaymentOpens(TtPage.SubscriptionType.LIFE);
+            purchaseFlow.verifyPartPaymentOpens(TtPage.SubscriptionType.LIFE);
         } else {
             PurchaseResult result = purchaseFlow.partPayment();
             assertNotNull(result.email());
@@ -137,35 +133,49 @@ public class CloudTest extends BaseUiTest {
     }
 
 
-    // ====API====
+    //    === AFF_RID===
     @Test
-    @Order(1)
-    @DisplayName("Успешное получение доступных платёжных API систем на главной")
-    @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
-    @Tag("smoke")
-    void getAvailablePaymentSystemsSuccess() {
-        Response response = step("GET /available-payment-systems?aff_rid=" + TestConfig.getAffRid(),
-                () -> paymentApi.getAvailablePaymentSystems()
-        );
-        paymentSteps.assertPaymentSystems(response, "buttons.name");
-        paymentSteps.assertModalVersion(response);
+    @Tag("API + UI")
+    @DisplayName("Сбер картой: появление 4 кнопок на Главной и клик -> drawer")
+    void paymentMethod_SberCard() {
+        paymentMethodFlow.sberCardPayment();
     }
 
     @Test
-    @Order(2)
-    @DisplayName("Успешное получение доступных платёжных API систем по ручке domain")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag("smoke")
-    @Tag("positive")
-    void getDomainCardioSystemSuccess(){
-        assumeTrue(TestConfig.isProd(),
-                "Тест запускается только на прод-окружении (env.ui=prod)");
+    @Tag("API + UI")
+    @DisplayName("Тинькофф картой: появление 4 кнопок на Главной и клик -> drawer")
+    void paymentMethod_TinkCard() {
+        paymentMethodFlow.tinkPayment();
+    }
 
-        Response response = step("GET /domain?aff_rid=" + TestConfig.getAffRid(),
-                () -> paymentApi.getDomain()
-        );
-        paymentSteps.assertPaymentSystems(response, "paymentButtons.name");
-        paymentSteps.assertModalVersion(response);
+    @Test
+    @Tag("API + UI")
+    @DisplayName("Other: появление 4 кнопок на Главной и клик -> drawer")
+    void paymentMethod_Other() {
+        paymentMethodFlow.otherPayment();
+    }
+
+    @Test
+    @Tag("API + UI")
+    @DisplayName("Cloud: появление 4 кнопок на стр Лендинга и клик -> drawer")
+    void paymentMethod_Cloud_Drawer_Landing(){
+        assumeTrue(TestConfig.isProd(), "Только прод");
+        cardioLandingFlow.tinkPayment();
+    }
+
+    @Test
+    @Tag("API + UI")
+    @DisplayName("Other: появление 4 кнопок на стр Лендинга и клик -> drawer")
+    void paymentMethod_Other_Drawer_Landing(){
+        assumeTrue(TestConfig.isProd(), "Только прод");
+        cardioLandingFlow.otherPayment();
+    }
+
+    @Test
+    @Tag("API + UI")
+    @DisplayName("Sber: появление 4 кнопок на стр Лендинга и клик -> drawer")
+    void paymentMethod_Sber_Drawer_Landing(){
+        assumeTrue(TestConfig.isProd(), "Только прод");
+        cardioLandingFlow.sberCardPayment();
     }
 }

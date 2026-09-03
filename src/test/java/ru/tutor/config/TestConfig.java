@@ -55,8 +55,8 @@ public class TestConfig {
                 "dev1.base.url", "api1.base.url", "admin1.base.url", "client1.base.url", "dev1.test.email",
                 "dev2.base.url", "api2.base.url", "admin2.base.url", "client2.base.url", "dev2.test.email",
                 "dev3.base.url", "api3.base.url", "admin3.base.url", "client3.base.url", "dev3.test.email",
-                "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid.dev", "aff.rid.prod", "default.utm",
-                "prod.main.base.url", "aff.rid.url",
+                "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid.dev", "aff.rid.prod",
+                "default.utm", "prod.test.email","prod.main.base.url", "aff.rid.url",
                 "system.utm", "timeout", "pageLoadTimeout"
         };
         for (String key : requiredKeys) {
@@ -198,6 +198,10 @@ public class TestConfig {
         return properties.getProperty("client.base.url");
     }
 
+    public static String getProdEmail() {
+        return properties.getProperty("prod.test.email");
+    }
+
 
     // ==================== Валидные тестовые данные ====================
 
@@ -292,7 +296,7 @@ public class TestConfig {
         return switch (env) {
             case "dev2" -> getEmailDev2();
             case "dev3" -> getEmailDev3();
-            case "prod" -> null;
+            case "prod" -> getProdEmail();
             default -> getEmailDev1();
         };
     }

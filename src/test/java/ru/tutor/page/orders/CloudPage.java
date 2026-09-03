@@ -23,6 +23,7 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.tutor.page.orders.SberPage.logModalType;
 
 public class CloudPage {
@@ -82,6 +83,16 @@ public class CloudPage {
     private String currentEmail;
     private final PaymentFrameHandler frameHandler = new PaymentFrameHandler();
     private final PaymentFrameChecker frameChecker = new PaymentFrameChecker();
+
+    // Локаторы для кнопок при aff_rid
+    private final SelenideElement SBER_PAY_BTN = $("button.sber");
+    private final SelenideElement SBER_CARD_BTN = $("button.sberCard");
+    private final SelenideElement TINK_BTN = $("button.tink");
+    private final SelenideElement OTHER_BTN = $("button.other");
+
+//    private final SelenideElement SBER_PAY_DRAWER = $("[class=*'EZDrawer__container']");
+    private final SelenideElement SBER_PAY_DRAWER = $("[data-testid='qrBox']");
+    private final SelenideElement SBER_PAY_TITLE = $$("span").find(exactText("Получить пуш на телефон"));
 
     @Step("Заполнение данных модального окна Prod")
     public void clickBtnStartProd() {
@@ -241,6 +252,76 @@ public class CloudPage {
             // Логирование
             AllureAttachments.attachText("Email в модалке", currentEmail);
             System.out.println(modalText + ": " + currentEmail);
+        });
+    }
+
+    @Step("Проверка появления 4 кнопок способа оплаты")
+    public void assertPaymentMethodButtonsVisible() {
+        step("Ожидание всех 4 кнопок способа оплаты", () -> {
+            SBER_PAY_BTN.shouldBe(visible, DEFAULT_TIMEOUT);
+            SBER_CARD_BTN.shouldBe(visible, DEFAULT_TIMEOUT);
+            TINK_BTN.shouldBe(visible, DEFAULT_TIMEOUT);
+            OTHER_BTN.shouldBe(visible, DEFAULT_TIMEOUT);
+            AllureAttachments.attachScreenshot("4 кнопки способа оплаты (модалка)");
+        });
+    }
+
+    @Step("Клик по кнопке SberPay и фиксация drawer")
+    public void clickSberPayAndVerifyDrawer() {
+        UniversalMethod.safeClick(SBER_PAY_BTN, "Кнопка SberPay");
+        ttPage.closeModal();
+        FrameHelper.switchToDefaultContent();
+        WaitHelper.waitFor( () ->
+                $$("iframe").stream().anyMatch(f -> {
+                    String src = f.getAttribute("src");
+                    return src != null && (src.contains("sberbank_id") || src.contains("id.sber.ru"));
+                }),
+                DEFAULT_TIMEOUT, "Sber iframe не появился");
+
+        boolean entered = false;
+        for (SelenideElement frame : $$("iframe")) {
+            String src = frame.getAttribute("src");
+            if (src != null && (src.contains("sberbank_id") || src.contains("id.sber.ru"))) {
+                switchTo().frame(frame);
+                WaitHelper.waitForPageLoad();
+                entered = true;
+                break;
+            }
+        }
+        assertTrue(entered, "Не найден iframe Sber ID с drawer после клика по SberPay");
+        SBER_PAY_DRAWER.shouldBe(visible, DEFAULT_TIMEOUT);
+        step("Скриншот drawer", () ->
+                AllureAttachments.attachScreenshot("Drawer «Оплатить не получится» (SberPay)"));
+    }
+
+    @Step("Клик по кнопке Тинькофф")
+    public void clickTink(boolean payByCard) {
+        UniversalMethod.safeClick(TINK_BTN, "Кнопка «Тинькофф картой»");
+        sleep(2000);
+        AllureAttachments.attachScreenshot("Переход по кнопке «Тинькофф картой»");
+        FrameHelper.switchToDefaultContent();
+        if (payByCard) {
+            clickCardPageBtn(); // dev Проводим оплату
+        }
+    }
+
+    @Step("Клик по кнопке Тинькофф")
+    public void clickOther(boolean payByCard) {
+        UniversalMethod.safeClick(OTHER_BTN, "Кнопка «Other»");
+        sleep(2000);
+        AllureAttachments.attachScreenshot("Переход по кнопке «Other»");
+        FrameHelper.switchToDefaultContent();
+        if (payByCard) {
+            clickCardPageBtn(); // dev Проводим оплату
+        }
+    }
+
+    @Step("Проверка появления Cloud iframe")
+    public boolean isCloudPaymentFrameVisible() {
+        FrameHelper.switchToDefaultContent();
+        return  $$("iframe").stream().anyMatch(frame -> {
+            String src = frame.getAttribute("src");
+            return src != null && src.contains("cloudpayments");
         });
     }
 

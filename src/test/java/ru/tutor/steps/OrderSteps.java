@@ -5,7 +5,9 @@ import io.restassured.response.Response;
 import ru.tutor.api.PaymentSuccessApi;
 import ru.tutor.api.UserOrderApi;
 import ru.tutor.base.BaseApiSteps;
+import ru.tutor.config.TestConfig;
 import ru.tutor.model.RefundTicketRequest;
+import ru.tutor.page.orders.CloudPage;
 import ru.tutor.utils.AllureAttachments;
 
 import java.net.URI;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.codeborne.selenide.Selenide.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderSteps extends BaseApiSteps {
@@ -384,4 +387,28 @@ public class OrderSteps extends BaseApiSteps {
         assertJsonFieldNotEmpty(response, "password");
         assertJsonFieldNotEmpty(response, "loginToken");
     }
+
+    @Step("Полная проверка успешной оплаты")
+    public static void validateSuccessfulPayment(CloudPage cloudPage) {
+        OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
+
+        String href = cloudPage.verifySuccessProfilePage();
+        String orderNumber = orderSteps.extractOrderNumberFromUrl(
+                com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl()
+        );
+        String loginToken = orderSteps.extractQueryParam(href, "loginToken");
+        String password = orderSteps.extractQueryParam(href, "password");
+
+        sleep(4000);
+
+        orderSteps.validateOrderStatusResponse(
+                orderSteps.getOrderStatus(orderNumber)
+        );
+
+        orderSteps.validateOrderSuccessResponse(
+                orderSteps.getOrderSuccess(orderNumber),
+                orderNumber,  loginToken, password
+        );
+    }
+
 }
