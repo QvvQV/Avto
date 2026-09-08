@@ -32,6 +32,8 @@ public class Registration {
 
 //    // Селекторы
     private final SelenideElement EMAIL_INPUT = $("[id='buy-modal-v2-email']");
+    private final SelenideElement EMAIL_PROD = $("input[placeholder='Твоя электронная почта']");
+//    private final SelenideElement PASSWORD_PROD = $("input[name='email']");
     private final SelenideElement PASSWORD_INPUT = $("[name='password']");
     private final SelenideElement LOGIN_BUTTON = $$("button").find(exactText(LOGIN_TEXT));
     private final SelenideElement btnYandex = $("[data-t='personal-button:text']");
@@ -259,6 +261,17 @@ public class Registration {
     public void validPerson() {
         validEmail();
         validPass();
+        clickBtnLogin();
+        WaitHelper.waitForAnimationComplete();
+        WaitHelper.waitForPageLoad();
+    }
+
+    public void loginWithRenewalProd(){
+        WaitHelper.waitForAnimationComplete();
+        WaitHelper.waitForPageLoad();
+        step("Логин Реневалла (prod)", () ->
+                UniversalMethod.safeSetValue(EMAIL_PROD, TestConfig.getRenewalEmailProd(), "Renewal email"));
+        PASSWORD_INPUT.sendKeys(TestConfig.getTestPassword());
         clickBtnLogin();
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();

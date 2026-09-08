@@ -18,6 +18,7 @@ import ru.tutor.utils.WaitHelper;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,8 +46,13 @@ public class PaymentMethodFlow {
     }
 
     private void openPremiumMethodButtons() {
-        step("Открытие главной страницы (dev)", () ->
-                open(AddressPage.URL_MAIN_REV));
+        step("Открытие главной страницы", () -> {
+                if (TestConfig.isProd()) {
+                    open(AddressPage.URL_MAIN_REV_PROD);
+        } else {
+            open(AddressPage.URL_MAIN_REV);
+        }
+        });
         ttPage.selectSubscription(TtPage.SubscriptionType.PREMIUM);
         step("Ввод email и клик 'Оплатить' -> появление кнопок способов", () -> {
             cloudPage.setDateModal();
@@ -57,9 +63,8 @@ public class PaymentMethodFlow {
     @Step("Тинькофф: кнопка -> Cloud iframe (dev: оплата, prod: фиксация)")
     public void tinkPayment() {
         primeAvailablePaymentSystem();
-            if (TestConfig.isProd()) {
-                step("Открытие страницы (prod)" , () -> open(TestConfig.getProdBaseUrl()));
-                openPremiumMethodButtons();
+        openPremiumMethodButtons();
+        if (TestConfig.isProd()) {
                 cloudPage.clickTink(false);
                 step("Проверка появления Cloud iframe", () -> {
                     assertTrue(cloudPage.isCloudPaymentFrameVisible(),
@@ -68,7 +73,6 @@ public class PaymentMethodFlow {
                 });
                 return;
             }
-            openPremiumMethodButtons();
             cloudPage.clickTink(true);
             OrderSteps.validateSuccessfulPayment(cloudPage);
         }
@@ -76,9 +80,9 @@ public class PaymentMethodFlow {
     @Step("Other: кнопка -> Cloud iframe/Sber редирект (dev: оплата, prod: фиксация)")
     public void otherPayment() {
         primeAvailablePaymentSystem();
+        openPremiumMethodButtons();
         if (TestConfig.isProd()) {
-            step("Открытие страницы (prod)" , () -> open(TestConfig.getProdBaseUrl()));
-            openPremiumMethodButtons();
+
             cloudPage.clickOther(false);
             step("Проверка появления Cloud iframe или Sber редиректа", () -> {
                 boolean cloud = cloudPage.isCloudPaymentFrameVisible();
@@ -93,7 +97,6 @@ public class PaymentMethodFlow {
             });
             return;
         }
-        openPremiumMethodButtons();
         cloudPage.clickOther(true);
         OrderSteps.validateSuccessfulPayment(cloudPage);
     }
@@ -101,9 +104,8 @@ public class PaymentMethodFlow {
     @Step("Sber: кнопка -> Sber редирект (dev: оплата, prod: фиксация)")
     public void sberCardPayment() {
         primeAvailablePaymentSystem();
+        openPremiumMethodButtons();
         if (TestConfig.isProd()) {
-            step("Открытие страницы (prod)" , () -> open(TestConfig.getProdBaseUrl()));
-            openPremiumMethodButtons();
             sberPage.clickSber(false);
             step("Фиксация Sber редиректа", () -> {
                 String currentUrl = com.codeborne.selenide.WebDriverRunner.url();
@@ -116,8 +118,8 @@ public class PaymentMethodFlow {
             });
             return;
         }
-        openPremiumMethodButtons();
         sberPage.clickSber(true);
+        sleep(13000);
         WaitHelper.waitFor(() -> WebDriverRunner.url().contains("success"),
                 Duration.ofSeconds(15), "Ожидание страницы успеха после оплаты Sber");
         OrderSteps.validateSuccessfulPayment(cloudPage);

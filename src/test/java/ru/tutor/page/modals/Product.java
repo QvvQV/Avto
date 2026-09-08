@@ -19,11 +19,13 @@ public class Product {
 
     // Названия кнопок
     private static final String BEGIN_TEXT = "Начать";
+    private static final String CONTINUE_TEXT = "Продолжить";
     private static final String WATCH_TEXT = "Смотреть";
     private static final String CASHBACK_TEXT = "Забрать бонус";
 
     //Локаторы
     private final SelenideElement BEGIN_BUTTON = $$("button").find(exactText(BEGIN_TEXT));
+    private final SelenideElement CONTINUE_BUTTON = $$("button").find(exactText(CONTINUE_TEXT));
     private final SelenideElement WATCH_BUTTON = $$("button").find(exactText(WATCH_TEXT));
     private final SelenideElement WEEK_BUTTON = $("a[href*='user/product']");
     private final SelenideElement OPEN_WEEK_TWO = $x("//button[contains(@class, '_week_') and .//p[contains(text(), 'Неделя 2')]]");
@@ -37,11 +39,22 @@ public class Product {
             sleep(4000);
             if (BEGIN_BUTTON.isDisplayed() && BEGIN_BUTTON.isEnabled()) {
                 UniversalMethod.safeClick(BEGIN_BUTTON, BEGIN_TEXT);
-            } else {
+            }
+            else {
                 UniversalMethod.safeClick(WATCH_BUTTON, WATCH_TEXT);
             }
                 }
         );
+        WaitHelper.waitForAnimationComplete();
+        WaitHelper.waitForPageLoad();
+        step("Переход по кнопке Неделя 1, Урок 1", () -> UniversalMethod.safeClick(WEEK_BUTTON, "'Неделя 1,Урок 1'")
+        );
+        step("Открываем вторую неделю курса", () -> UniversalMethod.safeClick(OPEN_WEEK_TWO, "Неделя 2")
+        );
+    }
+
+    @Step("Переход в продукт Prod")
+    public void beginProductProd() {
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
         step("Переход по кнопке Неделя 1, Урок 1", () -> UniversalMethod.safeClick(WEEK_BUTTON, "'Неделя 1,Урок 1'")

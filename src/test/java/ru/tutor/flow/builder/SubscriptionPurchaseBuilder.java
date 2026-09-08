@@ -30,6 +30,7 @@ public class SubscriptionPurchaseBuilder {
     private final SberPage sberPage;
     private String userEmail;
     private boolean modalOnly = false;
+    private String customUrl;
 
     public enum PaymentSystem {
         CLOUD, SBER, AUTO
@@ -170,7 +171,13 @@ public class SubscriptionPurchaseBuilder {
 
     // Универсальный метод с параметром для aff_rid
     private void openMainPageAndCheckTitle(boolean useAffRid) {
-        String url = useAffRid ? AddressPage.URL_MAIN_REV : AddressPage.URL_MAIN;
+//        String url = useAffRid ? AddressPage.URL_MAIN_REV : AddressPage.URL_MAIN;
+        String url;
+        if (customUrl != null) {
+            url = customUrl;
+        } else {
+            url = useAffRid ? AddressPage.URL_MAIN_REV : AddressPage.URL_MAIN;
+        }
         String stepName = useAffRid ? "с aff_rid параметром" : "без aff_rid параметра";
 
         step(String.format("Открытие главной страницы %s", stepName), () ->
@@ -274,7 +281,8 @@ public class SubscriptionPurchaseBuilder {
 
             if (TestConfig.isProd() && installments) {
                 cloudPage.setDateModalInstallments(); //оплатить долями
-                cloudPage.verifyInstallmentsPhoneForm(); // ждём телефона (10с) + скриншот
+                cloudPage.verifyInstallmentsRedirect();
+//                cloudPage.verifyInstallmentsPhoneForm(); // ждём телефона (10с) + скриншот
                 return;
             }
             if (TestConfig.isProd() && installmentsSber) {
@@ -349,4 +357,9 @@ public class SubscriptionPurchaseBuilder {
             sberPage.payWithApprovedCard();
         }
     }
-}
+
+    public SubscriptionPurchaseBuilder withCustomUrl(String url) {
+        this.customUrl = url;
+        return this;
+    }
+    }

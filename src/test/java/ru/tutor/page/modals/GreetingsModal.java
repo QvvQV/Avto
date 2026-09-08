@@ -41,7 +41,7 @@ public class GreetingsModal {
     private final SelenideElement PASSWORD_INPUT = $("[name=\"newPassword\"]");
     private final SelenideElement REPEAT_PASSWORD_INPUT = $("[name=\"repeatPassword\"]");
     private final SelenideElement MALE_INPUT = $("#react-select-2-option-0"); // Мужчина
-    private final SelenideElement MALE_INPUT_DROPDOWN = $(".css-zgx56i-control");
+    private final SelenideElement MALE_INPUT_DROPDOWN = $(".css-1ymwfg4-control");
     private final SelenideElement NUMBER_PHONE = $("._inputContainer_v88q7_18 input");
     private final SelenideElement START_TIME_CONTAINER = $("._selectContainer_mo70f_58:has(#react-select-3-input)");
     private final SelenideElement END_TIME_CONTAINER = $("._selectContainer_mo70f_58:has(#react-select-4-input)");

@@ -17,6 +17,8 @@ public class AddressPage {
     // ==================== UI URL ====================
     /** Главная страница */
     public static final String URL_MAIN = TestConfig.getCurrentUiUrl();
+    public static final String URL_MAIN_PROD = TestConfig.getProdMainBaseUrl();
+    public static final String URL_MAIN_REV_PROD = URL_MAIN_PROD + PARAM + VALUE;
     public static final String URL_MAIN_REV = URL_MAIN + PARAM + VALUE; // Прод
     public static final String CARDIO_DOMAIN_URL_AFF_RID = CARDIO_DOMAIN_HOST + PARAM + VALUE;
 

@@ -11,10 +11,7 @@ import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.By;
 import ru.tutor.config.TestConfig;
-import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.FrameHelper;
-import ru.tutor.utils.WaitHelper;
-import ru.tutor.utils.UniversalMethod;
+import ru.tutor.utils.*;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -159,6 +156,8 @@ public class CloudPage {
                 UniversalMethod.safeClick(SUCCESS_PAY_BUTTON, SUCCESS_TEXT);
             } else {
                 Allure.addAttachment("Оплата не произведена", "Что-то пошло не так");
+                throw new AssertionError("Не найден URL /form-demo. Редирект на анкету долями не произошёл. " +
+                        "Текущий URL: + currentUrl");
             }
         });
     }
@@ -228,6 +227,10 @@ public class CloudPage {
             // Логирование
             AllureAttachments.attachText("Email в модалке", currentEmail);
             System.out.println(modalText + ": " + currentEmail);
+            if (!TestConfig.isProd()) {
+                WaitHelper.waitForUrlContains("/form-demo", Duration.ofSeconds(20));
+            }
+            AllureAttachments.attachScreenshot("Анкета долями открыта");
         });
     }
 
@@ -319,6 +322,7 @@ public class CloudPage {
     @Step("Проверка появления Cloud iframe")
     public boolean isCloudPaymentFrameVisible() {
         FrameHelper.switchToDefaultContent();
+        sleep(2000);
         return  $$("iframe").stream().anyMatch(frame -> {
             String src = frame.getAttribute("src");
             return src != null && src.contains("cloudpayments");
@@ -480,4 +484,14 @@ public class CloudPage {
             return false;
         }
     }
-}
+
+    @Step("Проверка редиректа на dolyame.ru")
+    public void verifyInstallmentsRedirect() {
+        step("Ожидание редиректа на анкету долями dolyame.ru", () -> {
+            TabManager.switchToNewWindow();
+            WaitHelper.waitForUrlContains("id.tbank.ru/auth/step?cid=", Duration.ofSeconds(20));
+            AllureAttachments.attachScreenshot("Анкета долями (редирект dolyame.ru)");
+            AllureAttachments.attachText("Статус", "Редирект на dolyame.ru выполнен");
+        });
+    }
+    }

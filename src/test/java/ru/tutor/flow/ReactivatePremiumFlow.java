@@ -19,10 +19,14 @@ import ru.tutor.steps.*;
 import ru.tutor.test.context.TestExecutionContext;
 import ru.tutor.test.executor.PaymentCycleExecutor;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
+import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
+
+import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReactivatePremiumFlow {
 
@@ -295,9 +299,9 @@ public class ReactivatePremiumFlow {
     }
 
     /**
-     * Оформление Renewall внутри ЛК
+     * Оформление Renewal внутри ЛК
      */
-    @Step("Оформление Renewall внутри ЛК")
+    @Step("Оформление Renewal внутри ЛК")
     public ReactivatePremiumFlow processRenewalInPersonalAccount() {
         this.isRenewalInPersonalAccount = true;
 
@@ -306,7 +310,18 @@ public class ReactivatePremiumFlow {
             WaitHelper.waitForPageLoad();
             step("Вызов модального окна оплаты", new LiteUnsubscribePage()::clickSubscribe);
         });
-        cloudPage.clickCardPageBtn();
+        if (TestConfig.isProd()) {
+            step("редирект на user/main", () ->
+                    WaitHelper.waitForUrlContains("/user/main", Duration.ofSeconds(15)));
+            step("Фиксация Cloud iframe", () -> {
+                WaitHelper.waitFor(() -> cloudPage.isCloudPaymentFrameVisible(),
+                        Duration.ofSeconds(20), "Cloud iframe не появился");
+                assertTrue(cloudPage.isCloudPaymentFrameVisible(), "Cloud iframe не появился");
+                AllureAttachments.attachScreenshot("Cloud iframe (Renewall, /user/main)");
+            });
+        } else {
+            cloudPage.clickCardPageBtn();
+        }
         return this;
     }
 

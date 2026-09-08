@@ -89,29 +89,32 @@ public class PurchaseFlow {
     }
 
     @Step("Проверка открытия модального окна {type}")
-    public void verifyModalOpens(TtPage.SubscriptionType type) {
+    public void verifyModalOpens(TtPage.SubscriptionType type, String baseUrl) {
         SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                 .forSubscription(type)
                 .modalOnly()
+                .withCustomUrl(baseUrl)
                 .execute();
     }
 
     @Step("Проверка открытия модального окна {type}")
-    public void verifyInstallmentOpens(TtPage.SubscriptionType type) {
+    public void verifyInstallmentOpens(TtPage.SubscriptionType type, String baseUrl) {
         SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                 .forSubscription(type)
                 .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.INSTALLMENTS)
                 .modalOnly()
+                .withCustomUrl(baseUrl)
                 .execute();
     }
 
 
     @Step("Проверка открытия 'Плати частями' для {type}")
-    public void verifyPartPaymentOpens(TtPage.SubscriptionType type) {
+    public void verifyPartPaymentOpens(TtPage.SubscriptionType type, String baseUrl) {
         SubscriptionPurchaseBuilder.create(ttPage, cloudPage, sberPage)
                 .forSubscription(type)
                 .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.PARTS)
                 .modalOnly()
+                .withCustomUrl(baseUrl)
                 .execute();
     }
 

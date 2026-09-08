@@ -56,7 +56,7 @@ public class TestConfig {
                 "dev2.base.url", "api2.base.url", "admin2.base.url", "client2.base.url", "dev2.test.email",
                 "dev3.base.url", "api3.base.url", "admin3.base.url", "client3.base.url", "dev3.test.email",
                 "prod.base.url", "api.prod.url", "client.base.url", "test.password", "aff.rid.dev", "aff.rid.prod",
-                "default.utm", "prod.test.email","prod.main.base.url", "aff.rid.url",
+                "default.utm", "prod.test.email","prod.main.base.url", "aff.rid.url", "prod.renewal.email",
                 "system.utm", "timeout", "pageLoadTimeout"
         };
         for (String key : requiredKeys) {
@@ -200,6 +200,10 @@ public class TestConfig {
 
     public static String getProdEmail() {
         return properties.getProperty("prod.test.email");
+    }
+
+    public static String getRenewalEmailProd() {
+        return properties.getProperty("prod.renewal.email");
     }
 
 

@@ -29,6 +29,7 @@ public class UniversalMethod {
                 .shouldBe(enabled, DEFAULT_TIMEOUT)
                 .click();
         WaitHelper.waitForAnimationComplete();
+        WaitHelper.waitForPageLoad();
 //        AllureAttachments.attachText("Клик выполнен", "✓ Нажат элемент: " +  elementName);
     }
 
