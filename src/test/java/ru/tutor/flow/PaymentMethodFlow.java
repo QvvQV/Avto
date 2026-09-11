@@ -12,7 +12,6 @@ import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.OrderSteps;
 import ru.tutor.steps.PaymentSteps;
 import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.FrameHelper;
 import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;

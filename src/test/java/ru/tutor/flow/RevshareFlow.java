@@ -20,36 +20,11 @@ public class RevshareFlow {
     }
 
     @Step("Оплата по ссылке PROD с полной проверкой")
-    public void executeProd() {
+    public OrderSteps.PaymentCredentials executeProd() {
         step("Открытие страницы", () -> open(TestConfig.getProdBaseUrl()));
 
         cloudPage.clickBtnStartProd();
         cloudPage.clickCardPageBtnProd();
-        orderSteps.validateSuccessfulPayment(cloudPage);
-
-//        validateSuccessfulPayment();
+        return orderSteps.validateSuccessfulPayment(cloudPage);
     }
-
-//    @Step("Полная проверка успешной оплаты")
-//    public void validateSuccessfulPayment() {
-//        OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
-//
-//        String href = cloudPage.verifySuccessProfilePage();
-//        String orderNumber = orderSteps.extractOrderNumberFromUrl(
-//                com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl()
-//        );
-//        String loginToken = orderSteps.extractQueryParam(href, "loginToken");
-//        String password = orderSteps.extractQueryParam(href, "password");
-//
-//        sleep(4000);
-//
-//        orderSteps.validateOrderStatusResponse(
-//                orderSteps.getOrderStatus(orderNumber)
-//        );
-//
-//        orderSteps.validateOrderSuccessResponse(
-//                orderSteps.getOrderSuccess(orderNumber),
-//                orderNumber, loginToken, password
-//        );
-//    }
 }

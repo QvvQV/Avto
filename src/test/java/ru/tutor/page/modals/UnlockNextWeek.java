@@ -50,6 +50,14 @@ public class UnlockNextWeek {
         }
     }
 
+    public void openLifetimeAccess() {
+        WaitHelper.waitForAnimationComplete();
+        UniversalMethod.clickButton(OPEN_UNLIMITED_ACCESS_BUTTON,OPEN_UNLIMITED_ACCESS_TEXT);
+        WaitHelper.waitForAnimationComplete();
+        UniversalMethod.clickButton(PAY_3990_BUTTON,PAY_3990_TEXT);
+        WaitHelper.waitForAnimationComplete();
+    }
+
 
     /**
      * Кнопка реневалл с управление доступом

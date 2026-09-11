@@ -39,30 +39,41 @@ public class AuthSteps extends BaseApiSteps {
 
     @Step("POST /user/login - вход пользователя {email}")
     public Response login(String email, String password) {
-        Response response = userApi.login(email, password);
-        AllureAttachments.attachJson("Login Response", response.getBody().asString());
-        AllureAttachments.attachJson("Login Headers", response.getHeaders().toString());
-        return response;
+       return step("Вход пользователя", () -> {
+           Response response = userApi.login(email, password);
+           AllureAttachments.attachJson("Login Response", response.getBody().asString());
+           AllureAttachments.attachJson("Login Headers", response.getHeaders().toString());
+           return response;
+       });
     }
 
     @Step("Выполнить логин и получить токен")
-    public String loginAndGetToken(String email, String password) {
+    public LoginResponse loginAndGetTokens(String email, String password) {
+
         Response response = login(email, password);
 
         // Проверяем базовую структуру ответа
         assertSuccessStatusCode(response);
 
-        String token = response.jsonPath().getString("token");
-        assertJsonFieldNotEmpty(response, "token");
+        LoginResponse tokens = response.getBody().as(LoginResponse.class);
+        assertNotNull(tokens.token(), "token не должен быть null");
+        assertNotNull(tokens.refreshToken(), "refresh_token не должен быть null");
 
-        currentAuthToken = token;
+//        String token = response.jsonPath().getString("token");
+//        assertJsonFieldNotEmpty(response, "token");
+
+        currentAuthToken = tokens.token();
 
         // Логируем часть токена для отладки
-        AllureAttachments.attachText("Получен Bearer токен",
-                "Токен получен успешно (первые 50 символов): " +
-                        token.substring(0, Math.min(50, token.length())) + "...");
+//        AllureAttachments.attachText("Получен Bearer токен",
+//                "Токен получен успешно (первые 50 символов): " +
+//                        token.substring(0, Math.min(50, token.length())) + "...");
 
-        return token;
+        return tokens;
+    }
+
+    public String loginAndGetToken(String email, String password) {
+        return loginAndGetTokens(email, password).token();
     }
 
     @Step("Выполнить логин и получить данные пользователя")

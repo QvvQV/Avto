@@ -1,13 +1,17 @@
 package ru.tutor.flow;
 
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import net.datafaker.Faker;
 import ru.tutor.api.UserProductsApi;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
+import ru.tutor.model.LoginResponse;
 import ru.tutor.model.ProductsResponse;
+import ru.tutor.model.UserEditDataRequest;
 import ru.tutor.page.Registration;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.modals.GreetingsModal;
@@ -16,17 +20,15 @@ import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.AdminToUserLoginSteps;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.ProductsSteps;
+import ru.tutor.steps.*;
 import ru.tutor.utils.*;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static io.qameta.allure.Allure.step;
@@ -40,10 +42,13 @@ public class RenewalModalFlow {
     private final UnlockNextWeek unlockNextWeek;
     private final CloudPage cloudPage;
     private final AuthSteps authSteps;
+    private final AccountSteps accountSteps;
     private final PurchaseFlow purchaseFlow;
     private final GreetingsModal greetingsModal;
     private String currentToken;
     private String userEmail;
+
+    private Faker faker = new Faker(Locale.ENGLISH);
 
     public RenewalModalFlow(
             Registration registration, Product product, UnlockNextWeek unlockNextWeek, CloudPage cloudPage,
@@ -56,6 +61,7 @@ public class RenewalModalFlow {
         this.unlockNextWeek = unlockNextWeek;
         this.cloudPage = cloudPage;
         this.authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
+        this.accountSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
         this.purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
         this.greetingsModal = new GreetingsModal();
     }
@@ -63,45 +69,32 @@ public class RenewalModalFlow {
     @Step("Логин Реневалла в ЛК prod")
     public RenewalModalFlow login() {
         if (TestConfig.isProd()) {
-            currentToken = step("POST /user/login (renewal)", () ->
-                    authSteps.loginAndGetToken(
-                            TestConfig.getRenewalEmailProd(),
-                            TestConfig.getTestPassword()));
-            step("Открытие домена ЛК и подстановка токена", () -> {
-                open(AddressPage.LOGIN);
-                registration.loginWithRenewalProd();
-            });
+            loginWithRefreshToken(TestConfig.getRenewalEmail(), TestConfig.getTestPassword());
             WaitHelper.waitForPageLoad();
-        } else {
+            }
+        else {
             step("Создание заказа Лайт", () -> {
                 PurchaseResult result = purchaseFlow.lite();
                 userEmail = result.email();
             });
-            step("Получение href со страницы успеха", () -> {
-                cloudPage.verifySuccessProfilePage();
-            });
 
             step("Переход в ЛК", () -> {
-                FrameHelper.switchToDefaultContent();
-                $$("a").find(exactText("Перейти в личный кабинет"))
-                        .shouldBe(visible, Duration.ofSeconds(15))
-                        .click();
-                WaitHelper.waitForPageLoad();
-            });
-            step("Заполнение приветсвенной модалки", () ->
-                    greetingsModal.fillAccessInput());
-            step("Получение токена из localStorage", () ->
-                    currentToken = AdminToUserLoginSteps.extractTokenFromCurrentPage());
-        }
-        return this;
-    }
+                String href = cloudPage.verifySuccessProfilePage();
+                String password = OrderSteps.extractQueryParam(href, "password");
+                String token = loginWithRefreshToken(userEmail, password);
 
-    @Step("Логин Реневалла (API) и получение токена")
-    public RenewalModalFlow loginViaApi() {
-        currentToken = step("POST /user/login (renewal)", () ->
-                authSteps.loginAndGetToken(
-                        TestConfig.getRenewalEmailProd(),
-                        TestConfig.getTestPassword()));
+            step("Заполнение приветсвенной модалки через API", () -> {
+                accountSteps.validateEditPasswordSuccess(
+                        accountSteps.editPassword(token, password, TestConfig.getTestPassword())
+                );
+                accountSteps.validateEditDataSuccess(
+                        accountSteps.editUserData(token,
+                                new UserEditDataRequest().name(faker.name().firstName()).gender(0).email(userEmail))
+                );
+            });
+            refresh();
+            });
+        }
         return this;
     }
 
@@ -132,9 +125,11 @@ public class RenewalModalFlow {
 
     @Step("Фиксация появления payment-iframe (без оплаты)")
     public void assertPaymentFrameVisible() {
-        boolean visible = cloudPage.isCloudPaymentFrameVisible();
-        assertTrue(visible, "Payment-iframe не появился после перехода в модалку оплаты");
-        AllureAttachments.attachScreenshot("Payment-iframe (Renewal, prod)");
+        step("Проверка появления iframe", () -> {
+            boolean visible = cloudPage.isCloudPaymentFrameVisible();
+            assertTrue(visible, "Payment-iframe не появился после перехода в модалку оплаты");
+        });
+        AllureAttachments.attachScreenshot("Появление Payment-iframe (Renewal, prod)");
     }
 
     @Step("Настройки платежей → 99 руб → /user/main → Cloud iframe")
@@ -187,5 +182,34 @@ public class RenewalModalFlow {
         clearBrowserLocalStorage();
         refresh();
         WaitHelper.waitForPageLoad();
+    }
+
+    private static final SelenideElement FIRST_NON_ONBOARDING_PRODUCT_CARD =
+            $$(".swiper-slide ._UserProductCard_rzpr5_1")
+                    .filter(visible)
+                    .filter(not(text("Подарок за прохождение")))
+                    .first();
+
+    @Step("Клик по первому продукту (не onboarding) из 'Мои курсы'")
+    public RenewalModalFlow openFirstNonOnboardingProductCard() {
+        step("Ожидание загрузки страницы ЛК", () -> {
+            WaitHelper.waitForPageLoad();
+            WaitHelper.waitForAnimationComplete();
+        });
+        step("Клик по первому продукту без onboarding-бейджа", () ->
+                UniversalMethod.clickButton(FIRST_NON_ONBOARDING_PRODUCT_CARD, "Первый продукт"));
+        WaitHelper.waitForPageLoad();
+        WaitHelper.waitForAnimationComplete();
+        return this;
+    }
+
+    private String loginWithRefreshToken(String email, String password) {
+        LoginResponse tokens = authSteps.loginAndGetTokens(email, password);
+        step("Переход в ЛК через refresh_token", () ->{
+            currentToken = tokens.token();
+            open(AddressPage.LOGIN + "?refresh_token=" + tokens.refreshToken());
+            WaitHelper.waitForPageLoad();
+        });
+        return currentToken;
     }
 }

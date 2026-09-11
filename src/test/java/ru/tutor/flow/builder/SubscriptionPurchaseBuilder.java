@@ -286,7 +286,7 @@ public class SubscriptionPurchaseBuilder {
                 return;
             }
             if (TestConfig.isProd() && installmentsSber) {
-                cloudPage.setDateModalInstallmentsParts();
+                cloudPage.setDateModalInstallmentsParts(); //Sber
                 sberPage.verifyPartsPhoneForm();
                 return;
             }
@@ -296,12 +296,16 @@ public class SubscriptionPurchaseBuilder {
             AllureAttachments.attachText("Платёжный шлюз", detected.name());
 
             if (detected == PaymentSystem.CLOUD) {
-                verifyCloudPaymentWindow();         // iframe cloudpayments открыт
-                AllureAttachments.attachScreenshot("Окно оплаты Cloud"); // фото
+               step("Фиксация iframe Cloud", () -> {
+                   verifyCloudPaymentWindow();         // iframe cloudpayments открыт
+                   AllureAttachments.attachScreenshot("Окно оплаты Cloud"); // фото
+               });
             } else {
-                TabManager.switchToNewWindow();
-                verifySberPaymentWindow();          // URL = sber/ -> факт открытия
-                AllureAttachments.attachScreenshot("Окно оплаты Sber");
+                step("Фиксация редиректа на стр Сбер", () -> {
+                    TabManager.switchToNewWindow();
+                    verifySberPaymentWindow();          // URL = sber/ -> факт открытия
+                    AllureAttachments.attachScreenshot("Окно оплаты Sber");
+                });
             }
         });
     }

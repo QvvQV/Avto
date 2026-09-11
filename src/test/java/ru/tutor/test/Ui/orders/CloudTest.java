@@ -1,13 +1,10 @@
 package ru.tutor.test.Ui.orders;
 
 import io.qameta.allure.*;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import ru.tutor.api.PaymentApi;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.*;
-import ru.tutor.page.CardioLandingPage;
 import ru.tutor.page.Registration;
 import ru.tutor.page.modals.Product;
 import ru.tutor.page.modals.UnlockNextWeek;
@@ -15,12 +12,11 @@ import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.TtPage;
+import ru.tutor.steps.AccountSteps;
+import ru.tutor.steps.AdminSteps;
+import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
-import ru.tutor.steps.PaymentSteps;
-import ru.tutor.utils.WaitHelper;
 
-import static com.codeborne.selenide.Selenide.refresh;
-import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -41,20 +37,20 @@ public class CloudTest extends BaseUiTest {
     private final OrderSteps orderSteps = new OrderSteps(
             TestConfig.getCurrentApiUrl()
     );
-
-    // ====API====
-//    private static final String BASE_URL = TestConfig.getCurrentApiUrl();
-//    private final PaymentApi paymentApi = new PaymentApi(BASE_URL);
-//    private final PaymentSteps paymentSteps = new PaymentSteps(BASE_URL);
+    private final AuthSteps authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
+    private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
+    private final AccountSteps accountSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
 
     // ====FLOW====
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
     private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
     private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
-//    private final CardioLandingFlow  cardioLandingFlow = new CardioLandingFlow(cardioLandingPage, paymentApi, paymentSteps);
-//    private final PaymentMethodFlow paymentMethodFlow = new PaymentMethodFlow(ttPage, cloudPage, paymentApi, paymentSteps, sberPage);
     private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
             cloudPage, ttPage, sberPage);
+    private final LifetimeTariffFlow lifetimeTariffFlow = new LifetimeTariffFlow(
+            purchaseFlow, cloudPage, unlockNextWeek, renewalModalFlow,
+            authSteps, accountSteps, adminSteps, orderSteps
+    );
 
     @AfterEach
             public void afterEachTest() {
@@ -67,21 +63,6 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(1)
-//    @RepeatedTest(10)
-    @DisplayName("Оплата с главной за 99 руб")
-    public void PayMain99() {
-        if (TestConfig.isProd()) {
-            purchaseFlow.verifyModalOpens(TtPage.SubscriptionType.LITE, TestConfig.getProdMainBaseUrl());
-        } else {
-            PurchaseResult result = purchaseFlow.lite();
-            OrderSteps.validateSuccessfulPayment(cloudPage);
-            assertNotNull(result.email());
-            adminFlow.assertOrderExists(result.email());
-        }
-    }
-
-    @Test
-    @Order(2)
 //        @RepeatedTest(3)
     @DisplayName("Оплата с главной за 399 руб")
     public void PayMain399() {
@@ -90,6 +71,21 @@ public class CloudTest extends BaseUiTest {
         } else {
 
             PurchaseResult result = purchaseFlow.premium();
+            OrderSteps.validateSuccessfulPayment(cloudPage);
+            assertNotNull(result.email());
+            adminFlow.assertOrderExists(result.email());
+        }
+    }
+
+    @Test
+    @Order(2)
+//    @RepeatedTest(10)
+    @DisplayName("Оплата с главной за 99 руб")
+    public void PayMain99() {
+        if (TestConfig.isProd()) {
+            purchaseFlow.verifyModalOpens(TtPage.SubscriptionType.LITE, TestConfig.getProdMainBaseUrl());
+        } else {
+            PurchaseResult result = purchaseFlow.lite();
             OrderSteps.validateSuccessfulPayment(cloudPage);
             assertNotNull(result.email());
             adminFlow.assertOrderExists(result.email());
@@ -145,5 +141,16 @@ public class CloudTest extends BaseUiTest {
         assumeTrue(TestConfig.isProd(),
                 "Тест запускается только на прод-окружении (env.ui=prod)");
         revshareFlow.executeProd();
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Продление доступа через админку и оплата lifetime-тарифа (POST pay-lifetime-tariff)")
+    public void ExtendAccessAndPayLifetimeTariff() {
+        if (TestConfig.isProd()) {
+            lifetimeTariffFlow.createLifetimeForInactiveUserProd();
+        } else {
+            lifetimeTariffFlow.createLifetimeForInactiveUser();
+        }
     }
 }

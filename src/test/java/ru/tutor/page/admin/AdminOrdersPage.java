@@ -40,6 +40,7 @@ public class AdminOrdersPage {
     private static final String CANCEL_YOUR_SUBSCRIPTION_TEXT = "Отмена подписки";
     private static final String YES_TEXT = "Да";
     private static final String UNDERSTAND_TEXT = "Понятно";
+    private static final String EXTEND_ACCESS_TEXT = "Продлить доступ";
 
     // Локаторы
     private final SelenideElement ORDERS_BUTTON = $("a[href*='orders']");
@@ -53,6 +54,10 @@ public class AdminOrdersPage {
     private final SelenideElement EMAIL_INPUT_SEARCH = $("input[placeholder='Email']");
     private final SelenideElement ORDER_NUMBER = $("a[data-discover='true'][href*='/order/']");
     private final SelenideElement SUM_INPUT = $$("input[type=text]").get(0);
+    private final SelenideElement EXTEND_ACCESS_BUTTON = $$("button").find(exactText(EXTEND_ACCESS_TEXT));
+    private final SelenideElement INPUT_EXTEND_ACCESS = $("div.additionalModal__input-wrapper input");
+    private final SelenideElement ENTER_NUMBER_DAYS = $("h2:contains('Введите количество дополнительных дней доступа')");
+    private final SelenideElement ADDITIONAL_MODAL = $("div.additionalModal__container");
 
     private String lastSearchedEmail; // Добавляем поле для хранения email
     private String lastExtractedOrderNumber;
@@ -274,6 +279,28 @@ public class AdminOrdersPage {
         UniversalMethod.clickButton(CANSEL_SUBSCRIPTION_BUTTON, CANCEL_YOUR_SUBSCRIPTION_TEXT);
         UniversalMethod.clickButton(YES_BUTTON, YES_TEXT);
         UniversalMethod.clickButton(UNDERSTAND_BUTTON, UNDERSTAND_TEXT);
+        WaitHelper.waitForAnimationComplete();
+        goToUserPersonalAccount();
+    }
+
+    @Step("Установить кол-во дней")
+    public AdminOrdersPage setDays(int days) {
+        INPUT_EXTEND_ACCESS.shouldBe(visible).clear();
+        INPUT_EXTEND_ACCESS.setValue(String.valueOf(days));
+        return this;
+    }
+
+    @Step("Продлить доступ клик по кнопке, ожидание модалки, ввод {days} дней, сохранение")
+    public void extendAccessWithDays(int days) {
+        step("Клик по кнопке 'Продлить доступ'", () ->
+                UniversalMethod.clickButton(EXTEND_ACCESS_BUTTON, EXTEND_ACCESS_TEXT));
+        step("Ожидание появления модального окна", () -> {
+            WaitHelper.waitForAnimationComplete();
+            ADDITIONAL_MODAL.shouldBe(visible, DEFAULT_TIMEOUT);
+        });
+        setDays(days);
+        step("Клик по кнопке 'Сохранить'", () ->
+                UniversalMethod.clickButton(SAVE_BUTTON, SAVE_TEXT));
         WaitHelper.waitForAnimationComplete();
         goToUserPersonalAccount();
     }

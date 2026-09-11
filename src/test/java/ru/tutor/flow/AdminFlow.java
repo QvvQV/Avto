@@ -50,7 +50,7 @@ public class AdminFlow {
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
             String currentUrl = WebDriverRunner.getWebDriver().getCurrentUrl();
-            if( currentUrl.contains("/auth")) {
+            if (currentUrl.contains("/auth")) {
                 adminLoginPage.login();
                 AllureAttachments.attachScreenshot("Авторизация в админке успешна");
             } else {
@@ -134,7 +134,25 @@ public class AdminFlow {
             String email = adminOrdersPage.getLastSearchedEmail();
             AllureAttachments.attachText("Тест завершен",
                     "Все проверки рекуррентных платежей выполнены успешно\n" +
-                    "Email: " + email + "Время выполнения: " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                            "Email: " + email + "Время выполнения: " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        });
+    }
+
+    @Step("Продление доступа на {days} дней через админку для {email}")
+    public void extendAccess(String email, int days) {
+        step("Продление доступа через админку", () -> {
+            String originalWindow = WebDriverRunner.getWebDriver().getWindowHandle();
+            try {
+                TabManager.openAdminInNewWindow(originalWindow);
+                login();
+                adminOrdersPage
+                        .navigateToOrders()
+                        .findOrderByEmail(email)
+                        .processRecurrentPayment();
+                adminOrdersPage.extendAccessWithDays(days);
+            } finally {
+
+            }
         });
     }
 }

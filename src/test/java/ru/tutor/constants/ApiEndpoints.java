@@ -519,7 +519,7 @@ public final class ApiEndpoints {
     public static final String ORDERS_SPEND_CASHBACK = "/user/orders/spend-cashback";
 
     /**
-     * оплата lifetime-тарифа
+     * оплата lifetime-тарифа из модалки при Неактивном заказе
      */
 
     public static final String ORDERS_PAY_LIFETIME_TARIFF = "/user/orders/pay-lifetime-tariff";
@@ -864,4 +864,25 @@ public final class ApiEndpoints {
      * Полная замена значения (PUT)
      */
     public static final String USER_ENTITIES_PUT = "/user/entities/%s/%s";
+
+//    === Admin ===
+    /**
+     * Логин
+     */
+    public static final String ADMIN_LOGIN = "/admin/login";
+
+    /**
+     * Заказ
+     */
+    public static final String ADMIN_ORDERS = "/admin/orders";
+
+    /**
+     * ID заказа
+     */
+    public static final String ADMIN_ORDERS_ID = "/admin/orders/%s";
+
+    /**
+     * Продление подписки (days)
+     */
+    public static final String ADMIN_ORDERS_EXTEND_ACCESS = "/admin/orders/extend-access";
 }

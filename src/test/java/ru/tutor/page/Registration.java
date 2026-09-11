@@ -266,11 +266,11 @@ public class Registration {
         WaitHelper.waitForPageLoad();
     }
 
-    public void loginWithRenewalProd(){
+    public void loginWithRenewalProd(String email){
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
         step("Логин Реневалла (prod)", () ->
-                UniversalMethod.safeSetValue(EMAIL_PROD, TestConfig.getRenewalEmailProd(), "Renewal email"));
+                UniversalMethod.safeSetValue(EMAIL_PROD, email, "Renewal email"));
         PASSWORD_INPUT.sendKeys(TestConfig.getTestPassword());
         clickBtnLogin();
         WaitHelper.waitForAnimationComplete();

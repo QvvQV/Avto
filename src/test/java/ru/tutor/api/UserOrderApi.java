@@ -33,6 +33,11 @@ public class UserOrderApi extends BaseApi {
         return postWithToken(ApiEndpoints.ORDERS_GET_PREMIUM_GIFT, authToken, "[]");
     }
 
+    @Step("POST /user/orders/pay-lifetime-tariff - оплата lifetime - тарифа")
+    public Response payLifetimeTariff(String authToken) {
+        return postWithToken(ApiEndpoints.ORDERS_PAY_LIFETIME_TARIFF, authToken, "[]");
+    }
+
     @Step("`GET /user/orders/payments` - История платежей")
     public Response getOrdersPayments(String authToken) {
         return getWithToken(ApiEndpoints.ORDERS_PAYMENTS, authToken);

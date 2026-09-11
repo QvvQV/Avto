@@ -10,6 +10,7 @@ import ru.tutor.utils.AllureAttachments;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AccountSteps extends BaseApiSteps {
@@ -23,9 +24,11 @@ public class AccountSteps extends BaseApiSteps {
 
     @Step("PUT /user/edit/data - изменение данных пользователя")
     public Response editUserData(String authToken, UserEditDataRequest body) {
-        Response response = userApi.editData(authToken, body);
-        AllureAttachments.attachJson("Edit Data Response", response.getBody().asString());
-        return response;
+        return step ("Изменения данных пользователя", () -> {
+            Response response = userApi.editData(authToken, body);
+            AllureAttachments.attachJson("Edit Data Response", response.getBody().asString());
+            return response;
+        });
     }
 
     @Step("Валидация успешного изменения данных пользователя")
@@ -36,12 +39,14 @@ public class AccountSteps extends BaseApiSteps {
 
     @Step("PUT /user/edit/pass - изменение пароля")
     public Response editPassword(String authToken, String oldPassword, String newPassword) {
-        Map<String, String> body = new HashMap<>();
-        body.put("oldPassword", oldPassword);
-        body.put("newPassword", newPassword);
-        Response response =userApi.editPassword(authToken, body);
-        AllureAttachments.attachJson("Edit Password Response",  response.getBody().asString());
-        return response;
+        return step("Замена пароля", () -> {
+            Map<String, String> body = new HashMap<>();
+            body.put("oldPassword", oldPassword);
+            body.put("newPassword", newPassword);
+            Response response =userApi.editPassword(authToken, body);
+            AllureAttachments.attachJson("Edit Password Response",  response.getBody().asString());
+            return response;
+        });
     }
 
     @Step("Валидация успешной смены пароля")

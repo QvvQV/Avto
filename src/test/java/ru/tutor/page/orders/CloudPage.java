@@ -308,7 +308,7 @@ public class CloudPage {
         }
     }
 
-    @Step("Клик по кнопке Тинькофф")
+    @Step("Клик по кнопке Other")
     public void clickOther(boolean payByCard) {
         UniversalMethod.safeClick(OTHER_BTN, "Кнопка «Other»");
         sleep(2000);

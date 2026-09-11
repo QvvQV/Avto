@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.codeborne.selenide.Selenide.sleep;
+import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderSteps extends BaseApiSteps {
@@ -128,6 +129,28 @@ public class OrderSteps extends BaseApiSteps {
         }  else {
             fail("Неожиданный статус: " + code);
         }
+    }
+
+    @Step("POST /user/orders/pay-lifetime-tariff - оплата lifetime-тарифа")
+    public Response payLifetimeTariff(String authToken) {
+        Response response = orderApi.payLifetimeTariff(authToken);
+        AllureAttachments.attachJson("Pay LifeTime Tariff Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация ответа pay-lifetime-tariff: 200, тело не пустое и не null")
+    public void validatePayLifetimeTariffResponse(Response response) {
+        int code = response.getStatusCode();
+        String body = response.getBody().asString();
+
+        if (code ==400 && body.contains("Cannot find active subscription order")) {
+            fail("Эндпоинт вернул ошибку 400: `Cannot find active subscription order`");
+        }
+
+        assertBasicResponse(response);
+        assertNotNull(body, "Тело ответа не должно быть null");
+        assertFalse(body.trim().isEmpty(), "Тело ответа не должно быть пустым");
+        AllureAttachments.attachText("Тело ответа (pay-lifetime-tariff)", body);
     }
 
     @Step("POST /user/refund-tickets/create - создание заявки на возврат")
@@ -389,7 +412,32 @@ public class OrderSteps extends BaseApiSteps {
     }
 
     @Step("Полная проверка успешной оплаты")
-    public static void validateSuccessfulPayment(CloudPage cloudPage) {
+    public static PaymentCredentials validateSuccessfulPayment(CloudPage cloudPage) {
+        OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
+
+        PaymentCredentials credentials = extractPaymentCredentials(cloudPage);
+
+        sleep(4000);
+
+        step("Проверка статуса заказа", () -> {
+            orderSteps.validateOrderStatusResponse(
+                    orderSteps.getOrderStatus(credentials.orderNumber)
+            );
+        });
+
+        step("Валидация успешного ответа", () -> {
+            orderSteps.validateOrderSuccessResponse(
+                    orderSteps.getOrderSuccess(credentials.orderNumber),
+                    credentials.orderNumber, credentials.loginToken, credentials.password
+            );
+        });
+        return credentials;
+    }
+
+    public record PaymentCredentials(String loginToken, String password, String orderNumber) {}
+
+    @Step("Извлечение данных оплаты из страницы успеха: loginToken, password, orderNumber")
+    public static PaymentCredentials extractPaymentCredentials(CloudPage cloudPage) {
         OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
 
         String href = cloudPage.verifySuccessProfilePage();
@@ -399,16 +447,7 @@ public class OrderSteps extends BaseApiSteps {
         String loginToken = orderSteps.extractQueryParam(href, "loginToken");
         String password = orderSteps.extractQueryParam(href, "password");
 
-        sleep(4000);
-
-        orderSteps.validateOrderStatusResponse(
-                orderSteps.getOrderStatus(orderNumber)
-        );
-
-        orderSteps.validateOrderSuccessResponse(
-                orderSteps.getOrderSuccess(orderNumber),
-                orderNumber,  loginToken, password
-        );
+        return new PaymentCredentials(loginToken, password, orderNumber);
     }
 
 }
