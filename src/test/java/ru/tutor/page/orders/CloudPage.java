@@ -95,6 +95,7 @@ public class CloudPage {
     public void clickBtnStartProd() {
         step("Ввод email", () -> {
             String email = faker.internet().emailAddress(); // сохраняем email
+            currentEmail = email;
             EMAIL_INPUT_PROD.sendKeys(email);
             System.out.println("Оплата с Прода за 1 руб: " + email);
             UniversalMethod.clickButton(ACCESS_BUTTON_PROD, "Кнопка подтверждения");
