@@ -11,6 +11,8 @@ import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
+import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.OrderToggleSubscriptionSteps;
 import ru.tutor.utils.WaitHelper;
 
 import static com.codeborne.selenide.Selenide.refresh;
@@ -24,10 +26,15 @@ public class OrderRenewal extends BaseUiTest {
     private final Registration registration = new Registration();
     private final Product product = new Product();
     private final UnlockNextWeek unlockNextWeek = new UnlockNextWeek();
+    private final OrderSteps orderSteps = new OrderSteps(
+            TestConfig.getCurrentApiUrl()
+    );
+    private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
+    private final OrderToggleSubscriptionSteps orderToggleSubscriptionSteps = new OrderToggleSubscriptionSteps(TestConfig.getCurrentApiUrl());
 
     // ====FLOW====
     private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
-            cloudPage, ttPage, sberPage);
+            cloudPage, ttPage, sberPage, revshareFlow, orderToggleSubscriptionSteps);
 
     //    ===Renewal в ЛК===
 

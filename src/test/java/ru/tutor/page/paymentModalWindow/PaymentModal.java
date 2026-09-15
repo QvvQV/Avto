@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.TabManager;
+import ru.tutor.utils.UniversalMethod;
 import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
@@ -48,5 +49,11 @@ public class PaymentModal {
             WaitHelper.waitForUrlContains("https://client.ttplace.ru/user/main", Duration.ofSeconds(10));
             AllureAttachments.attachText("Статус", "Успешное вовзращение на сайт после оплаты");
         });
+    }
+
+    @Step("Нажатие кнопки 'Кнопки доступ'")
+    public void clickOpenAccess() {
+        WaitHelper.waitForAnimationComplete();
+        UniversalMethod.clickButton(OPEN_ACCESS_BUTTON, "Открыть доступ");
     }
 }

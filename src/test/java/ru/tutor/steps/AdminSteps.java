@@ -52,4 +52,12 @@ public class AdminSteps extends BaseApiSteps {
                 "После extend-access(" + days + ") заказ " + orderId + " должен стать неактивным, но status=" + status);
         AllureAttachments.attachText("Статус заказа после деактивации", status);
     }
+
+    @Step("Проверка существования заказа в админке по email: {email}")
+    public String assertOrderExists(String email) {
+        login();
+        String orderId = findOrderId(email);
+        AllureAttachments.attachText("Заказ найден", "ID заказа: " +  orderId);
+        return orderId;
+    }
 }

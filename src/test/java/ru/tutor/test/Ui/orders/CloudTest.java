@@ -12,10 +12,7 @@ import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.AccountSteps;
-import ru.tutor.steps.AdminSteps;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -40,13 +37,14 @@ public class CloudTest extends BaseUiTest {
     private final AuthSteps authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
     private final AccountSteps accountSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
+    private final OrderToggleSubscriptionSteps orderToggleSubscriptionSteps = new OrderToggleSubscriptionSteps(TestConfig.getCurrentApiUrl());
 
     // ====FLOW====
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
     private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
     private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
     private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
-            cloudPage, ttPage, sberPage);
+            cloudPage, ttPage, sberPage, revshareFlow, orderToggleSubscriptionSteps);
     private final LifetimeTariffFlow lifetimeTariffFlow = new LifetimeTariffFlow(
             purchaseFlow, cloudPage, unlockNextWeek, renewalModalFlow,
             authSteps, accountSteps, adminSteps, orderSteps
@@ -69,11 +67,10 @@ public class CloudTest extends BaseUiTest {
         if (TestConfig.isProd()) {
             purchaseFlow.verifyModalOpens(TtPage.SubscriptionType.PREMIUM, TestConfig.getProdMainBaseUrl());
         } else {
-
             PurchaseResult result = purchaseFlow.premium();
             OrderSteps.validateSuccessfulPayment(cloudPage);
             assertNotNull(result.email());
-            adminFlow.assertOrderExists(result.email());
+            adminSteps.assertOrderExists(result.email());
         }
     }
 
@@ -88,7 +85,7 @@ public class CloudTest extends BaseUiTest {
             PurchaseResult result = purchaseFlow.lite();
             OrderSteps.validateSuccessfulPayment(cloudPage);
             assertNotNull(result.email());
-            adminFlow.assertOrderExists(result.email());
+            adminSteps.assertOrderExists(result.email());
         }
     }
 
@@ -103,7 +100,7 @@ public class CloudTest extends BaseUiTest {
             PurchaseResult result = purchaseFlow.life();
             OrderSteps.validateSuccessfulPayment(cloudPage);
             assertNotNull(result.email());
-            adminFlow.assertOrderExists(result.email());
+            adminSteps.assertOrderExists(result.email());
         }
     }
 
@@ -117,7 +114,7 @@ public class CloudTest extends BaseUiTest {
 
             PurchaseResult result = purchaseFlow.lifeInstallments();
             assertNotNull(result.email());
-            adminFlow.assertOrderExists(result.email());
+            adminSteps.assertOrderExists(result.email());
         }
     }
 
@@ -130,7 +127,7 @@ public class CloudTest extends BaseUiTest {
         } else {
             PurchaseResult result = purchaseFlow.partPayment();
             assertNotNull(result.email());
-            adminFlow.assertOrderExists(result.email());
+            adminSteps.assertOrderExists(result.email());
         }
     }
 
@@ -145,12 +142,23 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(7)
-    @DisplayName("Продление доступа через админку и оплата lifetime-тарифа (POST pay-lifetime-tariff)")
+    @DisplayName("Сокращение доступа через админку и оплата lifetime-тарифа (POST pay-lifetime-tariff)")
     public void ExtendAccessAndPayLifetimeTariff() {
         if (TestConfig.isProd()) {
             lifetimeTariffFlow.createLifetimeForInactiveUserProd();
         } else {
             lifetimeTariffFlow.createLifetimeForInactiveUser();
+        }
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("Сокращение доступа через админку и оплата RENEWAL-тарифа")
+    public void ExtendAccessAndPayRenewal() {
+        if (TestConfig.isProd()) {
+            lifetimeTariffFlow.createRenewalForInactiveUserProd();
+        } else {
+            lifetimeTariffFlow.createRenewalForInactiveUser();
         }
     }
 }

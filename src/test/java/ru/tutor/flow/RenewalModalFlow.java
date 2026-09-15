@@ -47,12 +47,14 @@ public class RenewalModalFlow {
     private final GreetingsModal greetingsModal;
     private String currentToken;
     private String userEmail;
+    private final RevshareFlow revshareFlow;
+    private final OrderToggleSubscriptionSteps orderToggleSubscriptionSteps;
 
     private Faker faker = new Faker(Locale.ENGLISH);
 
     public RenewalModalFlow(
             Registration registration, Product product, UnlockNextWeek unlockNextWeek, CloudPage cloudPage,
-            TtPage ttPage, SberPage sberPage
+            TtPage ttPage, SberPage sberPage, RevshareFlow revshareFlow, OrderToggleSubscriptionSteps orderToggleSubscriptionSteps
     ) {
         this.userProductsApi = new UserProductsApi(TestConfig.getCurrentApiUrl());
         this.productsSteps = new ProductsSteps(TestConfig.getCurrentApiUrl());
@@ -64,38 +66,72 @@ public class RenewalModalFlow {
         this.accountSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
         this.purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
         this.greetingsModal = new GreetingsModal();
+        this.revshareFlow = revshareFlow;
+        this.orderToggleSubscriptionSteps = orderToggleSubscriptionSteps;
     }
 
     @Step("Логин Реневалла в ЛК prod")
     public RenewalModalFlow login() {
-        if (TestConfig.isProd()) {
-            loginWithRefreshToken(TestConfig.getRenewalEmail(), TestConfig.getTestPassword());
-            WaitHelper.waitForPageLoad();
-            }
-        else {
+        if(TestConfig.isProd()) {
+            step("Создание свежего заказа по тестовому домену", () ->
+                    revshareFlow.executeProd());
+            userEmail = cloudPage.getCurrentEmail();
+        } else {
             step("Создание заказа Лайт", () -> {
                 PurchaseResult result = purchaseFlow.lite();
                 userEmail = result.email();
             });
+        }
 
-            step("Переход в ЛК", () -> {
-                String href = cloudPage.verifySuccessProfilePage();
-                String password = OrderSteps.extractQueryParam(href, "password");
-                String token = loginWithRefreshToken(userEmail, password);
-
-            step("Заполнение приветсвенной модалки через API", () -> {
+        step("Переход в ЛК", () -> {
+            String href = cloudPage.verifySuccessProfilePage();
+            String password = OrderSteps.extractQueryParam(href, "password");
+            String token = loginWithRefreshToken(userEmail, password);
+            step("Заполнение приветственной модалки через API", () -> {
                 accountSteps.validateEditPasswordSuccess(
                         accountSteps.editPassword(token, password, TestConfig.getTestPassword())
                 );
                 accountSteps.validateEditDataSuccess(
                         accountSteps.editUserData(token,
-                                new UserEditDataRequest().name(faker.name().firstName()).gender(0).email(userEmail))
-                );
+                                new UserEditDataRequest().name(faker.name().firstName()).gender(0).email(userEmail)
+                ));
             });
             refresh();
-            });
+        });
+
+        if (TestConfig.isProd()) {
+            step("Отмена заказа до Лайта (POST /user/orders/toggle_subscription/180)", () ->
+                    orderToggleSubscriptionSteps.toggleOrderSubscription(currentToken, 180));
         }
         return this;
+//        if (TestConfig.isProd()) {
+//            loginWithRefreshToken(TestConfig.getRenewalEmail(), TestConfig.getTestPassword());
+//            WaitHelper.waitForPageLoad();
+//            }
+//        else {
+//            step("Создание заказа Лайт", () -> {
+//                PurchaseResult result = purchaseFlow.lite();
+//                userEmail = result.email();
+//            });
+//
+//            step("Переход в ЛК", () -> {
+//                String href = cloudPage.verifySuccessProfilePage();
+//                String password = OrderSteps.extractQueryParam(href, "password");
+//                String token = loginWithRefreshToken(userEmail, password);
+//
+//            step("Заполнение приветсвенной модалки через API", () -> {
+//                accountSteps.validateEditPasswordSuccess(
+//                        accountSteps.editPassword(token, password, TestConfig.getTestPassword())
+//                );
+//                accountSteps.validateEditDataSuccess(
+//                        accountSteps.editUserData(token,
+//                                new UserEditDataRequest().name(faker.name().firstName()).gender(0).email(userEmail))
+//                );
+//            });
+//            refresh();
+//            });
+//        }
+//        return this;
     }
 
     @Step("Первый продукт (не онбординг, не Лайт New) через /user/products -> открытие урока")

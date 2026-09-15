@@ -417,7 +417,7 @@ public class OrderSteps extends BaseApiSteps {
 
         PaymentCredentials credentials = extractPaymentCredentials(cloudPage);
 
-        sleep(4000);
+        sleep(5000);
 
         step("Проверка статуса заказа", () -> {
             orderSteps.validateOrderStatusResponse(

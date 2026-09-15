@@ -1,5 +1,6 @@
 package ru.tutor.flow;
 
+import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.config.TestConfig;
@@ -8,12 +9,15 @@ import ru.tutor.model.UserEditDataRequest;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
+import ru.tutor.page.paymentModalWindow.PaymentModal;
 import ru.tutor.steps.AccountSteps;
 import ru.tutor.steps.AdminSteps;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
+import ru.tutor.utils.RewardHelper;
 import ru.tutor.utils.WaitHelper;
 
+import java.time.Duration;
 import java.util.Locale;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -69,13 +73,7 @@ public class LifetimeTariffFlow {
         });
     }
 
-    @Step("Вход в ЛК, настройка пароля и данных через API, POST pay-lifetime-tariff")
-    private void preparePersonalAccountAndPayTariff(String email, OrderSteps.PaymentCredentials credentials) {
-//        open(credentials.href());
-//        WaitHelper.waitForPageLoad();
-
-//        LoginResponse tokens = authSteps.loginAndGetToken(email, credentials.password());
-
+    private String preparePersonalAccount(String email, OrderSteps.PaymentCredentials credentials) {
         String token = loginViaRefreshToken(email, credentials.password());
 
         accountSteps.validateEditPasswordSuccess(
@@ -84,8 +82,28 @@ public class LifetimeTariffFlow {
         accountSteps.validateEditDataSuccess(
                 accountSteps.editUserData(token,
                         new UserEditDataRequest().name(faker.name().name()).gender(0).email(email)));
-        refresh();
+        step("Обновление страницы", Selenide::refresh);
+        return token;
+    }
 
+    @Step("Вход в ЛК, настройка пароля и данных через API, POST pay-lifetime-tariff")
+    private void preparePersonalAccountAndPayTariff(String email, OrderSteps.PaymentCredentials credentials) {
+//        open(credentials.href());
+//        WaitHelper.waitForPageLoad();
+
+//        LoginResponse tokens = authSteps.loginAndGetToken(email, credentials.password());
+
+//        String token = loginViaRefreshToken(email, credentials.password());
+//
+//        accountSteps.validateEditPasswordSuccess(
+//                accountSteps.editPassword(token, credentials.password(), TestConfig.getTestPassword())
+//        );
+//        accountSteps.validateEditDataSuccess(
+//                accountSteps.editUserData(token,
+//                        new UserEditDataRequest().name(faker.name().name()).gender(0).email(email)));
+//        refresh();
+
+        String token = preparePersonalAccount(email, credentials);
         orderSteps.validatePayLifetimeTariffResponse(orderSteps.payLifetimeTariff(token));
     }
 
@@ -98,6 +116,15 @@ public class LifetimeTariffFlow {
         renewalModalFlow.verifyProductPresent(563);
     }
 
+    @Step("Покупка Реневалла через UI: модалка реневалла -> Cloud iframe -> продукт 264")
+    private void openAccessAndPayViaUi() {
+        renewalModalFlow.openFirstNonOnboardingProductCard();
+        new PaymentModal().clickOpenAccess();
+        cloudPage.clickCardPageBtn();
+        WaitHelper.waitForPageLoad();
+        renewalModalFlow.verifyProductPresent(264);
+    }
+
     @Step("Покупка пожизненного у inactive-пользователя (prod)")
     public void createLifetimeForInactiveUserProd() {
         String token = loginViaRefreshToken(
@@ -106,6 +133,7 @@ public class LifetimeTariffFlow {
         );
         WaitHelper.waitForPageLoad();
 
+        new RewardHelper().safeClickCollectRewardIfAppears(Duration.ofSeconds(4));
         renewalModalFlow.openFirstNonOnboardingProductCard();
         unlockNextWeek.openLifetimeAccess();
         renewalModalFlow.assertPaymentFrameVisible();
@@ -120,5 +148,27 @@ public class LifetimeTariffFlow {
             WaitHelper.waitForPageLoad();
         });
         return tokens.token();
+    }
+
+    @Step("Реневалл: 'Открыть доступ' у неактивного пользователя (dev)")
+    public void createRenewalForInactiveUser() {
+        PurchaseResult result = purchaseFlow.premium();
+        OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
+        assertNotNull(result.email(), "email не должен быть null");
+
+        deactivateViaAdminApi(result.email());
+        preparePersonalAccount(result.email(), credentials);
+        openAccessAndPayViaUi();
+    }
+
+    @Step("Реневалл: 'Открыть дотуп' -> Cloud iframe (prod)")
+    public void createRenewalForInactiveUserProd() {
+        loginViaRefreshToken(TestConfig.getRenewalEmailInactive(), TestConfig.getTestPassword());
+        WaitHelper.waitForPageLoad();
+
+        new RewardHelper().safeClickCollectRewardIfAppears(Duration.ofSeconds(4));
+        renewalModalFlow.openFirstNonOnboardingProductCard();
+        new  PaymentModal().clickOpenAccess();
+        renewalModalFlow.assertPaymentFrameVisible();
     }
 }

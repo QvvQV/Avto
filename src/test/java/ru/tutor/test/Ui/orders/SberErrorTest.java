@@ -4,6 +4,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
+import ru.tutor.config.TestConfig;
 import ru.tutor.flow.AdminFlow;
 import ru.tutor.flow.PurchaseFlow;
 import ru.tutor.flow.PurchaseResult;
@@ -11,6 +12,7 @@ import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.TtPage;
+import ru.tutor.steps.AdminSteps;
 
 import static com.codeborne.selenide.Selenide.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,6 +29,7 @@ public class SberErrorTest extends BaseUiTest {
     }
 
     private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
+    private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
     private final TtPage ttPage = new TtPage();
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
@@ -43,7 +46,7 @@ public class SberErrorTest extends BaseUiTest {
 
         PurchaseResult result = purchaseFlow.premiumFixSber();
         assertNotNull(result.email());
-        adminFlow.assertOrderExists(result.email());
+        adminSteps.assertOrderExists(result.email());
 
     }
 
@@ -56,7 +59,7 @@ public class SberErrorTest extends BaseUiTest {
 
         PurchaseResult result = purchaseFlow.premiumInsufficientFundsSber();
         assertNotNull(result.email());
-        adminFlow.assertOrderExists(result.email());
+        adminSteps.assertOrderExists(result.email());
 
     }
 
@@ -69,7 +72,6 @@ public class SberErrorTest extends BaseUiTest {
 
         PurchaseResult result = purchaseFlow.premiumExpiredSber();
         assertNotNull(result.email());
-        adminFlow.assertOrderExists(result.email());
-
+        adminSteps.assertOrderExists(result.email());
     }
 }
