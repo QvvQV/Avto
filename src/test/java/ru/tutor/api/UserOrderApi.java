@@ -26,6 +26,11 @@ public class UserOrderApi extends BaseApi {
         return postWithToken(ApiEndpoints.ORDERS_TOGGLE_SUBSCRIPTION, authToken, "[]", orderId);
     }
 
+    @Step("POST /user/orders/subscribe/{productId} - оформление подписки на продукт")
+    public Response subscribeToOrder(String authToken, Integer productId) {
+        return postWithToken(ApiEndpoints.ORDERS_SUBSCRIBE, authToken, "[]", productId);
+    }
+
     // Подарок
 
     @Step(" POST user/orders/get-premium-gift - Получение Тариф Подарок")

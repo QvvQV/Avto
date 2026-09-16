@@ -10,8 +10,8 @@ public class TestConfig {
     /*
      * Default переменные для выставления окружения dev1; dev2; dev3; prod; prodMain
      */
-    private static final String def = "prod";
-    private static final String api = "prod";
+    private static final String def = "dev1";
+    private static final String api = "dev1";
     private static final String admin = "admin1";
 
     /*

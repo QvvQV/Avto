@@ -116,6 +116,18 @@ public class OrderSteps extends BaseApiSteps {
         return response;
     }
 
+    @Step("POST /user/orders/subscribe/{productId} - оформление подписки на продукт")
+    public Response subscribeToOrder(String authToken, Integer productId) {
+        Response response = orderApi.subscribeToOrder(authToken, productId);
+        AllureAttachments.attachJson("Subscribe Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация ответа subscribe: 200")
+    public void validateSubscribeResponse(Response response) {
+        assertSuccessStatusCode(response);
+    }
+
     @Step("Валидация пустого []")
     public void validateEmptyArrayResponse(Response response) {
         int code = response.getStatusCode();

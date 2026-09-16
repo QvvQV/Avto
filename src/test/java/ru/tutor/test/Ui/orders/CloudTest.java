@@ -49,6 +49,10 @@ public class CloudTest extends BaseUiTest {
             purchaseFlow, cloudPage, unlockNextWeek, renewalModalFlow,
             authSteps, accountSteps, adminSteps, orderSteps
     );
+    private final Premium99Flow premium99Flow = new Premium99Flow(
+            purchaseFlow, cloudPage, renewalModalFlow,
+            authSteps, accountSteps, adminSteps, orderSteps
+    );
 
     @AfterEach
             public void afterEachTest() {
@@ -160,5 +164,14 @@ public class CloudTest extends BaseUiTest {
         } else {
             lifetimeTariffFlow.createRenewalForInactiveUser();
         }
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("Премиум 99₽: заказ Лайт → подписка API (623,625) → Cloud → продукт 264")
+    public void Premium99FromHotNovelties() {
+        assumeTrue(!TestConfig.isProd(),
+                "Тест запускается только на dev-окружении (env.ui != prod)");
+        premium99Flow.createPremium99FromHotNovelties();
     }
 }

@@ -120,19 +120,24 @@ public class CloudPage {
 
             frameHandler.ensurePaymentFrame();
 
+            step ("Клик по кнопке 'Банковская карта'", () -> {
             if (CARD_PAGE_BUTTON.is(visible)) {
                 UniversalMethod.safeClick(CARD_PAGE_BUTTON, "Банковской картой");
                 sleep(2000);
             }
 
-            CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT)
-                    .sendKeys(TEST_CARD_NUMBER);
+            step("Ввод валидных Банковский данных", () -> {
+                CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT)
+                        .sendKeys(TEST_CARD_NUMBER);
+                UniversalMethod.clickButton(CARD_PAY_BUTTON, "Кнопка Оплатить");
+                frameHandler.ensureSuccessFrame();
+            });
 
-            UniversalMethod.clickButton(CARD_PAY_BUTTON, "Кнопка Оплатить");
+            });
+            step("Кнопка 'Успех'", () ->
+                    UniversalMethod.safeClick(SUCCESS_BUTTON, SUCCESS_TEXT)
+            );
 
-            frameHandler.ensureSuccessFrame();
-
-            UniversalMethod.safeClick(SUCCESS_BUTTON, SUCCESS_TEXT);
 
             WaitHelper.waitForAnimationComplete();
             FrameHelper.switchToDefaultContent();
