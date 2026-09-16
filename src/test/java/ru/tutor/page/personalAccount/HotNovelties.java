@@ -3,6 +3,7 @@ package ru.tutor.page.personalAccount;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.UniversalMethod;
 import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
@@ -41,9 +42,7 @@ public class HotNovelties {
     @Step("Клик 'Да'")
     public HotNovelties clickYes() {
         step("Клик 'Да' в модальном окне", () -> {
-            YES_BUTTON.shouldBe(visible, Duration.ofSeconds(15))
-                    .shouldBe(interactable)
-                    .click();
+            UniversalMethod.clickButton(YES_BUTTON, "Да");
             WaitHelper.waitForAnimationComplete();
         });
         return this;
@@ -52,9 +51,7 @@ public class HotNovelties {
     @Step("Клик 'Получить Премиум доступ за 99₽'")
     public HotNovelties clickPremiumAccess99() {
         step("Клик 'Получить Премиум доступ за 99₽'", () -> {
-            PREMIUM_99_BUTTON.shouldBe(visible, Duration.ofSeconds(15))
-                    .shouldBe(interactable)
-                    .click();
+            UniversalMethod.clickButton(PREMIUM_99_BUTTON, "Получить Премиум доступ за 99₽");
             WaitHelper.waitForAnimationComplete();
         });
         return this;

@@ -885,4 +885,9 @@ public final class ApiEndpoints {
      * Продление подписки (days)
      */
     public static final String ADMIN_ORDERS_EXTEND_ACCESS = "/admin/orders/extend-access";
+
+    /**
+     * Оплата заказа
+     */
+    public static final String ADMIN_PAYMENTS_CREATE = "/admin/payments/create";
 }

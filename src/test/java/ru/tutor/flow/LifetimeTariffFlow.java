@@ -21,7 +21,6 @@ import java.time.Duration;
 import java.util.Locale;
 
 import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.refresh;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -88,20 +87,6 @@ public class LifetimeTariffFlow {
 
     @Step("Вход в ЛК, настройка пароля и данных через API, POST pay-lifetime-tariff")
     private void preparePersonalAccountAndPayTariff(String email, OrderSteps.PaymentCredentials credentials) {
-//        open(credentials.href());
-//        WaitHelper.waitForPageLoad();
-
-//        LoginResponse tokens = authSteps.loginAndGetToken(email, credentials.password());
-
-//        String token = loginViaRefreshToken(email, credentials.password());
-//
-//        accountSteps.validateEditPasswordSuccess(
-//                accountSteps.editPassword(token, credentials.password(), TestConfig.getTestPassword())
-//        );
-//        accountSteps.validateEditDataSuccess(
-//                accountSteps.editUserData(token,
-//                        new UserEditDataRequest().name(faker.name().name()).gender(0).email(email)));
-//        refresh();
 
         String token = preparePersonalAccount(email, credentials);
         orderSteps.validatePayLifetimeTariffResponse(orderSteps.payLifetimeTariff(token));

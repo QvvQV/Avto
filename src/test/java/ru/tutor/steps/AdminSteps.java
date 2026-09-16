@@ -5,10 +5,14 @@ import io.restassured.response.Response;
 import ru.tutor.api.AdminApi;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.DateValidator;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
+import static com.codeborne.selenide.Selenide.sleep;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -59,5 +63,35 @@ public class AdminSteps extends BaseApiSteps {
         String orderId = findOrderId(email);
         AllureAttachments.attachText("Заказ найден", "ID заказа: " +  orderId);
         return orderId;
+    }
+
+@Step("Оплата заказа {orderId} в админке ({amount}₽) и проверка сдвига дат на {days} дней")
+    public void createPaymentAndValidateDates(String orderId, int amount, int days) {
+        Response payment = adminApi.createPayment(adminToken, Long.parseLong(orderId), amount, true);
+        assertSuccessStatusCode(payment);
+        AllureAttachments.attachJson("Admin createPayment", payment.getBody().asString());
+
+        sleep(7000);
+
+        Response order = adminApi.getOrder(adminToken, orderId);
+        String createdAt  = order.jsonPath().getString("createdAt");
+        String expiresAt  = order.jsonPath().getString("expiresAt");
+        String nextPaymentAt = order.jsonPath().getString("nextPaymentAt");
+        AllureAttachments.attachJson("Admin order после оплаты", order.getBody().asString());
+
+        DateValidator validator = new DateValidator(3);
+        validator.verifyDateDifference(LocalDateTime.parse(createdAt), LocalDateTime.parse(expiresAt),
+                days, "expiresAt от createdAt");
+        validator.verifyTimeOfDayDifference(LocalDateTime.parse(expiresAt), LocalDateTime.parse(nextPaymentAt),
+                "nextPaymentAt/expiresAt");
+    }
+
+    @Step("Поиск дочернего заказа в parent-заказе: {parentOrderId}")
+    public String findChildOrderId(String parentOrderId) {
+        Response order = adminApi.getOrder(adminToken, parentOrderId);
+        AllureAttachments.attachJson("Parent заказ", order.getBody().asString());
+        String childId = order.jsonPath().getString("childrenOrdersIds[0]");
+        assertNotNull(childId, "Дочерний заказ не найден в parent " + parentOrderId);
+        return childId;
     }
 }

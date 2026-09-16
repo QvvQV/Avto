@@ -8,6 +8,7 @@ import ru.tutor.constants.ApiEndpoints;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -59,4 +60,16 @@ public class AdminApi extends BaseApi {
         return given(baseSpec).header("Cookie", "AUTH_ADMIN=" + adminToken);
     }
 
+    @Step("POST /admin/payments/create - оплата заказа в админке")
+    public Response createPayment(String adminToken, long orderId, int amount, boolean moveDates) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("orderId", orderId);
+        body.put("amount", amount);
+        body.put("moveDates", moveDates);
+        body.put("createAt", null);
+        return withAdminCookie(adminToken)
+                .body(body)
+                .when().post(ApiEndpoints.ADMIN_PAYMENTS_CREATE)
+                .then().log().ifError().extract().response();
+    }
 }

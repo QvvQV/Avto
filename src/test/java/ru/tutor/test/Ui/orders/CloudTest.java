@@ -53,6 +53,7 @@ public class CloudTest extends BaseUiTest {
             purchaseFlow, cloudPage, renewalModalFlow,
             authSteps, accountSteps, adminSteps, orderSteps
     );
+    private final AdminPaymentFlow adminPaymentFlow = new AdminPaymentFlow(purchaseFlow, cloudPage, adminSteps);
 
     @AfterEach
             public void afterEachTest() {
@@ -173,5 +174,23 @@ public class CloudTest extends BaseUiTest {
         assumeTrue(!TestConfig.isProd(),
                 "Тест запускается только на dev-окружении (env.ui != prod)");
         premium99Flow.createPremium99FromHotNovelties();
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("Оплата заказа Premium 399 через админку и проверка дат")
+    public void PayPremiumViaAdminAndCheckDates() {
+        assumeTrue(!TestConfig.isProd(),
+                "Тест запускается только на dev-окружении (env.ui != prod)");
+        adminPaymentFlow.payPremiumViaAdminAndCheckDates();
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("Оплата заказа Lite 99 через админку и проверка дат")
+    public void PayLiteViaAdminAndCheckDates() {
+        assumeTrue(!TestConfig.isProd(),
+                "Тест запускается только на dev-окружении (env.ui != prod)");
+        adminPaymentFlow.payLiteViaAdminAndCheckDates();
     }
 }
