@@ -4,7 +4,6 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,18 +12,16 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.flow.AdminFlow;
 import ru.tutor.flow.AdminPaymentFlow;
 import ru.tutor.flow.PurchaseFlow;
-import ru.tutor.flow.PurchaseResult;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.AdminSteps;
 
-import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Story("Работа с заказами через админку")
-@Feature("Админ-API")
+@Feature("Заказы в админке")
 @Feature("Только dev-окружение")
 @DisplayName("Заказы в админке")
 public class AdminOrderUnsubscribeTest extends BaseUiTest {
