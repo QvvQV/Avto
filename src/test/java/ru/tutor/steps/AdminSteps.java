@@ -11,10 +11,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import static com.codeborne.selenide.Selenide.sleep;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AdminSteps extends BaseApiSteps {
     private static final String ADMIN_USERNAME = "admin";
@@ -93,5 +96,34 @@ public class AdminSteps extends BaseApiSteps {
         String childId = order.jsonPath().getString("childrenOrdersIds[0]");
         assertNotNull(childId, "Дочерний заказ не найден в parent " + parentOrderId);
         return childId;
+    }
+
+    @Step("Отмена подписки заказа {orderId} через админку (POST /admin/orders/{id}/unsubscribe)")
+    public Response unsubscribeOrder(String orderId) {
+        Response resp = adminApi.unsubscribeOrder(adminToken, orderId);
+        assertSuccessStatusCode(resp);
+        AllureAttachments.attachJson("Admin unsubscribe", resp.getBody().asString());
+        Object body = resp.jsonPath().get("$");
+        assertTrue(body instanceof List,
+                "Ответ должен быть списком ([]), но тело: " + resp.getBody().asString());
+        return resp;
+    }
+
+    @Step("Проверка флагов деактивации заказа {orderId} (GET /admin/orders/{id})")
+    public void assertOrderDeactivated(String orderId) {
+        Response order = adminApi.getOrder(adminToken, orderId);
+        AllureAttachments.attachJson("Admin order после отмены", order.getBody().asString());
+
+        String deactivatedAt = order.jsonPath().getString("deactivatedAt");
+        String deactivatedBy = order.jsonPath().getString("deactivatedBy");
+        String deactivatedType = order.jsonPath().getString("deactivatedType");
+
+        assertNotNull(deactivatedAt, "После отмены заказа deactivatedAt должен быть заполнен");
+        assertEquals("admin", deactivatedBy, "deactivatedBy должен быть 'admin'");
+        assertEquals("Деактивация сотрудником ", deactivatedType,
+                "deactivatedType должен быть 'Деактивация сотрудником'");
+        AllureAttachments.attachText("Флаги деактивации",
+                "deactivatedAt=" + deactivatedAt + ", deactivatedBy=" + deactivatedBy
+                        + ", deactivatedType=" + deactivatedType);
     }
 }

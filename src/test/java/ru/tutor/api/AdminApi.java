@@ -72,4 +72,11 @@ public class AdminApi extends BaseApi {
                 .when().post(ApiEndpoints.ADMIN_PAYMENTS_CREATE)
                 .then().log().ifError().extract().response();
     }
+
+    @Step("POST /admin/orders/{id}/unsubscribe - отмена подписки заказа в админке")
+    public Response unsubscribeOrder(String adminToken, String orderId) {
+        return withAdminCookie(adminToken)
+                .when().post(ApiEndpoints.ADMIN_ORDERS_UNSUBSCRIBE.formatted(orderId))
+                .then().log().ifError().extract().response();
+    }
 }

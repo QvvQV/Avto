@@ -12,8 +12,10 @@ import ru.tutor.steps.AccountSteps;
 import ru.tutor.steps.AdminSteps;
 import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
+import ru.tutor.utils.RewardHelper;
 import ru.tutor.utils.WaitHelper;
 
+import java.time.Duration;
 import java.util.Locale;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -95,5 +97,20 @@ public class Premium99Flow {
             orderSteps.validateSubscribeResponse(orderSteps.subscribeToOrder(token, 623));
             orderSteps.validateSubscribeResponse(orderSteps.subscribeToOrder(token, 625));
         });
+    }
+
+    @Step("Премиум 99₽ (prod): login renewaltest@test.ru → Rewards → первый продукт → Горячие новинки 99₽ → Cloud iframe")
+    public void createPremium99FromHotNoveltiesProd() {
+        authSteps.loginViaRefreshToken(TestConfig.getRenewalEmail(), TestConfig.getTestPassword());
+        WaitHelper.waitForPageLoad();
+
+        new RewardHelper().safeClickCollectRewardIfAppears(Duration.ofSeconds(4));
+
+        hotNovelties.scrollToBlock();
+        hotNovelties.clickStartFirstCard();
+        hotNovelties.clickYes();
+        hotNovelties.clickPremiumAccess99();
+
+        renewalModalFlow.assertPaymentFrameVisible();
     }
 }

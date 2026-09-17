@@ -890,4 +890,9 @@ public final class ApiEndpoints {
      * Оплата заказа
      */
     public static final String ADMIN_PAYMENTS_CREATE = "/admin/payments/create";
+
+    /**
+     * Отмена подписки заказа в админке
+     */
+    public static final String ADMIN_ORDERS_UNSUBSCRIBE = "/admin/orders/%s/unsubscribe";
 }

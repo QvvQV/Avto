@@ -44,4 +44,17 @@ public class AdminPaymentFlow {
         String liteOrderId = adminSteps.findChildOrderId(parentOrderId);
         adminSteps.createPaymentAndValidateDates(liteOrderId, 99, 30);
     }
+
+    @Step("Отмена подписки заказа через админку и проверка флагов деактивации")
+    public void unsubscribeOrderAndCheckDeactivation() {
+        step("Создание заказа Premium", () -> {
+            PurchaseResult result = purchaseFlow.premium();
+            userEmail = result.email();
+            assertNotNull(userEmail, "email не должен быть null");
+        });
+        OrderSteps.validateSuccessfulPayment(cloudPage);
+        String orderId = adminSteps.assertOrderExists(userEmail);
+        adminSteps.unsubscribeOrder(orderId);
+        adminSteps.assertOrderDeactivated(orderId);
+    }
 }

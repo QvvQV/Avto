@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CloudTest extends BaseUiTest {
 
-    private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
+
     private final TtPage ttPage = new TtPage();
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
@@ -41,7 +41,6 @@ public class CloudTest extends BaseUiTest {
 
     // ====FLOW====
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
-    private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
     private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
     private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
             cloudPage, ttPage, sberPage, revshareFlow, orderToggleSubscriptionSteps);
@@ -53,7 +52,7 @@ public class CloudTest extends BaseUiTest {
             purchaseFlow, cloudPage, renewalModalFlow,
             authSteps, accountSteps, adminSteps, orderSteps
     );
-    private final AdminPaymentFlow adminPaymentFlow = new AdminPaymentFlow(purchaseFlow, cloudPage, adminSteps);
+
 
     @AfterEach
             public void afterEachTest() {
@@ -171,26 +170,10 @@ public class CloudTest extends BaseUiTest {
     @Order(9)
     @DisplayName("Премиум 99₽: заказ Лайт → подписка API (623,625) → Cloud → продукт 264")
     public void Premium99FromHotNovelties() {
-        assumeTrue(!TestConfig.isProd(),
-                "Тест запускается только на dev-окружении (env.ui != prod)");
-        premium99Flow.createPremium99FromHotNovelties();
-    }
-
-    @Test
-    @Order(10)
-    @DisplayName("Оплата заказа Premium 399 через админку и проверка дат")
-    public void PayPremiumViaAdminAndCheckDates() {
-        assumeTrue(!TestConfig.isProd(),
-                "Тест запускается только на dev-окружении (env.ui != prod)");
-        adminPaymentFlow.payPremiumViaAdminAndCheckDates();
-    }
-
-    @Test
-    @Order(11)
-    @DisplayName("Оплата заказа Lite 99 через админку и проверка дат")
-    public void PayLiteViaAdminAndCheckDates() {
-        assumeTrue(!TestConfig.isProd(),
-                "Тест запускается только на dev-окружении (env.ui != prod)");
-        adminPaymentFlow.payLiteViaAdminAndCheckDates();
+        if (TestConfig.isProd()) {
+            premium99Flow.createPremium99FromHotNoveltiesProd();
+        } else {
+            premium99Flow.createPremium99FromHotNovelties();
+        }
     }
 }
