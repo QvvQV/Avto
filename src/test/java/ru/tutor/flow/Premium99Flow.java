@@ -78,7 +78,7 @@ public class Premium99Flow {
 
     @Step("Вход через refresh_token + приветственная модалка через API")
     private String preparePersonalAccount(String email, OrderSteps.PaymentCredentials credentials) {
-        String token = loginViaRefreshToken(email, credentials.password());
+        String token = authSteps.loginViaRefreshToken(email, credentials.password());
 
         accountSteps.validateEditPasswordSuccess(
                 accountSteps.editPassword(token, credentials.password(), TestConfig.getTestPassword()));
@@ -95,14 +95,5 @@ public class Premium99Flow {
             orderSteps.validateSubscribeResponse(orderSteps.subscribeToOrder(token, 623));
             orderSteps.validateSubscribeResponse(orderSteps.subscribeToOrder(token, 625));
         });
-    }
-
-    private String loginViaRefreshToken(String email, String password) {
-        LoginResponse tokens = authSteps.loginAndGetTokens(email, password);
-        step("Переход в ЛК через refresh_token", () -> {
-            open(AddressPage.LOGIN + "?refresh_token=" + tokens.refreshToken());
-            WaitHelper.waitForPageLoad();
-        });
-        return tokens.token();
     }
 }

@@ -73,7 +73,7 @@ public class LifetimeTariffFlow {
     }
 
     private String preparePersonalAccount(String email, OrderSteps.PaymentCredentials credentials) {
-        String token = loginViaRefreshToken(email, credentials.password());
+        String token = authSteps.loginViaRefreshToken(email, credentials.password());
 
         accountSteps.validateEditPasswordSuccess(
                 accountSteps.editPassword(token, credentials.password(), TestConfig.getTestPassword())
@@ -112,7 +112,7 @@ public class LifetimeTariffFlow {
 
     @Step("Покупка пожизненного у inactive-пользователя (prod)")
     public void createLifetimeForInactiveUserProd() {
-        String token = loginViaRefreshToken(
+        String token = authSteps.loginViaRefreshToken(
                 TestConfig.getRenewalEmailInactive(),
                 TestConfig.getTestPassword()
         );
@@ -124,15 +124,6 @@ public class LifetimeTariffFlow {
         renewalModalFlow.assertPaymentFrameVisible();
 
         orderSteps.validatePayLifetimeTariffResponse(orderSteps.payLifetimeTariff(token));
-    }
-
-    private String loginViaRefreshToken(String email, String password) {
-        LoginResponse tokens = authSteps.loginAndGetTokens(email, password);
-        step("Переход в ЛК через refresh_token", () ->{
-            open(AddressPage.LOGIN + "?refresh_token=" + tokens.refreshToken());
-            WaitHelper.waitForPageLoad();
-        });
-        return tokens.token();
     }
 
     @Step("Реневалл: 'Открыть доступ' у неактивного пользователя (dev)")
@@ -148,7 +139,7 @@ public class LifetimeTariffFlow {
 
     @Step("Реневалл: 'Открыть дотуп' -> Cloud iframe (prod)")
     public void createRenewalForInactiveUserProd() {
-        loginViaRefreshToken(TestConfig.getRenewalEmailInactive(), TestConfig.getTestPassword());
+        authSteps.loginViaRefreshToken(TestConfig.getRenewalEmailInactive(), TestConfig.getTestPassword());
         WaitHelper.waitForPageLoad();
 
         new RewardHelper().safeClickCollectRewardIfAppears(Duration.ofSeconds(4));

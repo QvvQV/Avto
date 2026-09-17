@@ -86,7 +86,7 @@ public class RenewalModalFlow {
         step("Переход в ЛК", () -> {
             String href = cloudPage.verifySuccessProfilePage();
             String password = OrderSteps.extractQueryParam(href, "password");
-            String token = loginWithRefreshToken(userEmail, password);
+            String token = authSteps.loginViaRefreshToken(userEmail, password);
             step("Заполнение приветственной модалки через API", () -> {
                 accountSteps.validateEditPasswordSuccess(
                         accountSteps.editPassword(token, password, TestConfig.getTestPassword())
@@ -104,34 +104,6 @@ public class RenewalModalFlow {
                     orderToggleSubscriptionSteps.toggleOrderSubscription(currentToken, 180));
         }
         return this;
-//        if (TestConfig.isProd()) {
-//            loginWithRefreshToken(TestConfig.getRenewalEmail(), TestConfig.getTestPassword());
-//            WaitHelper.waitForPageLoad();
-//            }
-//        else {
-//            step("Создание заказа Лайт", () -> {
-//                PurchaseResult result = purchaseFlow.lite();
-//                userEmail = result.email();
-//            });
-//
-//            step("Переход в ЛК", () -> {
-//                String href = cloudPage.verifySuccessProfilePage();
-//                String password = OrderSteps.extractQueryParam(href, "password");
-//                String token = loginWithRefreshToken(userEmail, password);
-//
-//            step("Заполнение приветсвенной модалки через API", () -> {
-//                accountSteps.validateEditPasswordSuccess(
-//                        accountSteps.editPassword(token, password, TestConfig.getTestPassword())
-//                );
-//                accountSteps.validateEditDataSuccess(
-//                        accountSteps.editUserData(token,
-//                                new UserEditDataRequest().name(faker.name().firstName()).gender(0).email(userEmail))
-//                );
-//            });
-//            refresh();
-//            });
-//        }
-//        return this;
     }
 
     @Step("Первый продукт (не онбординг, не Лайт New) через /user/products -> открытие урока")
@@ -237,15 +209,5 @@ public class RenewalModalFlow {
         WaitHelper.waitForPageLoad();
         WaitHelper.waitForAnimationComplete();
         return this;
-    }
-
-    private String loginWithRefreshToken(String email, String password) {
-        LoginResponse tokens = authSteps.loginAndGetTokens(email, password);
-        step("Переход в ЛК через refresh_token", () ->{
-            currentToken = tokens.token();
-            open(AddressPage.LOGIN + "?refresh_token=" + tokens.refreshToken());
-            WaitHelper.waitForPageLoad();
-        });
-        return currentToken;
     }
 }

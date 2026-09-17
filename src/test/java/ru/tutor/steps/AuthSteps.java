@@ -3,14 +3,17 @@ package ru.tutor.steps;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import ru.tutor.constants.AddressPage;
 import ru.tutor.model.LoginResponse;
 import ru.tutor.model.UserProfile;
 import ru.tutor.api.UserApi;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.utils.AllureAttachments;
+import ru.tutor.utils.WaitHelper;
 
 import java.util.Base64;
 
+import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,17 +62,19 @@ public class AuthSteps extends BaseApiSteps {
         assertNotNull(tokens.token(), "token не должен быть null");
         assertNotNull(tokens.refreshToken(), "refresh_token не должен быть null");
 
-//        String token = response.jsonPath().getString("token");
-//        assertJsonFieldNotEmpty(response, "token");
-
         currentAuthToken = tokens.token();
 
-        // Логируем часть токена для отладки
-//        AllureAttachments.attachText("Получен Bearer токен",
-//                "Токен получен успешно (первые 50 символов): " +
-//                        token.substring(0, Math.min(50, token.length())) + "...");
-
         return tokens;
+    }
+
+    @Step("Вход в ЛК через refresh_token + возврат токена")
+    public String loginViaRefreshToken(String email, String password) {
+        LoginResponse tokens = loginAndGetTokens(email, password);
+        step("Переход в ЛК через refresh_token", () -> {
+            open(AddressPage.LOGIN + "?refresh_token=" + tokens.refreshToken());
+            WaitHelper.waitForPageLoad();
+        });
+        return tokens.token();
     }
 
     public String loginAndGetToken(String email, String password) {
