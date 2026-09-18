@@ -42,7 +42,7 @@ public abstract class BaseUiTest {
                 "--disable-extensions",
                 "--disable-background-timer-throttling");
 
-        options.addArguments("--headless=new");
+//        options.addArguments("--headless=new");
         applyCommonConfig(options);
     }
 

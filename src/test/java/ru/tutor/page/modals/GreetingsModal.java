@@ -8,6 +8,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.utils.WaitHelper;
 import ru.tutor.utils.UniversalMethod;
 
+import java.time.Duration;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Random;
@@ -34,6 +35,8 @@ public class GreetingsModal {
 
     //Локаторы
     private final SelenideElement NEXT_STEP_BUTTON = $$("button").find(exactText(NEXT_STEP_TEXT));
+    private final SelenideElement WELCOME_STEP_BUTTON = $x("//button[@type='button'][normalize-space(.)='Следующий шаг']");
+    private final SelenideElement FROM_SUBMIT_BUTTON = $x("//button[@type='submit'][normalize-space(.)='Следующий шаг']");
     private final SelenideElement SNAP_BUTTON = $$("button").find(exactText(SNAP_TEXT));
     private final SelenideElement SKIP_BUTTON = $$("button").find(exactText(SKIP_TEXT));
     private final SelenideElement START_LEARN_BUTTON = $$("button").find(exactText(START_LEARN_TEXT));
@@ -122,6 +125,23 @@ public class GreetingsModal {
                 UniversalMethod.safeClick(CLOSE_BUTTON, "Крестик");
                 WaitHelper.waitForAnimationComplete();
             });
+        });
+    }
+
+    @Step("закрытие приветсвенного окна: 'Следующий шаг' → 'Следующий шаг' → крестик")
+    public void closeWelcomeModal() {
+        step("Клик 'Следующий шаг' (шаг приветствия)", () -> {
+            UniversalMethod.clickButton(WELCOME_STEP_BUTTON, "Следующий шаг");
+            WaitHelper.waitForAnimationComplete();
+        });
+        step("Клик 'Следующий шаг' (форма заполнена через API)", () -> {
+            UniversalMethod.clickButton(FROM_SUBMIT_BUTTON, "Следующий шаг");
+            WaitHelper.waitForAnimationComplete();
+        });
+        step("Закрытие модального окна", () -> {
+            UniversalMethod.clickButton(CLOSE_BUTTON, "Закрытие");
+            WaitHelper.waitForAnimationComplete();
+            WaitHelper.waitForPageLoad();
         });
     }
 

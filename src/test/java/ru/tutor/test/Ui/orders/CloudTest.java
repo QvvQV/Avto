@@ -41,6 +41,7 @@ public class CloudTest extends BaseUiTest {
     // ====FLOW====
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
     private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
+    private final RegistrationFlow registrationFlow = new RegistrationFlow();
     private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
             cloudPage, ttPage, sberPage, revshareFlow, orderToggleSubscriptionSteps);
     private final LifetimeTariffFlow lifetimeTariffFlow = new LifetimeTariffFlow(
@@ -174,5 +175,13 @@ public class CloudTest extends BaseUiTest {
         } else {
             premium99Flow.createPremium99FromHotNovelties();
         }
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("Регистрация нового пользователя → вход → приветственная форма → клик на первый курс")
+    @Severity(SeverityLevel.CRITICAL)
+    void registerUserAndOpenFirstCourse() {
+        registrationFlow.registerNewUserAndOpenFirstCourse();
     }
 }
