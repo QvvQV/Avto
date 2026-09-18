@@ -1,4 +1,4 @@
-package ru.tutor.test.Ui.orders;
+package ru.tutor.test.Ui.orders.admin;
 
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
@@ -62,5 +62,15 @@ public class AdminOrderUnsubscribeTest extends BaseUiTest {
         assumeTrue(!TestConfig.isProd(),
                 "Тест запускается только на dev-окружении (env.ui != prod)");
         adminPaymentFlow.unsubscribeOrderAndCheckDeactivation();
+    }
+
+    @Test
+    @Order(4)
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("Оплата Premium через админку, проверка дат и Refund")
+    void PayPremiumViaAdminAndRefund() {
+        assumeTrue(!TestConfig.isProd(),
+                "Тест запускается только на dev-окружении (env.ui != prod)");
+        adminPaymentFlow.payPremiumViaAdminAndRefund();
     }
 }

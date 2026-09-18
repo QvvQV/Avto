@@ -5,6 +5,7 @@ import ru.tutor.page.orders.CloudPage;
 import ru.tutor.steps.AdminSteps;
 import ru.tutor.steps.OrderSteps;
 
+import static com.codeborne.selenide.Selenide.sleep;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -56,5 +57,21 @@ public class AdminPaymentFlow {
         String orderId = adminSteps.assertOrderExists(userEmail);
         adminSteps.unsubscribeOrder(orderId);
         adminSteps.assertOrderDeactivated(orderId);
+    }
+
+    @Step("Оплата Premium в админке + проверка дат + Refund")
+    public void payPremiumViaAdminAndRefund(){
+        step("Создание заказа Премиум", () -> {
+            PurchaseResult result = purchaseFlow.premium();
+            userEmail = result.email();
+            assertNotNull(userEmail, "email не должен быть null");
+        });
+        OrderSteps.validateSuccessfulPayment(cloudPage);
+        String orderId = adminSteps.assertOrderExists(userEmail);
+        adminSteps.createPaymentAndValidateDates(orderId, 399, 30);
+
+        Integer paymentId = adminSteps.findRefundablePaymentId(orderId);
+        adminSteps.refundPayment(paymentId);
+        adminSteps.assertRefundApplied(orderId, 399);
     }
 }

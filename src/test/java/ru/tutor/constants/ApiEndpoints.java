@@ -895,4 +895,9 @@ public final class ApiEndpoints {
      * Отмена подписки заказа в админке
      */
     public static final String ADMIN_ORDERS_UNSUBSCRIBE = "/admin/orders/%s/unsubscribe";
+
+    /**
+     * Возврат (refund) платежа админка
+     */
+    public static final String ADMIN_PAYMENTS_REFUND = "/admin/payments/refund";
 }

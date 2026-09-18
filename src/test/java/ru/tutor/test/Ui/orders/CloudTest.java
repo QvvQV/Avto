@@ -10,7 +10,6 @@ import ru.tutor.page.modals.Product;
 import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
-import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.*;
 
@@ -55,7 +54,7 @@ public class CloudTest extends BaseUiTest {
 
 
     @AfterEach
-            public void afterEachTest() {
+    public void afterEachTest() {
         try {
             renewalModalFlow.logoutAfterTest();
         } catch (RuntimeException ignored) {
@@ -138,7 +137,7 @@ public class CloudTest extends BaseUiTest {
     @Test
     @Order(6)
     @DisplayName("Оплата по тестовому домену")
-    public void PayFromRevShare() {
+    public void PayFromTesterProd() {
         assumeTrue(TestConfig.isProd(),
                 "Тест запускается только на прод-окружении (env.ui=prod)");
         revshareFlow.executeProd();

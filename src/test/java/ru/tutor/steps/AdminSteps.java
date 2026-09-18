@@ -11,7 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.sleep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -117,13 +119,73 @@ public class AdminSteps extends BaseApiSteps {
         String deactivatedAt = order.jsonPath().getString("deactivatedAt");
         String deactivatedBy = order.jsonPath().getString("deactivatedBy");
         String deactivatedType = order.jsonPath().getString("deactivatedType");
+        int status = order.jsonPath().getInt("status");
 
         assertNotNull(deactivatedAt, "После отмены заказа deactivatedAt должен быть заполнен");
         assertEquals("admin", deactivatedBy, "deactivatedBy должен быть 'admin'");
         assertEquals("Деактивация сотрудником ", deactivatedType,
                 "deactivatedType должен быть 'Деактивация сотрудником'");
+        assertEquals(7, status, "status после отмены должен быть 7 ('Оплаченный')");
         AllureAttachments.attachText("Флаги деактивации",
                 "deactivatedAt=" + deactivatedAt + ", deactivatedBy=" + deactivatedBy
-                        + ", deactivatedType=" + deactivatedType);
+                        + ", deactivatedType=" + deactivatedType + ", status=" + status);
+    }
+
+    @Step("Поиск refundable платежа заказа {orderId} (GET /admin/order/{id} -> payments)")
+    public Integer findRefundablePaymentId(String orderId) {
+        Response order = adminApi.getOrder(adminToken, orderId);
+        AllureAttachments.attachJson("Заказ перед refund", order.getBody().asString());
+
+        List<Map<String, Object>> payments = order.jsonPath().getList("payments");
+        assertNotNull(payments, "Список payments не должен быть null");
+
+        Map<String, Object> target = null;
+        int targetAmount = Integer.MIN_VALUE;
+        for (Map<String, Object> p : payments) {
+            if (!Boolean.TRUE.equals(p.get("isRefundable"))) continue;
+            if (!Boolean.FALSE.equals(p.get("hasRefund"))) continue;
+            Number amount = (Number) p.get("amount");
+            Number status = (Number) p.get("status");
+            if (amount == null || amount.intValue() <= 0) continue;
+            if (status == null || status.intValue() != 1) continue;
+            if (amount.intValue() > targetAmount) {
+                targetAmount = amount.intValue();
+                target = p;
+            }
+        }
+        assertNotNull(target, "Refundable платеж не найден в payments заказа " + orderId);
+        Integer paymentId = ((Number) target.get("id")).intValue();
+        AllureAttachments.attachText("Refundable платеж", "id=" + paymentId + ", amount=" + target.get("amount"));
+        return paymentId;
+    }
+
+    @Step("Возврат платежа {paymentId} через админку (POST /admin/payments/refund)")
+    public Response refundPayment(int paymentId) {
+        Response resp = adminApi.refundPayment(adminToken, paymentId);
+        assertSuccessStatusCode(resp);
+        AllureAttachments.attachJson("Admin refund", resp.getBody().asString());
+        Object body = resp.jsonPath().get("$");
+        assertTrue(body instanceof List,
+                "Ответ должен быть список ([]), но тело: " + resp.getBody().asString());
+        return resp;
+    }
+
+    @Step("Проверка записи о возврате в платежах заказа {orderId} (amount=-{refundAmount}, type=5, status=1)")
+    public void assertRefundApplied(String orderId, int refundAmount) {
+        Response order = adminApi.getOrder(adminToken, orderId);
+        AllureAttachments.attachJson("Заказ после refund", order.getBody().asString());
+
+        List<Map<String, Object>> payments = order.jsonPath().getList("payments");
+        assertNotNull(payments, "Список payments не должен быть null");
+
+        boolean found = payments.stream().anyMatch(
+                p -> p.get("amount") != null && ((Number) p.get("amount")).intValue() == -refundAmount
+                && p.get("status") != null && ((Number) p.get("status")).intValue() == 1
+                && p.get("type") != null && ((Number) p.get("type")).intValue() == 5);
+
+        assertTrue(found, "Не найдена запись refund (amount=-" + refundAmount + ", type=5, status=1)" +
+                " в payments заказа " + orderId);
+        AllureAttachments.attachText("Refund проверка",
+                "Найдена запись: amount=-" + refundAmount + ", type=5, status=1");
     }
 }

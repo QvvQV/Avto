@@ -79,4 +79,12 @@ public class AdminApi extends BaseApi {
                 .when().post(ApiEndpoints.ADMIN_ORDERS_UNSUBSCRIBE.formatted(orderId))
                 .then().log().ifError().extract().response();
     }
+
+    @Step("POST /admin/payments/refund - возврат платежа {paymentId} в админке")
+    public Response refundPayment(String adminToken, int paymentId) {
+        return withAdminCookie(adminToken)
+                .body(Map.of("id", paymentId))
+                .when().post(ApiEndpoints.ADMIN_PAYMENTS_REFUND)
+                .then().log().ifError().extract().response();
+    }
 }
