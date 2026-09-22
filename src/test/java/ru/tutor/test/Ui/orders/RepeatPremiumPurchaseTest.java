@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.PremiumWelcomeBackFlow;
-import ru.tutor.flow.PurchaseFlow;
 import ru.tutor.flow.RenewalModalFlow;
 import ru.tutor.flow.RevshareFlow;
 import ru.tutor.page.Registration;
@@ -24,20 +23,14 @@ import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.AdminSteps;
-import ru.tutor.steps.AuthSteps;
 import ru.tutor.steps.OrderSteps;
 import ru.tutor.steps.OrderToggleSubscriptionSteps;
-import ru.tutor.utils.FrameHelper;
-import ru.tutor.utils.WaitHelper;
 
 import java.util.stream.Stream;
 
-import static com.codeborne.selenide.Selenide.clearBrowserCookies;
-import static com.codeborne.selenide.Selenide.clearBrowserLocalStorage;
-import static com.codeborne.selenide.Selenide.refresh;
-import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+// TP-7673 Убрать ограничение на дубли для вернувшихся пользователей
 @Epic("Повторная покупка")
 @Feature("Сценарий «Рады вновь вас видеть»")
 @DisplayName("🧪 Повторная покупка → модальное окно «Рады вновь вас видеть»")
@@ -163,6 +156,16 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
         RenewalModalFlow.RenewalClient client = renewalModalFlow.createFrozenRenewalOrderAndLogout();
         premiumWelcomeBackFlow.assertWelcomeBackForExistingEmail(client.email(), TtPage.SubscriptionType.PREMIUM);
+    }
+
+    @Test
+    @Tag("UI")
+    @DisplayName("Замороженный Реневалл → покупка Лайт → появление ссылки «Авторизация»")
+    @Severity(SeverityLevel.CRITICAL)
+    void frozenRenewalTryBuyLiteShowsModal() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+        RenewalModalFlow.RenewalClient client = renewalModalFlow.createFrozenRenewalOrderAndLogout();
+        premiumWelcomeBackFlow.assertWelcomeBackForExistingEmail(client.email(), TtPage.SubscriptionType.LITE);
     }
 
     private record ActiveRenewal(String email, String liteOrderId, String renewalOrderId) {}
