@@ -6,6 +6,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
+import org.junit.jupiter.api.Test;
 import ru.tutor.api.UserProductsApi;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
@@ -51,6 +52,8 @@ public class RenewalModalFlow {
     private final OrderToggleSubscriptionSteps orderToggleSubscriptionSteps;
 
     private Faker faker = new Faker(Locale.ENGLISH);
+    private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
+    private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
 
     public RenewalModalFlow(
             Registration registration, Product product, UnlockNextWeek unlockNextWeek, CloudPage cloudPage,
@@ -211,7 +214,66 @@ public class RenewalModalFlow {
         return this;
     }
 
+    public RenewalModalFlow pauseCurrentSubscription(int days) {
+        return pauseCurrentSubscription(currentToken, days);
+    }
+
+    public RenewalModalFlow pauseCurrentSubscription(String token, int days) {
+        step("PUT /user/orders/pause/" + days, () -> {
+            Response response =orderSteps.pauseOrder(token, days);
+            orderSteps.validateEmptyArrayResponse(response);
+        });
+        return this;
+    }
+
     public String getUserEmail() {
         return userEmail;
+    }
+
+    public record RenewalClient(String email, String liteOrderId, String renewalOrderId) {}
+
+    @Step("Создание активного заказа Реневалла и выход (freeze={freeze})")
+    private RenewalClient createRenewalOrderAndLogout(boolean freeze) {
+        login();
+        String email = getUserEmail();
+        String liteOrderId = adminSteps.assertOrderExists(email);
+        openPayments99AndAssertIframe();
+        String renewalOrderId = adminSteps.assertOrderExists(email);
+        verifyProductPresent(264);
+        if (freeze) {
+            pauseCurrentSubscription(7);
+        }
+        logoutAfterTest();
+        return new RenewalClient(email, liteOrderId, renewalOrderId);
+    }
+
+    @Step("Создание активного Реневалла и выход")
+    public RenewalClient createActiveRenewalOrderAndLogout() {
+        return createRenewalOrderAndLogout(false);
+    }
+
+    @Step("Создание активного Реневалла и выход")
+    public RenewalClient createFrozenRenewalOrderAndLogout() {
+        return createRenewalOrderAndLogout(true);
+    }
+
+    @Step("Создание замороженного Лайт и выход")
+    public String createFrozenLiteAndLogout() {
+        login();
+        pauseCurrentSubscription(7);
+        String email = getUserEmail();
+        logoutAfterTest();
+        return email;
+    }
+
+    @Step("Создание замороженного Премиум и выход")
+    public String createFrozenPremiumAndLogout() {
+        PurchaseResult result = purchaseFlow.premium();
+        String email = result.email();
+        OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
+        String token = authSteps.loginViaRefreshToken(email, credentials.password());
+        pauseCurrentSubscription(token, 7);
+        logoutAfterTest();
+        return email;
     }
 }
