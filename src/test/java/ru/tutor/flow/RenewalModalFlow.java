@@ -86,13 +86,13 @@ public class RenewalModalFlow {
         step("Переход в ЛК", () -> {
             String href = cloudPage.verifySuccessProfilePage();
             String password = OrderSteps.extractQueryParam(href, "password");
-            String token = authSteps.loginViaRefreshToken(userEmail, password);
+            currentToken = authSteps.loginViaRefreshToken(userEmail, password);
             step("Заполнение приветственной модалки через API", () -> {
                 accountSteps.validateEditPasswordSuccess(
-                        accountSteps.editPassword(token, password, TestConfig.getTestPassword())
+                        accountSteps.editPassword(currentToken, password, TestConfig.getTestPassword())
                 );
                 accountSteps.validateEditDataSuccess(
-                        accountSteps.editUserData(token,
+                        accountSteps.editUserData(currentToken,
                                 new UserEditDataRequest().name(faker.name().firstName()).gender(0).email(userEmail)
                 ));
             });
@@ -209,5 +209,9 @@ public class RenewalModalFlow {
         WaitHelper.waitForPageLoad();
         WaitHelper.waitForAnimationComplete();
         return this;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
     }
 }

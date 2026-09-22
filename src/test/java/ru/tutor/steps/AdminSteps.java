@@ -51,6 +51,19 @@ public class AdminSteps extends BaseApiSteps {
         return id;
     }
 
+    @Step("Проверка через админ-API: заказ с тарифом «{expectedKeyword}» для email: {email}")
+    public void assertOrderTariffForEmail(String email, String expectedKeyword) {
+        login();
+        String orderId = findOrderId(email);
+        Response order = adminApi.getOrder(adminToken, orderId);
+        AllureAttachments.attachJson("Заказ (админка)", order.getBody().asString());
+        String productName = order.jsonPath().getString("product.name");
+        assertNotNull(productName, "В ответе админ-API нет поля product.name");
+        assertTrue(productName.toLowerCase().contains(expectedKeyword.toLowerCase()),
+                "Ожидался тариф «" + expectedKeyword + "», получен продукт: " + productName);
+        AllureAttachments.attachText("Тариф заказа", productName);
+    }
+
     @Step("Деактивация доступа: PUT extend-access {days} дня + проверка статуса")
     public void extendAccessDays(String orderId, int days) {
         Response put = adminApi.putExtendAccess(adminToken, orderId, days);
@@ -187,5 +200,16 @@ public class AdminSteps extends BaseApiSteps {
                 " в payments заказа " + orderId);
         AllureAttachments.attachText("Refund проверка",
                 "Найдена запись: amount=-" + refundAmount + ", type=5, status=1");
+    }
+
+    @Step("Проверка через админ-API: заказы переведены в status=2")
+    public void assertOrdersDeactivated(String... orderIds) {
+        login();
+        for (String orderId : orderIds) {
+            Response order = adminApi.getOrder(adminToken, orderId);
+            int status = order.jsonPath().getInt("status");
+            assertEquals(2, status, "Заказ " + orderId + " должен стать status=2");
+            AllureAttachments.attachText("Заказ (status=2)", "id=" + orderId + ", status=" + status);
+        }
     }
 }

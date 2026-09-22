@@ -39,6 +39,7 @@ public class OrderRenewal extends BaseUiTest {
     //    ===Renewal в ЛК===
 
     @Test
+    @Order(1)
     @Feature("Renewal в ЛК")
     @Tag("API + UI")
     @DisplayName("Renewal: логин в ЛК → модалка оплаты пожизненного → фиксация iframe")
@@ -59,6 +60,7 @@ public class OrderRenewal extends BaseUiTest {
     }
 
     @Test
+    @Order(2)
     @Feature("Renewal в ЛК")
     @Tag("API + UI")
     @DisplayName("Renewal: логин -> модалка оплаты Реневал -> фиксация iframe")

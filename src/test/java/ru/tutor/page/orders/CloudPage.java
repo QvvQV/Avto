@@ -168,6 +168,14 @@ public class CloudPage {
         });
     }
 
+    @Step("Ввод повторно используемого email и клик 'Оплатить'")
+    public void submitEmail(String email) {
+        step("Ввод email в модальное окно", () ->
+                UniversalMethod.safeSetValue(EMAIL_INPUT, email, "Email (повторная покупка)"));
+        step("Клик 'Оплатить'", () ->
+                UniversalMethod.safeClick(FULL_OPTION, "Оплатить"));
+    }
+
     // ==================== МЕТОДЫ ДЛЯ PROD ОКРУЖЕНИЯ ====================
 
     @Step("Заполнение данных модального окна Prod")
