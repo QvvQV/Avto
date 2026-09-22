@@ -188,11 +188,13 @@ public class RenewalModalFlow {
 
     @Step("Выход из сессии пользователя через очистку кук")
     public void logoutAfterTest() {
-        FrameHelper.switchToDefaultContent();
-        clearBrowserCookies();
-        clearBrowserLocalStorage();
-        refresh();
-        WaitHelper.waitForPageLoad();
+        step("Чистка окружения", () -> {
+            FrameHelper.switchToDefaultContent();
+            clearBrowserCookies();
+            clearBrowserLocalStorage();
+            refresh();
+            WaitHelper.waitForPageLoad();
+        });
     }
 
     private static final SelenideElement FIRST_NON_ONBOARDING_PRODUCT_CARD =

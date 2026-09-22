@@ -78,12 +78,14 @@ public class TtPage {
     @Step("Кликаем по кнопке на главной за 1 руб")
     public TtPage clickBtnOpenFor() {
 
-        WaitHelper.waitForPageLoad();
-        main.scrollTo();
-        System.out.println(main.getText().trim());
-        btnOpenFor.scrollTo().shouldBe(visible, Duration.ofSeconds(20));
+        return step("Кликаем по кнопке на главной за 1 руб", () -> {
+            WaitHelper.waitForPageLoad();
+            main.scrollTo();
+            System.out.println(main.getText().trim());
+            btnOpenFor.scrollTo().shouldBe(visible, Duration.ofSeconds(20));
 //        UniversalMethod.safeClick(premium, "Попробовать за 1₽*");
-        return this;
+            return this;
+        });
     }
 
     @Step("Выбор типа подписки: {type.displayName}")

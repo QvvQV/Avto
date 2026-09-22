@@ -180,12 +180,6 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @AfterEach
     void clearBrowserSession() {
-        step("Чистка окружения", () -> {
-            FrameHelper.switchToDefaultContent();
-            clearBrowserCookies();
-            clearBrowserLocalStorage();
-            refresh();
-            WaitHelper.waitForPageLoad();
-        });
+        renewalModalFlow.logoutAfterTest();
     }
 }
