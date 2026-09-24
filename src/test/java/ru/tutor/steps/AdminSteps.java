@@ -212,4 +212,27 @@ public class AdminSteps extends BaseApiSteps {
             AllureAttachments.attachText("Заказ (status=2)", "id=" + orderId + ", status=" + status);
         }
     }
+
+    @Step("GET /admin/user/club/withdrawal/{id} - заявка в админке")
+    public Response getClubWithdrawal(long withdrawalId) {
+        Response resp = adminApi.getClubWithdrawal(adminToken, withdrawalId);
+        AllureAttachments.attachJson("Admin Club Withdrawal", resp.getBody().asString());
+        return resp;
+    }
+
+    @Step("POST /admin/user/club/withdrawal/{id}/reject - отклонение заявки (204)")
+    public Response rejectClubWithdrawal(long withdrawalId, boolean returnBonus) {
+        Response resp = adminApi.rejectClubWithdrawal(adminToken, withdrawalId, returnBonus);
+        assertEquals(204, resp.getStatusCode(),
+                "Ожидался статус 204б получен: " + resp.getStatusCode());
+        AllureAttachments.attachJson("admin Club Withdrawal Reject", resp.getBody().asString());
+        return resp;
+    }
+
+    @Step("Проверка статуса заявки на вывод: {expectedCode} / {expectedLabel}")
+    public void validateWithdrawalStatus(Response response, String expectedCode, String expectedLabel) {
+        assertSuccessStatusCode(response);
+        assertEquals(expectedCode, response.jsonPath().getString("status.code"),
+                "status.code должен быть '" + expectedCode + "'");
+    }
 }
