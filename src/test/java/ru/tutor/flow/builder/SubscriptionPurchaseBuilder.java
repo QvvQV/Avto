@@ -30,6 +30,7 @@ public class SubscriptionPurchaseBuilder {
     private final SberPage sberPage;
     private String userEmail;
     private boolean modalOnly = false;
+    private boolean verifyTitle = true;
     private String customUrl;
 
     public enum PaymentSystem {
@@ -185,10 +186,16 @@ public class SubscriptionPurchaseBuilder {
         );
 
         step("Проверка заголовка главной страницы", () -> {
-            assertEquals(TestConfig.Texts.MAIN_PAGE_TITLE, title(),
-                    "Заголовок главной страницы не совпадает");
-            AllureAttachments.attachText("Проверка страницы",
-                    String.format("Главная страница (%s) загружена корректно", stepName));
+            if (verifyTitle) {
+                assertEquals(TestConfig.Texts.MAIN_PAGE_TITLE, title(),
+                        "Заголовок главной страницы не совпадает");
+                AllureAttachments.attachText("Проверка страницы",
+                        String.format("Главная страница (%s) загружена корректно", stepName));
+            } else {
+                AllureAttachments.attachText("Проверка страницы",
+                        "Открыт кастомный URL (реферальная ссылка), заголовок: " + title());
+            }
+
         });
     }
 
@@ -364,6 +371,11 @@ public class SubscriptionPurchaseBuilder {
 
     public SubscriptionPurchaseBuilder withCustomUrl(String url) {
         this.customUrl = url;
+        return this;
+    }
+
+    public SubscriptionPurchaseBuilder withoutTitleCheck() {
+        this.verifyTitle = false;
         return this;
     }
     }

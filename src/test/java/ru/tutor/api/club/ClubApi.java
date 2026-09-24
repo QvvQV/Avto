@@ -69,6 +69,47 @@ public class ClubApi extends BaseApi {
     }
 
     /**
+     * GET /user/club/v2/payouts/summary - сводка выплат клуба
+     */
+    public Response getPayoutSummary(String authToken) {
+        return getWithToken(ApiEndpoints.CLUB_V2_PAYOUTS_SUMMARY, authToken);
+    }
+
+    /**
+     * POST /user/club/v2/links - создание реферальной ссылки клуба
+     */
+    public Response createClubLink(String authToken, Map<String, Object> payload) {
+        return postWithToken(ApiEndpoints.USER_CLUB_V2_LINKS, authToken, payload);
+    }
+
+    /**
+     * POST /user/club/share-reward - вознаграждение
+     */
+    public Response shareReward(String authToken) {
+        return postWithToken(ApiEndpoints.CLUB_SHARE_REWARD, authToken, "[]");
+    }
+
+    /**
+     * PUT /user/club/v2/payouts/requisites - заполнение реквизитов
+     */
+    public Response savePayoutRequisites(String authToken, Object payload) {
+        return putWithTokenObject(ApiEndpoints.CLUB_V2_PAYOUTS_REQUISITES , authToken, payload);
+    }
+    public Response getPayoutRequisites(String authToken) {
+        return getWithToken(ApiEndpoints.CLUB_V2_PAYOUTS_REQUISITES, authToken);
+    }
+    public Response deletePayoutRequisites(String authToken) {
+        return deleteWithToken(ApiEndpoints.CLUB_V2_PAYOUTS_REQUISITES, authToken);
+    }
+
+    /**
+     * POST /user/club/v2/payouts - создание заявки на выплату средств
+     */
+    public Response createPayout(String authToken,  Object payload) {
+        return postWithToken(ApiEndpoints.USER_CLUB_V2_PAYOUTS, authToken, payload);
+    }
+
+    /**
      * GET /user/{userId}/club/referrals - список рефералов пользователя"
      */
     public Response getUserReferrals(String authToken, int userId) {

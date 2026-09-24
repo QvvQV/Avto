@@ -705,6 +705,31 @@ public final class ApiEndpoints {
      */
     public static final String USER_CLUB_REFERRALS_ID_REFERRALS = "/user/%s/club/referrals/%s/referrals";
 
+    /**
+     * Создание реферальных ссылок
+     */
+    public static final String USER_CLUB_V2_LINKS = "/user/club/v2/links";
+
+    /**
+     * Сводка пользователя
+     */
+    public static final String CLUB_V2_PAYOUTS_SUMMARY = "/user/club/v2/payouts/summary";
+
+    /**
+     * Реквизиты
+     */
+    public static final String CLUB_V2_PAYOUTS_REQUISITES = "/user/club/v2/payouts/requisites";
+
+    /**
+     * Вознаграждение за рекомендацию
+     */
+    public static final String CLUB_SHARE_REWARD = "/user/club/share-reward";
+
+    /**
+     * Создание заявки на выплату
+     */
+    public static final String USER_CLUB_V2_PAYOUTS = "/user/club/v2/payouts";
+
 
 
     // ==================== DASHBOARD ENDPOINTS (ПРИЛОЖЕНИЯ) ====================
@@ -900,4 +925,14 @@ public final class ApiEndpoints {
      * Возврат (refund) платежа админка
      */
     public static final String ADMIN_PAYMENTS_REFUND = "/admin/payments/refund";
+
+    /**
+     * Отклонение заявки на выплату средств по клубу
+     */
+    public static final String ADMIN_USER_CLUB_WITHDRAWAL_REJECT = "/admin/user/club/withdrawal/%s/reject";
+
+    /**
+     * Заявка на выплату средств
+     */
+    public static final String ADMIN_USER_CLUB_WITHDRAWAL = "/admin/user/club/withdrawal/%s";
 }

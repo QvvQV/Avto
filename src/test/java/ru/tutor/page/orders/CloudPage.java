@@ -52,7 +52,7 @@ public class CloudPage {
     private final SelenideElement ERROR_MESSAGE = $$("p").find(exactText(ERROR_MESSAGE_TEXT));
     private final SelenideElement ACCESS_BUTTON = $(By.id("access-button"));
     private final SelenideElement ACCESS_BUTTON_PROD = $(By.id("mainFormaSubmitBtn"));
-    private final SelenideElement EMAIL_INPUT = $("[name='email']");
+    private final SelenideElement EMAIL_INPUT = $("[id='buy-modal-v2-email']");
     private final SelenideElement EMAIL_INPUT_PROD = $("[name='order[email]']");
     private final SelenideElement CARD_PAGE_BUTTON = $("[data-test='cardpay-page-button']");
     private final SelenideElement CARD_INPUT = $("input[automation-id='tui-input-card-group__card'][placeholder*='0000']");
@@ -87,7 +87,7 @@ public class CloudPage {
     private final SelenideElement TINK_BTN = $("button.tink");
     private final SelenideElement OTHER_BTN = $("button.other");
 
-//    private final SelenideElement SBER_PAY_DRAWER = $("[class=*'EZDrawer__container']");
+    //    private final SelenideElement SBER_PAY_DRAWER = $("[class=*'EZDrawer__container']");
     private final SelenideElement SBER_PAY_DRAWER = $("[data-testid='qrBox']");
     private final SelenideElement SBER_PAY_TITLE = $$("span").find(exactText("Получить пуш на телефон"));
 
@@ -120,24 +120,23 @@ public class CloudPage {
 
             frameHandler.ensurePaymentFrame();
 
-            step ("Клик по кнопке 'Банковская карта'", () -> {
-            if (CARD_PAGE_BUTTON.is(visible)) {
-                UniversalMethod.safeClick(CARD_PAGE_BUTTON, "Банковской картой");
-                sleep(2000);
-            }
+            step("Клик по кнопке 'Банковская карта'", () -> {
+                if (CARD_PAGE_BUTTON.is(visible)) {
+                    UniversalMethod.safeClick(CARD_PAGE_BUTTON, "Банковской картой");
+                    sleep(2000);
+                }
 
-            step("Ввод валидных Банковский данных", () -> {
-                CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT)
-                        .sendKeys(TEST_CARD_NUMBER);
-                UniversalMethod.clickButton(CARD_PAY_BUTTON, "Кнопка Оплатить");
-                frameHandler.ensureSuccessFrame();
-            });
+                step("Ввод валидных Банковский данных", () -> {
+                    CARD_INPUT.shouldBe(visible, DEFAULT_TIMEOUT)
+                            .sendKeys(TEST_CARD_NUMBER);
+                    UniversalMethod.clickButton(CARD_PAY_BUTTON, "Кнопка Оплатить");
+                    frameHandler.ensureSuccessFrame();
+                });
 
             });
             step("Кнопка 'Успех'", () ->
                     UniversalMethod.safeClick(SUCCESS_BUTTON, SUCCESS_TEXT)
             );
-
 
             WaitHelper.waitForAnimationComplete();
             FrameHelper.switchToDefaultContent();
@@ -187,7 +186,7 @@ public class CloudPage {
             UniversalMethod.safeSetValue(CARD_INPUT, TEST_CARD_NUMBER, "Номер карты");
             UniversalMethod.safeClick(CARD_PAY_BUTTON, "Оплата картой");
             FrameHelper.switchToFrame(0);
-            UniversalMethod.safeClick(SUCCESS_BUTTON,SUCCESS_TEXT);
+            UniversalMethod.safeClick(SUCCESS_BUTTON, SUCCESS_TEXT);
         });
     }
 
@@ -221,7 +220,7 @@ public class CloudPage {
     }
 
     @Step("Выбор опции 'Полная оплата' в модальном окне CLOUD")
-    public void setDateModalInstallments(){
+    public void setDateModalInstallments() {
         step("Выбор полной оплаты и заполнение email", () -> {
             currentEmail = faker.internet().emailAddress();
 
@@ -249,7 +248,7 @@ public class CloudPage {
     }
 
     @Step("Выбор опции 'Полная оплата' в модальном окне SBER")
-    public void setDateModalInstallmentsParts(){
+    public void setDateModalInstallmentsParts() {
         step("Выбор полной оплаты и заполнение email", () -> {
             currentEmail = faker.internet().emailAddress();
 
@@ -288,11 +287,11 @@ public class CloudPage {
         UniversalMethod.safeClick(SBER_PAY_BTN, "Кнопка SberPay");
         ttPage.closeModal();
         FrameHelper.switchToDefaultContent();
-        WaitHelper.waitFor( () ->
-                $$("iframe").stream().anyMatch(f -> {
-                    String src = f.getAttribute("src");
-                    return src != null && (src.contains("sberbank_id") || src.contains("id.sber.ru"));
-                }),
+        WaitHelper.waitFor(() ->
+                        $$("iframe").stream().anyMatch(f -> {
+                            String src = f.getAttribute("src");
+                            return src != null && (src.contains("sberbank_id") || src.contains("id.sber.ru"));
+                        }),
                 DEFAULT_TIMEOUT, "Sber iframe не появился");
 
         boolean entered = false;
@@ -337,7 +336,7 @@ public class CloudPage {
     public boolean isCloudPaymentFrameVisible() {
         FrameHelper.switchToDefaultContent();
         sleep(2000);
-        return  $$("iframe").stream().anyMatch(frame -> {
+        return $$("iframe").stream().anyMatch(frame -> {
             String src = frame.getAttribute("src");
             return src != null && src.contains("cloudpayments");
         });
@@ -421,12 +420,14 @@ public class CloudPage {
 
         @Step("Поиск iframe с формой оплаты")
         void ensurePaymentFrame() {
-            boolean found = frameChecker.findPaymentFrame();
-            if (!found) {
-                AllureAttachments.attachScreenshot("Ошибка поиска iframe");
-                throw new AssertionError("Не удалось найти iframe с формой оплаты");
-            }
-            AllureAttachments.attachText("Статус", "✓ Форма оплаты найдена");
+            step("Переход в iframe", () -> {
+                boolean found = frameChecker.findPaymentFrame();
+                if (!found) {
+                    AllureAttachments.attachScreenshot("Ошибка поиска iframe");
+                    throw new AssertionError("Не удалось найти iframe с формой оплаты");
+                }
+                AllureAttachments.attachText("Статус", "✓ Форма оплаты найдена");
+            });
         }
 
         @Step("Поиск iframe с подтверждением")
@@ -508,4 +509,4 @@ public class CloudPage {
             AllureAttachments.attachText("Статус", "Редирект на dolyame.ru выполнен");
         });
     }
-    }
+}

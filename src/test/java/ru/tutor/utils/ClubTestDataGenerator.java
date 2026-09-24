@@ -2,6 +2,7 @@ package ru.tutor.utils;
 
 
 import net.datafaker.Faker;
+import ru.tutor.model.club.ClubPayoutRequisitesRequest;
 import ru.tutor.model.club.SzDetailsRequest;
 
 import java.util.HashMap;
@@ -168,6 +169,31 @@ public class ClubTestDataGenerator {
         request.setIsResident(true);
 
         return request;
+    }
+
+    /**
+     * Генерация валидных реквизитов ИП для выплат (payouts)
+     */
+    public static ClubPayoutRequisitesRequest generateValidPayoutRequisites(String email) {
+        String address = faker.address().fullAddress();
+
+        return new ClubPayoutRequisitesRequest(
+                "ip",
+                "2bm-73",
+                "+7 (111) 111-11-11",
+                true,
+                true,
+                faker.name().fullName(),
+                "123456785467155",
+                "165484684521",
+                address,
+                address,
+                email,
+                "12345678546715546685",
+                "464545524",
+                "12345678546715546685",
+                "Банк Санкт-Петербург Промышленный холдинг"
+        );
     }
 
     public static String generateOgrnip() {

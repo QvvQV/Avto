@@ -58,6 +58,24 @@ public class PurchaseFlow {
                 .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.INSTALLMENTS));
     }
 
+    @Step("Оплата Пожизненного доступа по Клауду через ссылку {url}")
+    public PurchaseResult lifeReferral(String url) {
+        return purchase(b -> b.forSubscription(TtPage.SubscriptionType.LIFE)
+                .via(SubscriptionPurchaseBuilder.PaymentSystem.AUTO)
+                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
+                .withCustomUrl(url)
+                .withoutTitleCheck());
+    }
+
+    @Step("Оплата Премиум по Клауду через ссылку {url}")
+    public PurchaseResult premiumReferral(String url) {
+        return purchase(b -> b.forSubscription(TtPage.SubscriptionType.PREMIUM)
+                .via(SubscriptionPurchaseBuilder.PaymentSystem.AUTO)
+                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD)
+                .withCustomUrl(url)
+                .withoutTitleCheck());
+    }
+
     @Step("Оплата Лайт по Клауду")
     public PurchaseResult lite() {
         return purchase(b -> b.forSubscription(TtPage.SubscriptionType.LITE)
