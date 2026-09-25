@@ -89,11 +89,51 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Tag("UI + API")
-    @DisplayName("Заявка на вывод 3000 и отклонение в админке (returnBonus)")
+    @DisplayName("Заявка на вывод 3000 и отклонение внутри заявки админка (returnBonus)")
     void createWithdrawalAndReject() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
 
         step("Заявка на вывод и отклонение в админке",
                 () -> referralChainFlow.createWithdrawalAndReject());
+    }
+
+    @Test
+    @Tag("UI + API")
+    @DisplayName("Заявка на вывод 3000 и отклонение внутри заявки админка (returnBonus=false)")
+    void createWithdrawalAndRejectNotReturnBonus() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+
+        step("Заявка на вывод и отклонение в админке",
+                () -> referralChainFlow.createWithdrawalAndRejectNotReturnBonus());
+    }
+
+    @Test
+    @Tag("UI + API")
+    @DisplayName("Заявка на вывод 3000 и удаление в админке (returnBonus=true)")
+    void createWithdrawalAndDelete() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+
+        step("Заявка на вывод и удаление в админке",
+                () -> referralChainFlow.createWithdrawalAndDelete());
+    }
+
+    @Test
+    @Tag("UI + API")
+    @DisplayName("Заявка на вывод 3000 и удаление (не возвращать returnBonus)")
+    void createWithdrawalAndDeleteNotReturnBonus() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+
+        step("Заявка на вывод и удаление в админке",
+                () -> referralChainFlow.createWithdrawalAndDeleteNotReturnBonus());
+    }
+
+    @Test
+    @Tag("UI + API")
+    @DisplayName("Согласованная Заявка на выплату 3000")
+    void createWithdrawalAndPay() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+
+        step("Согласованная Заявка на выплату средств ",
+                () -> referralChainFlow.withdrawalPayment());
     }
 }

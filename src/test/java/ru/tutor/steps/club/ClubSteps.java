@@ -1,6 +1,7 @@
 package ru.tutor.steps.club;
 
 import ru.tutor.model.club.*;
+import ru.tutor.utils.ClubTestDataGenerator;
 import tools.jackson.databind.ObjectMapper;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
@@ -446,6 +447,31 @@ public class ClubSteps extends BaseApiSteps {
         String body = response.getBody().asString().trim();
         assertTrue(body.isEmpty() || body.equals("null"),
                 "Тело ответа должно быть пустым или 'null', но получено: " + body);
+    }
+
+    @Step("Начисление награды за шеринг и проверка (POST /user/club/share-reward)")
+    public ShareRewardResponse shareRewardAndValidate(String authToken) {
+        return validateShareRewardResponse(shareReward(authToken));
+    }
+
+    @Step("Проверка сводка выплат (GET /user/club/v2/payouts/summary)")
+    public ClubPayoutSummaryResponse getAndValidatePayoutSummary(String authToken, int expectedBalance, int expectedAvailable,
+    boolean expectProfileValid, boolean expectCanRequestWithdrawal) {
+        ClubPayoutSummaryResponse summary = validateClubPayoutSummaryResponse(getPayoutSummary(authToken));
+        validateClubPayoutSummaryValues(summary,  expectedBalance, expectedAvailable, expectProfileValid, expectCanRequestWithdrawal);
+        return summary;
+    }
+
+    @Step("Создание реферальной ссылки и проверка (POST /user/club/v2/links)")
+    public ClubLinkResponse createAndValidateClubLink(String authToken, int productId, String name) {
+        return validateClubLinkResponse(createClubLink(authToken, productId, name));
+    }
+
+    @Step("Генерация и сохранение реквизитов ИП (PUT /user/club/v2/payouts/requisites)")
+    public ClubPayoutRequisitesRequest saveGeneratePayoutRequisites(String authToken, String email) {
+        ClubPayoutRequisitesRequest request = ClubTestDataGenerator.generateValidPayoutRequisites(email);
+        validateRequisitesSaved(savePayoutRequisites(authToken, request));
+        return request;
     }
 
     @Step("POST /user/club/v2/payouts - создание заявки на вывод")

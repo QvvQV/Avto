@@ -102,4 +102,20 @@ public class AdminApi extends BaseApi {
                 .when().post(ApiEndpoints.ADMIN_USER_CLUB_WITHDRAWAL_REJECT.formatted(withdrawalId))
                 .then().log().ifError().extract().response();
     }
+
+    @Step("DELETE /admin/user/club/withdrawal/{id} - удаление заявки на вывод с возвратом бонуса")
+    public Response deleteClubWithdrawal(String adminToken, long withdrawalId, boolean returnBonus) {
+        return withAdminCookie(adminToken)
+                .body(Map.of("returnBonus", returnBonus))
+                .when().delete(ApiEndpoints.ADMIN_USER_CLUB_WITHDRAWAL.formatted(withdrawalId))
+                .then().log().ifError().extract().response();
+    }
+
+    @Step("POST /admin/user/club/withdrawal - подтверждение заявки на выплату в админке")
+    public Response withdrawalPayment(String adminToken, int paymentId, boolean isPaid) {
+        return withAdminCookie(adminToken)
+                .body(Map.of("id", paymentId,  "isPaid", isPaid))
+                .when().post(ApiEndpoints.ADMIN_USER_WITHDRAWAL_CLUB)
+                .then().log().ifError().extract().response();
+    }
 }

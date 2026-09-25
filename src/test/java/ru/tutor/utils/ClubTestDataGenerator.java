@@ -1,8 +1,10 @@
 package ru.tutor.utils;
 
 
+import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.model.club.ClubPayoutRequisitesRequest;
+import ru.tutor.model.club.ShareRewardResponse;
 import ru.tutor.model.club.SzDetailsRequest;
 
 import java.util.HashMap;
@@ -200,8 +202,4 @@ public class ClubTestDataGenerator {
         // ОГРНИП: 15 цифр
         return faker.regexify("[0-9]{15}");
     }
-
-    /*
-     * Конвертация объекта в Map для передачи в API
-     */
 }

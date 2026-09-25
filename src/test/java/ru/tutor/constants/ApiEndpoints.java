@@ -935,4 +935,9 @@ public final class ApiEndpoints {
      * Заявка на выплату средств
      */
     public static final String ADMIN_USER_CLUB_WITHDRAWAL = "/admin/user/club/withdrawal/%s";
+
+    /**
+     * Перевод в статус Оплачено
+     */
+    public static final String ADMIN_USER_WITHDRAWAL_CLUB = "/admin/user/club/withdrawal";
 }

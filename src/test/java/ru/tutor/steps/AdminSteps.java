@@ -223,8 +223,8 @@ public class AdminSteps extends BaseApiSteps {
     @Step("POST /admin/user/club/withdrawal/{id}/reject - отклонение заявки (204)")
     public Response rejectClubWithdrawal(long withdrawalId, boolean returnBonus) {
         Response resp = adminApi.rejectClubWithdrawal(adminToken, withdrawalId, returnBonus);
-        assertEquals(204, resp.getStatusCode(),
-                "Ожидался статус 204б получен: " + resp.getStatusCode());
+assertEquals(204, resp.getStatusCode(),
+                "Ожидался статус 204, получен: " + resp.getStatusCode());
         AllureAttachments.attachJson("admin Club Withdrawal Reject", resp.getBody().asString());
         return resp;
     }
@@ -232,7 +232,30 @@ public class AdminSteps extends BaseApiSteps {
     @Step("Проверка статуса заявки на вывод: {expectedCode} / {expectedLabel}")
     public void validateWithdrawalStatus(Response response, String expectedCode, String expectedLabel) {
         assertSuccessStatusCode(response);
-        assertEquals(expectedCode, response.jsonPath().getString("status.code"),
+        String code = response.jsonPath().getString("status.code");
+        String label = response.jsonPath().getString("status.label");
+        assertEquals(expectedCode, code,
                 "status.code должен быть '" + expectedCode + "'");
+        assertEquals(expectedLabel, label,
+                "status.label должен быть '" + expectedLabel + "'");
+    }
+
+    @Step("DELETE /admin/user/club/withdrawal/{id} - удаление заявки на вывод (204)")
+    public Response deleteClubWithdrawal(long withdrawalId, boolean returnBonus) {
+        Response resp = adminApi.deleteClubWithdrawal(adminToken, withdrawalId, returnBonus);
+        assertEquals(204, resp.getStatusCode(), "Ожидался статус 204, получен: " + resp.getStatusCode());
+        AllureAttachments.attachJson("Admin Club Withdrawal Delete", resp.getBody().asString());
+        return resp;
+    }
+
+    @Step("Согласование платежа через админку (POST /admin/user/club/withdrawal)")
+    public Response withdrawalPayment(int paymentId, boolean isPaid) {
+        Response resp = adminApi.withdrawalPayment(adminToken, paymentId, isPaid);
+        assertEquals(201, resp.getStatusCode(), "Ожидался статус 201, получен: " + resp.getStatusCode());
+        AllureAttachments.attachJson("Admin withdrawal", resp.getBody().asString());
+        Object body = resp.jsonPath().get("$");
+        assertTrue(body instanceof List,
+                "Ответ должен быть список ([]), но тело: " + resp.getBody().asString());
+        return resp;
     }
 }
