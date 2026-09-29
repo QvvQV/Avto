@@ -2,10 +2,7 @@ package ru.tutor.test.Ui;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.PurchaseFlow;
@@ -63,6 +60,7 @@ public class Referals extends BaseUiTest {
     }
 
     @Test
+    @Order(1)
     @Tag("UI + API")
     @DisplayName("Создание цепочки членов клуба")
     void createParentWithReferralLink() {
@@ -78,6 +76,7 @@ public class Referals extends BaseUiTest {
     }
 
     @Test
+    @Order(2)
     @Tag("UI + API")
     @DisplayName("Заполнение реквизитов ИП: summary → PUT → GET → DELETE → GET null → profileValid=false")
     void fillIpPayoutRequisites() {
@@ -88,6 +87,18 @@ public class Referals extends BaseUiTest {
     }
 
     @Test
+    @Order(3)
+    @Tag("UI + API")
+    @DisplayName("Заполнение реквизитов СЗ: summary → PUT → GET → DELETE → GET null → profileValid=false")
+    void fillSzPayoutRequisites() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+
+        step("Заполнение реквизитов СЗ и проверка ручки summary",
+                () -> referralChainFlow.fillSzRequisitesAndVerifySummary());
+    }
+
+    @Test
+    @Order(4)
     @Tag("UI + API")
     @DisplayName("Заявка на вывод 3000 и отклонение внутри заявки админка (returnBonus)")
     void createWithdrawalAndReject() {
@@ -98,6 +109,7 @@ public class Referals extends BaseUiTest {
     }
 
     @Test
+    @Order(5)
     @Tag("UI + API")
     @DisplayName("Заявка на вывод 3000 и отклонение внутри заявки админка (returnBonus=false)")
     void createWithdrawalAndRejectNotReturnBonus() {
@@ -108,6 +120,7 @@ public class Referals extends BaseUiTest {
     }
 
     @Test
+    @Order(6)
     @Tag("UI + API")
     @DisplayName("Заявка на вывод 3000 и удаление в админке (returnBonus=true)")
     void createWithdrawalAndDelete() {
@@ -118,6 +131,7 @@ public class Referals extends BaseUiTest {
     }
 
     @Test
+    @Order(7)
     @Tag("UI + API")
     @DisplayName("Заявка на вывод 3000 и удаление (не возвращать returnBonus)")
     void createWithdrawalAndDeleteNotReturnBonus() {
@@ -128,6 +142,7 @@ public class Referals extends BaseUiTest {
     }
 
     @Test
+    @Order(8)
     @Tag("UI + API")
     @DisplayName("Согласованная Заявка на выплату 3000")
     void createWithdrawalAndPay() {
@@ -135,5 +150,27 @@ public class Referals extends BaseUiTest {
 
         step("Согласованная Заявка на выплату средств ",
                 () -> referralChainFlow.withdrawalPayment());
+    }
+
+    @Test
+    @Order(9)
+    @Tag("UI + API")
+    @DisplayName("Премиум + Пожизненный (semi)")
+    void premiumShareAndLife() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+
+        step("Премиум, Пожизненный, проверка summary",
+                () -> referralChainFlow.premiumShareAndLifeSemi());
+    }
+
+    @Test
+    @Order(10)
+    @Tag("UI + API")
+    @DisplayName("Премиум без оплаты + Пожизненный: оплата родителя с баланса клуба (type=19)")
+    void premiumShareAndLifePayFromClubBalance() {
+        assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
+
+        step("Премиум, Пожизненный, оплата родителя с баланса клуба (type=19)",
+                () -> referralChainFlow.premiumShareAndLifePayFromClubBalance());
     }
 }

@@ -173,7 +173,7 @@ public class ClubTestDataGenerator {
         return request;
     }
 
-    /**
+/**
      * Генерация валидных реквизитов ИП для выплат (payouts)
      */
     public static ClubPayoutRequisitesRequest generateValidPayoutRequisites(String email) {
@@ -194,12 +194,44 @@ public class ClubTestDataGenerator {
                 "12345678546715546685",
                 "464545524",
                 "12345678546715546685",
-                "Банк Санкт-Петербург Промышленный холдинг"
+                "Банк Санкт-Петербург Промышленный холдинг",
+                null, null, null, null, null, null
         );
     }
 
     public static String generateOgrnip() {
         // ОГРНИП: 15 цифр
         return faker.regexify("[0-9]{15}");
+    }
+
+/**
+     * Генерация валидных реквизитов СЗ для выплат (payouts)
+     */
+    public static ClubPayoutRequisitesRequest generateValidPayoutRequisitesSz(String email) {
+        String address = faker.address().fullAddress();
+
+        return new ClubPayoutRequisitesRequest(
+                "sz",
+                "sbis",
+                "+79990000000",
+                true,
+                true,
+                faker.name().fullName(),
+                null,
+                "123456789012",
+                address,
+                address,
+                email,
+                "40817810000000000002",
+                "044525225",
+                "30101810400000000225",
+                "АО Тест Банк",
+                "1990-05-12",
+                "1234",
+                "567890",
+                "ОВД Тестового района",
+                "2015-06-01",
+                "770-001"
+        );
     }
 }

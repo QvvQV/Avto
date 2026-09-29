@@ -13,6 +13,7 @@ import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.*;
 
+import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -65,7 +66,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(1)
-//        @RepeatedTest(3)
+//        @RepeatedTest(10)
     @DisplayName("Оплата с главной за 399 руб")
     public void PayMain399() {
         if (TestConfig.isProd()) {

@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.api.AdminApi;
 import ru.tutor.base.BaseApiSteps;
+import ru.tutor.model.admin.PaymentType;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.DateValidator;
 
@@ -11,15 +12,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.codeborne.selenide.Selenide.sleep;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AdminSteps extends BaseApiSteps {
     private static final String ADMIN_USERNAME = "admin";
@@ -257,5 +253,53 @@ assertEquals(204, resp.getStatusCode(),
         assertTrue(body instanceof List,
                 "Ответ должен быть список ([]), но тело: " + resp.getBody().asString());
         return resp;
+    }
+
+    @Step("Проверка типа платежа на сумму {expectedAmount} в заказе {orderId}: все status=1 плватежи должны быть {expectedType}")
+    public void validatePaymentType(String orderId, int expectedAmount, PaymentType expectedType) {
+        Response order = adminApi.getOrder(adminToken, orderId);
+        AllureAttachments.attachJson("Заказ (админка)", order.getBody().asString());
+
+        List<Map<String, Object>> payments = order.jsonPath().getList("payments");
+        assertNotNull(payments, "Список payments не должен быть null");
+
+        List<Integer> types = payments.stream()
+                .filter(p -> p.get("amount") != null && ((Number) p.get("amount")).intValue() == expectedAmount)
+                .filter(p -> p.get("status") != null && ((Number) p.get("status")).intValue() == 1)
+                .map(p -> ((Number) p.get("type")).intValue())
+                .toList();
+
+        assertFalse(types.isEmpty(),
+                "Платёж на сумму " + expectedAmount + " не найден в payments заказа " + orderId);
+
+        Set<Integer> actual = new TreeSet<>(types);
+        assertTrue(actual.size() == 1 && actual.contains(expectedType.code()),
+                "Все платежи на сумму " + expectedAmount + " должны иметь type=" + expectedType.code()
+                + " (" + expectedType + "), фактические типы: " + actual);
+
+        AllureAttachments.attachText("Тип платежа",
+                expectedAmount + " ₽ -> type=" + expectedType.code() + " (" + expectedType + ")");
+    }
+
+    @Step("Поиск родительского id заказа по email: {email}")
+    public String findFirstOrderId(String email) {
+        String date = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        Response resp = adminApi.searchOrdersByEmail(adminToken, email, date);
+        AllureAttachments.attachJson("Поиск заказов админа (родитель)", resp.getBody().asString());
+
+        List<Map<String, Object>> items = resp.jsonPath().getList("items");
+        assertNotNull(items, "Список items не должен быть null");
+        assertFalse(items.isEmpty(), "Заказ для email " + email + " не найден в админке");
+
+        for (Map<String, Object> item : items) {
+            String candidateId = String.valueOf(item.get("id"));
+            String productName = adminApi.getOrder(adminToken, candidateId).jsonPath().getString("product.name");
+            if (productName != null && productName.toLowerCase().contains("премиум")) {
+                AllureAttachments.attachText("Премиум-заказ (родитель)", "ID: " +  candidateId);
+                return candidateId;
+            }
+        }
+        fail("Премиум-заказ не найден для email " + email + ", заказы: " + items);
+        return null;
     }
 }

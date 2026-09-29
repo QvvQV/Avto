@@ -5,9 +5,9 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
+import ru.tutor.model.admin.PaymentType;
 import ru.tutor.model.club.ClubLinkResponse;
 import ru.tutor.model.club.ClubPayoutRequisitesRequest;
-import ru.tutor.model.club.ClubPayoutSummaryResponse;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.steps.AccountSteps;
 import ru.tutor.steps.AdminSteps;
@@ -16,6 +16,9 @@ import ru.tutor.steps.OrderSteps;
 import ru.tutor.steps.club.ClubSteps;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
@@ -26,6 +29,9 @@ public class ReferralChainFlow {
 
     private static final int PREMIUM_PRICE = 399;
     private static final int PREMIUM_DAYS = 30;
+    private static final int WELCOME_BONUS = 1000;
+    private static final int AFTER_LIFE = 3000;
+    private static final int AFTER_LIFE_PREMIUM_PRICE = 2601;
     private static final List<Integer> CLUB_LINK_PRODUCT_IDS = List.of(220, 170, 259);
 
     private final PurchaseFlow purchaseFlow;
@@ -48,90 +54,51 @@ public class ReferralChainFlow {
         this.clubSteps = clubSteps;
     }
 
-    public record Parent(String email, String token, String linkUrl) {}
+    public record Parent(String email, String token, String linkUrl) {
+        public Parent {
+            Objects.requireNonNull(email, "email Родителя не должен быть null");
+            Objects.requireNonNull(token, "token Родителя не должен быть null");
+            Objects.requireNonNull(linkUrl, "linkUrl Родителя не должен быть null");
+            if (linkUrl.isBlank()) {
+                throw new IllegalArgumentException("linkUrl Родителя не должна быть пустой");
+            }
+        }
+    }
 
-    public record Chain(Parent parent, Parent client2, Parent client3, Parent client4) {}
+    public record Chain(Parent parent, Parent client2, Parent client3, Parent client4) {
+        public Chain {
+            Objects.requireNonNull(parent, "parent не должен быть null");
+            Objects.requireNonNull(client2, "client2 не должен быть null");
+            Objects.requireNonNull(client3, "client3 не должен быть null");
+            Objects.requireNonNull(client4, "client4 не должен быть null");
+        }
+    }
 
-    public record PremiumMember(String email, String token) {}
+    public record PremiumMember(String email, String token) {
+    }
 
-    private record PremiumPurchase(String email, OrderSteps.PaymentCredentials credentials) {}
+    private record PremiumPurchase(String email, OrderSteps.PaymentCredentials credentials) {
+    }
 
-    private record ApprovedWithdrawal(String token, int withdrawalId) {}
+    private record ApprovedWithdrawal(String token, int withdrawalId) {
+    }
 
     // ==================== ПОКУПКА ====================
 
     private PremiumPurchase createPremiumPurchase() {
+        PremiumPurchase purchase = createPremiumOrder();
+        payPremiumInAdmin(purchase.email());
+        return purchase;
+    }
+
+    private PremiumPurchase createPremiumOrder() {
         String email = step("Создание пользователя с тарифом Премиум на главной", () -> {
             PurchaseResult result = purchaseFlow.premium();
             return result.email();
         });
         OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
-
-        payPremiumInAdmin(email);
         return new PremiumPurchase(email, credentials);
     }
-
-    private PremiumPurchase createLifePurchaseFromReferral(String referralUrl) {
-        reopenByReferralLink(referralUrl) ;
-        String email = step("Создание заказа Пожизненный по реферальной ссылке", () ->
-                purchaseFlow.lifeReferral(referralUrl).email());
-        OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
-        return new PremiumPurchase(email, credentials);
-    }
-
-    private PremiumPurchase createPremiumPurchaseFromReferral(String referralUrl) {
-        reopenByReferralLink(referralUrl) ;
-        String email = step("Создание заказа Премиум по реферальной ссылке", () ->
-                purchaseFlow.premiumReferral(referralUrl).email());
-        OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
-        return new PremiumPurchase(email, credentials);
-    }
-
-    private void payPremiumInAdmin(String email) {
-        step("Оплата 399 в админке", () -> {
-            adminSteps.login();
-            String orderId = adminSteps.findOrderId(email);
-            adminSteps.createPaymentAndValidateDates(orderId, PREMIUM_PRICE, PREMIUM_DAYS);
-        });
-    }
-
-    private ApprovedWithdrawal createApprovedWithdrawal() {
-        PremiumMember member = step("Создание Премиум-заказа + оплата 399 + шеринг",
-                this::createPremiumMemberAndShare);
-        clubSteps.getAndValidatePayoutSummary(member.token(), 1000, 1000, false, false);
-        clubSteps.saveGeneratePayoutRequisites(member.token(), member.email());
-
-        ClubLinkResponse link = clubSteps.createAndValidateClubLink(
-                member.token(), CLUB_LINK_PRODUCT_IDS.getFirst(), member.email()
-        );
-        renewalModalFlow.logoutAfterTest();
-        createLifePurchaseFromReferral(link.url());
-
-        clubSteps.getAndValidatePayoutSummary(member.token(), 3000, 3000, true, true);
-        Integer withdrawalId = step("Создание заявки на вывод 3000 (POST /user/club/v2/payouts)", () ->
-                clubSteps.validatePayoutCreated(clubSteps.createPayout(member.token(), 3000)).id());
-
-        step("Проверка статуса заявки в админке: new/Новая", () -> {
-            adminSteps.login();
-            adminSteps.validateWithdrawalStatus(adminSteps.getClubWithdrawal(withdrawalId), "new", "Новая");
-        });
-
-        return new ApprovedWithdrawal(member.token(), withdrawalId);
-    }
-
-    private Parent publishClubAfterPurchase(PremiumPurchase purchase, int linkProductId) {
-        String token = authSteps.loginViaRefreshToken(purchase.email(), purchase.credentials().password());
-        accountSteps.validateEditPasswordSuccess(
-                accountSteps.editPassword(token, purchase.credentials().password(), TestConfig.getTestPassword()));
-                clubSteps.shareRewardAndValidate(token);
-                clubSteps.getAndValidatePayoutSummary(token, 1000, 1000, false, false);
-                ClubLinkResponse link = clubSteps.createAndValidateClubLink(token, linkProductId, purchase.email());
-                renewalModalFlow.logoutAfterTest();
-                return new Parent(purchase.email(), token, link.url());
-    }
-
-    // ==================== ПУБЛИЧНЫЕ СЦЕНАРИИ ====================
-
 
     @Step("Закрытие браузера и открытие по созданной ссылке (новая сессия)")
     private void reopenByReferralLink(String referralUrl) {
@@ -139,21 +106,123 @@ public class ReferralChainFlow {
         step("Открытие реферальной ссылки в новой сессии", () -> open(referralUrl));
     }
 
+    private PremiumPurchase createLifePurchaseFromReferral(String referralUrl) {
+        reopenByReferralLink(referralUrl);
+        String email = step("Создание заказа Пожизненный по реферальной ссылке", () ->
+                purchaseFlow.lifeReferral(referralUrl).email());
+        OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
+        return new PremiumPurchase(email, credentials);
+    }
+
+    private PremiumPurchase createPremiumPurchaseFromReferral(String referralUrl) {
+        reopenByReferralLink(referralUrl);
+        String email = step("Создание заказа Премиум по реферальной ссылке", () ->
+                purchaseFlow.premiumReferral(referralUrl).email());
+        OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
+        return new PremiumPurchase(email, credentials);
+    }
+
+    private String payPremiumInAdmin(String email) {
+        return payPremiumInAdmin(email, PaymentType.RECURRING);
+    }
+
+    private String payPremiumInAdmin(String email, PaymentType expectedType) {
+        return step("Оплата 399 в админке + проверка типа платежа", () -> {
+            adminSteps.login();
+            String orderId = adminSteps.findFirstOrderId(email);
+            adminSteps.createPaymentAndValidateDates(orderId, PREMIUM_PRICE, PREMIUM_DAYS);
+            step("Проверка типа платежа 399 (" + expectedType + ")", () ->
+                    adminSteps.validatePaymentType(orderId, PREMIUM_PRICE, expectedType));
+            return orderId;
+        });
+    }
+
+    private ApprovedWithdrawal createApprovedWithdrawal() {
+        PremiumPurchase purchase = createPremiumPurchase();
+        String token = prepareMemberWithLife(purchase, true);
+        Integer withdrawalId = step("Создание заявки на вывод 3000 (POST /user/club/v2/payouts)", () ->
+                clubSteps.validatePayoutCreated(clubSteps.createPayout(token, AFTER_LIFE)).id());
+
+        step("Проверка статуса заявки в админке: new/Новая", () -> {
+            adminSteps.login();
+            adminSteps.validateWithdrawalStatus(adminSteps.getClubWithdrawal(withdrawalId), "new", "Новая");
+        });
+
+        return new ApprovedWithdrawal(token, withdrawalId);
+    }
+
+    private void fillRequisitesAndVerifySummary(PremiumMember member, String typeLabel,
+                                                Function<String, ClubPayoutRequisitesRequest> saveRequisites,
+                                                BiConsumer<Response, ClubPayoutRequisitesRequest> validateRequisites) {
+        clubSteps.getAndValidatePayoutSummary(member.token(), WELCOME_BONUS, WELCOME_BONUS, false, false);
+
+        step("Заполнение реквизитов " + typeLabel, () -> {
+            ClubPayoutRequisitesRequest request = saveRequisites.apply(member.email());
+            validateRequisites.accept(clubSteps.getPayoutRequisites(member.token()), request);
+        });
+
+        clubSteps.getAndValidatePayoutSummary(member.token(), WELCOME_BONUS, WELCOME_BONUS, true, false);
+
+        step("Удаление реквизитов", () -> {
+            clubSteps.validateRequisitesDeleted(clubSteps.deletePayoutRequisites(member.token()));
+            clubSteps.validateRequisitesAbsent(clubSteps.getPayoutRequisites(member.token()));
+        });
+
+        clubSteps.getAndValidatePayoutSummary(member.token(), WELCOME_BONUS, WELCOME_BONUS, false, false);
+    }
+
+    @Step("Премиум (no pay): смена пароля + шеринг + реквизиты + ссылка + Пожизненный (semi)")
+    private PremiumMember createSemiMemberWithLife() {
+        PremiumPurchase purchase = createPremiumOrder();
+
+        String token = prepareMemberWithLife(purchase, false);
+        return new PremiumMember(purchase.email(), token);
+    }
+
+    private String prepareMemberWithLife(PremiumPurchase purchase, boolean expectFull) {
+        String token = loginAndChangePasswordAndShare(purchase);
+        if (expectFull) {
+            clubSteps.getAndValidatePayoutSummary(token, WELCOME_BONUS, WELCOME_BONUS, false, false);
+        } else {
+            clubSteps.getAndValidatePayoutSummarySemi(token, WELCOME_BONUS, WELCOME_BONUS, false, false);
+        }
+        clubSteps.saveGeneratePayoutRequisites(token, purchase.email());
+        ClubLinkResponse link = clubSteps.createAndValidateClubLink(
+                token, CLUB_LINK_PRODUCT_IDS.getFirst(), purchase.email()
+        );
+        renewalModalFlow.logoutAfterTest();
+        createLifePurchaseFromReferral(link.url());
+        if (expectFull) {
+            clubSteps.getAndValidatePayoutSummary(token, AFTER_LIFE, AFTER_LIFE, true, true);
+        } else {
+            clubSteps.getAndValidatePayoutSummarySemi(token, AFTER_LIFE, AFTER_LIFE, true, false);
+        }
+        return token;
+    }
+
+    private String loginAndChangePasswordAndShare(PremiumPurchase purchase) {
+        String token = authSteps.loginViaRefreshToken(purchase.email(), purchase.credentials().password());
+        accountSteps.validateEditPasswordSuccess(
+                accountSteps.editPassword(token, purchase.credentials().password(), TestConfig.getTestPassword())
+        );
+        clubSteps.shareRewardAndValidate(token);
+        return token;
+    }
+
+    // ==================== ПУБЛИЧНЫЕ СЦЕНАРИИ ====================
+
     @Step("Этап 1: Родитель - заказ Премиум + оплата 399 в админке + ссылка")
     public Parent createParentAndLink() {
-
         return publishClubAfterPurchase(createPremiumPurchase(), CLUB_LINK_PRODUCT_IDS.getFirst());
     }
 
     @Step("Этап 2: Клиент - открытие ссылки Родителя + заказ Пожизненный")
     public Parent createClientFromReferralLink(String parentLinkUrl) {
-
         return publishClubAfterPurchase(createLifePurchaseFromReferral(parentLinkUrl), CLUB_LINK_PRODUCT_IDS.get(1));
     }
 
     @Step("Этап 3: Клиент - открытие ссылки 2-го клиента + заказ Премиум + оплата 399 в админке")
     public Parent createPremiumClientFromReferralLink(String referralUrl) {
-
         PremiumPurchase purchase = createPremiumPurchaseFromReferral(referralUrl);
         payPremiumInAdmin(purchase.email());
         return publishClubAfterPurchase(purchase, CLUB_LINK_PRODUCT_IDS.get(2));
@@ -161,13 +230,11 @@ public class ReferralChainFlow {
 
     @Step("Этап 5: Проверка баланса Родителя (ожидается {expectedBalance})")
     public void verifyParentBalance(Parent parent, int expectedBalance) {
-
         clubSteps.getAndValidatePayoutSummary(parent.token(), expectedBalance, expectedBalance, false, false);
     }
 
     @Step("Создание Премиум-заказа + оплата 399 в админке + шеринг")
     public PremiumMember createPremiumMemberAndShare() {
-
         PremiumPurchase purchase = createPremiumPurchase();
         String token = authSteps.loginViaRefreshToken(purchase.email(), purchase.credentials().password());
         clubSteps.shareRewardAndValidate(token);
@@ -176,20 +243,34 @@ public class ReferralChainFlow {
 
     @Step("Заполнение реквизитов ИП и проверка ручки summary")
     public void fillRequisitesAndVerifySummary() {
+        PremiumMember member = createPremiumMemberAndShare();
+        fillRequisitesAndVerifySummary(member, "ИП",
+                email -> clubSteps.saveGeneratePayoutRequisites(member.token(), email),
+                clubSteps::validateRequisitesMatchRequest);
+    }
 
-        PremiumMember member = step("Создание Премиум-заказа + шеринг",
-                this::createPremiumMemberAndShare);
+    @Step("Премиум: смена пароля + шеринг (semi) + реквизиты + ссылка + Пожизненный по ссылке")
+    public void premiumShareAndLifeSemi() {
+        PremiumMember member = createSemiMemberWithLife();
+        String freshToken = authSteps.loginViaRefreshToken(member.email(), TestConfig.getTestPassword());
+        step("Попытка вывода средств: POST /user/club/v2/payouts (canRequest=false) -> 500", () ->
+                clubSteps.validatePayoutRejected(clubSteps.createPayout(freshToken, AFTER_LIFE)));
+    }
 
-        clubSteps.getAndValidatePayoutSummary(member.token(), 1000, 1000, false, false);
+    private Parent publishClubAfterPurchase(PremiumPurchase purchase, int linkProductId) {
+        String token = loginAndChangePasswordAndShare(purchase);
+        clubSteps.getAndValidatePayoutSummary(token, WELCOME_BONUS, WELCOME_BONUS, false, false);
+        ClubLinkResponse link = clubSteps.createAndValidateClubLink(token, linkProductId, purchase.email());
+        renewalModalFlow.logoutAfterTest();
+        return new Parent(purchase.email(), token, link.url());
+    }
 
-        ClubPayoutRequisitesRequest request = clubSteps.saveGeneratePayoutRequisites(member.token(), member.email());
-        clubSteps.validateRequisitesMatchRequest(clubSteps.getPayoutRequisites(member.token()), request);
-
-        clubSteps.getAndValidatePayoutSummary(member.token(), 1000, 1000, true, false);
-        clubSteps.validateRequisitesDeleted(clubSteps.deletePayoutRequisites(member.token()));
-        clubSteps.validateRequisitesAbsent(clubSteps.getPayoutRequisites(member.token()));
-
-        clubSteps.getAndValidatePayoutSummary(member.token(), 1000, 1000, false, false);
+    @Step("Заполнение реквизитов СЗ и проверка ручки summary")
+    public void fillSzRequisitesAndVerifySummary() {
+        PremiumMember member = createPremiumMemberAndShare();
+        fillRequisitesAndVerifySummary(member, "Самозанятого",
+                email -> clubSteps.saveGeneratePayoutRequisitesSz(member.token(), email),
+                clubSteps::validateSzRequisitesMatchRequest);
     }
 
     @Step("Заявка на вывод + отклонение в админке (безопасный возврат)")
@@ -201,7 +282,16 @@ public class ReferralChainFlow {
         step("Проверка статуса заявки после отклонения: rejected/Отклонена", () ->
                 adminSteps.validateWithdrawalStatus(adminSteps.getClubWithdrawal(withdrawal.withdrawalId()),
                         "rejected", "Отклонена"));
-        clubSteps.getAndValidatePayoutSummary(withdrawal.token(), 3000, 3000, true, true);
+        clubSteps.getAndValidatePayoutSummary(withdrawal.token(), AFTER_LIFE, AFTER_LIFE, true, true);
+    }
+
+    @Step("Премиум: смена пароля + шеринг + реквизиты + ссылка + Пожизненный + оплата 399 с баланса (type=19)")
+    public void premiumShareAndLifePayFromClubBalance() {
+        PremiumMember member = createSemiMemberWithLife();
+
+        step("Оплата 399, проверка на type=19 CLUB_BALANCE",
+                () -> payPremiumInAdmin(member.email, PaymentType.CLUB_BALANCE));
+        clubSteps.getAndValidatePayoutSummarySemi(member.token, AFTER_LIFE_PREMIUM_PRICE, AFTER_LIFE_PREMIUM_PRICE, true, false);
     }
 
     @Step("Заявка на вывод + отклонение в админке (не возврат)")
@@ -217,7 +307,7 @@ public class ReferralChainFlow {
     }
 
     @Step("Согласование заявки статус 'Оплачено'")
-    public void withdrawalPayment(){
+    public void withdrawalPayment() {
         ApprovedWithdrawal withdrawal = createApprovedWithdrawal();
 
         step("Согласование заявки (POST withdrawal, isPaid=true, 201)",
@@ -234,7 +324,7 @@ public class ReferralChainFlow {
 
         step("Удаление заявки (DELETE, returnBonus=true, 204)",
                 () -> adminSteps.deleteClubWithdrawal(withdrawal.withdrawalId(), true));
-        clubSteps.getAndValidatePayoutSummary(withdrawal.token(), 3000, 3000, true, true);
+        clubSteps.getAndValidatePayoutSummary(withdrawal.token(), AFTER_LIFE, AFTER_LIFE, true, true);
     }
 
     @Step("Заявка на вывод + удаление её из админки (не возвращать средства)")
@@ -277,6 +367,4 @@ public class ReferralChainFlow {
             Allure.addAttachment("Реферальная ссылка Клиента 4", chain.client4().linkUrl());
         });
     }
-
-    // semi - создаёт ссылки / получает по ним отчисления / финансы не может вывести / оплата club_balance
 }

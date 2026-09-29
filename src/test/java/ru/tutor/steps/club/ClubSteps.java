@@ -13,6 +13,7 @@ import ru.tutor.utils.AllureAttachments;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,27 +72,6 @@ public class ClubSteps extends BaseApiSteps {
         assertNotNull(member, "Участник клуба не должен быть null");
 
         return member;
-    }
-
-    @Step("Проверка знаний статистики клуба")
-    public void validateClubStatisticsValues(ClubStatisticsResponse statistics) {
-        assertAll("Проверка значений статистики клуба",
-                () -> assertNotNull(statistics.balance(), "balance не должен быть null"),
-                () -> assertNotNull(statistics.referrals(), "referrals не должен быть null"),
-                () -> assertNotNull(statistics.referrals().own(), "referrals.own не должен быть null"),
-                () -> assertNotNull(statistics.referrals().all(), "referrals.all не должен быть null"),
-                () -> assertTrue(statistics.balance() >= 0, "balance должен быть >= 0"),
-                () -> assertTrue(statistics.referrals().own() >= 0, "referrals.own должен быть >= 0"),
-                () -> assertTrue(statistics.referrals().all() >= 0, "referrals.all должен быть >= 0")
-        );
-
-        Integer own = statistics.referrals().own();
-        Integer all = statistics.referrals().all();
-        if (own != null && all != null) {
-            assertTrue(all >= own, "Всего рефералов должно быть >= собственных рефералов");
-        }
-
-
     }
 
     @Step("Проверка значений информации о членстве")
@@ -191,40 +171,6 @@ public class ClubSteps extends BaseApiSteps {
         }
     }
 
-    @Step("GET /user/{userId}/club/referrals - список рефералов")
-    public Response getUserReferrals(String authToken, int userId) {
-        Response response = this.clubApi.getUserReferrals(authToken, userId);
-        AllureAttachments.attachJson("User Referrals Response", response.getBody().asString());
-        return response;
-    }
-
-    @Step("Валидация ответа списка рефералов")
-    public void validateUserReferralsResponse(Response response) {
-        assertBasicResponse(response);
-    }
-
-    @Step("GET /user/{userId}/club/referrals/{referralId} - детали реферала")
-    public Response getUserReferralById(String authToken, int userId, int referralId) {
-        Response response = this.clubApi.getUserReferralById(authToken, userId, referralId);
-        AllureAttachments.attachJson("Club Referral Detail Response", response.getBody().asString());
-        return response;
-    }
-
-    @Step("Извлечение id первого реферала из списка")
-    public Integer extractReferralId(Response referralsResponse) {
-        Integer referralId = referralsResponse.jsonPath().getInt("[0].userId");
-        assertNotNull(referralId, "id реферала не должен быть null");
-        Allure.addAttachment("Extracted referralId",  String.valueOf(referralId));
-        return referralId;
-    }
-
-    @Step("GET /user/{userId}/club/referrals/{referralId}/referrals")
-    public Response getUserReferralsReferrals(String authToken, int userId, int referralId) {
-        Response response = this.clubApi.getUserReferralRefferrals(authToken, userId, referralId);
-        AllureAttachments.attachJson("Club Referral Detail Response", response.getBody().asString());
-        return response;
-    }
-
     @Step("POST /user/club/sz-details - сохранение деталей самозанятого")
     public Response saveSzDetails(String authToken, Map<String, Object> payload) {
         Response response = clubApi.saveSzDetails(authToken, payload);
@@ -293,14 +239,17 @@ public class ClubSteps extends BaseApiSteps {
         return summary;
     }
 
-    @Step("Проверка значений сводки выплат клуба")
-    public void validateClubPayoutSummaryValues(ClubPayoutSummaryResponse summary) {
-        validateClubPayoutSummaryValues(summary, 1000, 1000);
-    }
-
     @Step("Проверка значений сводки выплат клуба (ожидаемый баланс)")
     public void validateClubPayoutSummaryValues(ClubPayoutSummaryResponse summary, int expectedBalance, int expectedAvailable,
                                                 boolean expectProfileValid, boolean expectCanRequestWithdrawal) {
+        validateClubPayoutSummaryValues(summary, expectedBalance, expectedAvailable,
+                expectProfileValid, expectCanRequestWithdrawal, "full");
+    }
+
+    @Step("Проверка значений сводки выплат клуба (членство {expectedClubMembership})")
+    public void validateClubPayoutSummaryValues(ClubPayoutSummaryResponse summary, int expectedBalance, int expectedAvailable,
+                                                boolean expectProfileValid, boolean expectCanRequestWithdrawal,
+                                                String expectedClubMembership) {
         assertAll("Проверка значений сводки выплат клуба",
                 () -> assertEquals(expectedBalance, summary.balance(),
                         "balance должен быть " + expectedBalance),
@@ -310,18 +259,13 @@ public class ClubSteps extends BaseApiSteps {
                         "shareBonusExcludedAmount должен быть 0"),
                 () -> assertEquals(3000, summary.minWithdrawalAmount(),
                         "minWithdrawalAmount должен быть 3000"),
-                () -> assertEquals("full", summary.clubMembership(),
-                        "clubMembership должен быть 'full'"),
+                () -> assertEquals(expectedClubMembership, summary.clubMembership(),
+                        "clubMembership должен быть '" + expectedClubMembership + "'"),
                 () -> assertEquals(expectProfileValid, Boolean.TRUE.equals(summary.profileValid()),
                         "profileValid должен быть " + expectProfileValid),
                 () -> assertEquals(expectCanRequestWithdrawal, Boolean.TRUE.equals(summary.canRequestWithdrawal()),
                         "canRequestWithdrawal должен быть " + expectCanRequestWithdrawal)
         );
-    }
-
-    @Step("Проверка значений сводки выплат клуба (ожидаемый баланс)")
-    public void validateClubPayoutSummaryValues(ClubPayoutSummaryResponse summary, int expectedBalance, int expectedAvailable) {
-        validateClubPayoutSummaryValues(summary, expectedBalance, expectedAvailable, false, false);
     }
 
     @Step("POST /user/club/v2/links - создание реферальной ссылки")
@@ -373,12 +317,18 @@ public class ClubSteps extends BaseApiSteps {
 
     @Step("PUT /user/club/v2/payouts/requisites - сохранение реквизитов ИП")
     public Response savePayoutRequisites(String authToken, ClubPayoutRequisitesRequest request) {
-        Map<String, Object> payload = MAPPER.convertValue(request, Map.class);
+        Map<String, Object> payload = toPayoutPayload(request);
         Response response = clubApi.savePayoutRequisites(authToken, payload);
         AllureAttachments.attachJson("Save Payout Requisites Request", payload.toString());
         AllureAttachments.attachJson("Save Payout Requisites Response", response.getBody().asString());
         AllureAttachments.attachJson("Save Payout Requisites Headers", response.getHeaders().toString());
         return response;
+    }
+
+    private Map<String, Object> toPayoutPayload(ClubPayoutRequisitesRequest request) {
+        Map<String, Object> payload = MAPPER.convertValue(request, Map.class);
+        payload.values().removeIf(Objects::isNull);
+        return payload;
     }
 
     @Step("Валидация ответа сохранения реквизитов ИП")
@@ -426,6 +376,43 @@ public class ClubSteps extends BaseApiSteps {
         return requisites;
     }
 
+    @Step("Валидация реквизитов СЗ: каждый detail-поле совпадает с запросом")
+    public ClubPayoutRequisitesResponse validateSzRequisitesMatchRequest(Response response, ClubPayoutRequisitesRequest request) {
+        assertBasicResponse(response);
+
+        ClubPayoutRequisitesResponse requisites = response.as(ClubPayoutRequisitesResponse.class);
+        assertNotNull(requisites, "реквизиты СЗ не должны быть null");
+        assertNotNull(requisites.details(), "details не должен быть null");
+
+        ClubPayoutRequisitesResponse.Details details = requisites.details();
+        assertAll("Проверка реквизитов СЗ",
+                () -> assertEquals("sz", requisites.type(), "type должен быть 'sz'"),
+                () -> assertEquals("Самозанятый", requisites.typeLabel(), "typeLabel должен быть 'Самозанятый'"),
+                () -> assertEquals(request.fullName(), requisites.fullName(), "fullName должен совпадать"),
+                () -> assertEquals(request.fullName(), details.fullName(), "details.fullName должен совпадать"),
+                () -> assertEquals(request.email(), details.email(), "details.email должен совпадать"),
+                () -> assertEquals(request.idEdo(), details.idEdo(), "details.idEdo должен совпадать"),
+                () -> assertEquals(request.phone(), details.phone(), "details.phone должен совпадать"),
+                () -> assertEquals(request.isResident(), details.isResident(), "details.isResident должен совпадать"),
+                () -> assertEquals(request.isSameAddress(), details.isSameAddress(), "details.isSameAddress должен совпадать"),
+                () -> assertEquals(request.inn(), details.inn(), "details.inn должен совпадать"),
+                () -> assertEquals(request.addressRegister(), details.addressRegister(), "details.addressRegister должен совпадать"),
+                () -> assertEquals(request.addressFact(), details.addressFact(), "details.addressFact должен совпадать"),
+                () -> assertEquals(request.bankAccount(), details.bankAccount(), "details.bankAccount должен совпадать"),
+                () -> assertEquals(request.bankKorAccount(), details.bankKorAccount(), "details.bankKorAccount должен совпадать"),
+                () -> assertEquals(request.bankName(), details.bankName(), "details.bankName должен совпадать"),
+                () -> assertEquals(request.bik(), details.bik(), "details.bik должен совпадать"),
+                () -> assertEquals(request.dateBirth(), details.dateBirth(), "details.dateBirth должен совпадать"),
+                () -> assertEquals(request.passSerial(), details.passSerial(), "details.passSerial должен совпадать"),
+                () -> assertEquals(request.passNumber(), details.passNumber(), "details.passNumber должен совпадать"),
+                () -> assertEquals(request.passIssuer(), details.passIssuer(), "details.passIssuer должен совпадать"),
+                () -> assertEquals(request.passIssued(), details.passIssued(), "details.passIssued должен совпадать"),
+                () -> assertEquals(request.passDepartment(), details.passDepartment(), "details.passDepartment должен совпадать")
+        );
+
+        return requisites;
+    }
+
     @Step("DELETE /user/club/v2/payouts/requisites - удаление реквизитов")
     public Response deletePayoutRequisites(String authToken) {
         Response response = clubApi.deletePayoutRequisites(authToken);
@@ -462,6 +449,15 @@ public class ClubSteps extends BaseApiSteps {
         return summary;
     }
 
+    @Step("Проверка сводки выплат (членство semi) (GET /user/club/v2/payouts/summary)")
+    public ClubPayoutSummaryResponse getAndValidatePayoutSummarySemi(String authToken, int expectedBalance, int expectedAvailable,
+                                                                     boolean expectProfileValid, boolean expectCanRequestWithdrawal) {
+        ClubPayoutSummaryResponse summary = validateClubPayoutSummaryResponse(getPayoutSummary(authToken));
+        validateClubPayoutSummaryValues(summary, expectedBalance, expectedAvailable,
+                expectProfileValid, expectCanRequestWithdrawal, "semi");
+        return summary;
+    }
+
     @Step("Создание реферальной ссылки и проверка (POST /user/club/v2/links)")
     public ClubLinkResponse createAndValidateClubLink(String authToken, int productId, String name) {
         return validateClubLinkResponse(createClubLink(authToken, productId, name));
@@ -474,6 +470,13 @@ public class ClubSteps extends BaseApiSteps {
         return request;
     }
 
+    @Step("Генерация и сохранение реквизитов СЗ (PUT /user/club/v2/payouts/requisites)")
+    public ClubPayoutRequisitesRequest saveGeneratePayoutRequisitesSz(String authToken, String email) {
+        ClubPayoutRequisitesRequest request = ClubTestDataGenerator.generateValidPayoutRequisitesSz(email);
+        validateRequisitesSaved(savePayoutRequisites(authToken, request));
+        return request;
+    }
+
     @Step("POST /user/club/v2/payouts - создание заявки на вывод")
     public Response createPayout(String authToken, int amount) {
         Map<String, Object> payload = Map.of("amount", amount);
@@ -482,6 +485,12 @@ public class ClubSteps extends BaseApiSteps {
         AllureAttachments.attachJson("Create Payout Headers", response.getHeaders().toString());
         AllureAttachments.attachJson("Create Payout Request", payload.toString());
         return response;
+    }
+
+    @Step("Валидация отказа в создании заяки на вывод (canRequestWithdrawal=false)")
+    public void validatePayoutRejected(Response response) {
+        assertEquals(500, response.getStatusCode(), "Ожидался статус 500 при canRequestWithdrawal=false, получен: " +  response.getStatusCode());
+        Allure.addAttachment("Payout rejected", "text/plain", response.getBody().asString());
     }
 
     @Step("Валидация ответа создания заявки на вывод (201)")

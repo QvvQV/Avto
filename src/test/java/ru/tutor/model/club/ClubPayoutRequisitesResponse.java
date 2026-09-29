@@ -26,6 +26,12 @@ public record ClubPayoutRequisitesResponse(
         @JsonProperty("fullName") String fullName,
         @JsonProperty("phone") String phone,
         @JsonProperty("isSameAddress") Boolean isSameAddress,
-        @JsonProperty("isResident") Boolean isResident
+        @JsonProperty("isResident") Boolean isResident,
+        @JsonProperty("dateBirth") String dateBirth,
+        @JsonProperty("passSerial") String passSerial,
+        @JsonProperty("passNumber") String passNumber,
+        @JsonProperty("passIssuer") String passIssuer,
+        @JsonProperty("passIssued") String passIssued,
+        @JsonProperty("passDepartment") String passDepartment
     ) {}
 }

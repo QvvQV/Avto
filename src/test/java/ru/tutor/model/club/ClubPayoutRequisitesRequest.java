@@ -19,5 +19,14 @@ public record ClubPayoutRequisitesRequest(
     @JsonProperty("bankAccount") String bankAccount,
     @JsonProperty("bik") String bik,
     @JsonProperty("bankKorAccount") String bankKorAccount,
-    @JsonProperty("bankName") String bankName
+    @JsonProperty("bankName") String bankName,
+
+
+
+    @JsonProperty("dateBirth") String dateBirth,
+    @JsonProperty("passSerial") String passSerial,
+    @JsonProperty("passNumber") String passNumber,
+    @JsonProperty("passIssuer") String passIssuer,
+    @JsonProperty("passIssued") String passIssued,
+    @JsonProperty("passDepartment") String passDepartment
 ) {}
