@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
-import ru.tutor.flow.ReactivatePremiumFlow;
+import ru.tutor.flow.tariff.ReactivatePremiumFlow;
 import ru.tutor.steps.OrderPremiumGiftSteps;
 
 import static io.qameta.allure.Allure.step;

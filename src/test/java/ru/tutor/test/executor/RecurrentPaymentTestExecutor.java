@@ -3,7 +3,7 @@ package ru.tutor.test.executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tutor.constants.ProductConfiguration;
-import ru.tutor.page.OrderDatesPage;
+import ru.tutor.page.admin.OrderDatesPage;
 import ru.tutor.page.admin.AdminOrderDetails;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.test.context.TestExecutionContext;

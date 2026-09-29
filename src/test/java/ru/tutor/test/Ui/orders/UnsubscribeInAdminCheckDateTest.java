@@ -4,9 +4,9 @@ package ru.tutor.test.Ui.orders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
-import ru.tutor.flow.AdminFlow;
-import ru.tutor.flow.PurchaseFlow;
-import ru.tutor.flow.PurchaseResult;
+import ru.tutor.flow.admin.AdminFlow;
+import ru.tutor.flow.purchase.PurchaseFlow;
+import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
 
 public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {

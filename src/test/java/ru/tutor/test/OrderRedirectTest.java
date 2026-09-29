@@ -4,10 +4,10 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
-import ru.tutor.flow.PurchaseFlow;
-import ru.tutor.flow.PurchaseResult;
-import ru.tutor.page.*;
+import ru.tutor.flow.purchase.PurchaseFlow;
+import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.page.orders.CloudPage;
+import ru.tutor.page.orders.RedirectPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
 

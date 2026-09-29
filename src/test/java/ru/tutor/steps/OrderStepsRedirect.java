@@ -1,7 +1,7 @@
 package ru.tutor.steps;
 
 import io.qameta.allure.Step;
-import ru.tutor.page.SuccessOrderPage;
+import ru.tutor.page.orders.SuccessOrderPage;
 import ru.tutor.utils.UrlRedirectHelper;
 
 /*

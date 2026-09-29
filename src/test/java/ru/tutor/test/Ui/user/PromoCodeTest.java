@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.PromoCodeTestData;
-import ru.tutor.flow.ReactivatePremiumFlow;
+import ru.tutor.flow.tariff.ReactivatePremiumFlow;
 import ru.tutor.model.ApplyPromoCodeRequest;
 import ru.tutor.model.ApplyPromoCodeResponse;
 import ru.tutor.steps.PromoCodeSteps;

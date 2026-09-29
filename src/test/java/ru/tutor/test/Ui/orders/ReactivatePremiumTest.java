@@ -4,9 +4,11 @@ import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import ru.tutor.flow.*;
 import ru.tutor.base.RecurrentPaymentTestBase;
-import ru.tutor.page.modals.*;
+import ru.tutor.flow.admin.AdminFlow;
+import ru.tutor.flow.purchase.PurchaseFlow;
+import ru.tutor.flow.purchase.PurchaseResult;
+import ru.tutor.flow.tariff.ReactivatePremiumFlow;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

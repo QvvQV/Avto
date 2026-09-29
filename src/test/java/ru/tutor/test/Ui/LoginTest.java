@@ -2,12 +2,10 @@ package ru.tutor.test.Ui;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.*;
 
 import ru.tutor.base.BaseUiTest;
-import ru.tutor.base.BaseUiPlaywright;
-import ru.tutor.page.Registration;
+import ru.tutor.page.account.Registration;
 import ru.tutor.constants.AddressPage;
 
 import static com.codeborne.selenide.Selenide.*;
