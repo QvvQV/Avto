@@ -82,7 +82,7 @@ public class GameWheelMiscTest {
                 userRewardSteps.validateUserRewardsListComplete(userRewardSteps.getUserRewards(token))
         );
 
-        GameWheelStartGameResponse prize = step("Крутим колесо", () -> {
+        step("Крутим колесо", () -> {
             Response response = gameWheelStartGameSteps.startGame(token);
             return gameWheelStartGameSteps.validateStartGameResponse(response);
         });
