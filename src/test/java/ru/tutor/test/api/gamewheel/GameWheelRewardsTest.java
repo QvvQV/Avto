@@ -14,8 +14,9 @@ import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 import java.util.*;
 
 import static io.qameta.allure.Allure.step;
+import ru.tutor.constants.Tags;
 
-@Tag("API")
+@Tag(Tags.API)
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
@@ -78,8 +79,7 @@ public class GameWheelRewardsTest {
     @DisplayName("Проверка 'Наград колеса' без авторизации (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithoutAuthorization() {
         Response response = step("Отправка Get запроса без токена", () ->
                 gameWheelRewardsSteps.getGameWheelRewards("")
@@ -95,8 +95,7 @@ public class GameWheelRewardsTest {
     @DisplayName("Проверка 'Наград колеса' с невалидным токеном (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithInvalidToken() {
         Response response = step("Отправка GET запроса с невалидным токеном", () ->
                 gameWheelRewardsSteps.getGameWheelRewards("invalid_token_12345")

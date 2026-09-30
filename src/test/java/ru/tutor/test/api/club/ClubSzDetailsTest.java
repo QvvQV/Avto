@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Feature("Детали самозанятого")
 @DisplayName("Тесты эндпоинта Клуба: /user/club/sz-details + /user/club/details")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("club")
 public class ClubSzDetailsTest {
 
     // ==================== КОНСТАНТЫ ====================

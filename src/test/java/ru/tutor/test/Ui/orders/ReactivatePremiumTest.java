@@ -11,6 +11,7 @@ import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.flow.tariff.ReactivatePremiumFlow;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import ru.tutor.constants.Tags;
 
 // TP-6415 (Реализовать работу ссылок типа affrid в личном кабинете) и TP-6417 (Переработать восстановление премиума по кнопке)
 public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
@@ -34,8 +35,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
-    @Tag("aff_rid / aff_rid")
+    @Tag(Tags.UI_API)
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты")
     void restoreYourPremiumAccountUsingAnInternalEmail() {
         reactivateFlow
@@ -49,8 +49,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
-    @Tag("aff_rid / aff_rid")
+    @Tag(Tags.UI_API)
     @DisplayName("Восстановление премиума по ссылке из email-рассылки")
     void restoreYourPremiumAccountUsingLinkFromEmailNewsletter() {
         reactivateFlow
@@ -63,8 +62,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
-    @Tag("aff_rid / aff_rid")
+    @Tag(Tags.UI_API)
     @DisplayName("Восстановление Премиума по ссылке из email-рассылки отменённого заказа из Админки ")
     void restorePremiumCancelAdmin() {
         reactivateFlow
@@ -89,8 +87,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
 
     @Test
-    @Tag("UI" + "API")
-    @Tag("aff_rid / aff_rid")
+    @Tag(Tags.UI_API)
     @DisplayName("Оформление с aff_rid, восстановление Премиума по тарифу Пожизненный доступ без aff_rid")
     void restorePremiumlifeAccess() {
 
@@ -103,8 +100,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
-    @Tag("aff_rid / aff_rid")
+    @Tag(Tags.UI_API)
     @DisplayName("Оформление Renewal внутри ЛК c Aff_Rid в URL")
     void renewalDesignInsideThePersonalAccount() {
         reactivateFlow
@@ -117,8 +113,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
-    @Tag("органика/органика")
+    @Tag(Tags.UI_API)
     @DisplayName("Восстановление премиума по ссылке из письма внутренней почты Без африда")
     void restoreYourPremiumAccountUsingAnInternalEmailWithoutAffRid() {
         reactivateFlow
@@ -131,8 +126,7 @@ public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
-    @Tag("aff_rid / органика")
+    @Tag(Tags.UI_API)
     @DisplayName("Оформление билла с потоковой ссылкой. Оформление реневалла без потоковой ссылки в url")
     void restoreYourPremiumAccountUsingWithAffRidRenewalWithoutAffRid() {
         reactivateFlow

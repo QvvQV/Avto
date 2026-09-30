@@ -13,6 +13,7 @@ import ru.tutor.steps.orders.OrderPremiumGiftSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import ru.tutor.constants.Tags;
 
 // Оформление подписки по тарифу Подарок
 @Epic("API Тесты пользователя")
@@ -36,7 +37,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("✅ Успешное получение премиум подарка")
     void restoreYourPremiumAccountUsingAnInternalEmail() {
         reactivateFlow
@@ -46,7 +47,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("❌ Получение премиум подарка без авторизации")
     void getPremiumGift_WithoutAuth_ShouldFail(){
         reactivateFlow
@@ -62,7 +63,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("❌ Получение премиум подарка с невалидным токеном")
     void getPremiumGift_WithInvalidToken_ShouldFail(){
         reactivateFlow
@@ -80,8 +81,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
 
     @Test
     @DisplayName("🔄 Повторное получение премиум подарка")
-    @Tag("negative")
-    @Tag("functional")
+    @Tag(Tags.NEGATIVE)
     void getPremiumGift_Twice_ShouldFail() {
         reactivateFlow
                 .createUserAndRecurrent(1)

@@ -17,6 +17,7 @@ import java.util.List;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -56,8 +57,8 @@ public class ClubPaymentTest {
     @DisplayName("Успешное получение истории платежей (Проверка 200 ОК)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    @Tag("smoke")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.SMOKE)
     void getClubPaymentsSuccess() {
         Response response = step("GET /user/club/payments", () ->
                 clubSteps.getClubPayments(authToken)
@@ -80,8 +81,7 @@ public class ClubPaymentTest {
     @DisplayName("Проверка направления платежей (income/outcome)")
     @Story("Классификация платежей")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("validation")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void shouldHaveCorrectPaymentDirections(){
         if (payments == null) {
             Response response = step("Получение истории платежей", () ->
@@ -109,8 +109,7 @@ public class ClubPaymentTest {
     @DisplayName("Проверка получения истории платежей с невалидным токеном (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithoutAuthorization() {
         Response response = step("Попытка получения истории платежей с невалидным токеном", () ->
                 clubSteps.getClubPayments("invalid")
@@ -126,8 +125,7 @@ public class ClubPaymentTest {
     @DisplayName("Проверка получения истории платежей без авторизации (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithoutAuthorization1() {
         Response response = step("Попытка получения платежей без токена", () ->
                 clubSteps.getClubPayments("")
@@ -143,8 +141,7 @@ public class ClubPaymentTest {
     @DisplayName("Проверка корректности дат платежей")
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("validation")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void shouldHaveValidPaymentDates() {
         if (payments == null) {
             Response response = step("Получение истории платежей", () ->

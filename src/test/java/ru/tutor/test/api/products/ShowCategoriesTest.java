@@ -11,13 +11,13 @@ import ru.tutor.steps.catalog.ProductsSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("Список продуктов пользователя")
 @Feature("Шоу-категории")
 @DisplayName("Тесты эндпоинта '/user/show-categories'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("products")
 
 public class ShowCategoriesTest {
 
@@ -46,7 +46,7 @@ public class ShowCategoriesTest {
     @DisplayName("GET /user/show-categories - валидация элементов списка")
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void validateShowCategoriesItems() {
         Response response = step("GET /user/show-categories", () ->
                 productsSteps.getShowCategories(token));
@@ -60,7 +60,7 @@ public class ShowCategoriesTest {
     @DisplayName("GET /user/show-categories - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getShowCategoriesWithoutAuth() {
         Response response = step("GET /user/show-categories без токена", () ->
                 productsSteps.getShowCategories(""));
@@ -74,7 +74,7 @@ public class ShowCategoriesTest {
     @DisplayName("GET /user/show-categories - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getShowCategoriesInvalidToken() {
         Response response = step("GET /user/show-categories невалидный токен", () ->
                 productsSteps.getShowCategories("invalid"));
@@ -88,7 +88,7 @@ public class ShowCategoriesTest {
     @DisplayName("GET /user/shows - успешное получение списка всех шоу, валидация")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getShowsSuccess() {
         Response response = step("GET /user/shows", () ->
                 productsSteps.getShows(token));
@@ -102,7 +102,7 @@ public class ShowCategoriesTest {
     @DisplayName("GET /user/shows - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getShowsWithoutAuth() {
         Response response = step("GET /user/shows без токена", () ->
                 productsSteps.getShows(""));
@@ -116,7 +116,7 @@ public class ShowCategoriesTest {
     @DisplayName("GET /user/shows - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getShowsInvalidToken() {
         Response response = step("GET /user/show-categories невалидный токен", () ->
                 productsSteps.getShows("invalid"));
@@ -130,7 +130,7 @@ public class ShowCategoriesTest {
     @DisplayName("GET /user/shows - валидация пагинации")
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void validateShowsPagination() {
         Response response = step("GET /user/shows", () ->
                 productsSteps.getShows(token));

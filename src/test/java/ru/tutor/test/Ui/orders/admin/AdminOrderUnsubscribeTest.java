@@ -20,6 +20,7 @@ import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.admin.AdminSteps;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import ru.tutor.constants.Tags;
 
 @Story("Работа с заказами через админку")
 @Feature("Заказы в админке")
@@ -39,7 +40,7 @@ public class AdminOrderUnsubscribeTest extends BaseUiTest {
 
     @Test
     @Order(1)
-    @Tag("E2E")
+    @Tag(Tags.E2E)
     @DisplayName("Оплата заказа Premium 399 через админку и проверка дат")
     public void PayPremiumViaAdminAndCheckDates() {
         assumeTrue(!TestConfig.isProd(),
@@ -49,7 +50,7 @@ public class AdminOrderUnsubscribeTest extends BaseUiTest {
 
     @Test
     @Order(2)
-    @Tag("E2E")
+    @Tag(Tags.E2E)
     @DisplayName("Оплата заказа Lite 99 через админку и проверка дат")
     public void PayLiteViaAdminAndCheckDates() {
         assumeTrue(!TestConfig.isProd(),
@@ -59,7 +60,7 @@ public class AdminOrderUnsubscribeTest extends BaseUiTest {
 
     @Test
     @Order(3)
-    @Tag("E2E")
+    @Tag(Tags.E2E)
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Отмена подписки заказа через админку и проверка флагов деактивации")
     void unsubscribeOrderInAdminAndCheckDeactivationFlag() {
@@ -70,7 +71,7 @@ public class AdminOrderUnsubscribeTest extends BaseUiTest {
 
     @Test
     @Order(4)
-    @Tag("E2E")
+    @Tag(Tags.E2E)
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Оплата Premium через админку, проверка дат и Refund")
     void PayPremiumViaAdminAndRefund() {

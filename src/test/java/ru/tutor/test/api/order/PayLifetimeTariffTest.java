@@ -10,6 +10,7 @@ import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -38,7 +39,7 @@ public class PayLifetimeTariffTest {
     @DisplayName("POST /user/orders/pay-lifetime-tariff - успешная оплата (200, тело не пустое)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void payLifetimeTariffSuccess() {
         Response response = step("POST /user/orders/pay-lifetime-tariff", () ->
                 orderSteps.payLifetimeTariff(token));

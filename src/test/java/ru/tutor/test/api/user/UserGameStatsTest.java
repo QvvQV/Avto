@@ -12,6 +12,7 @@ import ru.tutor.config.TestConfig;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -76,7 +77,7 @@ public class UserGameStatsTest {
     @Test
     @DisplayName("Успешное получение рейтинг лидеров")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void gameLeaderRatingSuccess()
     {
         Response response = step("Получение списка лидеров", () ->
@@ -90,7 +91,7 @@ public class UserGameStatsTest {
     @Test
     @DisplayName("Получение списка лидеров без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void gameLeaderRatingWithoutAuth()
     {
         Response response = step("Получение списка лидеров", () ->

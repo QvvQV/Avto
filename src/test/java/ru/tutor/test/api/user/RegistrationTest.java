@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 
 @ExtendWith(AllureJunit5.class)
@@ -44,8 +45,8 @@ public class RegistrationTest {
     @Order(1)
     @DisplayName("✅ Успешная регистрация нового пользователя")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("smoke")
-    @Tag("positive")
+    @Tag(Tags.SMOKE)
+    @Tag(Tags.POSITIVE)
     void registerNewUser_Success() {
         RegistrationRequest request = RegistrationRequest.generateRandom();
 
@@ -83,7 +84,7 @@ public class RegistrationTest {
     @Order(2)
     @DisplayName("✅ Регистарция с минимальным набором данных")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void registerMinimalUser_Success() {
         RegistrationRequest request = RegistrationRequest.generateMinimal();
         RegistrationResponse response = step("Регистрация с минимальными данными", () ->
@@ -100,7 +101,7 @@ public class RegistrationTest {
     @Order(3)
     @DisplayName("✅ Регистрация и автоматический вход")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("integration")
+    @Tag(Tags.INTEGRATION)
     void registerAndLogin_Success() {
         RegistrationRequest request = RegistrationRequest.generateRandom();
 
@@ -124,8 +125,7 @@ public class RegistrationTest {
     @Order(4)
     @DisplayName("❌ Регистрация без согласия с политикой")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("validation")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void registerWithoutPolicyApproval_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithoutPolicyApproval();
 
@@ -142,8 +142,7 @@ public class RegistrationTest {
     @Order(5)
     @DisplayName("❌ Регистрация с невалидным email")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("validation")
+    @Tag(Tags.NEGATIVE)
     void registerWithInvalidEmail_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithInvalidEmail();
 
@@ -160,8 +159,7 @@ public class RegistrationTest {
     @Order(6)
     @DisplayName("❌ Регистрация с пустым именем")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("validation")
+    @Tag(Tags.NEGATIVE)
     void registerWithEmptyName_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithEmptyName();
 
@@ -178,8 +176,7 @@ public class RegistrationTest {
     @Order(7)
     @DisplayName("❌ Регистрация с коротким паролем")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("validation")
+    @Tag(Tags.NEGATIVE)
     void registerWithShortPassword_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithShortPassword();
 
@@ -197,8 +194,7 @@ public class RegistrationTest {
     @Order(8)
     @DisplayName("✅ Регистрация с длинным паролем")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
-    @Tag("validation")
+    @Tag(Tags.POSITIVE)
     void registerWithLongPassword_Success() {
         RegistrationRequest request = RegistrationRequest.generateWithLongPassword();
 
@@ -213,7 +209,6 @@ public class RegistrationTest {
     @Order(9)
     @DisplayName("📊 Массовая регистрация пользователей")
     @Severity(SeverityLevel.MINOR)
-    @Tag("stress")
     void massRegistration() {
         int count = 3;
 
@@ -235,7 +230,7 @@ public class RegistrationTest {
     @Order(10)
     @DisplayName("🔄 Регистрация с разными gender значениями")
     @Severity(SeverityLevel.MINOR)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void registerWithDifferentGenders() {
         Integer[] genders = {0, 1, 2};
 
@@ -270,7 +265,7 @@ public class RegistrationTest {
     @Order(11)
     @DisplayName("✅ Регистрация с пустым номером телефона")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void registerWithEmptyPhone() {
         RegistrationRequest request = RegistrationRequest.generateWithEmptyPhone();
 
@@ -321,8 +316,7 @@ public class RegistrationTest {
     @Order(14)
     @DisplayName("📧 Регистрация с невалидными email форматами")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("validation")
+    @Tag(Tags.NEGATIVE)
 
     void registrationWithInvalidEmailFormats_ValidationErrors(String invalidEmail) {
         RegistrationRequest request = RegistrationRequest.generateRandom();
@@ -344,7 +338,6 @@ public class RegistrationTest {
         @Order(15)
         @DisplayName("📏 Очень длинное имя пользователя")
         @Severity(SeverityLevel.MINOR)
-        @Tag("validation")
         void veryLongUserName_ShouldHandleGracefully() {
             RegistrationRequest request = RegistrationRequest.generateRandom();
             String longName = faker.name().firstName().repeat(10);
@@ -366,7 +359,6 @@ public class RegistrationTest {
         @Order(16)
         @DisplayName("🔣 Спецсимволы в имени")
         @Severity(SeverityLevel.MINOR)
-        @Tag("validation")
         void specialCharactersInName_BehaviorCheck() {
             RegistrationRequest request = RegistrationRequest.generateRandom();
             String nameWithSpecialChars = "Test-User_Name123";
@@ -389,7 +381,6 @@ public class RegistrationTest {
     @Order(17)
     @DisplayName("📝 Проверка что ответ всегда JSON")
     @Severity(SeverityLevel.MINOR)
-    @Tag("validation")
     void responseAlwaysJson() {
         RegistrationRequest successReq = RegistrationRequest.generateRandom();
 
@@ -411,7 +402,6 @@ public class RegistrationTest {
         @Order(18)
         @DisplayName("⏱️ Проверка времени ответа для разных сценариев")
         @Severity(SeverityLevel.MINOR)
-        @Tag("validation")
         void responseTimeForDifferentScenarios() {
             step("Проверка времени ответа для успешной регистрации", () -> {
                 RegistrationRequest  request = RegistrationRequest.generateRandom();
@@ -424,7 +414,7 @@ public class RegistrationTest {
         @Order(19)
         @DisplayName("🔐 Проверка безопасности паролей")
         @Severity(SeverityLevel.MINOR)
-        @Tag("security")
+        @Tag(Tags.NEGATIVE)
         void TEST_PASSWORDSecurityValidation() {
 
             RegistrationRequest request = RegistrationRequest.generateRandom();

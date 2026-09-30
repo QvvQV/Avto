@@ -12,6 +12,7 @@ import ru.tutor.steps.account.AuthSteps;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -42,7 +43,7 @@ public class EditPasswordTest {
     @Order(1)
     @DisplayName("PUT /user/edit/pass - успешная смена пароля")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void editPasswordSuccess() {
         // Меняем на тот же пароль, чтобы потом можно было залогиниться
         Response response = step("PUT /user/edit/pass", () ->
@@ -57,7 +58,7 @@ public class EditPasswordTest {
     @Order(2)
     @DisplayName("PUT /user/edit/pass с неверным старым паролем")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editPasswordWrongOldPassword() {
         Response response = step ("PUT /user/edit/pass с неверным старым паролем", () ->
                 userSteps.editPassword(token, "wrong_pass", TEST_PASSWORD)
@@ -71,7 +72,7 @@ public class EditPasswordTest {
     @Order(3)
     @DisplayName("PUT /user/edit/pass без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editPasswordWithoutAuth() {
         Response response = step("PUT /user/edit/pass без токена", () ->
                 userSteps.editPassword("", TEST_PASSWORD, TEST_PASSWORD)
@@ -84,7 +85,7 @@ public class EditPasswordTest {
     @Order(4)
     @DisplayName("PUT /user/edit/pass невалидный токен")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editPasswordInvalidToken() {
         Response response = step("PUT /user/edit/pass - невалидный токен", () ->
                 userSteps.editPassword("invalid", TEST_PASSWORD, TEST_PASSWORD)
@@ -97,7 +98,7 @@ public class EditPasswordTest {
     @Order(5)
     @DisplayName("PUT /user/edit/pass пустой старый пароль")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editEmptyOldPassword() {
         Response response = step("PUT /user/edit/pass - пустой старый пароль", () ->
                 userSteps.editPassword(token, "", TEST_PASSWORD)
@@ -114,7 +115,7 @@ public class EditPasswordTest {
     @Order(6)
     @DisplayName("PUT /user/edit/pass пустой новый пароль")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editEmptyNewPassword() {
         Response response = step("PUT /user/edit/pass - пустой старый пароль", () ->
                 userSteps.editPassword(token, TEST_PASSWORD, "")

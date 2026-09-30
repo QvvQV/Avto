@@ -14,8 +14,9 @@ import ru.tutor.steps.fortune.GameWheelStartGameSteps;
 import java.util.*;
 
 import static io.qameta.allure.Allure.step;
+import ru.tutor.constants.Tags;
 
-@Tag("API")
+@Tag(Tags.API)
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
@@ -55,8 +56,8 @@ public class GameWheelStartGameTest {
     @DisplayName("Успешный 'Запуск игры' на колесе (Проверка 200 OK)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    @Tag("smoke")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.SMOKE)
     void startGameSuccess() {
 
         Response response = step("POST /user/game-wheel/start-game", () ->
@@ -86,8 +87,7 @@ public class GameWheelStartGameTest {
     @DisplayName("Проверка уникальности userRewardId при множественых запусках")
     @Story("Фунциональность")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
-    @Tag("functional")
+    @Tag(Tags.POSITIVE)
     void shouldGenerateUniqueUserRewardId() {
 
         List<GameWheelStartGameResponse> multiplePrizes = step("Множественный запуск игры (10 раза)",
@@ -104,8 +104,7 @@ public class GameWheelStartGameTest {
     @DisplayName("Проверка 'Запуска игры' без авторизации (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithoutAuthorizationGame() {
         Response response = step("Отправка POST запроса без токена", () ->
                 gameWheelStartGameSteps.startGame("")
@@ -124,8 +123,7 @@ public class GameWheelStartGameTest {
     @DisplayName("Проверка 'Запуска игры' с невалидным токеном (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithInvalidTokenGame() {
         Response response = step("Отправка POST запроса с невалидным токеном", () ->
                 gameWheelStartGameSteps.startGame("invalid_token_12345")

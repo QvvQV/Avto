@@ -29,6 +29,7 @@ import ru.tutor.steps.orders.PaymentSteps;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import ru.tutor.constants.Tags;
 
 @Epic("Платежи через Cloud/валидной картой Sber")
 @Feature("Тестирование различных сценариев оплаты")
@@ -83,7 +84,7 @@ public class OpeningModalWindowsFromTheMainPage extends BaseUiTest {
     }
 
 //    @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("SberPay: появление 4 кнопок и клик -> drawer")
     void paymentMethod_SberPay_Drawer() {
 //        assumeTrue(!TestConfig.isProd(), "Этап 1 — только dev");

@@ -11,6 +11,7 @@ import ru.tutor.steps.content.VideoSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -43,7 +44,7 @@ public class VideosTest {
     @Order(1)
     @DisplayName("GET /user/videos - успешное получение списка видео")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getVideosSuccess() {
         Response response = step("GET /user/videos", () ->
                 videoSteps.getVideos(token)
@@ -78,7 +79,7 @@ public class VideosTest {
     @Order(4)
     @DisplayName("GET /user/videos/{id} - детали видео")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getVideosByIdSuccess() {
         Response response = step("GET /user/videos", () ->
                 videoSteps.getVideos(token)
@@ -100,7 +101,7 @@ public class VideosTest {
     @Order(5)
     @DisplayName("GET /user/videos/{id} без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getVideoDetailsWithoutAuth() {
         Response response = step("GET /user/videos/{id} без токена", () ->
                 videoSteps.getVideosDetails("","16")
@@ -113,7 +114,7 @@ public class VideosTest {
     @Order(6)
     @DisplayName("GET /user/videos/watched/last - последний просмотр")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getWatchedLastSuccess() {
         Response response = step ("GET /user/videos/watched/last", () ->
                 videoSteps.getWatchedLast(token)
@@ -126,7 +127,7 @@ public class VideosTest {
     @Order(7)
     @DisplayName("GET /user/videos/watches/last без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getWatchedLastWithoutAuth() {
         Response response = step("GET /user/videos/watched/last - без токена", () ->
                 videoSteps.getWatchedLast("")

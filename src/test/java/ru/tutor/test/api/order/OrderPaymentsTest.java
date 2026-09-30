@@ -14,6 +14,7 @@ import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -42,8 +43,8 @@ public class OrderPaymentsTest {
     @Order(1)
     @DisplayName("Успешное получение истории платежей")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
-    @Tag("smoke")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.SMOKE)
     void getOrderPaymentsSuccess() {
         Response response = step("GET /user/orders/payments", () ->
                 orderSteps.getOrdersPayments(token)
@@ -58,7 +59,7 @@ public class OrderPaymentsTest {
     @Order(2)
     @DisplayName("Получение истории платежей без авторизации")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getOrdersPaymentsWithoutAuth() {
         Response response = step("GET /user/orders/payments без токена", () ->
                 orderSteps.getOrdersPayments("")
@@ -72,7 +73,7 @@ public class OrderPaymentsTest {
     @Order(3)
     @DisplayName("Получение истории платежей с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getOrdersPaymentsWithInvalidToken() {
         Response response = step("с невалидным токеном", () ->
                 orderSteps.getOrdersPayments("invalid_token")
@@ -87,8 +88,8 @@ public class OrderPaymentsTest {
     @Order(4)
     @DisplayName("Успешное получение информации по бонусному доступу")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
-    @Tag("smoke")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.SMOKE)
     void getOrderBonusPaymentsSuccess() {
         Response response = step("GET /user/orders/bonus-access-info", () ->
                 orderSteps.getOrdersBonusAccessInfo(token)
@@ -103,7 +104,7 @@ public class OrderPaymentsTest {
     @Order(5)
     @DisplayName("Получение информации по бонусному доступу без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getOrdersBonusPaymentsWithoutAuth() {
         Response response = step("GET /user/orders/bonus-access-info без токена", () ->
                 orderSteps.getOrdersBonusAccessInfo("")
@@ -117,7 +118,7 @@ public class OrderPaymentsTest {
     @Order(6)
     @DisplayName("Получение истории платежей с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getOrdersBonusPaymentsWithInvalidToken() {
         Response response = step("с невалидным токеном", () ->
                 orderSteps.getOrdersBonusAccessInfo("invalid_token")
@@ -132,8 +133,8 @@ public class OrderPaymentsTest {
     @Order(7)
     @DisplayName("Успешное получение информации по состоянию подписки")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
-    @Tag("smoke")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.SMOKE)
     void getOrderSubscriptionStateSuccess() {
         Response response = step("GET /user/orders/subscription/state", () ->
                 orderSteps.getOrdersSubscriptionState(token)
@@ -148,7 +149,7 @@ public class OrderPaymentsTest {
     @Order(8)
     @DisplayName("Получение информации по бонусному доступу без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getOrdersSubscriptionStateWithoutAuth() {
         Response response = step("GET /user/orders/subscription/state без токена", () ->
                 orderSteps.getOrdersSubscriptionState("")
@@ -162,7 +163,7 @@ public class OrderPaymentsTest {
     @Order(9)
     @DisplayName("Получение истории платежей с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getOrdersSubscriptionStateWithInvalidToken() {
         Response response = step("с невалидным токеном", () ->
                 orderSteps.getOrdersSubscriptionState("invalid_token")

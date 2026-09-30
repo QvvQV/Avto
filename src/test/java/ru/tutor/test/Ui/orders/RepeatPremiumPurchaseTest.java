@@ -26,6 +26,7 @@ import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import ru.tutor.constants.Tags;
 
 // TP-7673 Убрать ограничение на дубли для вернувшихся пользователей
 @Epic("Повторная покупка")
@@ -52,7 +53,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @ParameterizedTest
     @MethodSource("welcomeBackCombinations")
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Активный тариф {0} → попытка купить {1} → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
     void repeatPurchaseShowsWelcomeBackModal(TtPage.SubscriptionType active,
@@ -75,7 +76,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @ParameterizedTest
     @MethodSource("payCombinations")
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Активный {0} → оплата {1} тем же email → заказ с тарифом «{1}» в админке")
     @Severity(SeverityLevel.CRITICAL)
     void repeatPurchasePaysTargetTariff(TtPage.SubscriptionType active, TtPage.SubscriptionType target) {
@@ -93,7 +94,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @Test
     @Order(1)
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Активный Реневалл → покупка Премиум → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
     void premiumWithActiveRenewalShowsWelcomeBackModal() {
@@ -105,7 +106,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @Test
     @Order(2)
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Активный Реневалл → покупка Лайт → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
     void liteWithActiveRenewalShowsWelcomeBackModal() {
@@ -117,7 +118,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @Test
     @Order(3)
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Активный Реневалл → покупка Пожизненный → модалку не показываем, старые заказы status=2")
     @Severity(SeverityLevel.CRITICAL)
     void lifetimeWithActiveRenewalShowsWelcomeBackModal() {
@@ -130,7 +131,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @Test
     @Order(4)
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Замороженный Премиум → покупка Премиум → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
     void frozenPremiumTryBuyPremiumShowsModal() {
@@ -141,7 +142,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @Test
     @Order(5)
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Замороженный Лайт → покупка Лайт → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
     void frozenLiteTryBuyPremiumShowsModal() {
@@ -152,7 +153,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @Test
     @Order(6)
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Замороженный Реневалл → покупка Премиум → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
     void frozenRenewalTryBuyPremiumShowsModal() {
@@ -163,7 +164,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     @Test
     @Order(7)
-    @Tag("UI")
+    @Tag(Tags.UI)
     @DisplayName("Замороженный Реневалл → покупка Лайт → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
     void frozenRenewalTryBuyLiteShowsModal() {

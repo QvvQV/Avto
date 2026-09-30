@@ -15,9 +15,10 @@ import ru.tutor.steps.fortune.UserRewardSteps;
 import java.util.*;
 
 import static io.qameta.allure.Allure.step;
+import ru.tutor.constants.Tags;
 
 
-@Tag("API")
+@Tag(Tags.API)
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
@@ -58,8 +59,7 @@ public class UserRewardHistoryTest {
     @DisplayName("Успешное получение истории наград (Проверка 200)")
     @Story("История наград")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    @Tag("history")
+    @Tag(Tags.POSITIVE)
     void getRewardHistorySuccess() {
         Response response = step("GET /user/reward/history", () ->
                 userRewardSteps.getUserRewardsHistory(token)
@@ -76,8 +76,7 @@ public class UserRewardHistoryTest {
     @DisplayName("Проверка 'История наград' без авторизации (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailToGetHistoryWithoutAuth() {
         Response response = step("Отправка GET запроса без токена", () ->
                 userRewardSteps.getUserRewardsHistory("")
@@ -96,8 +95,7 @@ public class UserRewardHistoryTest {
     @DisplayName("Проверка группы наград с невалидным токеном (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithInvalidTokenHistory() {
         Response response = step("Отправка GET запроса без токена", () ->
                 userRewardSteps.getUserRewardsHistory("invalid_token_12345")

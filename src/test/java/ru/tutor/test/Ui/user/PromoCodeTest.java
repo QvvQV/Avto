@@ -17,6 +17,7 @@ import ru.tutor.steps.promoCode.PromoCodeSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import ru.tutor.constants.Tags;
 
 public class PromoCodeTest extends RecurrentPaymentTestBase {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -47,7 +48,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("✅ Применение промокода к созданному заказу")
     void applyValidPromoCode_Success() {
@@ -57,7 +58,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("❌ Применение уже использованного промокода")
     void applyUsedPromoCode_ShouldFail() {
@@ -72,7 +73,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("❌ Применение неактивного промокода")
     void applyInactivePromoCode_ShouldFail() {
@@ -85,7 +86,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("❌ Применение несуществующего промокода")
     @Severity(SeverityLevel.NORMAL)
     void applyNonExistentPromoCode_ShouldFail() {
@@ -97,7 +98,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("❌ Применение промокода без авторизации")
     @Severity(SeverityLevel.CRITICAL)
     void applyPromoCode_WithoutAuth_ShouldFail() {
@@ -114,7 +115,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("❌ Применение промокода с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     void applyPromoCode_WithInvalidToken_ShouldFail() {
@@ -131,7 +132,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("❌ Применение промокода с пустым orderNumber")
     @Severity(SeverityLevel.MINOR)
     void applyPromoCode_WithEmptyOrderNumber_ShouldFail() {
@@ -145,7 +146,7 @@ public class PromoCodeTest extends RecurrentPaymentTestBase {
     }
 
     @Test
-    @Tag("UI" + "API")
+    @Tag(Tags.UI_API)
     @DisplayName("❌ Применение промокода с пустым promoCodeName")
     @Severity(SeverityLevel.MINOR)
     void applyPromoCode_WithEmptyPromoCodeName_ShouldFail() {

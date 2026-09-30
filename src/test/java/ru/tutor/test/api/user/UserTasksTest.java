@@ -12,6 +12,7 @@ import ru.tutor.steps.fortune.TasksSteps;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -45,7 +46,7 @@ public class UserTasksTest {
     @Order(1)
     @DisplayName("GET /user/tasks - успешное получение списка заданий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getTasksSuccess() {
         Response response = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -59,7 +60,7 @@ public class UserTasksTest {
     @Order(2)
     @DisplayName("GET /user/tasks - без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getTasksWithoutAuth() {
         Response response = step("GET /user/tasks без токена", () ->
                 userSteps.getTasks("")
@@ -72,7 +73,7 @@ public class UserTasksTest {
     @Order(3)
     @DisplayName("GET /user/tasks - инвалид токен")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getTasksInvalidToken() {
         Response response = step("GET /user/tasks инвалид токен", () ->
                 userSteps.getTasks("invalid")
@@ -85,7 +86,7 @@ public class UserTasksTest {
     @Order(4)
     @DisplayName("POST /user/tasks/change/{id} - замена задания")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void changeTasksSuccess() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -116,7 +117,7 @@ public class UserTasksTest {
     @Order(5)
     @DisplayName("POST /user/tasks/change/{id} - без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void changeTaskWithoutAuth() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -137,7 +138,7 @@ public class UserTasksTest {
     @Order(6)
     @DisplayName("POST /user/tasks/change/{id} - инвалид токен")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void changeTaskInvalidToken() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -158,7 +159,7 @@ public class UserTasksTest {
     @Order(7)
     @DisplayName("POST /user/tasks/change/{id} - невалидный номер")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void changeTaskEmpty() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -179,7 +180,7 @@ public class UserTasksTest {
     @Order(8)
     @DisplayName("POST /user/tasks/finish/{id} - завершение задания")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void finishTasksSuccess() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -201,7 +202,7 @@ public class UserTasksTest {
     @Order(9)
     @DisplayName("POST /user/tasks/finish/{id} - без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void finishTaskWithoutAuth() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -222,7 +223,7 @@ public class UserTasksTest {
     @Order(10)
     @DisplayName("POST /user/tasks/finish/{id} - пустой номер")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void finishTaskEmptyId() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)

@@ -11,13 +11,13 @@ import ru.tutor.steps.catalog.ProductsSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("Список продуктов пользователя")
 @Feature("Мини-курсы")
 @DisplayName("Тесты эндпоинта '/user/mini-courses'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("products")
 
 public class MiniCoursesTest {
 
@@ -46,7 +46,7 @@ public class MiniCoursesTest {
     @DisplayName("GET /user/mini-courses - валидация элементов списка")
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void validateMiniCoursesItems() {
         Response response = step("GET /user/mini-courses", () ->
                 productsSteps.getMiniCourses(token));
@@ -61,7 +61,7 @@ public class MiniCoursesTest {
     @DisplayName("GET /user/mini-courses - валидация пагинации")
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void validateMiniCoursesPagination() {
         Response response = step("GET /user/mini-courses", () ->
                 productsSteps.getMiniCourses(token));
@@ -77,7 +77,7 @@ public class MiniCoursesTest {
     @DisplayName("GET /user/mini-courses - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getMiniCoursesWithoutAuth() {
         Response response = step("GET /user/mini-courses без токена", () ->
                 productsSteps.getMiniCourses(""));
@@ -91,7 +91,7 @@ public class MiniCoursesTest {
     @DisplayName("GET /user/mini-courses - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getMiniCoursesInvalidToken() {
         Response response = step("GET /user/mini-courses невалидный токен", () ->
                 productsSteps.getMiniCourses("invalid_token"));
@@ -105,7 +105,7 @@ public class MiniCoursesTest {
     @DisplayName("GET /user/mini-workouts - валидация элементов списка")
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void validateMiniWorkoutsItems() {
         Response response = step("GET /user/mini-workouts", () ->
                 productsSteps.getMiniWorkouts(token));
@@ -120,7 +120,7 @@ public class MiniCoursesTest {
     @DisplayName("GET /user/mini-workouts - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getMiniWorkoutsWithoutAuth() {
         Response response = step("GET /user/mini-workouts без токена", () ->
                 productsSteps.getMiniWorkouts(""));
@@ -134,7 +134,7 @@ public class MiniCoursesTest {
     @DisplayName("GET /user/mini-workouts - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getMiniWorkoutsInvalidToken() {
         Response response = step("GET /user/mini-workouts невалидный токен", () ->
                 productsSteps.getMiniWorkouts("invalid_token"));

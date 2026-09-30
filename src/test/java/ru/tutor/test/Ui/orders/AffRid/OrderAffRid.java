@@ -14,6 +14,7 @@ import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.orders.PaymentSteps;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import ru.tutor.constants.Tags;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrderAffRid extends BaseUiTest {
@@ -37,8 +38,8 @@ public class OrderAffRid extends BaseUiTest {
     //    === AFF_RID===
     @Test
     @Order(1)
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Сбер картой: появление 4 кнопок на Главной и клик -> drawer")
     void paymentMethod_SberCard() {
@@ -47,8 +48,8 @@ public class OrderAffRid extends BaseUiTest {
 
     @Test
     @Order(2)
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Тинькофф картой: появление 4 кнопок на Главной и клик -> drawer")
     void paymentMethod_TinkCard() {
@@ -57,8 +58,8 @@ public class OrderAffRid extends BaseUiTest {
 
     @Test
     @Order(3)
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Other: появление 4 кнопок на Главной и клик -> drawer")
     void paymentMethod_Other() {
@@ -67,8 +68,8 @@ public class OrderAffRid extends BaseUiTest {
 
     @Test
     @Order(4)
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Cloud: появление 4 кнопок на стр Лендинга и клик -> drawer")
     void paymentMethod_Cloud_Drawer_Landing(){
@@ -78,8 +79,8 @@ public class OrderAffRid extends BaseUiTest {
 
     @Test
     @Order(5)
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Other: появление 4 кнопок на стр Лендинга и клик -> drawer")
     void paymentMethod_Other_Drawer_Landing(){
@@ -89,8 +90,8 @@ public class OrderAffRid extends BaseUiTest {
 
     @Test
     @Order(6)
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Sber: появление 4 кнопок на стр Лендинга и клик -> drawer")
     void paymentMethod_Sber_Drawer_Landing(){

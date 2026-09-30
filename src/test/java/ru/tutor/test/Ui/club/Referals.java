@@ -24,6 +24,7 @@ import ru.tutor.steps.club.ClubSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import ru.tutor.constants.Tags;
 
 @Epic("Реферальная цепочка клуба")
 @Feature("Создание цепочки рефералов")
@@ -61,8 +62,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(1)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Создание цепочки членов клуба")
     void createParentWithReferralLink() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -78,8 +79,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(2)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Заполнение реквизитов ИП: summary → PUT → GET → DELETE → GET null → profileValid=false")
     void fillIpPayoutRequisites() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -90,8 +91,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(3)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Заполнение реквизитов СЗ: summary → PUT → GET → DELETE → GET null → profileValid=false")
     void fillSzPayoutRequisites() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -102,8 +103,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(4)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Заявка на вывод 3000 и отклонение внутри заявки админка (returnBonus)")
     void createWithdrawalAndReject() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -114,8 +115,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(5)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Заявка на вывод 3000 и отклонение внутри заявки админка (returnBonus=false)")
     void createWithdrawalAndRejectNotReturnBonus() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -126,8 +127,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(6)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Заявка на вывод 3000 и удаление в админке (returnBonus=true)")
     void createWithdrawalAndDelete() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -138,8 +139,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(7)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Заявка на вывод 3000 и удаление (не возвращать returnBonus)")
     void createWithdrawalAndDeleteNotReturnBonus() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -150,8 +151,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(8)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Согласованная Заявка на выплату 3000")
     void createWithdrawalAndPay() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -162,8 +163,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(9)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Премиум + Пожизненный (semi)")
     void premiumShareAndLife() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
@@ -174,8 +175,8 @@ public class Referals extends BaseUiTest {
 
     @Test
     @Order(10)
-    @Tag("E2E")
-    @Tag("UI + API")
+    @Tag(Tags.E2E)
+    @Tag(Tags.UI_API)
     @DisplayName("Премиум без оплаты + Пожизненный: оплата родителя с баланса клуба (type=19)")
     void premiumShareAndLifePayFromClubBalance() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");

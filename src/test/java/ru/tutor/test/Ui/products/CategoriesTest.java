@@ -15,6 +15,7 @@ import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import ru.tutor.constants.Tags;
 
 @Epic("Каталог курсов")
 @Feature("Блок категорий на главной странице")
@@ -85,7 +86,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(1)
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Проверка отображения всех категорий")
@@ -103,7 +104,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(2)
     @DisplayName("Проверка текстов всех категорий")
     @Severity(SeverityLevel.CRITICAL)
@@ -125,7 +126,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(3)
     @DisplayName("Проверка ссылок всех категорий")
     @Severity(SeverityLevel.CRITICAL)
@@ -135,7 +136,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(4)
     @DisplayName("Проверка иконок всех категорий")
     @Severity(SeverityLevel.NORMAL)
@@ -144,7 +145,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(5)
     @DisplayName("Переход по категории и проверка URL")
     @Severity(SeverityLevel.CRITICAL)
@@ -169,7 +170,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(6)
     @DisplayName("Проверка горизонтального скроллинга категорий")
     @Severity(SeverityLevel.NORMAL)
@@ -188,7 +189,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(7)
     @DisplayName("Проверка времени загрузки категорий")
     @Severity(SeverityLevel.MINOR)
@@ -213,7 +214,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(8)
     @DisplayName("Проверка наличия навигационной кнопки")
     @Severity(SeverityLevel.MINOR)
@@ -236,7 +237,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(9)
     @DisplayName("Проверка уникальности названий категорий")
     @Severity(SeverityLevel.NORMAL)
@@ -245,7 +246,7 @@ public class CategoriesTest extends BaseUiTest {
     }
 
     @Test
-    @Tag("UI")
+    @Tag(Tags.UI)
     @Order(10)
     @DisplayName("Проверка наличия курсов во всех категориях")
     @Severity(SeverityLevel.CRITICAL)

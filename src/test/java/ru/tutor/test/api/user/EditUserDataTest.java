@@ -16,6 +16,7 @@ import java.util.Locale;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -58,7 +59,7 @@ public class EditUserDataTest {
     @Order(1)
     @DisplayName("PUT /user/edit/data - успешное изменение данных")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void editDataSuccess() {
         Response response = step("PUT /user/edit/data", () ->
                 userSteps.editUserData(token, validRequest())
@@ -72,7 +73,7 @@ public class EditUserDataTest {
     @Order(2)
     @DisplayName("PUT /user/edit/data - пустое имя")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editDataEmptyName() {
         UserEditDataRequest body = validRequest().name("");
         Response response = step("PUT /user/edit/data с пустым name", () ->
@@ -90,7 +91,7 @@ public class EditUserDataTest {
     @Order(3)
     @DisplayName("PUT /user/edit/data - невалидный email")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editDataInvalidEmail() {
         UserEditDataRequest body = validRequest().email("not-an-email");
         Response response = step("PUT /user/edit/data с невалидным email", () ->
@@ -108,7 +109,7 @@ public class EditUserDataTest {
     @Order(4)
     @DisplayName("PUT /user/edit/data - без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editDataWithoutAuth() {
         Response response = step("PUT /user/edit/data без токена", () ->
                 userSteps.editUserData("", validRequest())
@@ -121,7 +122,7 @@ public class EditUserDataTest {
     @Order(5)
     @DisplayName("PUT /user/edit/data - невалидный токен")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void editDataInvalidToken() {
         Response response = step("PUT /user/edit/data невалидный токен", () ->
                 userSteps.editUserData("invalid", validRequest())
@@ -134,7 +135,7 @@ public class EditUserDataTest {
     @Order(6)
     @DisplayName("PUT /user/edit/data - битый валидный email")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void doesNotExistEditDataEmail() {
         UserEditDataRequest body = validRequest().email(TEST_EMAIL + "123456");
         Response response = step("PUT /user/edit/data с невалидным email", () ->

@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -80,7 +81,7 @@ public class RefundTicketTest {
     @Order(1)
     @DisplayName("POST /user/refund-tickets/create - создание заявки на возврат")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void createRefundTicketSuccess() {
         RefundTicketRequest request =step("Подготовка тела запроса", () ->
                 createRefundRequest()
@@ -97,7 +98,7 @@ public class RefundTicketTest {
     @Order(2)
     @DisplayName("POST /user/refund-tickets/create - без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void createRefundTicketWithoutAuth() {
         RefundTicketRequest request = createRefundRequest();
 
@@ -112,7 +113,7 @@ public class RefundTicketTest {
     @Order(3)
     @DisplayName("POST /user/refund-tickets/create - невалидный токен")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void createRefundTicketWithInvalidToken() {
         RefundTicketRequest request = createRefundRequest();
 
@@ -127,7 +128,7 @@ public class RefundTicketTest {
     @Order(4)
     @DisplayName("POST /user/refund-tickets/create - пустое тело")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void createRefundTicketWithEmptyBody() {
         RefundTicketRequest request = createEmptyRefundRequest();
 
@@ -142,7 +143,7 @@ public class RefundTicketTest {
     @Order(5)
     @DisplayName("GET /user/refund-tickets - список заявок")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getRefundTicketsSuccess() {
         Response response = step("GET /user/refund-tickets", () ->
                 orderSteps.getRefundTickets(token)
@@ -156,7 +157,7 @@ public class RefundTicketTest {
     @Order(6)
     @DisplayName("GET /user/refund-tickets - без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getRefundTicketsWithoutAuth() {
         Response response = step("GET /user/refund-tickets - без токена", () ->
                 orderSteps.getRefundTickets("")
@@ -170,7 +171,7 @@ public class RefundTicketTest {
     @Order(7)
     @DisplayName("GET /user/refund-tickets - невалидный токен")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getRefundTicketsInvalidToken() {
         Response response = step("GET /user/refund-tickets - без токена", () ->
                 orderSteps.getRefundTickets("invalid")

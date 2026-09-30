@@ -14,6 +14,7 @@ import java.util.*;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("Список продуктов пользователя")
@@ -49,9 +50,8 @@ public class ProductsProfileTest {
     @Order(1)
     @DisplayName("Успешное получение списка продуктов - 200 ОК")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("smoke")
-    @Tag("positive")
-    @Tag("products")
+    @Tag(Tags.SMOKE)
+    @Tag(Tags.POSITIVE)
     void getProductsSuccess() {
         ensureProductsLoaded();
 
@@ -97,7 +97,7 @@ public class ProductsProfileTest {
     @Test
     @Order(2)
     @DisplayName("Получение списка всех продуктов платформы")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getAllProductsSuccess() {
         Response response = productsSteps.getAllProducts(token);
         step("Валидация ответа", () -> {
@@ -111,7 +111,7 @@ public class ProductsProfileTest {
     @Test
     @Order(3)
     @DisplayName("Эндпоинт Премьеры")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getPremiersProducts() {
         Response response = productsSteps.getPremiersProducts(token);
         step("Валидация ответа", () -> {
@@ -124,7 +124,7 @@ public class ProductsProfileTest {
     @Test
     @Order(4)
     @DisplayName("Эндпоинт Топ10")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getProductsTop10() {
         Response response = productsSteps.getProductTop10(token);
         step("Валидация ответа", () -> {
@@ -137,7 +137,7 @@ public class ProductsProfileTest {
     @Test
     @Order(5)
     @DisplayName("Эндпоинт Сейчас смотрят")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getProductWatchingNow() {
         Response response = productsSteps.getProductWatchingNow(token);
         step("Валидация ответа", () -> {
@@ -150,7 +150,7 @@ public class ProductsProfileTest {
     @Test
     @Order(6)
     @DisplayName("Эндпоинт список Избранных продуктов")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getFavoriteProducts() {
         Response response = productsSteps.favoriteProduct(token);
         step("Валидация ответа", () ->
@@ -160,7 +160,7 @@ public class ProductsProfileTest {
     @Test
     @Order(7)
     @DisplayName("Эндпоинт добавления в Избранное")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void postFavoriteProducts() {
         ensureProductsLoaded();
         Response response = productsSteps.postFavoriteProducts(token, savedProductValue);
@@ -173,7 +173,7 @@ public class ProductsProfileTest {
     @Test
     @Order(8)
     @DisplayName("Эндпоинт удаления продукта из избранных")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void deleteProducts() {
         ensureProductsLoaded();
         Response response = productsSteps.deleteFavoriteProducts(token, savedProductValue);
@@ -210,7 +210,7 @@ public class ProductsProfileTest {
     @Test
     @Order(11)
     @DisplayName("Эндпоинты получение информации о продукте без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getProductsWithoutAuth() {
         ensureProductsLoaded();
 
@@ -224,7 +224,7 @@ public class ProductsProfileTest {
     @Test
     @Order(12)
     @DisplayName("Эндпоит modules без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getModulesWithoutAuth() {
         ensureProductsLoaded();
 
@@ -239,7 +239,7 @@ public class ProductsProfileTest {
     @Test
     @Order(13)
     @DisplayName("Эндпоинт просмотр модуля без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getModuleWatchedProductsWithoutAuth() {
         ensureProductsLoaded();
 
@@ -253,7 +253,7 @@ public class ProductsProfileTest {
     @Test
     @Order(14)
     @DisplayName("Эндпоинт completeModule без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void putCompleteModuleWithoutAuth() {
         ensureProductsLoaded();
 
@@ -267,7 +267,7 @@ public class ProductsProfileTest {
     @Test
     @Order(15)
     @DisplayName("Эндпоинт список достижений продукта без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAchievementsProductsWithoutAuth() {
         ensureProductsLoaded();
 
@@ -280,7 +280,7 @@ public class ProductsProfileTest {
     @Test
     @Order(16)
     @DisplayName("Эндпоинт страница достижений без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAchievementsWithoutAuth() {
         Response response = step("Страница достижений", () ->
                 productsSteps.getUserAchievements(""));
@@ -292,7 +292,7 @@ public class ProductsProfileTest {
     @Test
     @Order(17)
     @DisplayName("Эндпоинт modules без номера продукта")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getUserModulesWithoutProductValue() {
         Response response = step("Пустое значение продукта в модуле просомтра", () ->
                 productsSteps.getProductModuleById(token, "", MODULE_NUMBER));
@@ -306,7 +306,7 @@ public class ProductsProfileTest {
     @Test
     @Order(18)
     @DisplayName("Невалидный модуль")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getUserModulesInvalidModule() {
         ensureProductsLoaded();
 
@@ -320,7 +320,7 @@ public class ProductsProfileTest {
     @Test
     @Order(19)
     @DisplayName("Эндпоит modules с невалидным номером продукта")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getModulesInvalidModuleProduct() {
 
         // Модуль продукта
@@ -334,7 +334,7 @@ public class ProductsProfileTest {
     @Test
     @Order(20)
     @DisplayName("Список всех продуктов платформы без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAllProductsWithoutAuth() {
         Response response = productsSteps.getAllProducts("");
         step("Валидация ответа", () ->
@@ -344,7 +344,7 @@ public class ProductsProfileTest {
     @Test
     @Order(21)
     @DisplayName("Премьеры без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getPremiersWithoutAuth() {
         Response response = productsSteps.getPremiersProducts("");
         step("Проверка код ответа", () ->
@@ -354,7 +354,7 @@ public class ProductsProfileTest {
     @Test
     @Order(22)
     @DisplayName("Топ10 без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getTop10WithoutAuth() {
         Response response = productsSteps.getProductTop10("");
         step("Валидация ответа", () ->
@@ -364,7 +364,7 @@ public class ProductsProfileTest {
     @Test
     @Order(23)
     @DisplayName("Сейчас смотрят без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getWatchingNowWithoutAuth() {
         Response response = productsSteps.getProductWatchingNow("");
         step("Валидация ответа", () ->
@@ -374,7 +374,7 @@ public class ProductsProfileTest {
     @Test
     @Order(24)
     @DisplayName("Получение избранных продуктов без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getFavoriteProductsWithoutAuth() {
         Response response = productsSteps.favoriteProduct("");
         step("Валидация продукта", () ->
@@ -384,7 +384,7 @@ public class ProductsProfileTest {
     @Test
     @Order(25)
     @DisplayName("Список продуктов без авторизации - 401")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getUserProductsWithoutAuth() {
         Response response = productsSteps.getUserProducts("");
         step("Валидация ответа", () ->
@@ -406,7 +406,7 @@ public class ProductsProfileTest {
     @Test
     @Order(27)
     @DisplayName("Достижения с несуществующим ID продукта - 404")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAchievementsProductByIdNotFound() {
         Response response = productsSteps.getAchievementsProductsId(token, INVALID_PRODUCT_VALUE);
         step("Валидация ответа", () -> {
@@ -419,7 +419,7 @@ public class ProductsProfileTest {
     @Test
     @Order(28)
     @DisplayName("Отметка просмотра с пустым orderNumber")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAchievementsProductById() {
         ensureProductsLoaded();
         Response response = productsSteps.markModuleWatched(token, "", MODULE_NUMBER, TIMELINE);
@@ -433,7 +433,7 @@ public class ProductsProfileTest {
     @Test
     @Order(29)
     @DisplayName("Завершение модуля с пустым orderNumber")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void completeModuleEmptyOrder() {
         ensureProductsLoaded();
         Response response = productsSteps.completeModule(token, "", MODULE_NUMBER);
@@ -447,7 +447,7 @@ public class ProductsProfileTest {
     @Test
     @Order(30)
     @DisplayName("Успешный ответ вложенные файлы")
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getAttachedFilesSuccess() {
         ensureProductsLoaded();
         Response response = step("GET /user/products/{orderNumber}/attached-files", () ->
@@ -462,7 +462,7 @@ public class ProductsProfileTest {
     @Test
     @Order(31)
     @DisplayName("Эндпоинт attached-files пустой продукт")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAttachedFilesWithoutProduct() {
         Response response = step("GET /user/products/{orderNumber}/attached-files без токена", () ->
                 productsSteps.getAttachedFiles(token, "")
@@ -474,7 +474,7 @@ public class ProductsProfileTest {
     @Test
     @Order(32)
     @DisplayName("Эндпоинт achievements/last без авторизации")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAchievementsLastWithoutAuth() {
         Response response = step("GET user/achievements/last без авторизации", () ->
                 productsSteps.getAchievementsLast("")
@@ -486,7 +486,7 @@ public class ProductsProfileTest {
     @Test
     @Order(33)
     @DisplayName("Эндпоинт achievements/last невалидный токен")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getAchievementsLastInvalidToken() {
         Response response = step("GET user/achievements/last с невалидным токеном", () ->
                 productsSteps.getAchievementsLast("invalidToken")
@@ -498,7 +498,7 @@ public class ProductsProfileTest {
     @Test
     @Order(34)
     @DisplayName("Эндпоинт удаления продукта из избранных - без токена")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void deleteProductsWithoutAuth() {
         ensureProductsLoaded();
         Response response = productsSteps.deleteFavoriteProducts("", savedProductValue);
@@ -511,7 +511,7 @@ public class ProductsProfileTest {
     @Test
     @Order(35)
     @DisplayName("Эндпоинт удаления без указания продукта из избранных")
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void deleteWithoutProducts() {
         ensureProductsLoaded();
         Response response = productsSteps.deleteFavoriteProducts(token, "");

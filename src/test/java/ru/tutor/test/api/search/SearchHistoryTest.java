@@ -13,6 +13,7 @@ import java.util.List;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -40,7 +41,7 @@ public class SearchHistoryTest {
     @Order(1)
     @DisplayName("Успешное сохранение истории поиска с одним запросом")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void saveSearchHistorySingleQuery() {
         Response response = step("POST /user/search/history - один запрос", () ->
                 searchSteps.saveSearchHistory(token, List.of("Питание"))
@@ -54,7 +55,7 @@ public class SearchHistoryTest {
     @Order(2)
     @DisplayName("Успешное сохранение поиска с несколькими запросами")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void saveSearchHistoryMultipleQueries() {
         Response response = step("POST /user/search/history - несколько запросов", () ->
                 searchSteps.saveSearchHistory(token, List.of("Питание", "дневник питания", "ЗОЖ"))
@@ -68,7 +69,7 @@ public class SearchHistoryTest {
     @Order(3)
     @DisplayName("Сохранение истории поиска без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void saveSearchHistoryWithoutAuth() {
         Response response = step("POST /user/search/history - без токена", () ->
                 searchSteps.saveSearchHistory("", List.of("Питание"))
@@ -83,7 +84,7 @@ public class SearchHistoryTest {
     @Order(4)
     @DisplayName("Сохранение истории поиска с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void saveSearchHistoryWithInvalidToken() {
         Response response = step("POST /user/search/history - без токена", () ->
                 searchSteps.saveSearchHistory("invalid_token", List.of("Питание"))
@@ -98,7 +99,6 @@ public class SearchHistoryTest {
     @Order(5)
     @DisplayName("Сохранение истории поиска с пустым queryList")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("edge-case")
     void saveSearchHistoryEmptyQueryList() {
         Response response = step("POST /user/search/history - пустой список", () ->
                 searchSteps.saveSearchHistory(token, List.of())
@@ -112,7 +112,7 @@ public class SearchHistoryTest {
     @Order(6)
     @DisplayName("Сохранение истории поиска с несколькими пустыми queryList")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void saveSearchHistoryEmptyStrings() {
         Response response = step("POST /user/search/history - пустой список", () ->
                 searchSteps.saveSearchHistory(token, List.of("", "", ""))
@@ -128,7 +128,7 @@ public class SearchHistoryTest {
     @Order(7)
     @DisplayName("GET: успешное получение истории поиска")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getSearchHistorySuccess() {
         Response response = step("GET / user/search/history", () ->
                 searchSteps.getSearchHistory(token)
@@ -142,7 +142,7 @@ public class SearchHistoryTest {
     @Order(8)
     @DisplayName("GET: без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getSearchHistoryWithoutAuth() {
         Response response = step("GET /user/search/history - без токена", () ->
                 searchSteps.getSearchHistory("")
@@ -156,7 +156,7 @@ public class SearchHistoryTest {
     @Order(9)
     @DisplayName("GET: невалидный токен")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getSearchHistoryInvalidToken() {
         Response response = step("GET /user/search/history - невалдиный токен", () ->
                 searchSteps.getSearchHistory("invalid_token")
@@ -172,8 +172,8 @@ public class SearchHistoryTest {
     @Order(10)
     @DisplayName("Интеграция: POST сохранение -> GET проверка содержимого")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    @Tag("integration")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.INTEGRATION)
     void postThenGetSearchHistory() {
         List<String> queries = List.of("Питание", "дневник питания");
 

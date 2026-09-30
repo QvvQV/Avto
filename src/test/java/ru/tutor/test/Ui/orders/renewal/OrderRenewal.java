@@ -17,6 +17,7 @@ import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 import ru.tutor.utils.WaitHelper;
 
 import static com.codeborne.selenide.Selenide.refresh;
+import ru.tutor.constants.Tags;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OrderRenewal extends BaseUiTest {
@@ -42,8 +43,8 @@ public class OrderRenewal extends BaseUiTest {
     @Test
     @Order(1)
     @Feature("Renewal в ЛК")
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @DisplayName("Renewal: логин в ЛК → модалка оплаты пожизненного → фиксация iframe")
     void paymentMethod_Renewal_PaymentModal_Life_Iframe() {
         renewalModalFlow.login();
@@ -64,8 +65,8 @@ public class OrderRenewal extends BaseUiTest {
     @Test
     @Order(2)
     @Feature("Renewal в ЛК")
-    @Tag("API + UI")
-    @Tag("E2E")
+    @Tag(Tags.UI_API)
+    @Tag(Tags.E2E)
     @DisplayName("Renewal: логин -> модалка оплаты Реневал -> фиксация iframe")
     void paymentMethod_Renewal_PaymentModal_iframe() {
         renewalModalFlow.login();

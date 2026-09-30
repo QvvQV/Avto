@@ -14,9 +14,10 @@ import ru.tutor.steps.fortune.UserRewardSteps;
 import java.util.*;
 
 import static io.qameta.allure.Allure.step;
+import ru.tutor.constants.Tags;
 
 
-@Tag("API")
+@Tag(Tags.API)
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
@@ -57,8 +58,8 @@ public class UserRewardListTest {
     @DisplayName("Успешное получение 'Списка наград' пользователя (Проверка 200 OK)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    @Tag("smoke")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.SMOKE)
     void getUserRewardSuccess() {
 
         Response response = step("GET /user/reward/list", () ->
@@ -75,8 +76,7 @@ public class UserRewardListTest {
     @DisplayName("Проверка 'Списка призов' без авторизации (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithoutAuthorizationList() {
         Response response = step("Отправка GET запроса без токена", () ->
                 userRewardSteps.getUserRewards("")
@@ -95,8 +95,7 @@ public class UserRewardListTest {
     @DisplayName("Проверка 'Списка призов' с невалидным токеном (Проверка 401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithInvalidTokenList() {
         Response response = step("Отправка GET запроса с невалидным токеном", () ->
                 userRewardSteps.getUserRewards("invalid_token_12345")

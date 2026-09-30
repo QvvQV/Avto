@@ -16,6 +16,7 @@ import ru.tutor.steps.admin.AdminSteps;
 
 import static com.codeborne.selenide.Selenide.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import ru.tutor.constants.Tags;
 
 @Epic("Платежи через Сбер")
 @Feature("Тестирование различных сценариев оплаты")
@@ -40,8 +41,9 @@ public class SberErrorTest extends BaseUiTest {
     @Test
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("⚠️ Оплата картой с фиксированным балансом 100р")
-    @Tag("negative/positive")
-    @Tag("E2E")
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.E2E)
     void payWithFixBalanceCard() {
 
         PurchaseResult result = purchaseFlow.premiumFixSber();
@@ -53,8 +55,8 @@ public class SberErrorTest extends BaseUiTest {
     @Test
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("❌ Оплата картой с недостаточными средствами")
-    @Tag("negative")
-    @Tag("E2E")
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.E2E)
     void payWithInsufficientFundsCard() {
 
         PurchaseResult result = purchaseFlow.premiumInsufficientFundsSber();
@@ -66,8 +68,8 @@ public class SberErrorTest extends BaseUiTest {
     @Test
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("❌ Оплата просроченной картой")
-    @Tag("negative")
-    @Tag("E2E")
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.E2E)
     void payWithExpireCard() {
 
         PurchaseResult result = purchaseFlow.premiumExpiredSber();

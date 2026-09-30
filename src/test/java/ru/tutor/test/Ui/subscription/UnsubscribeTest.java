@@ -22,8 +22,9 @@ import ru.tutor.utils.WaitHelper;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import ru.tutor.constants.Tags;
 
-@Tag("UI")
+@Tag(Tags.UI)
 @Story("Отписка пользователя от платформы")
 public class UnsubscribeTest extends BaseUiTest {
 

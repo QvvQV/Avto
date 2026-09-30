@@ -13,6 +13,7 @@ import ru.tutor.steps.catalog.ProductsSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("Сертификаты")
@@ -52,7 +53,7 @@ public class CertificateTest {
     @Order(1)
     @DisplayName("Успешная генерация сертификата")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void generateCertificateSuccess() {
         ensureOrderNumber();
         String name = faker.name().firstName();
@@ -70,7 +71,7 @@ public class CertificateTest {
     @Order(2)
     @DisplayName("Генерация сертификата без авторизации")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void generateCertificateWithoutAuth() {
         ensureOrderNumber();
         String name = faker.name().firstName();
@@ -87,7 +88,7 @@ public class CertificateTest {
     @Order(3)
     @DisplayName("Генерация сертификата с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void generateCertificateInvalidToken() {
         ensureOrderNumber();
         String name = faker.name().firstName();
@@ -104,7 +105,7 @@ public class CertificateTest {
     @Order(4)
     @DisplayName("Генерация сертификата с invalid_order")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void generateCertificateInvalidOrder() {
         ensureOrderNumber();
         String name = faker.name().firstName();
@@ -125,7 +126,7 @@ public class CertificateTest {
     @Order(5)
     @DisplayName("Генерация сертификата пустое значение заказа")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void generateCertificateWithouthOrder() {
         ensureOrderNumber();
         String name = faker.name().firstName();

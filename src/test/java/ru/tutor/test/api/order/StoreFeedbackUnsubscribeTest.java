@@ -15,6 +15,7 @@ import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("Сохранение отзыва при отписке")
@@ -47,8 +48,8 @@ public class StoreFeedbackUnsubscribeTest {
     @Order(1)
     @DisplayName("Успешное сохранение отзыва при отписке")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
-    @Tag("integration")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.INTEGRATION)
     void storeFeedbackSuccess() {
         String orderNumber = step("Получение orderNumber премиума", () ->
                 productsSteps.fetchPremiumOrderNumber(token)
@@ -67,7 +68,7 @@ public class StoreFeedbackUnsubscribeTest {
     @Order(2)
     @DisplayName("Сохранение отзыва без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void storeFeedbackWithoutAuth() {
         Response response = step("POST /user/orders/store-feedback-unsubscribe - без токена", () ->
                 orderSteps.storeFeedbackUnsubscribe("", orderNumber, "Test", 4)
@@ -81,7 +82,7 @@ public class StoreFeedbackUnsubscribeTest {
     @Order(3)
     @DisplayName("Сохранение отзыва с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void storeFeedbackInvalidToken() {
         Response response = step("POST /user/orders/store-feedback-unsubscribe - без токена", () ->
                 orderSteps.storeFeedbackUnsubscribe("invalid_token", orderNumber, "Test", 4)
@@ -95,7 +96,6 @@ public class StoreFeedbackUnsubscribeTest {
     @Order(4)
     @DisplayName("Сохранение отзыва с несуществующим orderNumber")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("edge-case")
     void storeFeedbackInvalidOrderNumber() {
         Response response = step("POST /user/orders/store-feedback-unsubscribe - невалидный orderNumber", () ->
                 orderSteps.storeFeedbackUnsubscribe(token, "258", "Test", 4)
@@ -109,7 +109,7 @@ public class StoreFeedbackUnsubscribeTest {
     @Order(5)
     @DisplayName("Сохранение отзыва с рейтингом за пределами допустимого")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void storeFeedbackInvalidRating() {
         String orderNumber = step("Получение orderNumber премиума", () ->
                 productsSteps.fetchPremiumOrderNumber(token)
@@ -127,7 +127,7 @@ public class StoreFeedbackUnsubscribeTest {
     @Order(6)
     @DisplayName("Сохранение отзыва пользователем без автивной подписки")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void storeFeedbackWithoutActiveSubscription() {
         String newUserToken = step("Регистрация нового пользователя без подписки", () -> {
             RegistrationRequest request = RegistrationRequest.generateRandom();

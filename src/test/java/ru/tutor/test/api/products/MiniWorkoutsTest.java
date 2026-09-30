@@ -11,13 +11,13 @@ import ru.tutor.steps.catalog.ProductsSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("Список продуктов пользователя")
 @Feature("Мини-курсы")
 @DisplayName("Тесты эндпоинта '/user/mini-workouts'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Tag("products")
 public class MiniWorkoutsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -45,7 +45,7 @@ public class MiniWorkoutsTest {
     @DisplayName("GET /user/mini-workouts - валидация элементов списка")
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void validateMiniWorkoutsItems() {
         Response response = step("GET /user/mini-workouts", () ->
                 productsSteps.getMiniWorkouts(token));
@@ -60,7 +60,7 @@ public class MiniWorkoutsTest {
     @DisplayName("GET /user/mini-workouts - без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getMiniWorkoutsWithoutAuth() {
         Response response = step("GET /user/mini-workouts без токена", () ->
                 productsSteps.getMiniWorkouts(""));
@@ -74,7 +74,7 @@ public class MiniWorkoutsTest {
     @DisplayName("GET /user/mini-workouts - невалидный токен")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getMiniWorkoutsInvalidToken() {
         Response response = step("GET /user/mini-workouts невалидный токен", () ->
                 productsSteps.getMiniWorkouts("invalid_token"));

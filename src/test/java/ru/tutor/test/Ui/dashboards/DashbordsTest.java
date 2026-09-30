@@ -131,8 +131,6 @@ public class DashbordsTest extends BaseUiTest {
 //    @Test
     @Order(2)
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("registration")
-    @Tag("onboarding")
     @DisplayName("✅ Регистрация пользователя с полным onboarding процессом со старницы регистрации")
     void userRegistrationWithCompleteOnbordingProcess() {
 

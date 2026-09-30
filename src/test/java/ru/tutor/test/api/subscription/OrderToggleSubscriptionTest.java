@@ -12,6 +12,7 @@ import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -52,7 +53,7 @@ public class OrderToggleSubscriptionTest {
     @DisplayName("Успешное переключение Премиум подписки (Проверка 200 ОК)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void toggleOrderSubscriptionSuccess() {
         Response response = step("POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
                 orderSteps.toggleOrderSubscription(token, TEST_ORDER_ID)
@@ -73,8 +74,7 @@ public class OrderToggleSubscriptionTest {
     @DisplayName("Проверка без авторизации (401)")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag("negative")
-    @Tag("security")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithoutAuthorization() {
         Response response = step("Отправка POST запроса без токена", () ->
                 orderSteps.toggleOrderSubscription("", TEST_ORDER_ID)
@@ -90,7 +90,7 @@ public class OrderToggleSubscriptionTest {
     @DisplayName("Восстановление подписки без авторизации")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void shouldFailWithoutTokenRestorePremium() {
         Response response = step("POST /user/orders/restore-premium - восстановление премиум без авторизации", () ->
                 orderSteps.restorePremium("")
@@ -104,7 +104,7 @@ public class OrderToggleSubscriptionTest {
     @DisplayName("Восстановление подписки с невалидным токеном")
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void shouldFailInvalidTokenRestorePremium() {
         Response response = step("POST /user/orders/restore-premium - восстановление премиум без авторизации", () ->
                 orderSteps.restorePremium("invalid")

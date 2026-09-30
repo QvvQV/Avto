@@ -14,6 +14,7 @@ import java.util.List;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import ru.tutor.constants.Tags;
 
 @ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
@@ -45,7 +46,7 @@ public class DashboardInfoTest {
     @Order(1)
     @DisplayName("GET /user/dashboard/info - успешное получение")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("positive")
+    @Tag(Tags.POSITIVE)
     void getDashboardInfoSuccess() {
         Response response = step("GET /user/dashboard/info", () ->
                 dashboardSteps.getDashboardInfo(token)
@@ -59,7 +60,7 @@ public class DashboardInfoTest {
     @Order(2)
     @DisplayName("GET /user/dashboard/info без авторизации")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getDashboardInfoWithoutAuth() {
         Response response = step("GET /user/dashboard/info без токена", () ->
                 dashboardSteps.getDashboardInfo("")
@@ -73,7 +74,7 @@ public class DashboardInfoTest {
     @Order(3)
     @DisplayName("GET /user/dashboard/info с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
-    @Tag("negative")
+    @Tag(Tags.NEGATIVE)
     void getDashboardInfoInvalidToken() {
         Response response = step("GET /user/dashboard/info без токена", () ->
                 dashboardSteps.getDashboardInfo("invalid")
