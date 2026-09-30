@@ -1,10 +1,8 @@
 package ru.tutor.test.api.user;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.fortune.GameSteps;
 import ru.tutor.steps.account.ProfileSteps;
@@ -14,7 +12,6 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import ru.tutor.constants.Tags;
 
-@ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровая статистика")
 @DisplayName("Тесты эндпоинта /user/game-stats")

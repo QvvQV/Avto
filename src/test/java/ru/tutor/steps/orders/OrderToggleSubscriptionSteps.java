@@ -39,7 +39,7 @@ public class OrderToggleSubscriptionSteps extends BaseApiSteps {
         // Проверяем что ответ - это список
         Object body = response.jsonPath().get("$");
         assertNotNull(body, "Тело ответа не должно быть null");
-        assertTrue(body instanceof List, "Ответ должен быть списком (List)");
+        assertInstanceOf(List.class, body, "Ответ должен быть списком (List)");
 
         // Преобразуем в список
         List<OrderToggleSubscriptionResponse> items = response.jsonPath().getList("$", OrderToggleSubscriptionResponse.class);
@@ -70,7 +70,7 @@ public class OrderToggleSubscriptionSteps extends BaseApiSteps {
 
         StringBuilder analysis = new StringBuilder();
         analysis.append("🔍 АНАЛИЗ ФОРМАТА ОТВЕТА\n");
-        analysis.append("=".repeat(50)).append("\n\n");
+        analysis.repeat("=", 50).append("\n\n");
 
         analysis.append(String.format("Content-Type: %s\n", contentType));
         analysis.append(String.format("Длина ответа: %d символов\n\n", responseBody.length()));

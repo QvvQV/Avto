@@ -1,11 +1,8 @@
 package ru.tutor.test.api.subscription;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import ru.tutor.config.TestConfig;
@@ -14,13 +11,10 @@ import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.ResponseAnalyzer;
 
-import java.util.Locale;
-
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Epic("Аутентификация")
-@ExtendWith(AllureJunit5.class)
 @Feature("Проверка корректности ответа")
 @Story("Проверка кода состояния")
 @DisplayName("📋 Проверки ответов API")
@@ -29,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class LoginResponseTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
-    private static final Faker faker = new Faker(Locale.ENGLISH);
 
     @Test
     @Severity(SeverityLevel.BLOCKER)

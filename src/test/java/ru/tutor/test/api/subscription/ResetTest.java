@@ -1,11 +1,9 @@
 package ru.tutor.test.api.subscription;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +18,6 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Epic("Восстановить Пароль")
-@ExtendWith(AllureJunit5.class)
 @Feature("Функция сброса пароля")
 @Story("Запрос на сброс пароля и его подтверждение")
 @DisplayName("🔐 Тесты сброса пароля")
@@ -182,7 +179,7 @@ public class ResetTest {
     void resetPasswordTwice_RateLimitCheck() {
         String email = "anika.torphy@yahoo.com";
 
-        Response firstResponse = step("Первый запрос сброса пароля", () ->
+        step("Первый запрос сброса пароля", () ->
                 resetSteps.requestPasswordReset(email)
         );
 

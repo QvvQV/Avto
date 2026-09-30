@@ -321,7 +321,7 @@ public class ReactivatePremiumFlow {
             step("редирект на user/main", () ->
                     WaitHelper.waitForUrlContains("/user/main", Duration.ofSeconds(15)));
             step("Фиксация Cloud iframe", () -> {
-                WaitHelper.waitFor(() -> cloudPage.isCloudPaymentFrameVisible(),
+                WaitHelper.waitFor(cloudPage::isCloudPaymentFrameVisible,
                         Duration.ofSeconds(20), "Cloud iframe не появился");
                 assertTrue(cloudPage.isCloudPaymentFrameVisible(), "Cloud iframe не появился");
                 AllureAttachments.attachScreenshot("Cloud iframe (Renewall, /user/main)");

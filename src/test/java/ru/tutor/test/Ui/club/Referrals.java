@@ -29,7 +29,7 @@ import ru.tutor.constants.Tags;
 @Epic("Реферальная цепочка клуба")
 @Feature("Создание цепочки рефералов")
 @DisplayName("🧪 Реферальная цепочка клуба (по этапам)")
-public class Referals extends BaseUiTest {
+public class Referrals extends BaseUiTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private static final int PARENT_EXPECTED_BALANCE = 3300;

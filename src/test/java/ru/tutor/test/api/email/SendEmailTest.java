@@ -3,11 +3,9 @@ package ru.tutor.test.api.email;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.steps.catalog.SendEmailSteps;
 import ru.tutor.config.TestConfig;
 
@@ -15,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Epic("Отправка писем")
 @Story("Отправка письма")
-@ExtendWith(AllureJunit5.class)
 public class SendEmailTest {
     private final SendEmailSteps sendEmailSteps = new SendEmailSteps(TestConfig.getCurrentApiUrl());
 

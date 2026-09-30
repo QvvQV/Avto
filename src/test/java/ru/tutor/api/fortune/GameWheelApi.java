@@ -3,8 +3,6 @@ package ru.tutor.api.fortune;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
-import static io.restassured.RestAssured.given;
-
 import ru.tutor.base.BaseApi;
 import ru.tutor.constants.EndpointsFortune;
 

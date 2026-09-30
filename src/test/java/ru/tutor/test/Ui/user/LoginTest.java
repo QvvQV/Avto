@@ -53,7 +53,7 @@ public class LoginTest extends BaseUiTest {
     @Test
     @Order(2)
     @DisplayName("Текст ошибки при некорректном логине")
-    public void showTextErrorFromNotСorrectLogin() {
+    public void showTextErrorFromNotCorrectLogin() {
         registration.notCorrectEmail();
         registration.validPass();
         step("Кликаем по кнопке Войти", registration::clickBtnLogin);
@@ -66,7 +66,7 @@ public class LoginTest extends BaseUiTest {
 
 //    @Test
 
-    @DisplayName("открытие стр Recover - восстановление пароля")
+    @DisplayName("Открытие стр Recover - восстановление пароля")
     public void OpenPageRecover() {
         registration.clickRecoverPass();
         step("Проверяем текст Заголовка на стр восстановить пароль", () ->
@@ -77,7 +77,7 @@ public class LoginTest extends BaseUiTest {
 
     @Test
     @Order(3)
-    @DisplayName("текст ошибки при пустом поле на стр Восстановить пароль")
+    @DisplayName("Текст ошибки при пустом поле на стр Восстановить пароль")
     public void showTextErrorFromRecoverPass() {
         registration.clickRecoverPass();
         registration.clickBtnRecover();

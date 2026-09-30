@@ -1,5 +1,6 @@
 package ru.tutor.flow.tariff;
 
+import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.config.TestConfig;
@@ -19,7 +20,6 @@ import ru.tutor.utils.WaitHelper;
 import java.time.Duration;
 import java.util.Locale;
 
-import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.refresh;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -88,7 +88,7 @@ public class Premium99Flow {
         accountSteps.validateEditDataSuccess(
                 accountSteps.editUserData(token,
                         new UserEditDataRequest().name(faker.name().name()).gender(0).email(email)));
-        step("Обновление страницы", () -> refresh());
+        step("Обновление страницы", Selenide::refresh);
         return token;
     }
 

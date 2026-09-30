@@ -23,7 +23,6 @@ import ru.tutor.steps.admin.AdminSteps;
 import ru.tutor.steps.orders.OrderSteps;
 import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 
-import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import ru.tutor.constants.Tags;

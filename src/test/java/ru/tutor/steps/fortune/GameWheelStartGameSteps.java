@@ -199,13 +199,13 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
     @Step("Генерация детального отчета о выигранном призе")
     public void generateDetailedPrizeReport(GameWheelStartGameResponse prize) {
         StringBuilder report = new StringBuilder();
-        report.append("=".repeat(70)).append("\n");
+        report.repeat("=", 70).append("\n");
         report.append("🎡 ДЕТАЛЬНЫЙ ОТЧЕТ О ВЫИГРАННОМ ПРИЗЕ\n");
-        report.append("=".repeat(70)).append("\n\n");
+        report.repeat("=", 70).append("\n\n");
 
         // Основная информация
         report.append("📋 ОСНОВНАЯ ИНФОРМАЦИЯ:\n");
-        report.append("-".repeat(40)).append("\n");
+        report.repeat("-", 40).append("\n");
         report.append(String.format("🎁 ID приза:          %d\n", prize.getId()));
         report.append(String.format("📛 Название:          %s\n", prize.getName()));
         report.append(String.format("🏷️ Тип:               %s\n", prize.getType()));
@@ -222,7 +222,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
 
         // URL иконок
         report.append("\n🖼️ ИКОНКИ:\n");
-        report.append("-".repeat(40)).append("\n");
+        report.repeat("-", 40).append("\n");
         report.append(String.format("Маленькая иконка:    %s\n",
                 prize.getIconSmallUrl() != null ? prize.getIconSmallUrl() : "Не указана"));
         report.append(String.format("Полная иконка:       %s\n",
@@ -233,7 +233,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
                 GameWheelRewardsConstants.ExpectedStartGamePrize.getExpectedStartGamePrizeById(prize.getId());
 
         report.append("\n📊 СРАВНЕНИЕ С ЭТАЛОНОМ:\n");
-        report.append("-".repeat(40)).append("\n");
+        report.repeat("-", 40).append("\n");
 
         if (expectedPrize != null) {
             boolean nameMatch = expectedPrize.name().equals(prize.getName());
@@ -267,7 +267,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
             report.append("Рекомендуется добавить его в константы\n");
         }
 
-        report.append("\n").append("=".repeat(70)).append("\n");
+        report.append("\n").repeat("=", 70).append("\n");
 
         Allure.addAttachment("Детальный отчет о призе", "text/plain", report.toString());
     }
@@ -276,7 +276,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
     public void generateValidationSummary(PrizeValidationResult result, GameWheelStartGameResponse prize) {
         StringBuilder summary = new StringBuilder();
         summary.append("🎲 КРАТКИЙ ОТЧЕТ О ВАЛИДАЦИИ ПРИЗА\n");
-        summary.append("-".repeat(50)).append("\n");
+        summary.repeat("-", 50).append("\n");
 
         summary.append(String.format("Приз: %s (ID: %d)\n", prize.getName(), prize.getId()));
         summary.append(String.format("Статус: %s\n", result.getStatus().getDisplayName()));
@@ -311,7 +311,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
     private void generatePrizeValidationReport(PrizeValidationResult result, GameWheelStartGameResponse prize) {
         StringBuilder report = new StringBuilder();
         report.append("📋 ОТЧЕТ О ВАЛИДАЦИИ ПРИЗА\n");
-        report.append("-".repeat(50)).append("\n");
+        report.repeat("-", 50).append("\n");
 
         report.append(String.format("ID приза: %d\n", prize.getId()));
         report.append(String.format("Название: %s\n", prize.getName()));
@@ -450,7 +450,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
 
         StringBuilder summary = new StringBuilder();
         summary.append("📊 СВОДНЫЙ ОТЧЕТ ПО ").append(prizes.size()).append(" ЗАПУСКАМ\n");
-        summary.append("=".repeat(60)).append("\n\n");
+        summary.repeat("=", 60).append("\n\n");
 
         // Статистика по типам призов
         Map<String, Integer> typeStats = new HashMap<>();
@@ -462,7 +462,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
         }
 
         summary.append("СТАТИСТИКА ПО ТИПАМ ПРИЗОВ:\n");
-        summary.append("-".repeat(40)).append("\n");
+        summary.repeat("-", 40).append("\n");
         typeStats.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .forEach(entry -> {
@@ -472,7 +472,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
                 });
 
         summary.append("\nСТАТИСТИКА ПО КОНКРЕТНЫМ ПРИЗАМ:\n");
-        summary.append("-".repeat(40)).append("\n");
+        summary.repeat("-", 40).append("\n");
         prizeIdStats.entrySet().stream()
                 .sorted(Map.Entry.<Long, Integer>comparingByValue().reversed())
                 .limit(10) // Топ-10 самых частых призов
@@ -497,7 +497,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
                 .collect(Collectors.toSet());
 
         summary.append("\nПРОВЕРКА УНИКАЛЬНОСТИ:\n");
-        summary.append("-".repeat(40)).append("\n");
+        summary.repeat("-", 40).append("\n");
         summary.append(String.format("Всего userRewardId: %d\n", prizes.size()));
         summary.append(String.format("Уникальных: %d\n", uniqueUserRewardIds.size()));
         summary.append(String.format("Дубликатов: %d\n", prizes.size() - uniqueUserRewardIds.size()));

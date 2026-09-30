@@ -3,11 +3,9 @@ package ru.tutor.test.api.email;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.api.orders.PaymentApi;
 import ru.tutor.config.TestConfig;
@@ -22,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @Epic("Email Validation")
-@ExtendWith(AllureJunit5.class)
 @Feature("Order Creation Email Validation")
 @DisplayName("Тесты валидации email при создании заказа")
 public class EmailValidationApiTest {

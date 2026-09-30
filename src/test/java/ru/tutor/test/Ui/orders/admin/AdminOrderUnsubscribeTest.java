@@ -33,9 +33,7 @@ public class AdminOrderUnsubscribeTest extends BaseUiTest {
     private final SberPage sberPage = new SberPage();
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
     private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
-    private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
 
-    private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
     private final AdminPaymentFlow adminPaymentFlow = new AdminPaymentFlow(purchaseFlow, cloudPage, adminSteps);
 
     @Test

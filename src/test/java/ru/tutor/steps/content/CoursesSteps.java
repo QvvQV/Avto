@@ -34,7 +34,7 @@ public class CoursesSteps extends BaseApiSteps {
     @Step("GET /user/courses/{productId} - информация о курсе")
     public Response getCourseById(String authToken, int productId){
         return coursesApi.getCourseById(authToken, productId);
-    };
+    }
 
     @Step("GET /user/courses/{productId}/reviews - отзывы курса")
     public Response getCourseReviews(String authToken, int productId){

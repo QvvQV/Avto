@@ -431,18 +431,14 @@ public class OrderSteps extends BaseApiSteps {
 
         sleep(5000);
 
-        step("Проверка статуса заказа", () -> {
-            orderSteps.validateOrderStatusResponse(
-                    orderSteps.getOrderStatus(credentials.orderNumber)
-            );
-        });
+        step("Проверка статуса заказа", () -> orderSteps.validateOrderStatusResponse(
+                orderSteps.getOrderStatus(credentials.orderNumber)
+        ));
 
-        step("Валидация успешного ответа", () -> {
-            orderSteps.validateOrderSuccessResponse(
-                    orderSteps.getOrderSuccess(credentials.orderNumber),
-                    credentials.orderNumber, credentials.loginToken, credentials.password
-            );
-        });
+        step("Валидация успешного ответа", () -> orderSteps.validateOrderSuccessResponse(
+                orderSteps.getOrderSuccess(credentials.orderNumber),
+                credentials.orderNumber, credentials.loginToken, credentials.password
+        ));
         return credentials;
     }
 
@@ -450,14 +446,14 @@ public class OrderSteps extends BaseApiSteps {
 
     @Step("Извлечение данных оплаты из страницы успеха: loginToken, password, orderNumber")
     public static PaymentCredentials extractPaymentCredentials(CloudPage cloudPage) {
-        OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
+        new OrderSteps(TestConfig.getCurrentApiUrl());
 
         String href = cloudPage.verifySuccessProfilePage();
-        String orderNumber = orderSteps.extractOrderNumberFromUrl(
+        String orderNumber = extractOrderNumberFromUrl(
                 com.codeborne.selenide.WebDriverRunner.getWebDriver().getCurrentUrl()
         );
-        String loginToken = orderSteps.extractQueryParam(href, "loginToken");
-        String password = orderSteps.extractQueryParam(href, "password");
+        String loginToken = extractQueryParam(href, "loginToken");
+        String password = extractQueryParam(href, "password");
 
         return new PaymentCredentials(loginToken, password, orderNumber);
     }

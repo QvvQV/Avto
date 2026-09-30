@@ -54,7 +54,7 @@ public class RenewalModalFlow {
     private final RevshareFlow revshareFlow;
     private final OrderToggleSubscriptionSteps orderToggleSubscriptionSteps;
 
-    private Faker faker = new Faker(Locale.ENGLISH);
+    private final Faker faker = new Faker(Locale.ENGLISH);
     private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
     private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
 
@@ -79,8 +79,7 @@ public class RenewalModalFlow {
     @Step("Логин Реневалла в ЛК prod")
     public RenewalModalFlow login() {
         if(TestConfig.isProd()) {
-            step("Создание свежего заказа по тестовому домену", () ->
-                    revshareFlow.executeProd());
+            step("Создание свежего заказа по тестовому домену", revshareFlow::executeProd);
             userEmail = cloudPage.getCurrentEmail();
         } else {
             step("Создание заказа Лайт", () -> {
@@ -159,15 +158,14 @@ public class RenewalModalFlow {
                 WaitHelper.waitForUrlContains("/user/main", Duration.ofSeconds(20)));
         if (TestConfig.isProd()) {
             step("Фиксация Cloud iframe", () -> {
-                WaitHelper.waitFor(() -> cloudPage.isCloudPaymentFrameVisible(),
+                WaitHelper.waitFor(cloudPage::isCloudPaymentFrameVisible,
                         Duration.ofSeconds(30), "Cloud iframe не появился");
                 assertTrue(cloudPage.isCloudPaymentFrameVisible(), "Cloud iframe не появился");
                 AllureAttachments.attachScreenshot("Cloud iframe (99 руб, /user/main)");
             });
 
         } else {
-            step("Продление оплаты (dev)", () ->
-                    cloudPage.clickCardPageBtn());
+            step("Продление оплаты (dev)", cloudPage::clickCardPageBtn);
             AllureAttachments.attachScreenshot("Оплата 99 руб (dev, /user/main)");
         }
         return this;
@@ -193,8 +191,8 @@ public class RenewalModalFlow {
     public void logoutAfterTest() {
         step("Чистка окружения", () -> {
             FrameHelper.switchToDefaultContent();
-            clearBrowserCookies();
-            clearBrowserLocalStorage();
+            cookies().clear();
+            localStorage().clear();
             refresh();
             WaitHelper.waitForPageLoad();
         });

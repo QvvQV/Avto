@@ -27,7 +27,7 @@ public class CardioLandingFlow {
 
     private void primeCardioDomain() {
         Response response = step("GET /domain?aff_rid=" + TestConfig.getAffRid(),
-                () -> paymentApi.getDomain()
+                paymentApi::getDomain
         );
         paymentSteps.assertPaymentSystems(response, "paymentButtons.name");
         paymentSteps.assertModalVersion(response);

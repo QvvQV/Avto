@@ -92,7 +92,7 @@ public class PremiumWelcomeBackFlow {
             ttPage.selectSubscription(target);
         });
         step("Ввод email клиента", () -> cloudPage.submitEmail(email));
-        step("Ожидание модалки «Рады вновь вас видеть»", () -> welcomeBackModal.assertWelcomeBackModal());
+        step("Ожидание модалки «Рады вновь вас видеть»", welcomeBackModal::assertWelcomeBackModal);
     }
 
     @Step("Покупка Пожизненного по существующему email {email}: модалку не показываем, старые заказы status=2")
@@ -104,7 +104,7 @@ public class PremiumWelcomeBackFlow {
         });
         step("Ввод email клиента", () -> cloudPage.submitEmail(email));
         step("Модалка «Рады вновь вас видеть» не должна появиться",
-                () -> welcomeBackModal.assertWelcomeBackModalNotShow());
+                welcomeBackModal::assertWelcomeBackModalNotShow);
         step("Оплата Пожизненного Cloud-картой", () -> {
             cloudPage.clickCardPageBtn();
             OrderSteps.validateSuccessfulPayment(cloudPage);

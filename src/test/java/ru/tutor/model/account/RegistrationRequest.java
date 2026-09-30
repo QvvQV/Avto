@@ -254,7 +254,7 @@ public class RegistrationRequest {
                 Objects.equals(password, that.password) &&
                 Objects.equals(telegram, that.telegram) &&
                 Objects.equals(approvePolicy, that.approvePolicy) &&
-                gender == that.gender;
+                Objects.equals(gender, that.gender);
     }
 
     @Override

@@ -1,17 +1,17 @@
 package ru.tutor.model.order;
 
 public class RefundTicketRequest {
-    private String firstname;
-    private String lastname;
-    private String passport;
-    private String patronymic;
-    private String email;
-    private String card;
-    private String bank;
-    private String paymentDate;
-    private int paymentAmount;
-    private String viewedCourses;
-    private String refundReason;
+    private final String firstname;
+    private final String lastname;
+    private final String passport;
+    private final String patronymic;
+    private final String email;
+    private final String card;
+    private final String bank;
+    private final String paymentDate;
+    private final int paymentAmount;
+    private final String viewedCourses;
+    private final String refundReason;
 
     public RefundTicketRequest(
             String firstname, String lastname, String passport,

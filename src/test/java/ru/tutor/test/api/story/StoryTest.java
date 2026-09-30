@@ -2,10 +2,8 @@ package ru.tutor.test.api.story;
 
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.content.StoriesSteps;
@@ -18,7 +16,6 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import ru.tutor.constants.Tags;
 
-@ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Сторис/Баннер/Тутс")
 @DisplayName("Тесты эндпоинта Сторис/Баннер/Тутс")
@@ -632,7 +629,7 @@ public class StoryTest {
             List<Map<String, Object>> items = feedResponse.jsonPath().getList("items");
             assertNotNull(items, "Список items не должен быть null");
             assertFalse(items.isEmpty(), "Список items не должен быть пуст");
-            String s =(String) items.get(0).get("slug");
+            String s =(String) items.getFirst().get("slug");
             assertNotNull(s, "slug не должен быть null");
             return s;
         });

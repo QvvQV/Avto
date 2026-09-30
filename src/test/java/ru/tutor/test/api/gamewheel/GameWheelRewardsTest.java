@@ -1,10 +1,8 @@
 package ru.tutor.test.api.gamewheel;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.steps.account.AuthSteps;
@@ -17,7 +15,6 @@ import static io.qameta.allure.Allure.step;
 import ru.tutor.constants.Tags;
 
 @Tag(Tags.API)
-@ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
 @DisplayName("Тесты эндпоинта игрового колеса")

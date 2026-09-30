@@ -1,10 +1,8 @@
 package ru.tutor.test.api.products;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.catalog.ProductsResponse;
 import ru.tutor.steps.account.AuthSteps;
@@ -16,7 +14,6 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 import ru.tutor.constants.Tags;
 
-@ExtendWith(AllureJunit5.class)
 @Epic("Список продуктов пользователя")
 @Feature("Продукты пользователя")
 @DisplayName("Тесты эндпоинта '/user/products'")

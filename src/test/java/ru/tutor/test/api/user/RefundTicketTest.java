@@ -1,11 +1,9 @@
 package ru.tutor.test.api.user;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.order.RefundTicketRequest;
 import ru.tutor.steps.account.AuthSteps;
@@ -17,7 +15,6 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import ru.tutor.constants.Tags;
 
-@ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Заявки на возврат")
 @DisplayName("Тесты эндпоинта создания заявки на возврат")
@@ -83,8 +80,7 @@ public class RefundTicketTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void createRefundTicketSuccess() {
-        RefundTicketRequest request =step("Подготовка тела запроса", () ->
-                createRefundRequest()
+        RefundTicketRequest request =step("Подготовка тела запроса", this::createRefundRequest
         );
 
         Response response = step("POST /user/refund-tickets/create", () ->

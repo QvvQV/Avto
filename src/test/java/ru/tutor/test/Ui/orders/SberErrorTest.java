@@ -29,14 +29,12 @@ public class SberErrorTest extends BaseUiTest {
         SelenideLogger.removeListener("AllureSelenide");
     }
 
-    private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();
     private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
     private final TtPage ttPage = new TtPage();
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
 
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
-    private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
 
     @Test
     @Severity(SeverityLevel.NORMAL)

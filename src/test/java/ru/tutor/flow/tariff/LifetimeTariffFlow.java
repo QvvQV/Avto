@@ -21,7 +21,6 @@ import ru.tutor.utils.WaitHelper;
 import java.time.Duration;
 import java.util.Locale;
 
-import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

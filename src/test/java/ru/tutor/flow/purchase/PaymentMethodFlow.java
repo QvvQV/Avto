@@ -38,7 +38,7 @@ public class PaymentMethodFlow {
 
     private void primeAvailablePaymentSystem() {
         Response response = step("GET /available-payment-systems?aff_rid=" + TestConfig.getAffRid(),
-                () -> paymentApi.getAvailablePaymentSystems()
+                paymentApi::getAvailablePaymentSystems
         );
         paymentSteps.assertPaymentSystems(response, "buttons.name");
         paymentSteps.assertModalVersion(response);

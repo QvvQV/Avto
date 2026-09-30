@@ -1,11 +1,9 @@
 package ru.tutor.test.api.user;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.config.TestConfig;
@@ -21,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import ru.tutor.constants.Tags;
 
 
-@ExtendWith(AllureJunit5.class)
 @Epic("API Тесты аутентификации")
 @Feature("Регистрация пользователей")
 @DisplayName("тесты эндпоинта /register")
@@ -36,10 +33,7 @@ public class RegistrationTest {
     private final Faker faker = new Faker(Locale.ENGLISH);
 
     private static final String TEST_PASSWORD = TestConfig.getTestPassword();
-    private static final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_FIRST_NAME = faker.name().fullName();
-
-    private static String registeredEmail;
 
     @Test
     @Order(1)
@@ -67,7 +61,7 @@ public class RegistrationTest {
 
             assertTrue(registrationResponse.isSuccessful(), "Регистрация должна быть успешной");
 
-            registeredEmail = request.getEmail();
+            String registeredEmail = request.getEmail();
 
             Allure.addAttachment("Результат", "text/plain",
                     String.format("""

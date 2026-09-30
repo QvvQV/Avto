@@ -198,7 +198,7 @@ public class UserRewardSteps extends BaseApiSteps {
         StringBuilder report = new StringBuilder();
 
         report.append("🎁 ОТЧЕТ О НАГРАДАХ ПОЛЬЗОВАТЕЛЯ\n");
-        report.append("=".repeat(70)).append("\n\n");
+        report.repeat("=", 70).append("\n\n");
 
         // Статистика по типам наград
         Map<String, Long> typeStatistics = userRewards.stream()
@@ -209,7 +209,7 @@ public class UserRewardSteps extends BaseApiSteps {
                         Collectors.summingInt(UserRewardResponse::rewardValue)));
 
         report.append("📊 СТАТИСТИКА ПО ТИПАМ:\n");
-        report.append("-".repeat(40)).append("\n");
+        report.repeat("-", 40).append("\n");
         typeStatistics.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .forEach(entry -> {
@@ -222,10 +222,10 @@ public class UserRewardSteps extends BaseApiSteps {
 
         // Сводная таблица всех наград
         report.append("\n📋 СПИСОК ВСЕХ НАГРАД:\n");
-        report.append("-".repeat(90)).append("\n");
+        report.repeat("-", 90).append("\n");
         report.append(String.format("%-8s | %-30s | %-12s | %-10s | %-12s | %s\n",
                 "ID", "Название", "Тип", "Значение", "Истекает", "Показ. знач."));
-        report.append("-".repeat(90)).append("\n");
+        report.repeat("-", 90).append("\n");
 
         userRewards.stream()
                 .sorted(Comparator.comparing(UserRewardResponse::id).reversed())
@@ -249,7 +249,7 @@ public class UserRewardSteps extends BaseApiSteps {
                             showValue));
                 });
 
-        report.append("-".repeat(90)).append("\n");
+        report.repeat("-", 90).append("\n");
         report.append(String.format("Всего наград: %d\n", userRewards.size()));
 
         // Информация о ближайших истечениях

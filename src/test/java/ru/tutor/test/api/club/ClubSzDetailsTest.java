@@ -2,9 +2,7 @@ package ru.tutor.test.api.club;
 
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.club.ClubDetailsFlow;
 import ru.tutor.flow.club.TestDataFlow;
@@ -14,7 +12,6 @@ import ru.tutor.steps.account.AuthSteps;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Детали самозанятого")
 @DisplayName("Тесты эндпоинта Клуба: /user/club/sz-details + /user/club/details")
@@ -27,7 +24,7 @@ public class ClubSzDetailsTest {
     private static final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     // ==================== ПОЛЯ ====================
-    private AuthSteps authSteps = new AuthSteps(BASE_URL);
+    private final AuthSteps authSteps = new AuthSteps(BASE_URL);
     private ClubDetailsFlow clubFlow;
     private TestDataFlow testDataFlow;
     private UserProfile profile;

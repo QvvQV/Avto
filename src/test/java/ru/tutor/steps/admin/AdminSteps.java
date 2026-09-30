@@ -65,8 +65,7 @@ public class AdminSteps extends BaseApiSteps {
         assertSuccessStatusCode(put);
         Response order = adminApi.getOrder(adminToken, orderId);
         String status = order.jsonPath().getString("status");
-        assertFalse("Активный".equals(status),
-                "После extend-access(" + days + ") заказ " + orderId + " должен стать неактивным, но status=" + status);
+        assertNotEquals("Активный", status, "После extend-access(" + days + ") заказ " + orderId + " должен стать неактивным, но status=" + status);
         AllureAttachments.attachText("Статус заказа после деактивации", status);
     }
 
@@ -114,8 +113,7 @@ public class AdminSteps extends BaseApiSteps {
         assertSuccessStatusCode(resp);
         AllureAttachments.attachJson("Admin unsubscribe", resp.getBody().asString());
         Object body = resp.jsonPath().get("$");
-        assertTrue(body instanceof List,
-                "Ответ должен быть списком ([]), но тело: " + resp.getBody().asString());
+        assertInstanceOf(List.class, body, "Ответ должен быть списком ([]), но тело: " + resp.getBody().asString());
         return resp;
     }
 
@@ -173,8 +171,7 @@ public class AdminSteps extends BaseApiSteps {
         assertSuccessStatusCode(resp);
         AllureAttachments.attachJson("Admin refund", resp.getBody().asString());
         Object body = resp.jsonPath().get("$");
-        assertTrue(body instanceof List,
-                "Ответ должен быть список ([]), но тело: " + resp.getBody().asString());
+        assertInstanceOf(List.class, body, "Ответ должен быть список ([]), но тело: " + resp.getBody().asString());
         return resp;
     }
 
@@ -249,8 +246,7 @@ assertEquals(204, resp.getStatusCode(),
         assertEquals(201, resp.getStatusCode(), "Ожидался статус 201, получен: " + resp.getStatusCode());
         AllureAttachments.attachJson("Admin withdrawal", resp.getBody().asString());
         Object body = resp.jsonPath().get("$");
-        assertTrue(body instanceof List,
-                "Ответ должен быть список ([]), но тело: " + resp.getBody().asString());
+        assertInstanceOf(List.class, body, "Ответ должен быть список ([]), но тело: " + resp.getBody().asString());
         return resp;
     }
 

@@ -1,10 +1,8 @@
 package ru.tutor.test.api.story;
 
 import io.qameta.allure.*;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.content.VideoSteps;
@@ -13,7 +11,6 @@ import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import ru.tutor.constants.Tags;
 
-@ExtendWith(AllureJunit5.class)
 @Epic("API Тесты пользователя")
 @Feature("Видео-подкасты")
 @DisplayName("Тесты эндпоинтов видео")

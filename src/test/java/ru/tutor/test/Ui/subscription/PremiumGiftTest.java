@@ -12,6 +12,7 @@ import ru.tutor.flow.tariff.ReactivatePremiumFlow;
 import ru.tutor.steps.orders.OrderPremiumGiftSteps;
 
 import static io.qameta.allure.Allure.step;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import ru.tutor.constants.Tags;
 
@@ -23,7 +24,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private ReactivatePremiumFlow reactivateFlow;
-    private OrderPremiumGiftSteps orderPremiumGift = new OrderPremiumGiftSteps(BASE_URL);
+    private final OrderPremiumGiftSteps orderPremiumGift = new OrderPremiumGiftSteps(BASE_URL);
 
 
     @Override
@@ -58,7 +59,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
 
         step("Проверка ошибки авторизации", ()-> {
             int statusCode = response.getStatusCode();
-            assertTrue(statusCode == 401, "Должен вернуть 401. Получен: " + statusCode);
+            assertEquals(401, statusCode, "Должен вернуть 401. Получен: " + statusCode);
         });
     }
 
@@ -75,7 +76,7 @@ public class PremiumGiftTest extends RecurrentPaymentTestBase {
 
         step("Проверка ошибки авторизации", ()-> {
             int statusCode = response.getStatusCode();
-            assertTrue(statusCode == 401, "Должен вернуть 401. Получен: " + statusCode);
+            assertEquals(401, statusCode, "Должен вернуть 401. Получен: " + statusCode);
         });
     }
 

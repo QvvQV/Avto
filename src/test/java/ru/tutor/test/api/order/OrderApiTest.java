@@ -3,7 +3,6 @@ package ru.tutor.test.api.order;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
-import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -11,7 +10,6 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.utils.AllureAttachments;
 
@@ -25,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // Получение токен для авторов TP-5735 Регистрация для авторов. Ленд - https://authors.tutorplace.ru/
 @Epic("API Tests")
-@ExtendWith(AllureJunit5.class)
 @Feature("Создание заказа")
 @DisplayName("Тесты для эндпоинта создания заказа")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
