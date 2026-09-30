@@ -2,7 +2,7 @@ package ru.tutor.api.dashboards;
 
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApi;
-import ru.tutor.constants.ApiEndpoints;
+import ru.tutor.constants.EndpointsDashboards;
 
 /** Работа с курсом/продуктом */
 
@@ -16,7 +16,7 @@ public class DashboardsAllApi extends BaseApi {
      * GET /user/dashboard/ingo - получение списка приложений
      */
     public Response dashboardInfo(String authToken) {
-        return getWithToken(ApiEndpoints.USER_DASHBOARD_INFO , authToken);
+        return getWithToken(EndpointsDashboards.USER_DASHBOARD_INFO , authToken);
     }
 
 }

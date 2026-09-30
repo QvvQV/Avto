@@ -2,13 +2,11 @@ package ru.tutor.steps.fortune;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import ru.tutor.api.GameWheelApi;
-import io.restassured.http.ContentType;
+import ru.tutor.api.fortune.GameWheelApi;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.constants.GameWheelRewardsConstants;
 import ru.tutor.model.fortune.GameWheelStartGameResponse;
-import ru.tutor.model.fortune.RewardOpenResponse;
 import ru.tutor.model.fortune.UserRewardResponse;
 
 import java.time.LocalDate;

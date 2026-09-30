@@ -7,9 +7,9 @@ import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.UserEditDataRequest;
-import ru.tutor.steps.AccountSteps;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.model.account.UserEditDataRequest;
+import ru.tutor.steps.account.AccountSteps;
+import ru.tutor.steps.account.AuthSteps;
 
 import java.util.Locale;
 

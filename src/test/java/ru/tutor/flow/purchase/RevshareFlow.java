@@ -3,7 +3,7 @@ package ru.tutor.flow.purchase;
 import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.orders.CloudPage;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.orders.OrderSteps;
 
 import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;

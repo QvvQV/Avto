@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.steps.SendEmailSteps;
+import ru.tutor.steps.catalog.SendEmailSteps;
 import ru.tutor.config.TestConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

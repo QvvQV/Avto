@@ -3,10 +3,10 @@ package ru.tutor.flow.landing;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import ru.tutor.api.PaymentApi;
+import ru.tutor.api.orders.PaymentApi;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.landing.CardioLandingPage;
-import ru.tutor.steps.PaymentSteps;
+import ru.tutor.steps.orders.PaymentSteps;
 import ru.tutor.utils.AllureAttachments;
 
 import static io.qameta.allure.Allure.step;

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.OrderToggleSubscriptionSteps;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 
 import static io.qameta.allure.Allure.step;

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.tariff.ReactivatePremiumFlow;
-import ru.tutor.steps.OrderPremiumGiftSteps;
+import ru.tutor.steps.orders.OrderPremiumGiftSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;

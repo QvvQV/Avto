@@ -7,9 +7,9 @@ import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.RefundTicketRequest;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.model.order.RefundTicketRequest;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.orders.OrderSteps;
 
 import java.util.Locale;
 

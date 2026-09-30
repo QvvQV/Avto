@@ -3,14 +3,14 @@ package ru.tutor.flow.purchase;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import ru.tutor.api.PaymentApi;
+import ru.tutor.api.orders.PaymentApi;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.OrderSteps;
-import ru.tutor.steps.PaymentSteps;
+import ru.tutor.steps.orders.OrderSteps;
+import ru.tutor.steps.orders.PaymentSteps;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 

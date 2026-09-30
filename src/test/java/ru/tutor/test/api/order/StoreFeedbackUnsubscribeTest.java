@@ -3,12 +3,15 @@ package ru.tutor.test.api.order;
 import io.qameta.allure.*;
 import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.RegistrationRequest;
-import ru.tutor.steps.*;
+import ru.tutor.model.account.RegistrationRequest;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.account.RegistrationSteps;
+import ru.tutor.steps.catalog.ProductsSteps;
+import ru.tutor.steps.content.CertificateSteps;
+import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;

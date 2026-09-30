@@ -4,8 +4,8 @@ import io.qameta.allure.Step;
 import ru.tutor.flow.purchase.PurchaseFlow;
 import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.page.orders.CloudPage;
-import ru.tutor.steps.AdminSteps;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.admin.AdminSteps;
+import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

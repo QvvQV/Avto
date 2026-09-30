@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.LoginResponse;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.model.account.LoginResponse;
+import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.ResponseAnalyzer;
 

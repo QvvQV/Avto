@@ -9,10 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.RegistrationRequest;
-import ru.tutor.model.RegistrationResponse;
-import ru.tutor.steps.ProfileSteps;
-import ru.tutor.steps.RegistrationSteps;
+import ru.tutor.model.account.RegistrationRequest;
+import ru.tutor.model.account.RegistrationResponse;
+import ru.tutor.steps.account.ProfileSteps;
+import ru.tutor.steps.account.RegistrationSteps;
 
 import java.util.Locale;
 

@@ -4,7 +4,7 @@ import io.qameta.allure.AllureId;
 import io.qameta.allure.junit5.AllureJunit5;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.steps.PageSteps;
+import ru.tutor.steps.catalog.PageSteps;
 import ru.tutor.config.TestConfig;
 
 import java.util.List;

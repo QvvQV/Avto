@@ -8,12 +8,9 @@ import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import ru.tutor.api.PaymentApi;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.OrderSteps;
-
-import java.util.List;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;

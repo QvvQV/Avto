@@ -17,7 +17,11 @@ import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.*;
+import ru.tutor.steps.account.AccountSteps;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.admin.AdminSteps;
+import ru.tutor.steps.orders.OrderSteps;
+import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,6 +77,7 @@ public class CloudTest extends BaseUiTest {
     @Test
     @Order(1)
 //        @RepeatedTest(10)
+    @Tag("E2E")
     @DisplayName("Оплата с главной за 399 руб")
     public void PayMain399() {
         if (TestConfig.isProd()) {
@@ -88,6 +93,7 @@ public class CloudTest extends BaseUiTest {
     @Test
     @Order(2)
 //    @RepeatedTest(10)
+    @Tag("E2E")
     @DisplayName("Оплата с главной за 99 руб")
     public void PayMain99() {
         if (TestConfig.isProd()) {
@@ -102,6 +108,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(3)
+    @Tag("E2E")
     @DisplayName("Оплата с главной за Пожизненный")
     public void PayMainLife() {
         if (TestConfig.isProd()) {
@@ -117,6 +124,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(4)
+    @Tag("E2E")
     @DisplayName("Оплата Долями с главной за Пожизненный Cloud")
     public void PayMainLifeInstallments() {
         if (TestConfig.isProd()) {
@@ -131,6 +139,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(5)
+    @Tag("E2E")
     @DisplayName("Оплата 'Плати частями' через Sber")
     public void PayInstallmentsPartsSber() {
         if (TestConfig.isProd()) {
@@ -144,6 +153,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(6)
+    @Tag("E2E")
     @DisplayName("Оплата по тестовому домену")
     public void PayFromTesterProd() {
         assumeTrue(TestConfig.isProd(),
@@ -153,6 +163,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(7)
+    @Tag("E2E")
     @DisplayName("Сокращение доступа через админку и оплата lifetime-тарифа (POST pay-lifetime-tariff)")
     public void ExtendAccessAndPayLifetimeTariff() {
         if (TestConfig.isProd()) {
@@ -164,6 +175,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(8)
+    @Tag("E2E")
     @DisplayName("Сокращение доступа через админку и оплата RENEWAL-тарифа")
     public void ExtendAccessAndPayRenewal() {
         if (TestConfig.isProd()) {
@@ -175,6 +187,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(9)
+    @Tag("E2E")
     @DisplayName("Премиум 99₽: заказ Лайт → подписка API (623,625) → Cloud → продукт 264")
     public void Premium99FromHotNovelties() {
         if (TestConfig.isProd()) {
@@ -186,6 +199,7 @@ public class CloudTest extends BaseUiTest {
 
     @Test
     @Order(10)
+    @Tag("E2E")
     @DisplayName("Регистрация нового пользователя → вход → приветственная форма → клик на первый курс")
     @Severity(SeverityLevel.CRITICAL)
     void registerUserAndOpenFirstCourse() {

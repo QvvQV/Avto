@@ -12,10 +12,10 @@ import ru.tutor.model.admin.PaymentType;
 import ru.tutor.model.club.ClubLinkResponse;
 import ru.tutor.model.club.ClubPayoutRequisitesRequest;
 import ru.tutor.page.orders.CloudPage;
-import ru.tutor.steps.AccountSteps;
-import ru.tutor.steps.AdminSteps;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.account.AccountSteps;
+import ru.tutor.steps.admin.AdminSteps;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.orders.OrderSteps;
 import ru.tutor.steps.club.ClubSteps;
 
 import java.util.List;

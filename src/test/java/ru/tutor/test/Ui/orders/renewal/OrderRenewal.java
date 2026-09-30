@@ -12,8 +12,8 @@ import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.OrderSteps;
-import ru.tutor.steps.OrderToggleSubscriptionSteps;
+import ru.tutor.steps.orders.OrderSteps;
+import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 import ru.tutor.utils.WaitHelper;
 
 import static com.codeborne.selenide.Selenide.refresh;
@@ -43,6 +43,7 @@ public class OrderRenewal extends BaseUiTest {
     @Order(1)
     @Feature("Renewal в ЛК")
     @Tag("API + UI")
+    @Tag("E2E")
     @DisplayName("Renewal: логин в ЛК → модалка оплаты пожизненного → фиксация iframe")
     void paymentMethod_Renewal_PaymentModal_Life_Iframe() {
         renewalModalFlow.login();
@@ -64,6 +65,7 @@ public class OrderRenewal extends BaseUiTest {
     @Order(2)
     @Feature("Renewal в ЛК")
     @Tag("API + UI")
+    @Tag("E2E")
     @DisplayName("Renewal: логин -> модалка оплаты Реневал -> фиксация iframe")
     void paymentMethod_Renewal_PaymentModal_iframe() {
         renewalModalFlow.login();

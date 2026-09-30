@@ -1,7 +1,7 @@
 package ru.tutor.page.orders;
 
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.OrderStepsRedirect;
+import ru.tutor.steps.orders.OrderStepsRedirect;
 import ru.tutor.utils.WaitHelper;
 
 import static io.qameta.allure.Allure.step;

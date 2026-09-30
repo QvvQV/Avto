@@ -8,8 +8,6 @@ import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import ru.tutor.constants.ApiEndpoints;
-import ru.tutor.model.RegistrationRequest;
 
 import java.util.Map;
 

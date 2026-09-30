@@ -2,7 +2,7 @@ package ru.tutor.steps.fortune;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import ru.tutor.api.GameWheelApi;
+import ru.tutor.api.fortune.GameWheelApi;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApiSteps;
 import ru.tutor.constants.GameWheelRewardsConstants;

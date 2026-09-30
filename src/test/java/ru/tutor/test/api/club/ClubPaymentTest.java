@@ -8,7 +8,7 @@ import ru.tutor.config.TestConfig;
 
 import ru.tutor.model.club.ClubPaymentResponse;
 
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.club.ClubSteps;
 import io.restassured.response.Response;
 

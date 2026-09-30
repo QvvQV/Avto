@@ -11,7 +11,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.ResetSteps;
+import ru.tutor.steps.account.ResetSteps;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.Locale;

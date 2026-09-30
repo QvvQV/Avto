@@ -12,7 +12,7 @@ import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.AdminSteps;
+import ru.tutor.steps.admin.AdminSteps;
 
 import static com.codeborne.selenide.Selenide.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,10 +38,10 @@ public class SberErrorTest extends BaseUiTest {
     private final AdminFlow adminFlow = new AdminFlow(adminOrdersPage);
 
     @Test
-    @AllureId("8")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("⚠️ Оплата картой с фиксированным балансом 100р")
     @Tag("negative/positive")
+    @Tag("E2E")
     void payWithFixBalanceCard() {
 
         PurchaseResult result = purchaseFlow.premiumFixSber();
@@ -51,10 +51,10 @@ public class SberErrorTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("6")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("❌ Оплата картой с недостаточными средствами")
     @Tag("negative")
+    @Tag("E2E")
     void payWithInsufficientFundsCard() {
 
         PurchaseResult result = purchaseFlow.premiumInsufficientFundsSber();
@@ -64,10 +64,10 @@ public class SberErrorTest extends BaseUiTest {
     }
 
     @Test
-    @AllureId("5")
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("❌ Оплата просроченной картой")
     @Tag("negative")
+    @Tag("E2E")
     void payWithExpireCard() {
 
         PurchaseResult result = purchaseFlow.premiumExpiredSber();

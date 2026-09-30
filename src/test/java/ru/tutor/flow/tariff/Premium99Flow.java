@@ -6,13 +6,13 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.flow.purchase.PurchaseFlow;
 import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.flow.account.RenewalModalFlow;
-import ru.tutor.model.UserEditDataRequest;
+import ru.tutor.model.account.UserEditDataRequest;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.personalAccount.HotNovelties;
-import ru.tutor.steps.AccountSteps;
-import ru.tutor.steps.AdminSteps;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.account.AccountSteps;
+import ru.tutor.steps.admin.AdminSteps;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.orders.OrderSteps;
 import ru.tutor.utils.RewardHelper;
 import ru.tutor.utils.WaitHelper;
 

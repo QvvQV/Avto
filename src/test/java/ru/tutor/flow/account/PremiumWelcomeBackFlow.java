@@ -6,8 +6,8 @@ import ru.tutor.constants.AddressPage;
 import ru.tutor.page.modals.WelcomeBackModal;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.AdminSteps;
-import ru.tutor.steps.OrderSteps;
+import ru.tutor.steps.admin.AdminSteps;
+import ru.tutor.steps.orders.OrderSteps;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.function.Consumer;

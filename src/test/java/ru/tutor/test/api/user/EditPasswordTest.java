@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AccountSteps;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.account.AccountSteps;
+import ru.tutor.steps.account.AuthSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;

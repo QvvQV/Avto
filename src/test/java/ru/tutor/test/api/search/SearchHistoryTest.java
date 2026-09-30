@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.AuthSteps;
-import ru.tutor.steps.SearchSteps;
+import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.catalog.SearchSteps;
 
 import java.util.List;
 

@@ -8,8 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.club.ClubDetailsFlow;
 import ru.tutor.flow.club.TestDataFlow;
-import ru.tutor.model.UserProfile;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.model.account.UserProfile;
+import ru.tutor.steps.account.AuthSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;

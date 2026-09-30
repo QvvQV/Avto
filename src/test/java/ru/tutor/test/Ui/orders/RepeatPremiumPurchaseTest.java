@@ -4,10 +4,7 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,9 +19,9 @@ import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
 import ru.tutor.page.orders.TtPage;
-import ru.tutor.steps.AdminSteps;
-import ru.tutor.steps.OrderSteps;
-import ru.tutor.steps.OrderToggleSubscriptionSteps;
+import ru.tutor.steps.admin.AdminSteps;
+import ru.tutor.steps.orders.OrderSteps;
+import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 
 import java.util.stream.Stream;
 
@@ -95,6 +92,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     }
 
     @Test
+    @Order(1)
     @Tag("UI")
     @DisplayName("Активный Реневалл → покупка Премиум → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
@@ -106,6 +104,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     }
 
     @Test
+    @Order(2)
     @Tag("UI")
     @DisplayName("Активный Реневалл → покупка Лайт → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
@@ -117,6 +116,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     }
 
     @Test
+    @Order(3)
     @Tag("UI")
     @DisplayName("Активный Реневалл → покупка Пожизненный → модалку не показываем, старые заказы status=2")
     @Severity(SeverityLevel.CRITICAL)
@@ -129,6 +129,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     }
 
     @Test
+    @Order(4)
     @Tag("UI")
     @DisplayName("Замороженный Премиум → покупка Премиум → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
@@ -139,6 +140,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     }
 
     @Test
+    @Order(5)
     @Tag("UI")
     @DisplayName("Замороженный Лайт → покупка Лайт → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
@@ -149,6 +151,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     }
 
     @Test
+    @Order(6)
     @Tag("UI")
     @DisplayName("Замороженный Реневалл → покупка Премиум → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)
@@ -159,6 +162,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     }
 
     @Test
+    @Order(7)
     @Tag("UI")
     @DisplayName("Замороженный Реневалл → покупка Лайт → появление ссылки «Авторизация»")
     @Severity(SeverityLevel.CRITICAL)

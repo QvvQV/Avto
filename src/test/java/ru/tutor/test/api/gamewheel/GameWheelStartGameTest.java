@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.model.fortune.GameWheelStartGameResponse;
-import ru.tutor.steps.AuthSteps;
+import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.fortune.GameWheelStartGameSteps;
 
 import java.util.*;

@@ -2,6 +2,7 @@ package ru.tutor.test.Ui.orders;
 
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.flow.admin.AdminFlow;
@@ -29,6 +30,7 @@ public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
     }
 
     @Test
+    @Order(1)
     @DisplayName("Комплексная проверка дат заказа после серии рекуррентных платежей Cloud Premium")
     void testComplexOrderDateAfterMultiplePayments() {
         PurchaseResult result = purchaseFlow.premium();
@@ -37,6 +39,7 @@ public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
     }
 
     @Test
+    @Order(2)
     @DisplayName("Комплексная проверка дат заказа после серии рекуррентных платежей Cloud Lite")
     void testComplexOrderAfterMultiplePaymentLiteCloud() {
         PurchaseResult result = purchaseFlow.lite();
