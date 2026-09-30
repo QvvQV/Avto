@@ -318,7 +318,7 @@ public class ProductsResponse {
      * Проверка, является ли продукт onbording
      */
     public boolean isOnboardingProduct() {
-        return Boolean.TRUE.equals(isOnboarding) ||
+        return isOnboarding ||
                 "onboarding".equals(id);
     }
 

@@ -258,7 +258,7 @@ public class ProductsSteps extends BaseApiSteps {
     public String getProductId(List<ProductsResponse> products) {
         List<ProductsResponse> nonMini = products.stream()
                 .filter(p -> !p.isMiniCourse())
-                        .collect(Collectors.toList());
+                        .toList();
         assertFalse(products.isEmpty(), "Список продуктов не должен быть пустым");
         String productId = products.get(2).getProductId();
         Allure.addAttachment("Four Product ID", productId);

@@ -131,7 +131,10 @@ public class OrderApiTest {
                 () -> assertNotNull(username, "username не должен быть null"),
                 () -> assertNotNull(loginToken, "login_token не должен быть null"),
                 () ->
-                    assertTrue(loginToken.length() >= 32, "login_token должен быть достаточно длинным")
+                {
+                    assert loginToken != null;
+                    assertTrue(loginToken.length() >= 32, "login_token должен быть достаточно длинным");
+                }
         );
 
         AllureAttachments.attachText("Детали токена",

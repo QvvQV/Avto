@@ -58,7 +58,7 @@ public class RegistrationSteps extends BaseApiSteps {
     public RegistrationResponse validateRegistrationResponse(Response response) {
         assertBasicResponse(response);
 
-        String message = response.jsonPath().getString("message");
+        response.jsonPath().getString("message");
         assertJsonFieldEquals(response, "message", "ok");
 
         RegistrationResponse registrationResponse = response.as(RegistrationResponse.class);

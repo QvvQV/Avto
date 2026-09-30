@@ -15,6 +15,7 @@ import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.WaitHelper;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.sleep;
@@ -86,6 +87,7 @@ public class PaymentMethodFlow {
             step("Проверка появления Cloud iframe или Sber редиректа", () -> {
                 boolean cloud = cloudPage.isCloudPaymentFrameVisible();
                 String currentUrl = com.codeborne.selenide.WebDriverRunner.url();
+                assert currentUrl != null;
                 boolean sber = currentUrl.contains("sber")
                         || currentUrl.contains("secure")
                         || currentUrl.contains("pay");
@@ -108,6 +110,7 @@ public class PaymentMethodFlow {
             sberPage.clickSber(false);
             step("Фиксация Sber редиректа", () -> {
                 String currentUrl = com.codeborne.selenide.WebDriverRunner.url();
+                assert currentUrl != null;
                 assertTrue(currentUrl.contains("sber")
                         || currentUrl.contains("secure")
                         || currentUrl.contains("pay"),
@@ -119,7 +122,7 @@ public class PaymentMethodFlow {
         }
         sberPage.clickSber(true);
         sleep(13000);
-        WaitHelper.waitFor(() -> WebDriverRunner.url().contains("success"),
+        WaitHelper.waitFor(() -> Objects.requireNonNull(WebDriverRunner.url()).contains("success"),
                 Duration.ofSeconds(15), "Ожидание страницы успеха после оплаты Sber");
         OrderSteps.validateSuccessfulPayment(cloudPage);
     }

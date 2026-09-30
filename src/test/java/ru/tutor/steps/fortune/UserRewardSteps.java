@@ -50,7 +50,7 @@ public class UserRewardSteps extends BaseApiSteps {
         // Проверяем что ответ массив
         Object body = response.jsonPath().get("$");
         assertNotNull(body, "Тело ответа не должно быть null");
-        assertTrue(body instanceof List, "Ответ должен быть списком (List)");
+        assertInstanceOf(List.class, body, "Ответ должен быть списком (List)");
 
         // Преобразуем в список модели
         List<UserRewardResponse> userRewards = response.jsonPath()

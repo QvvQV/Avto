@@ -88,7 +88,7 @@ public class CoursesSteps extends BaseApiSteps {
         assertNotNull(reviewsCount, "reviewsCount не должен быть null");
         assertTrue(reviewsCount >= 0, "reviewsCount должен быть >= 0");
 
-        assertNotNull(json.getInt("productInformation.duration"), "duration не должен быть null");
+        json.getInt("productInformation.duration");
 
         assertNotNull(json.getMap("promoPage"), "promoPage не должен быть null");
         List<Map<String, Object>> descriptions = json.getList("promoPage.descriptions");

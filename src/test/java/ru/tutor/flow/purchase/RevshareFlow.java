@@ -24,6 +24,6 @@ public class RevshareFlow {
 
         cloudPage.clickBtnStartProd();
         cloudPage.clickCardPageBtnProd();
-        return orderSteps.validateSuccessfulPayment(cloudPage);
+        return OrderSteps.validateSuccessfulPayment(cloudPage);
     }
 }

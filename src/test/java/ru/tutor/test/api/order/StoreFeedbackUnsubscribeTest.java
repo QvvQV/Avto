@@ -8,7 +8,6 @@ import ru.tutor.model.account.RegistrationRequest;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.account.RegistrationSteps;
 import ru.tutor.steps.catalog.ProductsSteps;
-import ru.tutor.steps.content.CertificateSteps;
 import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;

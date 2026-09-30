@@ -13,7 +13,6 @@ import ru.tutor.steps.orders.OrderPremiumGiftSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import ru.tutor.constants.Tags;
 
 // Оформление подписки по тарифу Подарок

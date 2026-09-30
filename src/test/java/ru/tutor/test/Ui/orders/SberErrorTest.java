@@ -5,12 +5,10 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.config.TestConfig;
-import ru.tutor.flow.admin.AdminFlow;
 import ru.tutor.flow.purchase.PurchaseFlow;
 import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.page.orders.SberPage;
-import ru.tutor.page.admin.AdminOrdersPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.steps.admin.AdminSteps;
 

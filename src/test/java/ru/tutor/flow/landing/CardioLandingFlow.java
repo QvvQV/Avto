@@ -53,6 +53,7 @@ public class CardioLandingFlow {
         step("Проверка Cloud iframe или Sber редиректа", () -> {
             boolean cloud = cardioLandingPage.isCloudPaymentFrameVisible();
             String url = WebDriverRunner.url();
+            assert url != null;
             boolean sber = url.contains("sber") || url.contains("secure") || url.contains("pay");
             assertTrue(cloud || sber,
                     "После Other не открылся ни Cloud-iframe, ни Sber-редирект. URL: " + url);
@@ -68,6 +69,7 @@ public class CardioLandingFlow {
         cardioLandingPage.clickSber();
         step("Фиксация Sber редиректа", () -> {
             String url = WebDriverRunner.url();
+            assert url != null;
             assertTrue(url.contains("sber") || url.contains("secure") || url.contains("pay"),
                     "После кнопки Сбер не открылся Sber-редирект. URL: " + url);
             AllureAttachments.attachScreenshot("Cardio: Sber редирект");

@@ -214,10 +214,6 @@ public class TestConfig {
     // ==================== Валидные тестовые данные ====================
 
     /**
-     * Email подтягиваеться из config.properties
-     */
-
-    /**
      * Пароль
      */
     public static String getTestPassword() {
