@@ -211,8 +211,6 @@ public class TestConfig {
          return properties.getProperty(keysByEnv.getOrDefault(env(prop, defEnv), keysByEnv.get(defEnv)));
      }
 
-
-
     // ==================== Метод для получения URL в зависимости от окружения ====================
     public static boolean isProd() {
         String env = System.getProperty("env.ui", def);

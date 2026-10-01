@@ -5,6 +5,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.config.TestConfig;
+import ru.tutor.flow.purchase.PaymentMode;
 import ru.tutor.utils.*;
 
 import java.time.Duration;
@@ -265,12 +266,12 @@ public class SberPage {
     }
 
     @Step("Клик по кнопке Sber")
-    public void clickSber(boolean payByCard) {
+    public void clickSber(PaymentMode mode) {
         UniversalMethod.safeClick(SBER_CARD_BTN, "Кнопка «Sber картой»");
         sleep(2000);
         AllureAttachments.attachScreenshot("Переход по кнопке «Sber картой»");
         FrameHelper.switchToDefaultContent();
-        if (payByCard) {
+        if (mode == PaymentMode.PAY) {
             payWithApprovedCard(); // dev Проводим оплату
         }
     }

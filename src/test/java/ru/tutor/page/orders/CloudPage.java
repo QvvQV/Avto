@@ -11,6 +11,7 @@ import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import org.openqa.selenium.By;
 import ru.tutor.config.TestConfig;
+import ru.tutor.flow.purchase.PaymentMode;
 import ru.tutor.utils.*;
 
 import java.time.Duration;
@@ -311,23 +312,23 @@ public class CloudPage {
     }
 
     @Step("Клик по кнопке Тинькофф")
-    public void clickTink(boolean payByCard) {
+    public void clickTink(PaymentMode mode) {
         UniversalMethod.safeClick(TINK_BTN, "Кнопка «Тинькофф картой»");
         sleep(2000);
         AllureAttachments.attachScreenshot("Переход по кнопке «Тинькофф картой»");
         FrameHelper.switchToDefaultContent();
-        if (payByCard) {
+        if (mode == PaymentMode.PAY) {
             clickCardPageBtn(); // dev Проводим оплату
         }
     }
 
     @Step("Клик по кнопке Other")
-    public void clickOther(boolean payByCard) {
+    public void clickOther(PaymentMode mode) {
         UniversalMethod.safeClick(OTHER_BTN, "Кнопка «Other»");
         sleep(2000);
         AllureAttachments.attachScreenshot("Переход по кнопке «Other»");
         FrameHelper.switchToDefaultContent();
-        if (payByCard) {
+        if (mode == PaymentMode.PAY) {
             clickCardPageBtn(); // dev Проводим оплату
         }
     }
