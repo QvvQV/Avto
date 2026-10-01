@@ -136,7 +136,7 @@ public class PurchaseFlow {
                 .execute();
     }
 
-    @Step("Оплата 'лати частями' по Sber")
+    @Step("Оплата 'плати частями' по Sber")
     public PurchaseResult partPayment() {
         return purchase(b -> b.forSubscription(TtPage.SubscriptionType.LIFE)
         .via(SubscriptionPurchaseBuilder.PaymentSystem.AUTO)

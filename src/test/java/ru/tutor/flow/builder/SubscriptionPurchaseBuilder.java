@@ -111,11 +111,13 @@ public class SubscriptionPurchaseBuilder {
         return this;
     }
 
-    public void withExpectedError(String errorMessage) {
+    public SubscriptionPurchaseBuilder withExpectedError(String errorMessage) {
         this.expectedError = errorMessage;
+        return this;
     }
 
     public SubscriptionPurchaseResult execute() {
+        validateConfiguration();
         String stepName = buildStepName();
 
         step(stepName, () -> {
@@ -132,8 +134,16 @@ public class SubscriptionPurchaseBuilder {
                     captureUserEmail();
 
 
-                if (verifyError && expectedError != null)
+//                if (verifyError && expectedError != null)
+//                    verifyErrorMessage();
+                if (verifyError) {
+                    if (expectedError == null) {
+                        throw new IllegalAccessException(
+                                "Платежный способ " + paymentMethod + " требует withExpectedError() для проверки текста ошибки "
+                        );
+                    }
                     verifyErrorMessage();
+                }
             }
         });
 
@@ -377,5 +387,19 @@ public class SubscriptionPurchaseBuilder {
     public SubscriptionPurchaseBuilder withoutTitleCheck() {
         this.verifyTitle = false;
         return this;
+    }
+
+    public void validateConfiguration() {
+        if (subscriptionType == null) {
+            throw new IllegalStateException("Тип подписки не выбран: вызовите forSubscription()");
+        }
+        if (!modalOnly) {
+            if (paymentSystem == null) {
+                throw new IllegalStateException("Платёжная система не выбрана: вызовите via()");
+            }
+            if (paymentMethod == null) {
+                throw new IllegalStateException("Способ оплаты не выбран: вызовите withPaymentMethod()");
+            }
+        }
     }
     }

@@ -3,7 +3,6 @@ package ru.tutor.flow.purchase;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import org.openqa.selenium.WebDriver;
 import ru.tutor.api.orders.PaymentApi;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
@@ -19,7 +18,6 @@ import java.time.Duration;
 import java.util.Objects;
 
 import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.sleep;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
