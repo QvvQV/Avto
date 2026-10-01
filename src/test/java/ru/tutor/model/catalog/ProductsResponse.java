@@ -315,7 +315,7 @@ public class ProductsResponse {
     // ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ====================
 
     /**
-     * Проверка, является ли продукт onbording
+     * Проверка, является ли продукт onboarding
      */
     public boolean isOnboardingProduct() {
         return isOnboarding ||

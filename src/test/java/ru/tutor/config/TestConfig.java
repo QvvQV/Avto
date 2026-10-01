@@ -1,6 +1,7 @@
 package ru.tutor.config;
 
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 public class TestConfig {
@@ -43,11 +44,6 @@ public class TestConfig {
             throw new IllegalStateException("Failed to load cards.properties", ex);
         }
         validateRequiredConfigProperties();
-    }
-
-    public static boolean isProd() {
-        String env = System.getProperty("env.ui", def);
-        return "prod".equals(env) || "prodMain".equals(env);
     }
 
     private static void validateRequiredConfigProperties() {
@@ -109,77 +105,6 @@ public class TestConfig {
         return value;
     }
 
-    // ==================== Базовые URL из конфига ====================
-
-    /**
-     * Dev1
-     */
-    public static String getDev1BaseUrl() {
-        return properties.getProperty("dev1.base.url");
-    }
-
-    public static String getApi1BaseUrl() {
-        return properties.getProperty("api1.base.url");
-    }
-
-    public static String getAdminBaseUrl() {
-        return properties.getProperty("admin1.base.url");
-    }
-
-    public static String getClient1BaseUrl() {
-        return properties.getProperty("client1.base.url");
-    }
-
-    public static String getEmailDev1(){
-        return properties.getProperty("dev1.test.email");
-    }
-
-    /**
-     * Dev2
-     */
-    public static String getDev2BaseUrl() {
-        return properties.getProperty("dev2.base.url");
-    }
-
-    public static String getApi2BaseUrl() {
-        return properties.getProperty("api2.base.url");
-    }
-
-    public static String getAdmin2BaseUrl() {
-        return properties.getProperty("admin2.base.url");
-    }
-
-    public static String getClient2BaseUrl() {
-        return properties.getProperty("client2.base.url");
-    }
-
-    public static String getEmailDev2(){
-        return properties.getProperty("dev2.test.email");
-    }
-
-    /**
-     * Dev3
-     */
-    public static String getDev3BaseUrl() {
-        return properties.getProperty("dev3.base.url");
-    }
-
-    public static String getApi3BaseUrl() {
-        return properties.getProperty("api3.base.url");
-    }
-
-    public static String getAdmin3BaseUrl() {
-        return properties.getProperty("admin3.base.url");
-    }
-
-    public static String getClient3BaseUrl() {
-        return properties.getProperty("client3.base.url");
-    }
-
-    public static String getEmailDev3(){
-        return properties.getProperty("dev3.test.email");
-    }
-
     /**
      * Prod
      */
@@ -190,18 +115,6 @@ public class TestConfig {
 
     public static String getProdMainBaseUrl() {return properties.getProperty("prod.main.base.url");}
 
-    public static String getApiProdUrl() {
-        return properties.getProperty("api.prod.url");
-    }
-
-    public static String getClientBaseUrl() {
-        return properties.getProperty("client.base.url");
-    }
-
-    public static String getProdEmail() {
-        return properties.getProperty("prod.test.email");
-    }
-
     public static String getRenewalEmail() {
         return properties.getProperty("prod.renewal.email");
     }
@@ -209,7 +122,6 @@ public class TestConfig {
     public static String getRenewalEmailInactive() {
         return properties.getProperty("prod.renewal.email.inactive");
     }
-
 
     // ==================== Валидные тестовые данные ====================
 
@@ -223,13 +135,6 @@ public class TestConfig {
     /**
      * aff_rid метка для тестов
      */
-    public static String getAffRidDev() {
-        return properties.getProperty("aff.rid.dev");
-    }
-
-    public static String getAffRidProd() {
-        return properties.getProperty("aff.rid.prod");
-    }
 
     public static String getCurrentAffRidUrl() {return properties.getProperty("aff.rid.url");}
 
@@ -249,69 +154,102 @@ public class TestConfig {
         return Long.parseLong(properties.getProperty("pageLoadTimeout"));
     }
 
+        /* ==================== Выбор окружения: таблицы env -> ключ config.properties
+     ==================== */
+    private static final Map<String, String> UI_URL_KEYS = Map.of(
+            "dev1", "dev1.base.url",
+                "dev2", "dev2.base.url",
+                "dev3", "dev3.base.url",
+                "prod", "prod.base.url",
+                "prodMain", "prod.main.base.url"
+        );
+
+    private static final Map<String, String> API_URL_KEYS = Map.of(
+            "api1", "api1.base.url",
+            "api2", "api2.base.url",
+            "api3", "api3.base.url",
+            "prod", "api.prod.url",
+            "prodMain", "api.prod.url"
+    );
+
+    private static final Map<String, String> CLIENT_URL_KEYS = Map.of(
+            "dev1", "client1.base.url",
+            "dev2", "client2.base.url",
+            "dev3", "client3.base.url",
+            "prod", "client.base.url",
+            "prodMain", "client.base.url"
+    );
+
+    private static final Map<String, String> ADMIN_URL_KEYS = Map.of(
+            "admin1", "admin1.base.url",
+            "admin2", "admin2.base.url",
+            "admin3", "admin3.base.url"
+    );
+
+    private static final Map<String, String> EMAIL_KEYS = Map.of(
+            "dev1", "dev1.test.email",
+            "dev2", "dev2.test.email",
+            "dev3", "dev3.test.email",
+            "prod", "prod.test.email"
+    );
+
+    private static final Map<String, String> AFF_RID_KEYS = Map.of(
+            "dev1", "aff.rid.dev",
+            "dev2", "aff.rid.dev",
+            "dev3", "aff.rid.dev",
+            "prod", "aff.rid.prod",
+            "prodMain", "aff.rid.prod"
+    );
+
+    /** Значение системного проперти или дефолт */
+     private static String env(String prop, String defValue) {
+         return System.getProperty(prop, defValue);
+     }
+
+     /** Резолв значение по таблице "env -> ключ"; при неизвестном env - дефолт таблицы */
+     private static String currentProperty(Map<String, String> keysByEnv, String prop, String defEnv) {
+         return properties.getProperty(keysByEnv.getOrDefault(env(prop, defEnv), keysByEnv.get(defEnv)));
+     }
+
+
 
     // ==================== Метод для получения URL в зависимости от окружения ====================
+    public static boolean isProd() {
+        String env = System.getProperty("env.ui", def);
+        return "prod".equals(env) || "prodMain".equals(env);
+    }
+
     public static String getCurrentUiUrl() {
-        String env = System.getProperty("env.ui", def); // dev1, dev2, dev3, prod, prodMain
-        return switch (env) {
-            case "dev2" -> getDev2BaseUrl();
-            case "dev3" -> getDev3BaseUrl();
-            case "prod" -> getProdBaseUrl(); // или другой prod URL
-            case "prodMain" -> getProdMainBaseUrl();
-            default -> getDev1BaseUrl();
-        };
+         return currentProperty(UI_URL_KEYS, "env.ui", def);
     }
 
     public static String getCurrentApiUrl() {
-        String env = System.getProperty("env.api", api); // api1, api2, api3, prod
-        return switch (env) {
-            case "api2" -> getApi2BaseUrl(); // нужно добавить этот метод
-            case "api3" -> getApi3BaseUrl();
-            case "prod", "prodMain" -> getApiProdUrl();
-            default -> getApi1BaseUrl();
-        };
+         return currentProperty(API_URL_KEYS, "env.api", api);
     }
 
     public static String getCurrentClientDomain() {
-        String env = System.getProperty("env.client", def);
-
-        return switch (env) {
-            case "dev2" -> getClient2BaseUrl();
-            case "dev3" -> getClient3BaseUrl();
-            case "prod", "prodMain" -> getClientBaseUrl();
-            default -> getClient1BaseUrl();
-        };
+         return currentProperty(CLIENT_URL_KEYS, "env.client", def);
     }
 
     public static String getCurrentAdminDomain() {
-        String env = System.getProperty("env.admin", admin);
-
-        return switch (env) {
-            case "admin2" -> getAdmin2BaseUrl();
-            case "admin3" -> getAdmin3BaseUrl();
-            case "prod" -> null;
-            default -> getAdminBaseUrl();
-        };
+         String envAdmin = env("env.admin", admin);
+         String key = ADMIN_URL_KEYS.get(envAdmin);
+         if (key == null) {
+             throw new IllegalStateException(
+                     "Прод-контур не поддерживает админку: env.admin='" + envAdmin +
+                             "' (нет admin URL). Используйте admin1/admin2/admin3 или" +
+                             "добавьте в config.properties."
+             );
+         }
+         return properties.getProperty(key);
     }
 
     public static String getTestEmail() {
-        String env = System.getProperty("env.email", def);
-
-        return switch (env) {
-            case "dev2" -> getEmailDev2();
-            case "dev3" -> getEmailDev3();
-            case "prod" -> getProdEmail();
-            default -> getEmailDev1();
-        };
+         return currentProperty(EMAIL_KEYS, "env.email", def);
     }
 
     public static String getAffRid() {
-        String env = System.getProperty("env.ui", def);
-
-        return switch (env) {
-            case "prod", "prodMain" -> getAffRidProd();
-            default -> getAffRidDev();
-        };
+         return currentProperty(AFF_RID_KEYS, "env.ui", def);
     }
 
     public static String getAdminProductUrl(int productId) {
