@@ -92,7 +92,7 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
         );
 
         // Сохраняем userRewardId для проверки уникальности
-        Long lastUserRewardId = prize.getUserRewardId();
+        prize.getUserRewardId();
     }
 
     @Step("Проверка соответствия приза эталонным данным")

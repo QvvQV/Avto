@@ -1,10 +1,7 @@
 package ru.tutor.utils;
 
-
-import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.model.club.ClubPayoutRequisitesRequest;
-import ru.tutor.model.club.ShareRewardResponse;
 import ru.tutor.model.club.SzDetailsRequest;
 
 import java.util.HashMap;

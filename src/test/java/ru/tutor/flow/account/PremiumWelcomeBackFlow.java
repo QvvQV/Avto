@@ -34,26 +34,27 @@ public class PremiumWelcomeBackFlow {
 
     private String purchaseAndRepeat(TtPage.SubscriptionType first, TtPage.SubscriptionType repeat,
                                      Consumer<String> onRepeat) {
-        step("Открытие главной и выбор тарифа «" + first.getDisplayName() + "»", () -> {
-            open(AddressPage.URL_MAIN);
-            ttPage.clickBtnOpenFor();
-            ttPage.selectSubscription(first);
-        });
+        step("Открытие главной и выбор тарифа «" + first.getDisplayName() + "»", () ->
+            openAndSelect(first));
 
         String email = cloudPage.setDateModal();
         cloudPage.clickCardPageBtn();
         OrderSteps.validateSuccessfulPayment(cloudPage);
 
         step("Повторная покупка «" + repeat.getDisplayName() + "» по тому же email", () -> {
-            open(AddressPage.URL_MAIN);
-            ttPage.clickBtnOpenFor();
-            ttPage.selectSubscription(repeat);
+            openAndSelect(repeat);
             cloudPage.submitEmail(email);
         });
 
         onRepeat.accept(email);
         AllureAttachments.attachText("Email пользователя", email);
         return email;
+    }
+
+    private void openAndSelect(TtPage.SubscriptionType type) {
+        open(AddressPage.URL_MAIN);
+        ttPage.clickBtnOpenFor();
+        ttPage.selectSubscription(type);
     }
 
     @Step("Оплата {first} с главной → повтор {repeat} тем же email → «Рады вновь вас видеть»")
@@ -72,36 +73,22 @@ public class PremiumWelcomeBackFlow {
             cloudPage.clickCardPageBtn();
             OrderSteps.validateSuccessfulPayment(cloudPage);
         });
-        step("Проверка в админке: заказ с тарифом «" + target.getDisplayName() + "»", () ->
-                adminSteps.assertOrderTariffForEmail(email, target.getDisplayName()));
-    }
-
-    private static String adminProductKeyword(TtPage.SubscriptionType type) {
-        return switch (type) {
-            case PREMIUM -> "Премиум";
-            case LITE -> "Лайт";
-            case LIFE -> "Пожизненный";
-        };
+        step("Проверка в админке: заказ с тарифом «" + target.getAdminKeyword() + "»", () ->
+                adminSteps.assertOrderTariffForEmail(email, target.getAdminKeyword()));
     }
 
     @Step("Покупка «{target}» по существующему email {email} → модалка «Рады вновь вас видеть»")
     public void assertWelcomeBackForExistingEmail(String email, TtPage.SubscriptionType target) {
-        step("Открытие главной и выбор тарифа «" + target.getDisplayName() + "»", () -> {
-            open(AddressPage.URL_MAIN);
-            ttPage.clickBtnOpenFor();
-            ttPage.selectSubscription(target);
-        });
+        step("Открытие главной и выбор тарифа «" + target.getDisplayName() + "»", () ->
+            openAndSelect(target));
         step("Ввод email клиента", () -> cloudPage.submitEmail(email));
         step("Ожидание модалки «Рады вновь вас видеть»", welcomeBackModal::assertWelcomeBackModal);
     }
 
     @Step("Покупка Пожизненного по существующему email {email}: модалку не показываем, старые заказы status=2")
     public void purchaseLifetimeForExistingEmail(String email, String liteOrderId, String renewalOrderId) {
-        step("Открытие главной и выбор «Пожизненный доступ»", () -> {
-            open(AddressPage.URL_MAIN);
-            ttPage.clickBtnOpenFor();
-            ttPage.selectSubscription(TtPage.SubscriptionType.LIFE);
-        });
+        step("Открытие главной и выбор «" +TtPage.SubscriptionType.LIFE.getDisplayName() + "»", () ->
+            openAndSelect(TtPage.SubscriptionType.LIFE));
         step("Ввод email клиента", () -> cloudPage.submitEmail(email));
         step("Модалка «Рады вновь вас видеть» не должна появиться",
                 welcomeBackModal::assertWelcomeBackModalNotShow);
@@ -110,7 +97,7 @@ public class PremiumWelcomeBackFlow {
             OrderSteps.validateSuccessfulPayment(cloudPage);
         });
         step("Проверка в админке: заказ с тарифом «Пожизненный»",
-                () -> adminSteps.assertOrderTariffForEmail(email, "Пожизненный"));
+                () -> adminSteps.assertOrderTariffForEmail(email, TtPage.SubscriptionType.LIFE.getAdminKeyword()));
         step("Проверка в админке: все старые заказы в status=2",
                 () -> adminSteps.assertOrdersDeactivated(liteOrderId, renewalOrderId));
     }

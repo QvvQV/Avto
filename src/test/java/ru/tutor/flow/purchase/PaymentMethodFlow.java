@@ -112,7 +112,6 @@ public class PaymentMethodFlow {
         || currentUrl.contains("pay")),
                 "После клика не открылся ни Cloud-iframe, ни Sber-редирект. URL: " + currentUrl);
         AllureAttachments.attachScreenshot("Prod: Sber-редирект");
-        AllureAttachments.attachText("Sber URL:", String.valueOf(currentUrl));
+        AllureAttachments.attachText("Sber URL:", currentUrl);
     }
-
 }

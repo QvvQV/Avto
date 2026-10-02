@@ -1,7 +1,6 @@
 package ru.tutor.page.orders;
 
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import net.datafaker.Faker;
 import ru.tutor.config.TestConfig;
@@ -76,7 +75,7 @@ public class SberPage {
 
             // Логика определения типа продукта
             String modalText = ttPage.getTextModal();
-            logModalType(modalText, email);
+            ModalLogger.logModalType(modalText, email);
 
             UniversalMethod.safeClick(cloudPage.FULL_OPTION, "Оплата");
             sleep(9000);
@@ -89,22 +88,6 @@ public class SberPage {
 
     public String getLastUsedEmail() {
         return email;
-    }
-
-    public static void logModalType(String modalText, String email) {
-        switch (modalText) {
-            case "Тариф «Лайт»":
-                AllureAttachments.attachText("Оплата продукта", "Лайт тариф, email: " + email);
-                break;
-            case "Тариф «Премиум»":
-                AllureAttachments.attachText("Оплата продукта", "Премиум тариф, email: " + email);
-                break;
-            case "Тариф «Навсегда»":
-                AllureAttachments.attachText("Оплата продукта", "Пожизненный доступ, email: " + email);
-                break;
-            default:
-                AllureAttachments.attachText("Оплата продукта", "Неизвестный тариф, email: " + email);
-        }
     }
 
     private void fillCardData(String cardNumber, String expiry, String cvc) {
@@ -181,8 +164,9 @@ public class SberPage {
 
         step("Переход в магазин", () -> {
             UniversalMethod.safeClick(GO_SHOP, SHOP_TEXT);
-            AllureAttachments.attachText("Статус оплаты", "Успешная оплата одобренной картой");
+            AllureAttachments.attachText("Статус оплаты", "Успешная оплата с фиксированным балансом");
         });
+        FrameHelper.switchToDefaultContent();
     }
 
     public String getErrorText() {
@@ -256,7 +240,6 @@ public class SberPage {
     public void executeFullFlow() {
         fillPhone(faker);
         fillSmsCode();
-//        fillPersonalData(faker);
         fillCardInstallmentData(
                 TestConfig.Cards.getApproved(),
                 TestConfig.Cards.getApprovedExpiry(),
@@ -267,12 +250,7 @@ public class SberPage {
 
     @Step("Клик по кнопке Sber")
     public void clickSber(PaymentMode mode) {
-        UniversalMethod.safeClick(SBER_CARD_BTN, "Кнопка «Sber картой»");
-        sleep(2000);
-        AllureAttachments.attachScreenshot("Переход по кнопке «Sber картой»");
-        FrameHelper.switchToDefaultContent();
-        if (mode == PaymentMode.PAY) {
-            payWithApprovedCard(); // dev Проводим оплату
-        }
+        UniversalMethod.clickPaymentGateway(SBER_CARD_BTN, "Sber картой",
+                mode == PaymentMode.PAY ? this::payWithApprovedCard : null);
     }
 }

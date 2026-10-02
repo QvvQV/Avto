@@ -13,7 +13,6 @@ import ru.tutor.flow.purchase.RevshareFlow;
 import ru.tutor.model.catalog.ProductsResponse;
 import ru.tutor.model.account.UserEditDataRequest;
 import ru.tutor.page.account.Registration;
-import ru.tutor.page.modals.GreetingsModal;
 import ru.tutor.page.modals.Product;
 import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
@@ -48,7 +47,6 @@ public class RenewalModalFlow {
     private final AuthSteps authSteps;
     private final AccountSteps accountSteps;
     private final PurchaseFlow purchaseFlow;
-    private final GreetingsModal greetingsModal;
     private String currentToken;
     private String userEmail;
     private final RevshareFlow revshareFlow;
@@ -57,6 +55,8 @@ public class RenewalModalFlow {
     private final Faker faker = new Faker(Locale.ENGLISH);
     private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
     private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
+    private static final int LITE_PRODUCT_ID = 180;
+    private static final int RENEWAL_PRODUCT_ID = 264;
 
     public RenewalModalFlow(
             Registration registration, Product product, UnlockNextWeek unlockNextWeek, CloudPage cloudPage,
@@ -71,7 +71,6 @@ public class RenewalModalFlow {
         this.authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
         this.accountSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
         this.purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
-        this.greetingsModal = new GreetingsModal();
         this.revshareFlow = revshareFlow;
         this.orderToggleSubscriptionSteps = orderToggleSubscriptionSteps;
     }
@@ -106,7 +105,7 @@ public class RenewalModalFlow {
 
         if (TestConfig.isProd()) {
             step("Отмена заказа до Лайта (POST /user/orders/toggle_subscription/180)", () ->
-                    orderToggleSubscriptionSteps.toggleOrderSubscription(currentToken, 180));
+                    orderToggleSubscriptionSteps.toggleOrderSubscription(currentToken, LITE_PRODUCT_ID));
         }
         return this;
     }
@@ -132,7 +131,7 @@ public class RenewalModalFlow {
     @Step("До модалки оплаты (Неделя 1 урок 1 + вторая неделя)")
     public RenewalModalFlow processToPaymentModal() {
         product.beginProductProd();
-        new UnlockNextWeek().openUnlimitedAccess();
+        unlockNextWeek.openUnlimitedAccess();
         return this;
     }
 
@@ -173,10 +172,10 @@ public class RenewalModalFlow {
 
     @Step("Проверка наличия продукта {productId} в /user/products")
     public RenewalModalFlow verifyProductPresent(int expectedProductId) {
-        step("Получение токена из localStorage", () ->
-                currentToken = AdminToUserLoginSteps.extractTokenFromCurrentPage());
+       String pageToken = step("Получение токена из localStorage",
+               AdminToUserLoginSteps::extractTokenFromCurrentPage);
         step("GET /user/products -> проверка productId " + expectedProductId, () -> {
-            Response resp = userProductsApi.getUserProducts(currentToken);
+            Response resp = userProductsApi.getUserProducts(pageToken);
             List<ProductsResponse> products = productsSteps.validateProductsResponse(resp);
             boolean found = products.stream()
                     .anyMatch(p -> Objects.equals(p.getProductId(), String.valueOf(expectedProductId)));
@@ -242,7 +241,7 @@ public class RenewalModalFlow {
         String liteOrderId = adminSteps.assertOrderExists(email);
         openPayments99AndAssertIframe();
         String renewalOrderId = adminSteps.assertOrderExists(email);
-        verifyProductPresent(264);
+        verifyProductPresent(RENEWAL_PRODUCT_ID);
         if (freeze) {
             pauseCurrentSubscription(7);
         }

@@ -35,20 +35,22 @@ public class TtPage {
 
     // Enum для типов подписок
     public enum SubscriptionType {
-        LITE("litenew", "Лайт 99", "Оформить доступ Лайт 99Р/Мес", "Тариф «Лайт»"),
-        LIFE("lifetime", "Пожизненный доступ", "Оформить доступ Пожизненный 3999Р/Мес", "Тариф «Навсегда»"),
-        PREMIUM("premium", "Премиум", "Оформить доступ Премиум 399/Мес", "Тариф «Премиум»");
+        LITE("litenew", "Лайт 99", "Оформить доступ Лайт 99Р/Мес", "Тариф «Лайт»", "Лайт"),
+        LIFE("lifetime", "Пожизненный доступ", "Оформить доступ Пожизненный 3999Р/Мес", "Тариф «Навсегда»", "Пожизненный"),
+        PREMIUM("premium", "Премиум", "Оформить доступ Премиум 399/Мес", "Тариф «Премиум»", "Премиум");
 
         private final String dataAttribute;
         private final String displayName;
         private final String stepDescription;
         private final String expectedModalText;
+        private final String adminKeyword;
 
-        SubscriptionType(String dataAttribute, String displayName, String stepDescription, String expectedModalText) {
+        SubscriptionType(String dataAttribute, String displayName, String stepDescription, String expectedModalText, String adminKeyword) {
             this.dataAttribute = dataAttribute;
             this.displayName = displayName;
             this.stepDescription = stepDescription;
             this.expectedModalText = expectedModalText;
+            this.adminKeyword = adminKeyword;
         }
 
         public String getDisplayName() {
@@ -61,6 +63,10 @@ public class TtPage {
 
         public String getExpectedModalText() {
             return expectedModalText;
+        }
+
+        public String getAdminKeyword() {
+            return adminKeyword;
         }
 
         public SelenideElement getElement(TtPage page) {
@@ -83,7 +89,6 @@ public class TtPage {
             main.scrollTo();
             System.out.println(main.getText().trim());
             btnOpenFor.scrollTo().shouldBe(visible, Duration.ofSeconds(20));
-//        UniversalMethod.safeClick(premium, "Попробовать за 1₽*");
             return this;
         });
     }

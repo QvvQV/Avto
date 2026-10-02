@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.sleep;
 import static io.qameta.allure.Allure.step;
 
 /**
@@ -30,7 +31,6 @@ public class UniversalMethod {
                 .click();
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();
-//        AllureAttachments.attachText("Клик выполнен", "✓ Нажат элемент: " +  elementName);
     }
 
     /**
@@ -120,5 +120,19 @@ public class UniversalMethod {
         String href = element.shouldBe(visible, DEFAULT_TIMEOUT).getAttribute("href");
         Allure.addAttachment("HREF элемента '" + elementName + "'", href);
         return href;
+    }
+
+    /**
+     * Клик по кнопке способа оплаты: переход, скриншот, выход из фрейма,
+     * и опциональная проводка оплаты (при paymentAction != null)
+     */
+    public static void clickPaymentGateway(SelenideElement button, String gatewayName, Runnable paymentAction) {
+        safeClick(button, "Кнопка «" + gatewayName + "»");
+        sleep(2000);
+        AllureAttachments.attachScreenshot("Переход по кнопке «" + gatewayName + "»");
+        FrameHelper.switchToDefaultContent();
+        if (paymentAction != null) {
+            paymentAction.run();
+        }
     }
 }

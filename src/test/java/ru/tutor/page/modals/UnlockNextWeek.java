@@ -1,9 +1,6 @@
 package ru.tutor.page.modals;
 
 import com.codeborne.selenide.SelenideElement;
-import io.qameta.allure.Step;
-import org.junit.jupiter.api.Test;
-import ru.tutor.constants.AddressPage;
 import ru.tutor.utils.WaitHelper;
 import ru.tutor.utils.UniversalMethod;
 

@@ -1,7 +1,6 @@
 package ru.tutor.flow.builder;
 
 import com.codeborne.selenide.SelenideElement;
-import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.orders.CloudPage;
@@ -9,7 +8,6 @@ import ru.tutor.page.orders.SberPage;
 import ru.tutor.constants.AddressPage;
 import ru.tutor.page.orders.TtPage;
 import ru.tutor.utils.AllureAttachments;
-import ru.tutor.utils.FrameHelper;
 import ru.tutor.utils.TabManager;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -83,6 +81,12 @@ public class SubscriptionPurchaseBuilder {
         this.ttPage = ttPage;
         this.cloudPage = cloudPage;
         this.sberPage = sberPage;
+    }
+
+    private void payInstallments() {
+        cloudPage.setDateModalInstallments();
+        cloudPage.dolyameFormDemo();
+        userEmail = cloudPage.getCurrentEmail();
     }
 
     public static SubscriptionPurchaseBuilder create(TtPage ttPage, CloudPage cloudPage, SberPage sberPage) {
@@ -227,8 +231,7 @@ public class SubscriptionPurchaseBuilder {
 
     private void processCloudPayment() {
         if (paymentMethod == PaymentMethod.INSTALLMENTS) {
-            cloudPage.setDateModalInstallments();
-            cloudPage.dolyameFormDemo();
+            payInstallments();
         } else {
             cloudPage.setDateModal();
             cloudPage.clickCardPageBtn();
@@ -355,9 +358,7 @@ public class SubscriptionPurchaseBuilder {
 
     private void processAutoPayment() {
         if (paymentMethod == PaymentMethod.INSTALLMENTS) {
-            cloudPage.setDateModalInstallments(); // клик оплатить Долями CLOUD
-            cloudPage.dolyameFormDemo();
-            userEmail = cloudPage.getCurrentEmail();
+            payInstallments();
             return;
         }
         if (paymentMethod == PaymentMethod.PARTS) {

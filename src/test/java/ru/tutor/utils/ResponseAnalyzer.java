@@ -18,13 +18,5 @@ public class ResponseAnalyzer {
 
         Allure.addAttachment(testName + " - Response Time",
             "text/plain", response.getTime() + "ms");
-
-        // Логируем основные заголовки
-        System.out.println("=== Response Analysis ===");
-        System.out.println("Status: " + response.getStatusCode());
-        System.out.println("Content-Type: " + response.getContentType());
-        System.out.println("Headers: " + response.getHeaders());
-        System.out.println("Time: " + response.getTime() + "ms");
-        System.out.println("========================");
     }
 }

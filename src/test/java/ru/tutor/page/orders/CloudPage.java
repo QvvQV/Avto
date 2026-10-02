@@ -22,7 +22,6 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static ru.tutor.page.orders.SberPage.logModalType;
 
 public class CloudPage {
 
@@ -75,7 +74,7 @@ public class CloudPage {
     private final SelenideElement FIO_INPUT = $("[data-qa-type='tui/input.field']");
     private final SelenideElement BIRTHDAY_INPUT = $("[data-qa-type='uikit/input.value.input']");
     private final SelenideElement CONTINUE_BUTTON = $$("button").find(exactText(CONTINUE_TEXT));
-    private final SelenideElement SUCCESS_PAY_BUTTON = $("[data-qa-type='tui/button.content-wrapper'");
+    private final SelenideElement SUCCESS_PAY_BUTTON = $("[data-qa-type='tui/button.content-wrapper']");
 
     // Внутренние состояния
     private String currentEmail;
@@ -91,6 +90,24 @@ public class CloudPage {
     //    private final SelenideElement SBER_PAY_DRAWER = $("[class=*'EZDrawer__container']");
     private final SelenideElement SBER_PAY_DRAWER = $("[data-testid='qrBox']");
     private final SelenideElement SBER_PAY_TITLE = $$("span").find(exactText("Получить пуш на телефон"));
+
+    private String fillEmailAndChooseOption(SelenideElement option, String optionName, String fieldLabel) {
+        String email = faker.internet().emailAddress();
+        step("Ввод email и выбор способа оплаты", () -> {
+            UniversalMethod.safeSetValue(EMAIL_INPUT, email, fieldLabel);
+
+            String modalText = ttPage.getTextModal();
+            ModalLogger.logModalType(modalText, email);
+
+            UniversalMethod.safeClick(option, optionName);
+
+            ERROR_MESSAGE.shouldNot(visible);
+
+            AllureAttachments.attachText("Email в модалке", email);
+            System.out.println(modalText + ": " + email);
+        });
+        return email;
+    }
 
     @Step("Заполнение данных модального окна Prod")
     public void clickBtnStartProd() {
@@ -163,7 +180,7 @@ public class CloudPage {
             } else {
                 Allure.addAttachment("Оплата не произведена", "Что-то пошло не так");
                 throw new AssertionError("Не найден URL /form-demo. Редирект на анкету долями не произошёл. " +
-                        "Текущий URL: + currentUrl");
+                        "Текущий URL:" + currentUrl);
             }
         });
     }
@@ -193,83 +210,27 @@ public class CloudPage {
 
     // ==================== МЕТОДЫ ДЛЯ РАБОТЫ С МОДАЛКАМИ ====================
 
-    @Step("Выбор опции 'Рассрочка' в модальном окне")
+    @Step("Выбор опции 'Полная оплата' в модальном окне")
     public String setDateModal() {
-        String email = faker.internet().emailAddress();
-        step("Ввод email и проверка отсутствия ошибок", () -> {
-
-
-            // Заполнение email
-            UniversalMethod.safeSetValue(EMAIL_INPUT, email, "Email");
-
-            // Логирование
-            String modalText = ttPage.getTextModal();
-            logModalType(modalText, email);
-            System.out.println(FULL_OPTION.getText().trim());
-
-            // Опция
-            UniversalMethod.safeClick(FULL_OPTION, "Оплатить");
-
-            // Проверка отсутсвия ошибок
-            ERROR_MESSAGE.shouldNot(visible);
-
-            // Логирование
-            AllureAttachments.attachText("Email в модалке", email);
-            System.out.println(modalText + ": " + email);
-        });
-        return email;
+        currentEmail = fillEmailAndChooseOption(FULL_OPTION, "Оплатить", "Email");
+        System.out.println(FULL_OPTION.getText().trim());
+        return currentEmail;
     }
 
-    @Step("Выбор опции 'Полная оплата' в модальном окне CLOUD")
-    public void setDateModalInstallments() {
-        step("Выбор полной оплаты и заполнение email", () -> {
-            currentEmail = faker.internet().emailAddress();
-
-            // Заполнение email
-            UniversalMethod.safeSetValue(EMAIL_INPUT, currentEmail, "Email (полная оплата)");
-
-            // Логирование типа модалки
-            String modalText = ttPage.getTextModal();
-            logModalType(modalText, currentEmail);
-
-            // Выбор опции полной оплаты
-            UniversalMethod.safeClick(INSTALLMENTS_OPTION, "Оплатить Долями");
-
-            // Проверка отсутствия ошибок
-            ERROR_MESSAGE.shouldNot(visible);
-
-            // Логирование
-            AllureAttachments.attachText("Email в модалке", currentEmail);
-            System.out.println(modalText + ": " + currentEmail);
-            if (!TestConfig.isProd()) {
-                WaitHelper.waitForUrlContains("/form-demo", Duration.ofSeconds(20));
-            }
-            AllureAttachments.attachScreenshot("Анкета долями открыта");
-        });
+    @Step("Выбор опции 'Долями' в модальном окне CLOUD")
+    public String setDateModalInstallments() {
+        currentEmail = fillEmailAndChooseOption(INSTALLMENTS_OPTION, "Оплатить Долями", "Email (полная оплата)");
+        if (!TestConfig.isProd()) {
+            WaitHelper.waitForUrlContains("/form-demo", Duration.ofSeconds(20));
+        }
+        AllureAttachments.attachScreenshot("Анкета долями открыта");
+        return currentEmail;
     }
 
-    @Step("Выбор опции 'Полная оплата' в модальном окне SBER")
-    public void setDateModalInstallmentsParts() {
-        step("Выбор полной оплаты и заполнение email", () -> {
-            currentEmail = faker.internet().emailAddress();
-
-            // Заполнение email
-            UniversalMethod.safeSetValue(EMAIL_INPUT, currentEmail, "Email (полная оплата)");
-
-            // Логирование типа модалки
-            String modalText = ttPage.getTextModal();
-            logModalType(modalText, currentEmail);
-
-            // Выбор опции полной оплаты
-            UniversalMethod.safeClick(INSTALLMENTS_PARTS, "Плати частями");
-
-            // Проверка отсутствия ошибок
-            ERROR_MESSAGE.shouldNot(visible);
-
-            // Логирование
-            AllureAttachments.attachText("Email в модалке", currentEmail);
-            System.out.println(modalText + ": " + currentEmail);
-        });
+    @Step("Выбор опции 'Плати частями' в модальном окне SBER")
+    public String setDateModalInstallmentsParts() {
+        currentEmail = fillEmailAndChooseOption(INSTALLMENTS_PARTS, "Плати частями", "Email (полная оплата)");
+        return currentEmail;
     }
 
     @Step("Проверка появления 4 кнопок способа оплаты")
@@ -313,24 +274,14 @@ public class CloudPage {
 
     @Step("Клик по кнопке Тинькофф")
     public void clickTink(PaymentMode mode) {
-        UniversalMethod.safeClick(TINK_BTN, "Кнопка «Тинькофф картой»");
-        sleep(2000);
-        AllureAttachments.attachScreenshot("Переход по кнопке «Тинькофф картой»");
-        FrameHelper.switchToDefaultContent();
-        if (mode == PaymentMode.PAY) {
-            clickCardPageBtn(); // dev Проводим оплату
-        }
+        UniversalMethod.clickPaymentGateway(TINK_BTN, "Тинькофф картой",
+                mode == PaymentMode.PAY ? this::clickCardPageBtn : null);
     }
 
     @Step("Клик по кнопке Other")
     public void clickOther(PaymentMode mode) {
-        UniversalMethod.safeClick(OTHER_BTN, "Кнопка «Other»");
-        sleep(2000);
-        AllureAttachments.attachScreenshot("Переход по кнопке «Other»");
-        FrameHelper.switchToDefaultContent();
-        if (mode == PaymentMode.PAY) {
-            clickCardPageBtn(); // dev Проводим оплату
-        }
+        UniversalMethod.clickPaymentGateway(OTHER_BTN, "Other",
+                mode == PaymentMode.PAY ? this::clickCardPageBtn : null);
     }
 
     @Step("Проверка появления Cloud iframe")

@@ -69,26 +69,17 @@ public class CardioLandingPage {
 
     @Step("Клик по кнопке Тинькофф")
     public void clickTink() {
-        UniversalMethod.safeClick(TINK_BTN, "Кнопка «Тинькофф картой»");
-        sleep(2000);
-        AllureAttachments.attachScreenshot("Переход по кнопке «Тинькофф картой»");
-        FrameHelper.switchToDefaultContent();
+        UniversalMethod.clickPaymentGateway(TINK_BTN, "Тинькофф картой", null);
     }
 
     @Step("Клик по кнопке Тинькофф")
     public void clickOther() {
-        UniversalMethod.safeClick(OTHER_BTN, "Кнопка «Other»");
-        sleep(2000);
-        AllureAttachments.attachScreenshot("Переход по кнопке «Other»");
-        FrameHelper.switchToDefaultContent();
+        UniversalMethod.clickPaymentGateway(OTHER_BTN, "Other", null);
     }
 
     @Step("Клик по кнопке «Сбер»")
     public void clickSber() {
-        UniversalMethod.safeClick(SBER_BTN, "Кнопка «Sber»");
-        sleep(2000);
-        AllureAttachments.attachScreenshot("Переход по кнопке «Sber»");
-        FrameHelper.switchToDefaultContent();
+        UniversalMethod.clickPaymentGateway(SBER_BTN, "Sber", null);
     }
 
     @Step("Проверка появления Cloud iframe")
@@ -99,5 +90,4 @@ public class CardioLandingPage {
             return src != null && src.contains("cloudpayments");
         });
     }
-
 }
