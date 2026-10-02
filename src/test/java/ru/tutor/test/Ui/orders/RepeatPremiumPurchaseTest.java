@@ -44,7 +44,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
     private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
     private final OrderToggleSubscriptionSteps orderToggleSubscriptionSteps = new OrderToggleSubscriptionSteps(TestConfig.getCurrentApiUrl());
     private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(
-            registration, product, unlockNextWeek, cloudPage, ttPage, sberPage,
+            product, unlockNextWeek, cloudPage, ttPage, sberPage,
             revshareFlow, orderToggleSubscriptionSteps
     );
     private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
@@ -181,7 +181,7 @@ public class RepeatPremiumPurchaseTest extends BaseUiTest {
         String liteOrderId = adminSteps.assertOrderExists(email);
         renewalModalFlow.openPayments99AndAssertIframe();
         String renewalOrderId = adminSteps.assertOrderExists(email);
-        renewalModalFlow.verifyProductPresent(264);
+        renewalModalFlow.verifyProductPresent(RenewalModalFlow.RENEWAL_PRODUCT_ID);
         renewalModalFlow.logoutAfterTest();
         return new ActiveRenewal(email, liteOrderId, renewalOrderId);
     }

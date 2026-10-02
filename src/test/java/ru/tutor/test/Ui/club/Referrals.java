@@ -45,7 +45,7 @@ public class Referrals extends BaseUiTest {
         OrderSteps orderSteps = new OrderSteps(BASE_URL);
         RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
         RenewalModalFlow renewalModalFlow = new RenewalModalFlow(
-                new Registration(), new Product(), new UnlockNextWeek(), cloudPage,
+                new Product(), new UnlockNextWeek(), cloudPage,
                 ttPage, sberPage, revshareFlow,
                 new OrderToggleSubscriptionSteps(BASE_URL)
         );

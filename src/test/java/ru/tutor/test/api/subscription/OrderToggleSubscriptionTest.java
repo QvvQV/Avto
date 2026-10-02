@@ -4,6 +4,7 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
+import ru.tutor.flow.account.RenewalModalFlow;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
@@ -22,7 +23,6 @@ public class OrderToggleSubscriptionTest {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
-    private final Integer TEST_ORDER_ID = 180;
 
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final GameWheelRewardsSteps gameWheelRewardsSteps = new GameWheelRewardsSteps(BASE_URL);
@@ -52,8 +52,8 @@ public class OrderToggleSubscriptionTest {
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void toggleOrderSubscriptionSuccess() {
-        Response response = step("POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
-                orderSteps.toggleOrderSubscription(token, TEST_ORDER_ID)
+        Response response = step("POST /user/orders/toggle_subscription/" + RenewalModalFlow.LITE_PRODUCT_ID, () ->
+                orderSteps.toggleOrderSubscription(token, RenewalModalFlow.LITE_PRODUCT_ID)
         );
 
         step("Анализ формата ответа", () ->
@@ -74,7 +74,7 @@ public class OrderToggleSubscriptionTest {
     @Tag(Tags.NEGATIVE)
     void shouldFailWithoutAuthorization() {
         Response response = step("Отправка POST запроса без токена", () ->
-                orderSteps.toggleOrderSubscription("", TEST_ORDER_ID)
+                orderSteps.toggleOrderSubscription("", RenewalModalFlow.LITE_PRODUCT_ID)
         );
 
         step("Проверка ошибки авторизации", () ->

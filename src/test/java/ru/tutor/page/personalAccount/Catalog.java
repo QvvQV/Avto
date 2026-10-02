@@ -18,8 +18,7 @@ import java.util.stream.Collectors;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 // Каталог Личного кабинета
 public class Catalog {
@@ -138,7 +137,7 @@ public class Catalog {
     @Step("Проверить, что блок категорий отображается")
     public Catalog verifyCategoriesBlockVisible() {
         CATEGORY_FILTER_CONTAINER.shouldBe(visible, DEFAULT_TIMEOUT);
-        return new Catalog();
+        return this;
     }
 
     @Step("Получить кол-во категорий")
@@ -217,9 +216,9 @@ public class Catalog {
             String categoryName = getCategoryNameElement(category).getText();
             String href = getCategoryHref(category);
 
-            assert href != null : "Ссылка категории '" + categoryName + "' отсутствует";
-            assert href.contains(CATEGORY_URL_PATTERN) :
-                    "Неверный формат ссылки для категории: " + categoryName;
+            assertNotNull( href, "Ссылка категории '" + categoryName + "' отсутствует");
+            assertTrue(href.contains(CATEGORY_URL_PATTERN),
+                    "Неверный формат ссылки для категории: " + categoryName);
             AllureAttachments.attachText("Ссылка", categoryName + " -> " + href);
             checkedCount++;
         }
@@ -241,13 +240,13 @@ public class Catalog {
             SelenideElement img = getCategoryImageElement(category);
 
             if (!img.exists()) {
-                missingImages.add(categoryName + " (элемент img отсутвует)");
+                missingImages.add(categoryName + " (элемент img отсутствует)");
                 continue;
             }
 
             img.shouldBe(visible, DEFAULT_TIMEOUT);
             String imgSrc = img.getAttribute("src");
-            assert imgSrc != null : "URL иконки отсутствует: " + categoryName;
+            assertNotNull(imgSrc, "URL иконки отсутствует: " + categoryName);
             checkedCount++;
         }
 
@@ -268,17 +267,17 @@ public class Catalog {
     @Step("Проверить URL после перехода в категорию '{categoryName}'")
     public Catalog verifyCategoryUrl(String expectedUrlPattern) {
         String currentUrl = WebDriverRunner.getWebDriver().getCurrentUrl();
-        assert currentUrl.contains(expectedUrlPattern) :
+        assertTrue(currentUrl.contains(expectedUrlPattern),
                 String.format("URL не соответствует ожидаемому. Ожидалось: %s, Фактически: %s",
-                        expectedUrlPattern, currentUrl);
+                        expectedUrlPattern, currentUrl));
         return this;
     }
 
     @Step("Проверить, что находимся на странице каталога")
     public Catalog verifyOnCatalogPage() {
         String currentUrl = WebDriverRunner.getWebDriver().getCurrentUrl();
-        assert currentUrl.contains(CATALOG_URL) :
-                String.format("Текущая страница не является каталогом. URL: %s", currentUrl);
+        assertTrue(currentUrl.contains(CATALOG_URL),
+                String.format("Текущая страница не является каталогом. URL: %s", currentUrl));
         return this;
     }
 
@@ -294,7 +293,7 @@ public class Catalog {
     public Catalog scrollRight(int pixels) {
         long initialPosition = getScrollPosition();
         executeJavaScript("arguments[0].scrollLeft += " + pixels, SCROLL_CONTAINER);
-        Duration.ofMillis(1800);
+        sleep(1800);
 
         AllureAttachments.attachText("Скроллинг",
                 String.format("Начальная позиция: %d, Конечная: %d, Сдвиг: %d",
@@ -310,7 +309,7 @@ public class Catalog {
     @Step("Проверить, что скроллинг сработал")
     public Catalog verifyScrollChanged(long initialPosition) {
         long currentPosition = getScrollPosition();
-        assert currentPosition > initialPosition : "Скроллинг не сработал";
+        assertTrue( currentPosition > initialPosition, "Скроллинг не сработал");
         return this;
     }
 
@@ -359,7 +358,7 @@ public class Catalog {
     public Catalog clickNavigateButton() {
         if (hasNavigationButton()) {
             UniversalMethod.safeClick(NAV_BUTTON, "Навигационная кнопка");
-            Duration.ofMillis(1800);
+            sleep(1800);
         }
         return this;
     }

@@ -7,7 +7,6 @@ import ru.tutor.flow.purchase.RevshareFlow;
 import ru.tutor.model.account.RegistrationRequest;
 import ru.tutor.model.account.UserEditDataRequest;
 import ru.tutor.page.account.FirstCourses;
-import ru.tutor.page.account.Registration;
 import ru.tutor.page.modals.GreetingsModal;
 import ru.tutor.page.modals.Product;
 import ru.tutor.page.modals.UnlockNextWeek;
@@ -50,7 +49,7 @@ public class RegistrationFlow {
         OrderSteps orderSteps = new OrderSteps(BASE_URL);
         SberPage sberPage = new SberPage();
         RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
-        this.renewalModalFlow = new RenewalModalFlow(new Registration(),
+        this.renewalModalFlow = new RenewalModalFlow(
                 new Product(), new UnlockNextWeek(), cloudPage, new TtPage(), sberPage,
                 revshareFlow,new OrderToggleSubscriptionSteps(BASE_URL));
     }

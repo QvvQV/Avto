@@ -83,7 +83,7 @@ public class DashbordsTest extends BaseUiTest {
             new RewardHelper()::safeClickCollectReward
         );
         step("4. Добавляем продукт", () ->
-            home.walkthroughtAddingACourse(productName)
+            home.walkThroughtAddingACourse(productName)
         );
         step("5. Обновляем страницу", () ->
             allDashbords.testSingleProduct(productName, dashboard)

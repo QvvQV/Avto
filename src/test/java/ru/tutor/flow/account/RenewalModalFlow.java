@@ -26,7 +26,6 @@ import ru.tutor.steps.catalog.ProductsSteps;
 import ru.tutor.steps.orders.OrderSteps;
 import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 import ru.tutor.utils.*;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
@@ -40,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class RenewalModalFlow {
     private final UserProductsApi userProductsApi;
     private final ProductsSteps productsSteps;
-    private final Registration registration;
+
     private final Product product;
     private final UnlockNextWeek unlockNextWeek;
     private final CloudPage cloudPage;
@@ -55,16 +54,16 @@ public class RenewalModalFlow {
     private final Faker faker = new Faker(Locale.ENGLISH);
     private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
     private final AdminSteps adminSteps = new AdminSteps(TestConfig.getCurrentApiUrl());
-    private static final int LITE_PRODUCT_ID = 180;
-    private static final int RENEWAL_PRODUCT_ID = 264;
+    public static final int LITE_PRODUCT_ID = 180;
+    public static final int RENEWAL_PRODUCT_ID = 264;
+    public static final int LIFE_PRODUCT_ID = 563;
 
     public RenewalModalFlow(
-            Registration registration, Product product, UnlockNextWeek unlockNextWeek, CloudPage cloudPage,
+            Product product, UnlockNextWeek unlockNextWeek, CloudPage cloudPage,
             TtPage ttPage, SberPage sberPage, RevshareFlow revshareFlow, OrderToggleSubscriptionSteps orderToggleSubscriptionSteps
     ) {
         this.userProductsApi = new UserProductsApi(TestConfig.getCurrentApiUrl());
         this.productsSteps = new ProductsSteps(TestConfig.getCurrentApiUrl());
-        this.registration = registration;
         this.product = product;
         this.unlockNextWeek = unlockNextWeek;
         this.cloudPage = cloudPage;

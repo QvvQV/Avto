@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import ru.tutor.constants.AddressPage;
+import ru.tutor.flow.account.RenewalModalFlow;
 import ru.tutor.flow.admin.AdminFlow;
 import ru.tutor.flow.purchase.PurchaseFlow;
 import ru.tutor.flow.purchase.PurchaseResult;
@@ -43,7 +44,6 @@ public class ReactivatePremiumFlow {
     private final OrderDatesPage orderDatesPage;
     private final PaymentCycleExecutor paymentCycleExecutor;
     private final TestExecutionContext context;
-    private final Integer TEST_ORDER_ID = 180;
 
     private RecurrentPaymentTestExecutor testExecutor;
     private final OrderToggleSubscriptionSteps orderSteps;
@@ -181,8 +181,8 @@ public class ReactivatePremiumFlow {
             if (authToken == null) {
                 fetchAuthToken();
             }
-            step("POST /user/orders/toggle_subscription/" + TEST_ORDER_ID, () ->
-                    orderSteps.toggleOrderSubscription(authToken, TEST_ORDER_ID));
+            step("POST /user/orders/toggle_subscription/" + RenewalModalFlow.LITE_PRODUCT_ID, () ->
+                    orderSteps.toggleOrderSubscription(authToken, RenewalModalFlow.LITE_PRODUCT_ID));
         });
         return this;
     }

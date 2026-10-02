@@ -11,7 +11,6 @@ import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.flow.purchase.RevshareFlow;
 import ru.tutor.flow.tariff.LifetimeTariffFlow;
 import ru.tutor.flow.tariff.Premium99Flow;
-import ru.tutor.page.account.Registration;
 import ru.tutor.page.modals.Product;
 import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
@@ -37,7 +36,6 @@ public class CloudTest extends BaseUiTest {
     private final TtPage ttPage = new TtPage();
     private final CloudPage cloudPage = new CloudPage();
     private final SberPage sberPage = new SberPage();
-    private final Registration registration = new Registration();
     private final Product product = new Product();
     private final UnlockNextWeek unlockNextWeek = new UnlockNextWeek();
 
@@ -53,7 +51,7 @@ public class CloudTest extends BaseUiTest {
     private final PurchaseFlow purchaseFlow = new PurchaseFlow(ttPage, cloudPage, sberPage);
     private final RevshareFlow revshareFlow = new RevshareFlow(cloudPage, orderSteps);
     private final RegistrationFlow registrationFlow = new RegistrationFlow();
-    private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
+    private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(product, unlockNextWeek,
             cloudPage, ttPage, sberPage, revshareFlow, orderToggleSubscriptionSteps);
     private final LifetimeTariffFlow lifetimeTariffFlow = new LifetimeTariffFlow(
             purchaseFlow, cloudPage, unlockNextWeek, renewalModalFlow,
@@ -151,7 +149,8 @@ public class CloudTest extends BaseUiTest {
         }
     }
 
-    @Test
+//    @Test
+    @RepeatedTest(10)
     @Order(6)
     @Tag(Tags.E2E)
     @DisplayName("Оплата по тестовому домену")

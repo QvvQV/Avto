@@ -1,6 +1,5 @@
 package ru.tutor.flow.builder;
 
-import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ru.tutor.config.TestConfig;
 import ru.tutor.page.orders.CloudPage;
@@ -19,7 +18,6 @@ public class SubscriptionPurchaseBuilder {
     private TtPage.SubscriptionType subscriptionType;
     private PaymentSystem paymentSystem;
     private PaymentMethod paymentMethod;
-    private final boolean captureEmail = true;
     private boolean verifyError = false;
     private String expectedError;
 
@@ -134,12 +132,8 @@ public class SubscriptionPurchaseBuilder {
             } else {
                 processPaymentSystem(); // иначе продолжить оплату
 
-                if (captureEmail)
-                    captureUserEmail();
+                captureUserEmail();
 
-
-//                if (verifyError && expectedError != null)
-//                    verifyErrorMessage();
                 if (verifyError) {
                     if (expectedError == null) {
                         throw new IllegalAccessException(
@@ -186,7 +180,7 @@ public class SubscriptionPurchaseBuilder {
 
     // Универсальный метод с параметром для aff_rid
     private void openMainPageAndCheckTitle(boolean useAffRid) {
-//        String url = useAffRid ? AddressPage.URL_MAIN_REV : AddressPage.URL_MAIN;
+
         String url;
         if (customUrl != null) {
             url = customUrl;
@@ -233,23 +227,19 @@ public class SubscriptionPurchaseBuilder {
         if (paymentMethod == PaymentMethod.INSTALLMENTS) {
             payInstallments();
         } else {
-            cloudPage.setDateModal();
+            userEmail = cloudPage.setDateModal();
             cloudPage.clickCardPageBtn();
         }
 
-        if (captureEmail) {
-            userEmail = (paymentMethod == PaymentMethod.INSTALLMENTS)
-                    ? cloudPage.getCurrentEmail()
-                    : cloudPage.atrEmail();
-        }
+        userEmail = (paymentMethod == PaymentMethod.INSTALLMENTS)
+                ? cloudPage.getCurrentEmail()
+                : cloudPage.atrEmail();
     }
 
     private void processSberPayment() {
         sberPage.fillEmailAndProcessModal();
 
-        if (captureEmail) {
-            userEmail = sberPage.getLastUsedEmail();
-        }
+        userEmail = sberPage.getLastUsedEmail();
 
         TabManager.switchToNewWindow();
 
@@ -316,10 +306,10 @@ public class SubscriptionPurchaseBuilder {
             AllureAttachments.attachText("Платёжный шлюз", detected.name());
 
             if (detected == PaymentSystem.CLOUD) {
-               step("Фиксация iframe Cloud", () -> {
-                   verifyCloudPaymentWindow();         // iframe cloudpayments открыт
-                   AllureAttachments.attachScreenshot("Окно оплаты Cloud"); // фото
-               });
+                step("Фиксация iframe Cloud", () -> {
+                    verifyCloudPaymentWindow();         // iframe cloudpayments открыт
+                    AllureAttachments.attachScreenshot("Окно оплаты Cloud"); // фото
+                });
             } else {
                 step("Фиксация редиректа на стр Сбер", () -> {
                     TabManager.switchToNewWindow();
@@ -331,11 +321,8 @@ public class SubscriptionPurchaseBuilder {
     }
 
     private void verifyCloudPaymentWindow() {
-        boolean found = $$("iframe").stream().anyMatch(frame -> {
-            String src = frame.getAttribute("src");
-            return src != null && src.contains("cloudpayments");
-        });
-        assertTrue(found, "Окно оплаты Cloud не открылось (iframe cloudpayments не найден)");
+        assertTrue(cloudPage.isCloudPaymentFrameVisible(),
+                "Окно оплаты Cloud не откролось (iframe cloudpayments не найден)");
         AllureAttachments.attachText("Окно оплаты Cloud", "✓ iframe cloudpayments открыт");
     }
 
@@ -346,14 +333,7 @@ public class SubscriptionPurchaseBuilder {
     // Универсальный метод оплаты Cloud/Sber
 
     private PaymentSystem detectActiveGateway() {
-        sleep(2000);
-        for (SelenideElement iframe : $$("iframe")) {
-            String src = iframe.getAttribute("src");
-            if (src != null && src.contains("cloudpayments")) {
-                return PaymentSystem.CLOUD;
-            }
-        }
-        return PaymentSystem.SBER;
+        return cloudPage.isCloudPaymentFrameVisible() ? PaymentSystem.CLOUD : PaymentSystem.SBER;
     }
 
     private void processAutoPayment() {
@@ -403,4 +383,4 @@ public class SubscriptionPurchaseBuilder {
             }
         }
     }
-    }
+}

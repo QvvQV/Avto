@@ -1,5 +1,6 @@
 package ru.tutor.flow.admin;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.flow.purchase.PurchaseFlow;
 import ru.tutor.flow.purchase.PurchaseResult;
@@ -13,8 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class AdminPaymentFlow {
     private final PurchaseFlow purchaseFlow;
     private final CloudPage cloudPage;
-    private final AdminSteps  adminSteps;
-    private String userEmail;
+    private final AdminSteps adminSteps;
 
     public AdminPaymentFlow(PurchaseFlow purchaseFlow, CloudPage cloudPage, AdminSteps adminSteps) {
         this.purchaseFlow = purchaseFlow;
@@ -22,57 +22,48 @@ public class AdminPaymentFlow {
         this.adminSteps = adminSteps;
     }
 
+    private static final int PREMIUM_PAY = 399;
+    private static final int LITE_PAY = 99;
+    private static final int DAYS = 30;
+
+    private String createOrderAndGetOrderId(Allure.ThrowableRunnable<PurchaseResult> purchase, String stepName) {
+        PurchaseResult result = step(stepName, purchase);
+        String email = result.email();
+        assertNotNull(email, "email не должен быть null");
+        OrderSteps.validateSuccessfulPayment(cloudPage);
+        return adminSteps.assertOrderExists(email);
+    }
+
     @Step("Оплата заказа Premium в админке и проверка дат")
     public void payPremiumViaAdminAndCheckDates() {
         step("Создание заказа Премиум", () -> {
-            PurchaseResult result = purchaseFlow.premium();
-            userEmail = result.email();
-            assertNotNull(userEmail, "email не должен быть null");
+            String orderId = createOrderAndGetOrderId(purchaseFlow::premium, "Создание заказа Премиум");
+            adminSteps.createPaymentAndValidateDates(orderId, PREMIUM_PAY, DAYS);
         });
-        OrderSteps.validateSuccessfulPayment(cloudPage);
-        String orderId = adminSteps.assertOrderExists(userEmail);
-        adminSteps.createPaymentAndValidateDates(orderId, 399, 30);
     }
 
     @Step("Оплата заказа Lite (child Premium) в админке и проверка дат")
     public void payLiteViaAdminAndCheckDates() {
         step("Создание заказа Премиум (содержит дочерний Лайт)", () -> {
-            PurchaseResult result = purchaseFlow.lite();
-            userEmail = result.email();
-            assertNotNull(userEmail, "email не должен быть null");
+            String orderId = createOrderAndGetOrderId(purchaseFlow::lite, "Создание заказа Лайт");
+            adminSteps.createPaymentAndValidateDates(orderId, LITE_PAY, DAYS);
         });
-        OrderSteps.validateSuccessfulPayment(cloudPage);
-        String parentOrderId = adminSteps.assertOrderExists(userEmail);
-        String liteOrderId = adminSteps.findChildOrderId(parentOrderId);
-        adminSteps.createPaymentAndValidateDates(liteOrderId, 99, 30);
     }
 
     @Step("Отмена подписки заказа через админку и проверка флагов деактивации")
     public void unsubscribeOrderAndCheckDeactivation() {
-        step("Создание заказа Premium", () -> {
-            PurchaseResult result = purchaseFlow.premium();
-            userEmail = result.email();
-            assertNotNull(userEmail, "email не должен быть null");
-        });
-        OrderSteps.validateSuccessfulPayment(cloudPage);
-        String orderId = adminSteps.assertOrderExists(userEmail);
+        String orderId = createOrderAndGetOrderId(purchaseFlow::premium, "Создание заказа Премиум");
         adminSteps.unsubscribeOrder(orderId);
         adminSteps.assertOrderDeactivated(orderId);
     }
 
     @Step("Оплата Premium в админке + проверка дат + Refund")
-    public void payPremiumViaAdminAndRefund(){
-        step("Создание заказа Премиум", () -> {
-            PurchaseResult result = purchaseFlow.premium();
-            userEmail = result.email();
-            assertNotNull(userEmail, "email не должен быть null");
-        });
-        OrderSteps.validateSuccessfulPayment(cloudPage);
-        String orderId = adminSteps.assertOrderExists(userEmail);
-        adminSteps.createPaymentAndValidateDates(orderId, 399, 30);
+    public void payPremiumViaAdminAndRefund() {
+        String orderId = createOrderAndGetOrderId(purchaseFlow::premium, "Создание заказа Премиум");
+        adminSteps.createPaymentAndValidateDates(orderId, PREMIUM_PAY, DAYS);
 
         Integer paymentId = adminSteps.findRefundablePaymentId(orderId);
         adminSteps.refundPayment(paymentId);
-        adminSteps.assertRefundApplied(orderId, 399);
+        adminSteps.assertRefundApplied(orderId, PREMIUM_PAY);
     }
 }

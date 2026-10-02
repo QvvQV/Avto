@@ -59,7 +59,7 @@ public class OpeningModalWindowsFromTheMainPage extends BaseUiTest {
     private final PaymentMethodFlow paymentMethodFlow = new PaymentMethodFlow(ttPage, cloudPage, paymentApi, paymentSteps, sberPage);
     private final CardioLandingPage cardioLandingPage = new CardioLandingPage();
     private final CardioLandingFlow cardioLandingFlow = new CardioLandingFlow(cardioLandingPage, paymentApi, paymentSteps);
-    private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
+    private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(product, unlockNextWeek,
             cloudPage, ttPage, sberPage, revshareFlow,
             new OrderToggleSubscriptionSteps(TestConfig.getCurrentApiUrl()));
 

@@ -139,7 +139,7 @@ public class Home {
 
 
     @Step("Прохождение добавления курса")
-    public void walkthroughtAddingACourse(String productName) {
+    public void walkThroughtAddingACourse(String productName) {
         clickSearch();
         addCourse(productName);
         clickFromCourse();

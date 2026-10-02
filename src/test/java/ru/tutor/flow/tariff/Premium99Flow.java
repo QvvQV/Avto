@@ -76,7 +76,7 @@ public class Premium99Flow {
         hotNovelties.clickPremiumAccess99();
 
         cloudPage.clickCardPageBtn();
-        renewalModalFlow.verifyProductPresent(264);
+        renewalModalFlow.verifyProductPresent(RenewalModalFlow.RENEWAL_PRODUCT_ID);
     }
 
     @Step("Вход через refresh_token + приветственная модалка через API")

@@ -52,14 +52,18 @@ public class LifetimeTariffFlow {
         this.orderSteps = orderSteps;
     }
 
-    @Step("Создание пожизненного доступа у неактивного пользователя")
-    public void createLifetimeForInactiveUser() {
+    private void prepareInactiveUserDev() {
         PurchaseResult result = purchaseFlow.premium();
         OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
         assertNotNull(result.email(), "email не должен быть null");
 
         deactivateViaAdminApi(result.email());
         preparePersonalAccountAndPayTariff(result.email(), credentials);
+    }
+
+    @Step("Создание пожизненного доступа у неактивного пользователя")
+    public void createLifetimeForInactiveUser() {
+        prepareInactiveUserDev();
         payLifetimeViaUi();
     }
 
@@ -98,7 +102,7 @@ public class LifetimeTariffFlow {
         unlockNextWeek.openLifetimeAccess();
         cloudPage.clickCardPageBtn();
         WaitHelper.waitForPageLoad();
-        renewalModalFlow.verifyProductPresent(563);
+        renewalModalFlow.verifyProductPresent(RenewalModalFlow.LIFE_PRODUCT_ID);
     }
 
     @Step("Покупка Реневалла через UI: модалка реневалла -> Cloud iframe -> продукт 264")
@@ -107,7 +111,7 @@ public class LifetimeTariffFlow {
         new PaymentModal().clickOpenAccess();
         cloudPage.clickCardPageBtn();
         WaitHelper.waitForPageLoad();
-        renewalModalFlow.verifyProductPresent(264);
+        renewalModalFlow.verifyProductPresent(RenewalModalFlow.RENEWAL_PRODUCT_ID);
     }
 
     @Step("Покупка пожизненного у inactive-пользователя (prod)")
@@ -128,12 +132,7 @@ public class LifetimeTariffFlow {
 
     @Step("Реневалл: 'Открыть доступ' у неактивного пользователя (dev)")
     public void createRenewalForInactiveUser() {
-        PurchaseResult result = purchaseFlow.premium();
-        OrderSteps.PaymentCredentials credentials = OrderSteps.validateSuccessfulPayment(cloudPage);
-        assertNotNull(result.email(), "email не должен быть null");
-
-        deactivateViaAdminApi(result.email());
-        preparePersonalAccount(result.email(), credentials);
+        prepareInactiveUserDev();
         openAccessAndPayViaUi();
     }
 

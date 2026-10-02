@@ -35,7 +35,7 @@ public class OrderRenewal extends BaseUiTest {
     private final OrderToggleSubscriptionSteps orderToggleSubscriptionSteps = new OrderToggleSubscriptionSteps(TestConfig.getCurrentApiUrl());
 
     // ====FLOW====
-    private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(registration, product, unlockNextWeek,
+    private final RenewalModalFlow renewalModalFlow = new RenewalModalFlow(product, unlockNextWeek,
             cloudPage, ttPage, sberPage, revshareFlow, orderToggleSubscriptionSteps);
 
     //    ===Renewal в ЛК===
@@ -57,7 +57,7 @@ public class OrderRenewal extends BaseUiTest {
             cloudPage.clickCardPageBtn();
             refresh();
             WaitHelper.waitForPageLoad();
-            renewalModalFlow.verifyProductPresent(563);
+            renewalModalFlow.verifyProductPresent(RenewalModalFlow.LIFE_PRODUCT_ID);
         }
         renewalModalFlow.logoutAfterTest();
     }
@@ -72,7 +72,7 @@ public class OrderRenewal extends BaseUiTest {
         renewalModalFlow.login();
         renewalModalFlow.openPayments99AndAssertIframe();
         if (!TestConfig.isProd()) {
-            renewalModalFlow.verifyProductPresent(264);
+            renewalModalFlow.verifyProductPresent(RenewalModalFlow.RENEWAL_PRODUCT_ID);
         }
         renewalModalFlow.logoutAfterTest();
     }

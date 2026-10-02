@@ -35,10 +35,10 @@ public class HelloDash {
     private final SelenideElement BUTTON_CLOSE_MODAL = $("._close_1l2kq_40");
 
     // Локаторы модального окна знакомства с платформой
-    private static final SelenideElement BUTTON_OUT_MYSELF = $$("button").find(exactText("Нет, я хочу разобраться сам"));
+    private final SelenideElement BUTTON_OUT_MYSELF = $$("button").find(exactText("Нет, я хочу разобраться сам"));
 
     /** Пароль */
-    String password = TestConfig.getTestPassword();
+    private static final String password = TestConfig.getTestPassword();
 
     @Step("Заполнение приветственного модального окна")
     private void completeWelcomeModal() {
@@ -72,7 +72,7 @@ public class HelloDash {
         });
     }
 
-    @Step("Заполнение приветсвенного модального окна после регистрации")
+    @Step("Заполнение приветственного модального окна после регистрации")
     private void completeWelcomeModalAfterRegistration() {
         step("Ожидание и валидация модального окна", () -> {
             ACCESS_DATA_TITLE.shouldBe(visible, Duration.ofSeconds(10))
@@ -101,7 +101,7 @@ public class HelloDash {
     }
 
     @Step("Обработка окна знакомства с платформой")
-    private void hadlePlatformIntroduction() {
+    private void handlePlatformIntroduction() {
         step("закрытие приветственного модального окна", () -> {
             BUTTON_CLOSE_MODAL.shouldBe(visible, Duration.ofSeconds(3))
                     .shouldBe(interactable)
@@ -129,7 +129,7 @@ public class HelloDash {
     @Step("Заполнение окна приветствия для вновь зарегистрированных пользователей")
     public void fillingOutTheWelcomeWindow() {
         completeWelcomeModal();
-        hadlePlatformIntroduction();
+        handlePlatformIntroduction();
         verifyOnboardingCompletion();
     }
 

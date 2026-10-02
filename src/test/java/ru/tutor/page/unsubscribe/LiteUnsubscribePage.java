@@ -65,7 +65,7 @@ public class LiteUnsubscribePage {
     @Step("Получение текста заголовка")
     private String getHeaderText() {
         return step("Заголовок страницы", () -> {
-            String headerText = UniversalMethod.getElementText(H3_TEXT, "Заголовок старницы");
+            String headerText = UniversalMethod.getElementText(H3_TEXT, "Заголовок страницы");
             AllureAttachments.attachText("Заголовок страницы", headerText);
             return headerText;
         });
@@ -108,7 +108,7 @@ public class LiteUnsubscribePage {
             String actualHeader = getHeaderText();
 
             assertTrue(actualHeader.contains(state.getDisplayName()),
-                    "Ожидалось состоняие: " + state.getDisplayName() + " но было: " + actualHeader
+                    "Ожидалось состояние: " + state.getDisplayName() + " но было: " + actualHeader
                             );
 
             AllureAttachments.attachScreenshot("Состояние тарифа - " + state.getDisplayName());

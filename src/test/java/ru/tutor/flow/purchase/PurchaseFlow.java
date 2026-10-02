@@ -29,11 +29,15 @@ public class PurchaseFlow {
         return new PurchaseResult(result.userEmail());
     }
 
-    @Step("Оплата Премиума по Клауду")
-    public PurchaseResult premium() {
-        return purchase(b -> b.forSubscription(TtPage.SubscriptionType.PREMIUM)
+    private PurchaseResult standard(TtPage.SubscriptionType type) {
+        return purchase(b -> b.forSubscription(type)
                 .via(SubscriptionPurchaseBuilder.PaymentSystem.AUTO)
                 .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD));
+    }
+
+    @Step("Оплата Премиума по Клауду")
+    public PurchaseResult premium() {
+        return standard(TtPage.SubscriptionType.PREMIUM);
     }
 
     @Step("Оплата Премиума по aff_rid ссылке Клауд")
@@ -46,9 +50,7 @@ public class PurchaseFlow {
 
     @Step("Оплата Пожизненного доступа по Клауду")
     public PurchaseResult life() {
-        return purchase(b -> b.forSubscription(TtPage.SubscriptionType.LIFE)
-                .via(SubscriptionPurchaseBuilder.PaymentSystem.AUTO)
-                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD));
+        return standard(TtPage.SubscriptionType.LIFE);
     }
 
     @Step("Оплата долями по Клауду")
@@ -78,9 +80,7 @@ public class PurchaseFlow {
 
     @Step("Оплата Лайт по Клауду")
     public PurchaseResult lite() {
-        return purchase(b -> b.forSubscription(TtPage.SubscriptionType.LITE)
-                .via(SubscriptionPurchaseBuilder.PaymentSystem.AUTO)
-                .withPaymentMethod(SubscriptionPurchaseBuilder.PaymentMethod.STANDARD));
+        return standard(TtPage.SubscriptionType.LITE);
     }
 
     @Step("Оплата Премиум по карте Сбер с фиксированным остатком")

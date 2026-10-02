@@ -8,7 +8,6 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.utils.WaitHelper;
 import ru.tutor.utils.UniversalMethod;
 
-import java.time.Duration;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Random;
@@ -52,7 +51,7 @@ public class GreetingsModal {
     private final SelenideElement END_TIME = END_TIME_CONTAINER.$(".css-b06pby-placeholder");
     private final SelenideElement CLOSE_BUTTON = $x("//button[contains(@class, '_close_')]");
 
-    String password = TestConfig.getTestPassword();
+    private static final String password = TestConfig.getTestPassword();
 
     @Step("Заполнение данными для доступа быстрая форма")
     public void fillAccessInput() {
@@ -94,7 +93,7 @@ public class GreetingsModal {
         UniversalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         UniversalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         WaitHelper.waitForAnimationComplete();
-        step("Выбрать интересы", new GreetingsModal()::randomInterest
+        step("Выбрать интересы", this::randomInterest
         );
         UniversalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
         step("Ввод номер телефона", () -> enterRussianPhone(faker.phoneNumber().cellPhone())
@@ -111,7 +110,7 @@ public class GreetingsModal {
 
     @Step("Заполнение двух пунктов в приветственной модалке")
     public void fillOutTwoFieldsWelcomeModal() {
-        step("Заполнение двух пунктов в приветсвенной модалке", () -> {
+        step("Заполнение двух пунктов в приветственной модалке", () -> {
             String name = faker.name().firstName();
 
             UniversalMethod.safeClick(NEXT_STEP_BUTTON, NEXT_STEP_TEXT);
