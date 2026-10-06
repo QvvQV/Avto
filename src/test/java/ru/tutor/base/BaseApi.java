@@ -99,6 +99,16 @@ public abstract class BaseApi {
                 .response();
     }
 
+    @Step("GET запрос к {endpoint} с query-параметрами")
+    protected Response getWithQuery(String endpoint, String token, Map<String, Object> queryParams) {
+        return given(baseSpec)
+                .header("Authorization", "Bearer " + token)
+                .queryParams(queryParams)
+                .log().all()
+                .when().get(endpoint)
+                .then().log().ifError().extract().response();
+    }
+
     // Дополнительные методы для разных типов контента
     @Step("POST запрос с form-data к {endpoint}")
     protected Response postFormData(String endpoint, String token, Map<String, String> fields) {

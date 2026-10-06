@@ -9,7 +9,6 @@ import ru.tutor.flow.purchase.PurchaseFlow;
 import ru.tutor.flow.club.ReferralChainFlow;
 import ru.tutor.flow.account.RenewalModalFlow;
 import ru.tutor.flow.purchase.RevshareFlow;
-import ru.tutor.page.account.Registration;
 import ru.tutor.page.modals.Product;
 import ru.tutor.page.modals.UnlockNextWeek;
 import ru.tutor.page.orders.CloudPage;
@@ -75,6 +74,7 @@ public class Referrals extends BaseUiTest {
 
         step("Этап 5: проверка баланса Родителя после цепочки",
                 () -> referralChainFlow.verifyParentBalance(chain.parent(), PARENT_EXPECTED_BALANCE));
+        step("Этап 6: проверка списка рефералов Родителя", () -> referralChainFlow.verifyParentReferrals(chain));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class Referrals extends BaseUiTest {
     @Order(9)
     @Tag(Tags.E2E)
     @Tag(Tags.UI_API)
-    @DisplayName("Премиум + Пожизненный (semi)")
+    @DisplayName("Премиум(semi) + Пожизненный ")
     void premiumShareAndLife() {
         assumeTrue(!TestConfig.isProd(), "Тест запускается только на dev-окружение");
 

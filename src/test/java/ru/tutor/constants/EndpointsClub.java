@@ -84,4 +84,9 @@ public final class EndpointsClub {
      * Создание заявки на выплату
      */
     public static final String USER_CLUB_V2_PAYOUTS = "/user/club/v2/payouts";
+
+    /**
+     * Рефералы текущего пользователя с пагинацией, сортировкой и summary
+     */
+    public static final String USER_CLUB_V2_REFERRALS = "/user/club/v2/referrals";
 }

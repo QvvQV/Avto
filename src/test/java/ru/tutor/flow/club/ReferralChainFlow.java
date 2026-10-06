@@ -11,6 +11,7 @@ import ru.tutor.flow.account.RenewalModalFlow;
 import ru.tutor.model.admin.PaymentType;
 import ru.tutor.model.club.ClubLinkResponse;
 import ru.tutor.model.club.ClubPayoutRequisitesRequest;
+import ru.tutor.model.club.ClubReferralsResponse;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.steps.account.AccountSteps;
 import ru.tutor.steps.admin.AdminSteps;
@@ -25,8 +26,7 @@ import java.util.function.Function;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ReferralChainFlow {
 
@@ -36,6 +36,11 @@ public class ReferralChainFlow {
     private static final int AFTER_LIFE = 3000;
     private static final int AFTER_LIFE_PREMIUM_PRICE = 2601;
     private static final List<Integer> CLUB_LINK_PRODUCT_IDS = List.of(220, 170, 259);
+    private static final int REFERRALS_LIMIT = 10;
+    private static final int REFERRALS_PAGE = 1;
+    private static final int EXPECTED_REFERRALS_TOTAL = 3;
+    private static final int EXPECTED_PREMIUM_REFERRALS =1;
+    private static final int EXPECTED_LIFETIME_REFERRALS = 2;
 
     private final PurchaseFlow purchaseFlow;
     private final CloudPage cloudPage;
@@ -234,6 +239,57 @@ public class ReferralChainFlow {
     @Step("Этап 5: Проверка баланса Родителя (ожидается {expectedBalance})")
     public void verifyParentBalance(Parent parent, int expectedBalance) {
         clubSteps.getAndValidatePayoutSummary(parent.token(), expectedBalance, expectedBalance, false, false);
+    }
+
+    @Step("Этап 6: Проверка списка рефералов Родителя (3 реферала: 1 premium + 2 lifetime)")
+    public void verifyParentReferrals(Chain chain) {
+        ClubReferralsResponse referrals = clubSteps.getAndValidateClubReferrals(
+                chain.parent().token(), REFERRALS_LIMIT, REFERRALS_PAGE);
+        step("Сверка состава рефералов Родителя", () ->
+                assertAll("Состава рефералов Родителя",
+                        () -> assertEquals(EXPECTED_REFERRALS_TOTAL, referrals.pagination().total(),
+                                "pagination.total должен быть 3"),
+                        () -> assertEquals(EXPECTED_REFERRALS_TOTAL, referrals.safeItems().size(),
+                                "В items должно быть 3 реферала"),
+                        () -> assertEquals(1, referrals.pagination().pages(),
+                                "pagination.pages должен быть 1"),
+                        () -> assertEquals(0, referrals.countWithoutSubscription(),
+                                "Все рефералы цепочки должны иметь подписку"),
+                        () -> assertEquals(EXPECTED_PREMIUM_REFERRALS, referrals.summary().premium(),
+                                "summary.premium должен быть 1"),
+                        () -> assertEquals(EXPECTED_LIFETIME_REFERRALS, referrals.summary().lifetime(),
+                                "summary.lifetime должен быть 2"),
+                        () -> assertEquals(0, referrals.summary().trial(),
+                                "summary.trial должен быть 0"),
+                        () -> assertEquals(0, referrals.summary().lite(),
+                                "summary.lite должен быть 0"),
+                        () -> assertEquals(0, referrals.summary().paymentError(),
+                                "summary.paymentError должен быть 0"),
+                        () -> assertEquals(0, referrals.summary().unsubscribed(),
+                                "summary.unsubscribed должен быть 0"),
+                        () -> assertEquals(referrals.summary().total(), referrals.pagination().total(),
+                                "Без рефералов без подписки summary.total должен совпадать с pagination.total")));
+
+        step("Проверка структуры, сортировки и сверки summary с items", () -> {
+            clubSteps.validateReferralsItems(referrals.items());
+            clubSteps.validateReferralsSortedByIncomePerMonthDesc(referrals.items());
+            clubSteps.validateReferralsSummaryMatchesItems(referrals);
+        });
+
+        step("Проверка активности подписок и ссылок рефералов", () ->
+                assertAll("Статусы и ссылки рефералов",
+                        () -> assertTrue(referrals.safeItems().stream()
+                                        .allMatch(item -> item.subscriptionStatus().
+                                                isActiveSubscription()),
+                                "Все рефералы цепочки должны иметь активную подписку"),
+                        () -> assertEquals(EXPECTED_REFERRALS_TOTAL, referrals.
+                                        linkNames().size(),
+                                "У каждого реферала должна быть ссылка"),
+                        () -> assertTrue(referrals.linkNames().stream()
+                                        .allMatch(name -> name != null && !name.isBlank(
+                                        ) && !"null".equals(name)),
+                                "link.name должен быть непустым и не строкой \"null\""))
+        );
     }
 
     @Step("Создание Премиум-заказа + оплата 399 в админке + шеринг")

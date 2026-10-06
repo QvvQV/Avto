@@ -24,9 +24,9 @@ public class AdminApi extends BaseApi {
         return post(EndpointsAdmin.ADMIN_LOGIN, Map.of("username", username, "password", password));
     }
 
-    @Step("Извлечение cookie AUTH_ADMIN из ответа login")
+    @Step("Извлечение cookie ADMINSESSID из ответа login")
     public String extractAdminToken(Response loginResponse) {
-        return loginResponse.getCookie("AUTH_ADMIN");
+        return loginResponse.getCookie("ADMINSESSID");
     }
 
     @Step("GET /admin/orders?filter[email] - поиск заказов по email")
@@ -57,7 +57,7 @@ public class AdminApi extends BaseApi {
     }
 
     private RequestSpecification withAdminCookie(String adminToken) {
-        return given(baseSpec).header("Cookie", "AUTH_ADMIN=" + adminToken);
+        return given(baseSpec).header("Cookie", "ADMINSESSID=" + adminToken);
     }
 
     @Step("POST /admin/payments/create - оплата заказа в админке")

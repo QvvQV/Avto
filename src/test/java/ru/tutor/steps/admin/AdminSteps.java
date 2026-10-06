@@ -28,11 +28,11 @@ public class AdminSteps extends BaseApiSteps {
         this.adminApi = new AdminApi(baseUrl);
     }
 
-    @Step("Авторизация админа (AUTH_ADMIN cookie)")
+    @Step("Авторизация админа (ADMINSESSID cookie)")
     public AdminSteps login() {
         Response resp = adminApi.login(ADMIN_USERNAME, ADMIN_PASSWORD);
         adminToken = adminApi.extractAdminToken(resp);
-        assertNotNull(adminToken, "Cookie AUTH_ADMIN не получена в ответе /admin/login");
+        assertNotNull(adminToken, "Cookie ADMINSESSID не получена в ответе /admin/login");
         return this;
     }
 

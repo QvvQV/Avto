@@ -149,8 +149,7 @@ public class CloudTest extends BaseUiTest {
         }
     }
 
-//    @Test
-    @RepeatedTest(10)
+    @Test
     @Order(6)
     @Tag(Tags.E2E)
     @DisplayName("Оплата по тестовому домену")

@@ -12,6 +12,10 @@ public class ClubApi extends BaseApi {
         super(baseUrl);
     }
 
+    private static final Map<String, Object> DEFAULT_REFERRALS_QUERY = Map.of(
+            "limit", 10, "page", 1, "sort", "incomePerMonth", "direction", "desc"
+    );
+
     /**
      * GET /user/club/statistics - получение статистики клуба
      */
@@ -110,27 +114,16 @@ public class ClubApi extends BaseApi {
     }
 
     /**
-     * GET /user/{userId}/club/referrals - список рефералов пользователя"
+     * GET /user/club/v2/referrals - рефералы текущего пользователя (дефолтные параметры)
      */
-    public Response getUserReferrals(String authToken, int userId) {
-        return getWithToken(String.format(EndpointsClub.USER_CLUB_REFERRALS, userId), authToken);
+    public Response getClubReferrals(String authToken) {
+        return getWithQuery(EndpointsClub.USER_CLUB_V2_REFERRALS, authToken, DEFAULT_REFERRALS_QUERY);
     }
 
     /**
-     * GET /user/{userId}/club/referrals/{referralId} - детали рефферала
+     * GET /user/club/v2/referrals - рефералы текущего пользователя с заданными параметрами
      */
-    public Response getUserReferralById(String authToken, int userId, int referralId) {
-        return getWithToken(
-                String.format(EndpointsClub.USER_CLUB_REFERRALS_ID, userId, referralId), authToken
-        );
-    }
-
-    /**
-     * GET /user/{userId}/club/referrals/{referralId}/referrals - рефералы реферала
-     */
-    public Response getUserReferralRefferrals(String authToken, int userId, int referralId) {
-        return getWithToken(
-                String.format(EndpointsClub.USER_CLUB_REFERRALS_ID_REFERRALS,  userId, referralId), authToken
-        );
+    public Response getClubReferrals(String authToken, Map<String, Object> queryParams) {
+        return getWithQuery(EndpointsClub.USER_CLUB_V2_REFERRALS, authToken, queryParams);
     }
 }
