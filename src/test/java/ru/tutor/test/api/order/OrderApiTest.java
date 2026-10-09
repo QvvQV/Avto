@@ -18,7 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 
 // Получение токен для авторов TP-5735 Регистрация для авторов. Ленд - https://authors.tutorplace.ru/
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Feature("Создание заказа")
 @DisplayName("Тесты для эндпоинта создания заказа")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Tag(Tags.INTEGRATION)
 public class OrderApiTest {
 
     private static final String CREATE_ORDER_ENDPOINT = "/order";

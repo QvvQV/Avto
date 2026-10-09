@@ -6,11 +6,13 @@ import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import ru.tutor.flow.account.RenewalModalFlow;
 import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.catalog.ProductsSteps;
 import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
 import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
@@ -18,6 +20,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты переключения подписки")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
+@Tag(Tags.INTEGRATION)
 public class OrderToggleSubscriptionTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -27,6 +30,8 @@ public class OrderToggleSubscriptionTest {
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
     private final GameWheelRewardsSteps gameWheelRewardsSteps = new GameWheelRewardsSteps(BASE_URL);
     private final OrderToggleSubscriptionSteps orderSteps = new OrderToggleSubscriptionSteps(BASE_URL);
+    private final ProductsSteps productsSteps = new ProductsSteps(BASE_URL);
+    private static final String LITE_PRODUCT_ID = String.valueOf(RenewalModalFlow.LITE_PRODUCT_ID);
 
 
     private static String token;
@@ -52,18 +57,31 @@ public class OrderToggleSubscriptionTest {
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void toggleOrderSubscriptionSuccess() {
-        Response response = step("POST /user/orders/toggle_subscription/" + RenewalModalFlow.LITE_PRODUCT_ID, () ->
+        step("Нормализация: возврат на премиум", () -> orderSteps.restorePremium(token));
+
+        step("До переключения Лайт отсутствует (ожидается Реневалы)", () ->
+                productsSteps.assertProductAbsent(token, LITE_PRODUCT_ID));
+        Response response = step("POST /user/orders/toggle_subscription/" + LITE_PRODUCT_ID, () ->
                 orderSteps.toggleOrderSubscription(token, RenewalModalFlow.LITE_PRODUCT_ID)
         );
 
         step("Анализ формата ответа", () ->
                 orderSteps.analyzeResponseFormat(response)
         );
+        step("Статус 200", () -> orderSteps.validateToggleSubscriptionResponse(response));
+        step("После переключения появился Лайт New", () -> {
+            productsSteps.assertProductPresent(token, LITE_PRODUCT_ID);
+        });
+
         Response restorePremium = step("POST /user/orders/restore-premium", () ->
                 orderSteps.restorePremium(token)
         );
         step("Валидация ответа", () ->
                 orderSteps.validateRestorePremiumResponse(restorePremium));
+
+        step("После restore вернулся Реневал", () -> {
+            productsSteps.assertProductAbsent(token, LITE_PRODUCT_ID);
+        });
     }
 
     @Test
@@ -72,6 +90,7 @@ public class OrderToggleSubscriptionTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailWithoutAuthorization() {
         Response response = step("Отправка POST запроса без токена", () ->
                 orderSteps.toggleOrderSubscription("", RenewalModalFlow.LITE_PRODUCT_ID)
@@ -88,6 +107,7 @@ public class OrderToggleSubscriptionTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailWithoutTokenRestorePremium() {
         Response response = step("POST /user/orders/restore-premium - восстановление премиум без авторизации", () ->
                 orderSteps.restorePremium("")
@@ -102,6 +122,7 @@ public class OrderToggleSubscriptionTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailInvalidTokenRestorePremium() {
         Response response = step("POST /user/orders/restore-premium - восстановление премиум без авторизации", () ->
                 orderSteps.restorePremium("invalid")

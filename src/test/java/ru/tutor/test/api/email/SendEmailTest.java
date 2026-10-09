@@ -5,14 +5,19 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.tutor.steps.catalog.SendEmailSteps;
 import ru.tutor.config.TestConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ru.tutor.constants.Tags;
+
 @Epic("Отправка писем")
 @Story("Отправка письма")
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class SendEmailTest {
     private final SendEmailSteps sendEmailSteps = new SendEmailSteps(TestConfig.getCurrentApiUrl());
 

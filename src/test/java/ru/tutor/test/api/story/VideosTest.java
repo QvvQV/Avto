@@ -15,6 +15,8 @@ import ru.tutor.constants.Tags;
 @Feature("Видео-подкасты")
 @DisplayName("Тесты эндпоинтов видео")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class VideosTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());

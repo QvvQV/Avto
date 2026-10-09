@@ -18,6 +18,8 @@ import ru.tutor.constants.Tags;
 @Feature("Дашборды")
 @DisplayName("Тесты эндпоинта dashboard/info")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class DashboardInfoTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());

@@ -18,6 +18,8 @@ import ru.tutor.constants.Tags;
 @Feature("История платежей")
 @DisplayName("Тесты эндпоинта GET /user/orders/payments")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class OrderPaymentsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -41,7 +43,6 @@ public class OrderPaymentsTest {
     @DisplayName("Успешное получение истории платежей")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.SMOKE)
     void getOrderPaymentsSuccess() {
         Response response = step("GET /user/orders/payments", () ->
                 orderSteps.getOrdersPayments(token)
@@ -86,7 +87,6 @@ public class OrderPaymentsTest {
     @DisplayName("Успешное получение информации по бонусному доступу")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.SMOKE)
     void getOrderBonusPaymentsSuccess() {
         Response response = step("GET /user/orders/bonus-access-info", () ->
                 orderSteps.getOrdersBonusAccessInfo(token)
@@ -131,7 +131,6 @@ public class OrderPaymentsTest {
     @DisplayName("Успешное получение информации по состоянию подписки")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.SMOKE)
     void getOrderSubscriptionStateSuccess() {
         Response response = step("GET /user/orders/subscription/state", () ->
                 orderSteps.getOrdersSubscriptionState(token)

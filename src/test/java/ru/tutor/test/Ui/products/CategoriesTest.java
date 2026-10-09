@@ -20,6 +20,7 @@ import ru.tutor.constants.Tags;
 @Epic("Каталог курсов")
 @Feature("Блок категорий на главной странице")
 @DisplayName("Тестирование блока категорий")
+@Tag(Tags.E2E)
 public class CategoriesTest extends BaseUiTest {
 
     private final Catalog catalog = new Catalog();

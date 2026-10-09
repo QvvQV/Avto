@@ -4,24 +4,23 @@ import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import ru.tutor.config.TestConfig;
-import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.flow.account.FreshUserFixture;
 import ru.tutor.steps.fortune.TasksSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import ru.tutor.constants.Tags;
+
+import java.util.Map;
+import java.util.Set;
 
 @Epic("API Тесты пользователя")
 @Feature("Система заданий")
 @DisplayName("Тесты эндпоинтов заданий")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class UserTasksTest {
 
     private final TasksSteps userSteps = new TasksSteps(TestConfig.getCurrentApiUrl());
-    private final AuthSteps authSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
-    private final String TEST_EMAIL = TestConfig.getTestEmail();
-    private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
 
@@ -33,17 +32,14 @@ public class UserTasksTest {
 
     @BeforeEach
     void setUpAuth() {
-        // Логин перед каждым тестом
-        token = step("Логин пользователя", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
+        token = step("Создание нового пользователя", () -> new FreshUserFixture().register().token());
     }
 
     @Test
-    @Order(1)
     @DisplayName("GET /user/tasks - успешное получение списка заданий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getTasksSuccess() {
         Response response = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -54,10 +50,10 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(2)
     @DisplayName("GET /user/tasks - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getTasksWithoutAuth() {
         Response response = step("GET /user/tasks без токена", () ->
                 userSteps.getTasks("")
@@ -67,10 +63,10 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(3)
     @DisplayName("GET /user/tasks - инвалид токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getTasksInvalidToken() {
         Response response = step("GET /user/tasks инвалид токен", () ->
                 userSteps.getTasks("invalid")
@@ -80,7 +76,6 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(4)
     @DisplayName("POST /user/tasks/change/{id} - замена задания")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
@@ -93,28 +88,22 @@ public class UserTasksTest {
         String taskId = step("Извлечение id задания", () ->
                 userSteps.extractFirstTaskId(tasksResponse)
         );
+        Set<String> idsBefore = step("id заданий до замены", () ->
+                userSteps.extractTaskIds(tasksResponse));
         Response changeResponse = step("POST /user/tasks/change/" + taskId, () ->
                 userSteps.changeTask(token, taskId)
         );
-        step("Проверка статуса", () -> {
-            int statusCode = changeResponse.getStatusCode();
-            if (statusCode == 200) {
-                assertEquals(200, changeResponse.getStatusCode());
-            } else if (statusCode == 500) {
-                String detail = changeResponse.jsonPath().getString("detail");
-                assertEquals("USER_HAS_ALREADY_CHANGED_THE_TASK", detail,
-                        "Ожидаемая бизнес-ошибка, а не неизвестная");
-            } else {
-                fail("Неожиданный статус: " +  statusCode);
-            }
-        });
+        step("Проверка статуса 200", () ->
+            assertEquals(200, changeResponse.getStatusCode()));
+        step("Задание заменено (старый id исчез, появился новый)", () ->
+                userSteps.assertTaskReplaced(token, taskId, idsBefore));
     }
 
     @Test
-    @Order(5)
     @DisplayName("POST /user/tasks/change/{id} - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void changeTaskWithoutAuth() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -132,10 +121,10 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(6)
     @DisplayName("POST /user/tasks/change/{id} - инвалид токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void changeTaskInvalidToken() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -153,10 +142,10 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(7)
     @DisplayName("POST /user/tasks/change/{id} - невалидный номер")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void changeTaskEmpty() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -174,7 +163,6 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(8)
     @DisplayName("POST /user/tasks/finish/{id} - завершение задания")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
@@ -187,19 +175,24 @@ public class UserTasksTest {
         String taskId = step("Извлечение id задания", () ->
                 userSteps.extractFirstTaskId(tasksResponse)
         );
+        Map<String, Object> beforeTask = step("Объект задания до finish", () ->
+                userSteps.extractTaskMap(tasksResponse, taskId));
         Response changeResponse = step("POST /user/tasks/finish/" + taskId, () ->
                 userSteps.finishTask(token, taskId)
         );
         step("Проверка статуса 200", () ->
                 assertEquals(200, changeResponse.getStatusCode())
         );
+
+        step("Задание изменилось после finish", () ->
+                userSteps.assertTaskObjectChanged(token, taskId, beforeTask));
     }
 
     @Test
-    @Order(9)
     @DisplayName("POST /user/tasks/finish/{id} - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void finishTaskWithoutAuth() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -209,7 +202,7 @@ public class UserTasksTest {
         String taskId = step("Извлечение id задания", () ->
                 userSteps.extractFirstTaskId(tasksResponse)
         );
-        Response changeResponse = step("POST /user/tasks/change/" + taskId, () ->
+        Response changeResponse = step("POST /user/tasks/change/ Пустой токен" + taskId, () ->
                 userSteps.finishTask("", taskId)
         );
         step("Проверка статуса 401", () ->
@@ -217,10 +210,10 @@ public class UserTasksTest {
     }
 
     @Test
-    @Order(10)
     @DisplayName("POST /user/tasks/finish/{id} - пустой номер")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void finishTaskEmptyId() {
         Response tasksResponse = step("GET /user/tasks", () ->
                 userSteps.getTasks(token)
@@ -230,7 +223,7 @@ public class UserTasksTest {
         String taskId = step("Извлечение id задания", () ->
                 userSteps.extractFirstTaskId(tasksResponse)
         );
-        Response changeResponse = step("POST /user/tasks/change/" + taskId, () ->
+        Response changeResponse = step("POST /user/tasks/change/ Пустой {id}" + taskId, () ->
                 userSteps.finishTask(token, "")
         );
         step("Проверка статуса 404", () ->

@@ -15,6 +15,8 @@ import ru.tutor.constants.Tags;
 @Feature("Мини-курсы")
 @DisplayName("Тесты эндпоинта '/user/mini-workouts'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class MiniWorkoutsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

@@ -9,8 +9,10 @@ import ru.tutor.page.account.Registration;
 import ru.tutor.constants.AddressPage;
 
 import static com.codeborne.selenide.Selenide.*;
-import static io.qameta.allure.Allure.step;
+import static io.qameta.allure.Allure.step;
+import ru.tutor.constants.Tags;
 
+@Tag(Tags.E2E)
 public class LoginTest extends BaseUiTest {
 
     private final Registration registration = new Registration();

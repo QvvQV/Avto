@@ -33,6 +33,7 @@ import ru.tutor.constants.Tags;
 @Epic("Платежи через Cloud/валидной картой Sber")
 @Feature("Тестирование различных сценариев оплаты")
 @DisplayName("🧪 Тестирование платежной системы Cloud/валидной картой Sber")
+@Tag(Tags.E2E)
 public class OpeningModalWindowsFromTheMainPage extends BaseUiTest {
 
     private final AdminOrdersPage adminOrdersPage = new AdminOrdersPage();

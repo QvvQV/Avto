@@ -21,6 +21,8 @@ import ru.tutor.constants.Tags;
 @Feature("Игровое колесо")
 @DisplayName("Тесты эндпоинта игрового колес. История получения призов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class UserRewardHistoryTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

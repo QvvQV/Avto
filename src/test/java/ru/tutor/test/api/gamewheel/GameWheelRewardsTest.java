@@ -19,6 +19,8 @@ import ru.tutor.constants.Tags;
 @Feature("Игровое колесо")
 @DisplayName("Тесты эндпоинта игрового колеса")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class GameWheelRewardsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

@@ -26,6 +26,7 @@ import ru.tutor.constants.Tags;
 
 @Tag(Tags.UI)
 @Story("Отписка пользователя от платформы")
+@Tag(Tags.E2E)
 public class UnsubscribeTest extends BaseUiTest {
 
     private static final TtPage ttPage = new TtPage();

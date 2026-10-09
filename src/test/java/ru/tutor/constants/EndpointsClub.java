@@ -89,4 +89,54 @@ public final class EndpointsClub {
      * Рефералы текущего пользователя с пагинацией, сортировкой и summary
      */
     public static final String USER_CLUB_V2_REFERRALS = "/user/club/v2/referrals";
+
+    /**
+     * Аналитика главной клуба v2
+     */
+    public static final String USER_CLUB_V2_HOME_ANALYTICS = "/user/club/v2/home/analytics";
+
+    /**
+     * Баннеры клуба v2
+     */
+    public static final String USER_CLUB_V2_HOME_BANNERS = "/user/club/v2/home/banners";
+
+    /**
+     * Ссылки участника клуба v2
+     */
+    public static final String USER_CLUB_V2_HOME_LINKS = "/user/club/v2/home/links";
+
+    /**
+     * Новости клуба v2
+     */
+    public static final String USER_CLUB_V2_HOME_NEWS = "/user/club/v2/home/news";
+
+    /**
+     * Детальная информация новости клуба v2
+     */
+    public static final String USER_CLUB_V2_HOME_NEWS_ID = "/user/club/v2/home/news/%s";
+
+    /**
+     * Аналитика ссылок клуба v2
+     */
+    public static final String USER_CLUB_V2_ANALYTICS_LINKS = "/user/club/v2/analytics/links";
+
+    /**
+     * Аналитика дохода по уровням клуба v2
+     */
+    public static final String USER_CLUB_V2_ANALYTICS_MONTHLY_INCOME = "/user/club/v2/analytics/monthly-income";
+
+    /**
+     * Сводка по ссылкам клуба v2
+     */
+    public static final String USER_CLUB_V2_LINKS_SUMMARY = "/user/club/v2/links/summary";
+
+    /**
+     * Детальная информация реферала клуба v2
+     */
+    public static final String USER_CLUB_V2_REFERRALS_ID = "/user/club/v2/referrals/%s";
+
+    /**
+     * Дерево рефералов конкретного реферала клуба v2
+     */
+    public static final String USER_CLUB_V2_REFERRALS_ID_REFERRALS = "/user/club/v2/referrals/%s/referrals";
 }

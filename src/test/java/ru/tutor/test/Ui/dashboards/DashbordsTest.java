@@ -21,7 +21,8 @@ import ru.tutor.utils.WaitHelper;
 import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.*;
-import static io.qameta.allure.Allure.step;
+import static io.qameta.allure.Allure.step;
+import ru.tutor.constants.Tags;
 
 @Epic("Дашборды и onboarding")
 @Feature("Процесс onboarding нового пользователя")
@@ -30,6 +31,7 @@ import static io.qameta.allure.Allure.step;
 @Execution(ExecutionMode.SAME_THREAD)
 
 
+@Tag(Tags.E2E)
 public class DashbordsTest extends BaseUiTest {
 
     private final TtPage ttPage = new TtPage();

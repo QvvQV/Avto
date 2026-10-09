@@ -23,6 +23,7 @@ import ru.tutor.constants.Tags;
 @Feature("Регистрация пользователей")
 @DisplayName("тесты эндпоинта /register")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class RegistrationTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -39,7 +40,6 @@ public class RegistrationTest {
     @Order(1)
     @DisplayName("✅ Успешная регистрация нового пользователя")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.SMOKE)
     @Tag(Tags.POSITIVE)
     void registerNewUser_Success() {
         RegistrationRequest request = RegistrationRequest.generateRandom();
@@ -95,7 +95,6 @@ public class RegistrationTest {
     @Order(3)
     @DisplayName("✅ Регистрация и автоматический вход")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.INTEGRATION)
     void registerAndLogin_Success() {
         RegistrationRequest request = RegistrationRequest.generateRandom();
 
@@ -120,6 +119,7 @@ public class RegistrationTest {
     @DisplayName("❌ Регистрация без согласия с политикой")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void registerWithoutPolicyApproval_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithoutPolicyApproval();
 
@@ -137,6 +137,7 @@ public class RegistrationTest {
     @DisplayName("❌ Регистрация с невалидным email")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void registerWithInvalidEmail_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithInvalidEmail();
 
@@ -154,6 +155,7 @@ public class RegistrationTest {
     @DisplayName("❌ Регистрация с пустым именем")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void registerWithEmptyName_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithEmptyName();
 
@@ -171,6 +173,7 @@ public class RegistrationTest {
     @DisplayName("❌ Регистрация с коротким паролем")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void registerWithShortPassword_ShouldFail() {
         RegistrationRequest request = RegistrationRequest.generateWithShortPassword();
 
@@ -274,6 +277,7 @@ public class RegistrationTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("🚫 Регистрация с существующим email")
     @Order(12)
+    @Tag(Tags.CONTRACT)
     void registrationWithExistingEmail_ConflictCheck() {
         RegistrationRequest request = new RegistrationRequest("tp5052_2@test.ru", "Test User", "", TEST_PASSWORD,"", true, 0);
         Response response = step("Регистрация с существующим email", () ->
@@ -288,6 +292,7 @@ public class RegistrationTest {
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("🚫 Регистрация с пустым email")
     @Order(13)
+    @Tag(Tags.CONTRACT)
     void registrationWithEmptyEmail_ValidationError() {
         RegistrationRequest request = new RegistrationRequest("", TEST_FIRST_NAME, "", TEST_PASSWORD, "", true, 0);
         Response response = step("Регистрация с пустым email", () ->
@@ -312,6 +317,7 @@ public class RegistrationTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
 
+    @Tag(Tags.CONTRACT)
     void registrationWithInvalidEmailFormats_ValidationErrors(String invalidEmail) {
         RegistrationRequest request = RegistrationRequest.generateRandom();
         RegistrationRequest customRequest = new RegistrationRequest(

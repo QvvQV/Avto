@@ -16,6 +16,8 @@ import ru.tutor.constants.Tags;
 @Feature("Курсы")
 @DisplayName("Тесты эндпоинтов курсов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class CoursesTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());

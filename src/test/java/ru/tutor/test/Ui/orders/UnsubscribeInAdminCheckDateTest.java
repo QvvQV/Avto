@@ -3,6 +3,7 @@ package ru.tutor.test.Ui.orders;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.RecurrentPaymentTestBase;
 import ru.tutor.flow.admin.AdminFlow;
@@ -10,6 +11,9 @@ import ru.tutor.flow.purchase.PurchaseFlow;
 import ru.tutor.flow.purchase.PurchaseResult;
 import ru.tutor.test.executor.RecurrentPaymentTestExecutor;
 
+import ru.tutor.constants.Tags;
+
+@Tag(Tags.E2E)
 public class UnsubscribeInAdminCheckDateTest extends RecurrentPaymentTestBase {
 
     private RecurrentPaymentTestExecutor testExecutor;

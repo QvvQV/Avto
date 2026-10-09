@@ -18,6 +18,8 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты GET /user/certificate/generate")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class CertificateTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

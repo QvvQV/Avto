@@ -28,6 +28,7 @@ public class UniversalMethod {
         element
                 .shouldBe(visible, DEFAULT_TIMEOUT)
                 .shouldBe(enabled, DEFAULT_TIMEOUT)
+                .shouldBe(interactable, DEFAULT_TIMEOUT)
                 .click();
         WaitHelper.waitForAnimationComplete();
         WaitHelper.waitForPageLoad();

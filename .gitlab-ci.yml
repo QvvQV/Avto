@@ -15,7 +15,7 @@ cache:
     - .gradle/caches
     - .gradle/wrapper
     - build/
-    - /opt/allure-2.35.1/
+    - /opt/allure-2.46.1/
   policy: pull-push
 
 test:
@@ -36,9 +36,9 @@ test:
 
     # Установка Allure (только если не установлен)
     - if ! command -v allure &> /dev/null; then
-      wget -q https://github.com/allure-framework/allure2/releases/download/2.35.1/allure-2.35.1.tgz;
-      tar -zxvf allure-2.35.1.tgz -C /opt/;
-      ln -sf /opt/allure-2.35.1/bin/allure /usr/bin/allure;
+      wget -q https://github.com/allure-framework/allure2/releases/download/2.46.1/allure-2.46.1.tgz;
+      tar -zxvf allure-2.46.1.tgz -C /opt/;
+      ln -sf /opt/allure-2.46.1/bin/allure /usr/bin/allure;
       fi
 
     # Установка allurectl (всегда свежая версия)
@@ -99,6 +99,6 @@ test:
       - .gradle/caches
       - .gradle/wrapper
       - build/
-      - /opt/allure-2.35.1/
+      - /opt/allure-2.46.1/
     policy: pull-push
     when: always

@@ -182,6 +182,10 @@ public abstract class BaseApiSteps {
         return () -> assertTrue(((Number) item.get(field)).doubleValue() >= 0, field + " >= 0");
     }
 
+    protected Executable numberField(Map<String, Object> item, String field){
+        return () -> assertTrue(item.get(field) instanceof Number, field + " должен быть числом");
+    }
+
     protected Executable containsKey(Map<String, Object> item, String field){
         return () -> assertTrue(item.containsKey(field), field + " должен быть в ответе");
     }

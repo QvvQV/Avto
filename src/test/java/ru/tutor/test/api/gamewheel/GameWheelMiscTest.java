@@ -4,8 +4,6 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.fortune.GameWheelRewardResponse;
-import ru.tutor.model.fortune.GameWheelStartGameResponse;
 import ru.tutor.model.fortune.UserRewardResponse;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.fortune.GameWheelMiscSteps;
@@ -22,6 +20,7 @@ import ru.tutor.constants.Tags;
 @Feature("Игровое колесо")
 @DisplayName("Тесты эндпоинта игрового колеса победители, таймер, группы")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class GameWheelMiscTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -34,10 +33,6 @@ public class GameWheelMiscTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
-
-    private static List<GameWheelRewardResponse> rewards;
-//    TODO: сейчас таблица призов по ручке не появляется (может к ней вернутся)
-//    private static Map<String, GameWheelRewardsSteps.RewardValidationResult> validationResults;
 
     @BeforeAll
     public static void setUp() {
@@ -58,7 +53,6 @@ public class GameWheelMiscTest {
     @DisplayName("Интеграционный тест: 'Запуск игры' и проверка 'Добавления награды'")
     @Story("Интеграция с колесом")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.INTEGRATION)
     @Tag(Tags.POSITIVE)
     void integrationTestWithGameWheel() {
 
@@ -75,8 +69,7 @@ public class GameWheelMiscTest {
     @DisplayName("Интеграционный тест: Полный цикл (спин -> получение награды -> открытие)")
     @Story("E2E сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.INTEGRATION)
-    @Tag(Tags.E2E)
+    @Tag(Tags.POSITIVE)
     void fullRewardFlowIntegrationTest() {
         List<UserRewardResponse> initialRewards = step("Получаем начальный список наград", () ->
                 userRewardSteps.validateUserRewardsListComplete(userRewardSteps.getUserRewards(token))
@@ -112,6 +105,12 @@ public class GameWheelMiscTest {
                 )
         );
 
+        step("Открытая награда удалена из списка", () ->
+                assertTrue(finalRewards.stream().noneMatch(r -> r.id().equals(newReward.id())),
+                        "Открытая награда " + newReward.id() + " не должна оставаться в списке"));
+        step("Количество совпадает (после спина +1, после открытия -1)", () ->
+                assertEquals(afterSpinRewards.size() - 1, finalRewards.size()));
+
         step("Итоговый отчёт", () ->
                 userRewardSteps.generateE2EReport(
                         initialRewards.size(), afterSpinRewards.size(),
@@ -125,6 +124,7 @@ public class GameWheelMiscTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getRewardsGroupsSuccess() {
         Response response = step("GET /user/game-wheel/rewards_groups", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsGroups(token)
@@ -141,6 +141,7 @@ public class GameWheelMiscTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getRewardsGroupsWithoutAuth() {
         Response response = step("GET /user/game-wheel/rewards_groups без токена", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsGroups("")
@@ -156,6 +157,7 @@ public class GameWheelMiscTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getRewardsGroupsInvalidToken() {
         Response response = step("GET /user/game-wheel/rewards_groups с невалидным токена", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsGroups("invalid_token")
@@ -171,6 +173,7 @@ public class GameWheelMiscTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getTimerLeftSuccess() {
         Response response = step("GET /user/game-wheel/timer-left-seconds", () ->
                 gameWheelMiscSteps.getUserGameWheelTimerLeft(token)
@@ -187,6 +190,7 @@ public class GameWheelMiscTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getTimerLeftWithoutAuth() {
         Response response = step("GET /user/game-wheel/timer-left-seconds без токена", () ->
                 gameWheelMiscSteps.getUserGameWheelTimerLeft("")
@@ -202,6 +206,7 @@ public class GameWheelMiscTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getTimerLeftInvalidToken() {
         Response response = step("GET /user/game-wheel/timer-left-seconds с невалидным токена", () ->
                 gameWheelMiscSteps.getUserGameWheelTimerLeft("invalid_token")
@@ -217,6 +222,7 @@ public class GameWheelMiscTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getGameWheelWonAllSuccess() {
         Response response = step("GET /user/game-wheel/rewards-recently-won-all", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsRecentlyWonAll(token)
@@ -233,6 +239,7 @@ public class GameWheelMiscTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getGameWheelWonAllWithoutAuth() {
         Response response = step("GET /user/game-wheel/rewards-recently-won-all без токена", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsRecentlyWonAll("")
@@ -248,6 +255,7 @@ public class GameWheelMiscTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getGameWheelWonAllInvalidToken() {
         Response response = step("GET /user/game-wheel/rewards-recently-won-all с невалидным токена", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsRecentlyWonAll("invalid_token")

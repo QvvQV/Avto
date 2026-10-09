@@ -95,4 +95,11 @@ public class OrderToggleSubscriptionSteps extends BaseApiSteps {
     public void validateRestorePremiumResponse(Response response) {
         assertBasicResponse(response);
     }
+
+    @Step("GET /user/orders/subscription/state - состояние подписки")
+    public Response getOrderSubscriptionState(String authToken) {
+        Response response = orderApi.getSubscriptionState(authToken);
+        AllureAttachments.attachJson("Get Subscription State", response.getBody().asString());
+        return response;
+    }
 }

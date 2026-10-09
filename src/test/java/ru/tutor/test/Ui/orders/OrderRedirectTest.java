@@ -2,6 +2,7 @@ package ru.tutor.test.Ui.orders;
 
 import io.qameta.allure.*;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import ru.tutor.base.BaseUiTest;
 import ru.tutor.flow.purchase.PurchaseFlow;
@@ -14,10 +15,13 @@ import ru.tutor.page.orders.TtPage;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import ru.tutor.constants.Tags;
+
 @Epic("Order Processing")
 @Feature("Order Redirect Handling")
 @Story("Order completion with URL modifications")
 @DisplayName("🛒 Тесты обработки редиректов при заказе")
+@Tag(Tags.E2E)
 class OrderRedirectTest extends BaseUiTest {
 
     private static final TtPage ttPage = new TtPage();

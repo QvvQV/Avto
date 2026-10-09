@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import ru.tutor.constants.Tags;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.E2E)
 public class OrderAffRid extends BaseUiTest {
 
     private final TtPage ttPage = new TtPage();
@@ -39,7 +40,6 @@ public class OrderAffRid extends BaseUiTest {
     @Test
     @Order(1)
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Сбер картой: появление 4 кнопок на Главной и клик -> drawer")
     void paymentMethod_SberCard() {
@@ -49,7 +49,6 @@ public class OrderAffRid extends BaseUiTest {
     @Test
     @Order(2)
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Тинькофф картой: появление 4 кнопок на Главной и клик -> drawer")
     void paymentMethod_TinkCard() {
@@ -59,7 +58,6 @@ public class OrderAffRid extends BaseUiTest {
     @Test
     @Order(3)
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Other: появление 4 кнопок на Главной и клик -> drawer")
     void paymentMethod_Other() {
@@ -69,7 +67,6 @@ public class OrderAffRid extends BaseUiTest {
     @Test
     @Order(4)
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Cloud: появление 4 кнопок на стр Лендинга и клик -> drawer")
     void paymentMethod_Cloud_Drawer_Landing(){
@@ -80,7 +77,6 @@ public class OrderAffRid extends BaseUiTest {
     @Test
     @Order(5)
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Other: появление 4 кнопок на стр Лендинга и клик -> drawer")
     void paymentMethod_Other_Drawer_Landing(){
@@ -91,7 +87,6 @@ public class OrderAffRid extends BaseUiTest {
     @Test
     @Order(6)
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @Feature("Оформление по AFF_RID")
     @DisplayName("Sber: появление 4 кнопок на стр Лендинга и клик -> drawer")
     void paymentMethod_Sber_Drawer_Landing(){

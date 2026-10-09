@@ -671,4 +671,23 @@ public class ProductsSteps extends BaseApiSteps {
                     );
         }
     }
+
+    @Step("Логин и список продуктов пользователя")
+    public List<ProductsResponse> getUserProductsList(String authToken) {
+        return validateProductsResponse(getUserProducts(authToken));
+    }
+
+    @Step("Проверка: продукт productId={productId} присутствует в списке")
+    public void assertProductPresent(String authToken, String productId) {
+        List<ProductsResponse> products = getUserProductsList(authToken);
+        assertTrue(products.stream().anyMatch(p -> productId.equals(p.getProductId())),
+                "Продукт (productId " + productId + ") должен присутствовать в списке");
+    }
+
+    @Step("Проверка: продукт productId={productId} отсутвует в списке")
+    public void assertProductAbsent(String authToken, String productId) {
+        List<ProductsResponse> products = getUserProductsList(authToken);
+        assertFalse(products.stream().anyMatch(p -> productId.equals(p.getProductId())),
+                "Продукт (productId " + productId + ") не должен присутствовать в спике");
+    }
 }

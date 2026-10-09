@@ -10,11 +10,14 @@ import ru.tutor.config.TestConfig;
 
 import static io.qameta.allure.Allure.step;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
 @Feature("Выход из системы")
 @DisplayName("Тесты эндпоинта /user/logout")
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class UserLogoutTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

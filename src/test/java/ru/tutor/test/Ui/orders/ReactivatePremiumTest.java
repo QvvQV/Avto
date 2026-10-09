@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import ru.tutor.constants.Tags;
 
 // TP-6415 (Реализовать работу ссылок типа affrid в личном кабинете) и TP-6417 (Переработать восстановление премиума по кнопке)
+@Tag(Tags.E2E)
 public class ReactivatePremiumTest extends RecurrentPaymentTestBase {
 
     private ReactivatePremiumFlow reactivateFlow;

@@ -126,4 +126,74 @@ public class ClubApi extends BaseApi {
     public Response getClubReferrals(String authToken, Map<String, Object> queryParams) {
         return getWithQuery(EndpointsClub.USER_CLUB_V2_REFERRALS, authToken, queryParams);
     }
+
+    /**
+     * GET /user/club/v2/referrals/{userId} - детальная информация реферала
+     */
+    public Response getClubReferralDetail(String authToken, String userId) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_REFERRALS_ID.formatted(userId), authToken);
+    }
+
+    /**
+     * GET /user/club/v2/referrals/{userId}/referrals - дерево рефералов конкретного реферала
+     */
+    public Response getClubReferralReferrals(String authToken, String userId) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_REFERRALS_ID_REFERRALS.formatted(userId), authToken);
+    }
+
+    /**
+     * GET /user/club/v2/home/analytics - аналитика главной клуба
+     */
+    public Response getClubHomeAnalytics(String authToken) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_HOME_ANALYTICS, authToken);
+    }
+
+    /**
+     * GET /user/club/v2/home/banners - баннеры клуба
+     */
+    public Response getClubHomeBanners(String authToken) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_HOME_BANNERS, authToken);
+    }
+
+    /**
+     * GET /user/club/v2/home/links - ссылки участника клуба
+     */
+    public Response getClubHomeLinks(String authToken) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_HOME_LINKS, authToken);
+    }
+
+    /**
+     * GET /user/club/v2/home/news - новости клуба
+     */
+    public Response getClubHomeNews(String authToken) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_HOME_NEWS, authToken);
+    }
+
+    /**
+     * GET /user/club/v2/home/news/{newsId} - детальная информация новости
+     */
+    public Response getClubNewsDetail(String authToken, String newsId) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_HOME_NEWS_ID.formatted(newsId), authToken);
+    }
+
+    /**
+     * GET /user/club/v2/analytics/links - аналитика по ссылкам клуба
+     */
+    public Response getClubAnalyticsLinks(String authToken) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_ANALYTICS_LINKS, authToken);
+    }
+
+    /**
+     * GET /user/club/v2/analytics/monthly-income - аналитика дохода по уровням
+     */
+    public Response getClubAnalyticsMonthlyIncome(String authToken) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_ANALYTICS_MONTHLY_INCOME, authToken);
+    }
+
+    /**
+     * GET /user/club/v2/links/summary - сводка по ссылкам клуба
+     */
+    public Response getClubLinksSummary(String authToken) {
+        return getWithToken(EndpointsClub.USER_CLUB_V2_LINKS_SUMMARY, authToken);
+    }
 }

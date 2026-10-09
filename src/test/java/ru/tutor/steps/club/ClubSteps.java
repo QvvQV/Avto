@@ -621,4 +621,268 @@ public class ClubSteps extends BaseApiSteps {
         validateReferralsSummaryTotals(referrals);
         return referrals;
     }
+
+    // ==================== GET /user/club/v2/home & analytics ====================
+
+    @Step("GET /user/club/v2/home/analytics - аналитика главной клуба")
+    public Response getClubHomeAnalytics(String authToken) {
+        Response response = clubApi.getClubHomeAnalytics(authToken);
+        AllureAttachments.attachJson("Club Home Analytics Response", response.getBody().asString());
+        AllureAttachments.attachJson("Club Home Analytics Headers", response.getHeaders().toString());
+        return response;
+    }
+
+    @Step("Валидация структуры home/analytics")
+    public void validateHomeAnalytics(Response response) {
+        assertBasicResponse(response);
+        assertAll("home/analytics - базовые ключи",
+                () -> assertJsonKeyExists(response, "filters"),
+                () -> assertJsonKeyExists(response, "totals"),
+                () -> assertJsonKeyExists(response, "series"));
+
+        assertAll("totals - ключи",
+                () -> assertJsonFieldExists(response, "totals.clicks"),
+                () -> assertJsonFieldExists(response, "totals.newSubscriptions"),
+                () -> assertJsonFieldExists(response, "totals.subscriptions"),
+                () -> assertJsonFieldExists(response, "totals.unsubscribed"),
+                () -> assertJsonFieldExists(response, "totals.paymentError"),
+                () -> assertJsonFieldExists(response, "totals.income"));
+
+        List<Map<String, Object>> clicks = response.jsonPath().getList("series.clicks");
+        assertNotNull(clicks, "series.clicks не должен быть null");
+        for (int i = 0; i < clicks.size(); i++) {
+            Map<String, Object> point = clicks.get(i);
+            assertAll("series.clicks[" + i + "]",
+                    () -> assertNotNull(point.get("date"), "date не должен быть null"),
+                    () -> assertNotNull(point.get("value"), "value не должен быть null"));
+        }
+    }
+
+    @Step("GET /user/club/v2/home/banners - баннеры клуба")
+    public Response getClubHomeBanners(String authToken) {
+        Response response = clubApi.getClubHomeBanners(authToken);
+        AllureAttachments.attachJson("Club Home Banners Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры home/banners")
+    public void validateHomeBanners(Response response) {
+        assertBasicResponse(response);
+        List<Map<String, Object>> items = response.jsonPath().getList("items");
+        assertNotNull(items, "items не должен быть null");
+        for (int i = 0; i < items.size(); i++) {
+            Map<String, Object> banner = items.get(i);
+            assertAll("banner[" + i + "]",
+                    () -> assertNotNull(banner.get("id"), "id"),
+                    () -> nonEmptyString(banner, "title"),
+                    () -> nonEmptyString(banner, "description"),
+                    () -> url(banner.get("image"), "image"),
+                    () -> assertOptionalUrl(banner.get("mobileImage"), "mobileImage"),
+                    () -> assertOptionalUrl(banner.get("link"), "link"));
+        }
+    }
+
+    @Step("GET /user/club/v2/home/links - ссылки участника клуба")
+    public Response getClubHomeLinks(String authToken) {
+        Response response = clubApi.getClubHomeLinks(authToken);
+        AllureAttachments.attachJson("Club Home Links Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры home/links")
+    public void validateHomeLinks(Response response) {
+        assertBasicResponse(response);
+        assertJsonKeyExists(response, "filters");
+        List<Map<String, Object>> items = response.jsonPath().getList("items");
+        assertNotNull(items, "items не должен быть null");
+        for (int i = 0; i < items.size(); i++) {
+            Map<String, Object> link = items.get(i);
+            assertAll("link[" + i + "]",
+                    () -> positiveInt(link, "id"),
+                    () -> nonEmptyString(link, "name"),
+                    () -> url(link.get("url"), "url"),
+                    () -> nonNegative(link, "clicks"),
+                    () -> nonNegative(link, "trial"),
+                    () -> nonNegative(link, "premium"),
+                    () -> nonNegative(link, "paymentError"),
+                    () -> nonNegative(link, "unsubscribed"),
+                    () -> nonNegative(link, "income"));
+        }
+    }
+
+    @Step("GET /user/club/v2/home/news - новости клуба")
+    public Response getClubHomeNews(String authToken) {
+        Response response = clubApi.getClubHomeNews(authToken);
+        AllureAttachments.attachJson("Club Home News Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры home/news")
+    public void validateHomeNews(Response response) {
+        assertBasicResponse(response);
+        assertAll("home/news - ключи",
+                () -> assertJsonKeyExists(response, "items"),
+                () -> assertJsonKeyExists(response, "pagination"),
+                () -> assertJsonFieldExists(response, "pagination.count"),
+                () -> assertJsonFieldExists(response, "pagination.total"),
+                () -> assertJsonFieldExists(response, "pagination.per_page"),
+                () -> assertJsonFieldExists(response, "pagination.page"),
+                () -> assertJsonFieldExists(response, "pagination.pages"));
+    }
+
+    @Step("GET /user/club/v2/home/news/{newsId} - детальная информация новости")
+    public Response getClubNewsDetail(String authToken, String newsId) {
+        Response response = clubApi.getClubNewsDetail(authToken, newsId);
+        AllureAttachments.attachJson("Club News Detail Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("GET /user/club/v2/analytics/links - аналитика по ссылкам")
+    public Response getClubAnalyticsLinks(String authToken) {
+        Response response = clubApi.getClubAnalyticsLinks(authToken);
+        AllureAttachments.attachJson("Club Analytics Links Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры analytics/links")
+    public void validateAnalyticsLinks(Response response) {
+        assertBasicResponse(response);
+        assertJsonKeyExists(response, "filters");
+        List<Map<String, Object>> items = response.jsonPath().getList("items");
+        assertNotNull(items, "items не должен быть null");
+        for (int i = 0; i < items.size(); i++) {
+            Map<String, Object> link = items.get(i);
+            assertAll("analytics_link[" + i + "]",
+                    () -> positiveInt(link, "id"),
+                    () -> nonEmptyString(link, "name"),
+                    () -> containsKey(link, "product"),
+                    () -> nonNegative(link, "referralsTotal"),
+                    () -> nonNegative(link, "level1"),
+                    () -> nonNegative(link, "level2"),
+                    () -> nonNegative(link, "level3"),
+                    () -> nonNegative(link, "income"));
+        }
+        assertJsonKeyExists(response, "pagination");
+        assertJsonFieldExists(response, "pagination.count");
+    }
+
+    @Step("GET /user/club/v2/analytics/monthly-income - аналитика дохода по уровням")
+    public Response getClubAnalyticsMonthlyIncome(String authToken) {
+        Response response = clubApi.getClubAnalyticsMonthlyIncome(authToken);
+        AllureAttachments.attachJson("Club Monthly Income Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры analytics/monthly-income")
+    public void validateAnalyticsMonthlyIncome(Response response) {
+        assertBasicResponse(response);
+        assertJsonKeyExists(response, "filters");
+        List<Map<String, Object>> items = response.jsonPath().getList("items");
+        assertNotNull(items, "items не должен быть null");
+        for (int i = 0; i < items.size(); i++) {
+            Map<String, Object> income = items.get(i);
+            assertAll("income_level[" + i + "]",
+                    () -> assertTrue(((Number) income.get("level")).intValue() >= 1,
+                            "level должен быть >= 1"),
+                    () -> nonEmptyString(income, "label"),
+                    () -> nonNegative(income, "rate"),
+                    () -> nonNegative(income, "active"),
+                    () -> nonNegative(income, "incomePerMonth"));
+        }
+        assertJsonKeyExists(response, "totals");
+        assertJsonFieldExists(response, "totals.active");
+        assertJsonFieldExists(response, "totals.incomePerMonth");
+    }
+
+    @Step("GET /user/club/v2/links/summary - сводка по ссылкам")
+    public Response getClubLinksSummary(String authToken) {
+        Response response = clubApi.getClubLinksSummary(authToken);
+        AllureAttachments.attachJson("Club Links Summary Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры links/summary")
+    public void validateLinksSummary(Response response) {
+        assertBasicResponse(response);
+        assertJsonKeyExists(response, "filters");
+        assertAll("links/summary - ключи",
+                () -> assertJsonFieldExists(response, "totals.linksCount"),
+                () -> assertJsonFieldExists(response, "totals.clicks"),
+                () -> assertJsonFieldExists(response, "totals.activeReferrals"),
+                () -> assertJsonFieldExists(response, "totals.activePremiums"),
+                () -> assertJsonFieldExists(response, "totals.income"),
+                () -> assertJsonFieldExists(response, "breakdown.trial"),
+                () -> assertJsonFieldExists(response, "breakdown.lite"),
+                () -> assertJsonFieldExists(response, "breakdown.premium"),
+                () -> assertJsonFieldExists(response, "breakdown.lifetime"),
+                () -> assertJsonFieldExists(response, "breakdown.paymentError"),
+                () -> assertJsonFieldExists(response, "breakdown.unsubscribed"),
+                () -> assertJsonFieldExists(response, "series.clicks"),
+                () -> assertJsonFieldExists(response, "series.income"),
+                () -> assertJsonFieldExists(response, "series.activePremiums"));
+    }
+
+    @Step("GET /user/club/v2/referrals/{userId} - детальная информация реферала")
+    public Response getClubReferralDetail(String authToken, String userId) {
+        Response response = clubApi.getClubReferralDetail(authToken, userId);
+        AllureAttachments.attachJson("Club Referral Detail Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры referrals/{userId}")
+    public void validateReferralDetail(Response response) {
+        assertBasicResponse(response);
+        assertAll("referrals/{userId} - ключи",
+                () -> assertJsonKeyExists(response, "userId"),
+                () -> assertJsonKeyExists(response, "name"),
+                () -> assertJsonKeyExists(response, "avatarUrl"),
+                () -> assertJsonKeyExists(response, "level"),
+                () -> assertJsonKeyExists(response, "invitedBy"),
+                () -> assertJsonKeyExists(response, "subscriptionStatus"),
+                () -> assertJsonKeyExists(response, "incomePerMonth"),
+                () -> assertJsonKeyExists(response, "incomeOneTime"),
+                () -> assertJsonKeyExists(response, "link"),
+                () -> assertJsonKeyExists(response, "activity"));
+
+        assertAll("subscriptionStatus - наличие ключей", () -> {
+            Map<String, Object> status = response.jsonPath().get("subscriptionStatus");
+            assertNotNull(status, "subscriptionStatus не должен быть null");
+            for (String key : List.of("code", "label", "isActive", "stateLabel")) {
+                assertTrue(status.containsKey(key), "subscriptionStatus." + key + " должен присутствовать");
+            }
+        });
+        assertAll("activity - наличие ключей", () -> {
+            Map<String, Object> activity = response.jsonPath().get("activity");
+            assertNotNull(activity, "activity не должен быть null");
+            for (String key : List.of("lastLoginAt", "registeredAt", "addedCoursesCount", "completedLessonsCount")) {
+                assertTrue(activity.containsKey(key), "activity." + key + " должен присутствовать");
+            }
+        });
+    }
+
+    @Step("GET /user/club/v2/referrals/{userId}/referrals - дерево рефералов")
+    public Response getClubReferralReferrals(String authToken, String userId) {
+        Response response = clubApi.getClubReferralReferrals(authToken, userId);
+        AllureAttachments.attachJson("Club Referral Tree Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Валидация структуры referrals/{userId}/referrals")
+    public void validateReferralReferrals(Response response) {
+        assertBasicResponse(response);
+        assertAll("referrals/{userId}/referrals - ключи",
+                () -> assertJsonKeyExists(response, "items"),
+                () -> assertJsonKeyExists(response, "pagination"),
+                () -> assertJsonFieldExists(response, "pagination.count"),
+                () -> assertJsonFieldExists(response, "pagination.total"),
+                () -> assertJsonFieldExists(response, "pagination.per_page"),
+                () -> assertJsonFieldExists(response, "pagination.page"),
+                () -> assertJsonFieldExists(response, "pagination.pages"));
+    }
+
+    @Step("Проверка 404 для {path}")
+    public void validateNotFound(Response response, String path) {
+        assertEquals(404, response.getStatusCode(),
+                "Ожидался 404 для " + path + ", получен: " + response.getStatusCode());
+    }
 }

@@ -32,6 +32,7 @@ import ru.tutor.constants.Tags;
 @Epic("Повторная покупка")
 @Feature("Сценарий «Рады вновь вас видеть»")
 @DisplayName("🧪 Повторная покупка → модальное окно «Рады вновь вас видеть»")
+@Tag(Tags.E2E)
 public class RepeatPremiumPurchaseTest extends BaseUiTest {
 
     private final TtPage ttPage = new TtPage();

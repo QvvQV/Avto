@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @Epic("API Тесты пользователя")
 @Feature("Премиум подарки")
 @DisplayName("Тесты эндпоинта /user/orders/get-premium-gift")
+@Tag(Tags.E2E)
 public class PremiumGiftTest extends RecurrentPaymentTestBase {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

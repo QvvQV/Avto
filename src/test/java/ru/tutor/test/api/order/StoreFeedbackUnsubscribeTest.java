@@ -18,6 +18,7 @@ import ru.tutor.constants.Tags;
 @Feature("Сохранение отзыва при отписке")
 @DisplayName("Тесты POST /user/orders/store-feedback-unsubscribe/{orderNumber}")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class StoreFeedbackUnsubscribeTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -44,7 +45,6 @@ public class StoreFeedbackUnsubscribeTest {
     @DisplayName("Успешное сохранение отзыва при отписке")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.INTEGRATION)
     void storeFeedbackSuccess() {
         String orderNumber = step("Получение orderNumber премиума", () ->
                 productsSteps.fetchPremiumOrderNumber(token)
@@ -64,6 +64,7 @@ public class StoreFeedbackUnsubscribeTest {
     @DisplayName("Сохранение отзыва без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void storeFeedbackWithoutAuth() {
         Response response = step("POST /user/orders/store-feedback-unsubscribe - без токена", () ->
                 orderSteps.storeFeedbackUnsubscribe("", orderNumber, "Test", 4)
@@ -78,6 +79,7 @@ public class StoreFeedbackUnsubscribeTest {
     @DisplayName("Сохранение отзыва с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void storeFeedbackInvalidToken() {
         Response response = step("POST /user/orders/store-feedback-unsubscribe - без токена", () ->
                 orderSteps.storeFeedbackUnsubscribe("invalid_token", orderNumber, "Test", 4)
@@ -91,6 +93,7 @@ public class StoreFeedbackUnsubscribeTest {
     @Order(4)
     @DisplayName("Сохранение отзыва с несуществующим orderNumber")
     @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.CONTRACT)
     void storeFeedbackInvalidOrderNumber() {
         Response response = step("POST /user/orders/store-feedback-unsubscribe - невалидный orderNumber", () ->
                 orderSteps.storeFeedbackUnsubscribe(token, "258", "Test", 4)
@@ -123,6 +126,7 @@ public class StoreFeedbackUnsubscribeTest {
     @DisplayName("Сохранение отзыва пользователем без автивной подписки")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void storeFeedbackWithoutActiveSubscription() {
         String newUserToken = step("Регистрация нового пользователя без подписки", () -> {
             RegistrationRequest request = RegistrationRequest.generateRandom();

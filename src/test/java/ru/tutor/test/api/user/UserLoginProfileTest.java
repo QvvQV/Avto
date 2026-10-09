@@ -11,13 +11,15 @@ import ru.tutor.config.TestConfig;
 import java.util.List;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 
 @Epic("API Тесты пользователя")
 @Feature("Аутентификация и профиль")
 @DisplayName("Тесты: Логин → Получение профиля → Проверка данных")
 @Story("Полный сценарий аутентификации")
+@Tag(Tags.INTEGRATION)
 public class UserLoginProfileTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -43,6 +45,7 @@ public class UserLoginProfileTest {
 
     @Test
     @DisplayName("Без токена -> 401")
+    @Tag(Tags.CONTRACT)
     void getProfileWithoutToken() {
         Response response = step("GET /user/profile без токена", () ->
                 userSteps.getProfile("")
@@ -55,6 +58,7 @@ public class UserLoginProfileTest {
 
     @Test
     @DisplayName("Невалидный токен -> 401")
+    @Tag(Tags.CONTRACT)
     void getProfileWithoutInvalidToken() {
         Response response = step("GET /user/profile невалидный токен", () ->
                 userSteps.getProfile("invalid_token")
@@ -69,6 +73,7 @@ public class UserLoginProfileTest {
 
     @Test
     @DisplayName("id должен быть положительным числом")
+    @Tag(Tags.CONTRACT)
     void profileIdPositive() {
         UserProfile profile = getProfile();
         assertTrue(profile.getId() > 0, "id должен быть > 0, получено: " + profile.getId());
@@ -76,6 +81,7 @@ public class UserLoginProfileTest {
 
     @Test
     @DisplayName("email должен содержать @")
+    @Tag(Tags.CONTRACT)
     void profileEmailFormat() {
         UserProfile profile = getProfile();
         assertTrue(profile.getEmail().contains("@"), "email должен содержать '@', получено: " + profile.getEmail());
@@ -83,6 +89,7 @@ public class UserLoginProfileTest {
 
     @Test
     @DisplayName("clubMembership должен быть одним из: full, light, none")
+    @Tag(Tags.CONTRACT)
     void clubMembershipValid() {
         UserProfile profile = getProfile();
         assertNotNull(profile.getClubMemberShip(), "clubMemberShip не должен быть null");

@@ -15,6 +15,7 @@ import ru.tutor.constants.Tags;
 @Epic("API Тесты пользователя")
 @Feature("Игровая статистика")
 @DisplayName("Тесты эндпоинта /user/game-stats")
+@Tag(Tags.INTEGRATION)
 public class UserGameStatsTest {
 
     private final GameSteps userSteps = new GameSteps(TestConfig.getCurrentApiUrl());
@@ -35,6 +36,7 @@ public class UserGameStatsTest {
     @Test
     @DisplayName("Детальная проверка данных игровой статистики")
     @Story("Валидация данных")
+    @Tag(Tags.CONTRACT)
     void verifyGameStatsDetails() {
         Response response = userSteps.getGameStats(token);
 
@@ -75,6 +77,7 @@ public class UserGameStatsTest {
     @DisplayName("Успешное получение рейтинг лидеров")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void gameLeaderRatingSuccess()
     {
         Response response = step("Получение списка лидеров", () ->
@@ -89,6 +92,7 @@ public class UserGameStatsTest {
     @DisplayName("Получение списка лидеров без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void gameLeaderRatingWithoutAuth()
     {
         Response response = step("Получение списка лидеров", () ->

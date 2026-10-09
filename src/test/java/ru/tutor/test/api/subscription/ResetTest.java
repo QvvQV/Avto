@@ -15,7 +15,8 @@ import ru.tutor.utils.AllureAttachments;
 import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @Epic("Восстановить Пароль")
 @Feature("Функция сброса пароля")
@@ -24,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Execution(ExecutionMode.CONCURRENT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class ResetTest {
     private final ResetSteps resetSteps = new ResetSteps(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);

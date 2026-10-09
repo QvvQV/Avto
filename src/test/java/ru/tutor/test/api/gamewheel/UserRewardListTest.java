@@ -20,6 +20,8 @@ import ru.tutor.constants.Tags;
 @Feature("Игровое колесо")
 @DisplayName("Тесты эндпоинта игрового колесаю Список неполученных призов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class UserRewardListTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -56,7 +58,6 @@ public class UserRewardListTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.SMOKE)
     void getUserRewardSuccess() {
 
         Response response = step("GET /user/reward/list", () ->

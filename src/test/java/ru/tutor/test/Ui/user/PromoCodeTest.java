@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import ru.tutor.constants.Tags;
 
+@Tag(Tags.E2E)
 public class PromoCodeTest extends RecurrentPaymentTestBase {
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private ReactivatePremiumFlow reactivateFlow;

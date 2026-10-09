@@ -43,7 +43,7 @@ public class ProfileSteps extends BaseApiSteps {
                 //Числовой
                 positiveInt(root, "id"),
                 nonNegative(root, "diamondBalance"),
-                nonNegative(root, "daysSincePasswordUpdate"),
+                numberField(root, "daysSincePasswordUpdate"),
                 nonNegative(root, "deactivatedQuiz"),
                 nonNegative(root, "recurrencyCashBackAmount"),
                 nonNegative(root, "gender"),

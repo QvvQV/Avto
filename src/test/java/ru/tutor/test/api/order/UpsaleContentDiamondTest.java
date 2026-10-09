@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @Feature("Модальное окно апсейлов")
 @DisplayName("Тесты эндпоинта POST /user/orders/upsale")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class UpsaleContentDiamondTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -46,6 +47,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Успешное получение апсейла за алмазы")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentDiamondSuccess() {
         Response response = step("GET /user/orders/upsale-content-diamond/{orderNumber}", () ->
                 orderSteps.getUpsaleContentDiamond(token, orderNumber)
@@ -59,6 +61,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Получение апсейла за алмазы с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentDiamondInvalidToken() {
         Response response = step("GET /user/orders/upsale-content-diamond - невалдиный токен", () ->
                 orderSteps.getUpsaleContentDiamond("invalid_token", orderNumber)
@@ -72,6 +75,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Получение апсейла за алмазы с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentDiamondWithoutAuth() {
         Response response = step("GET /user/orders/upsale-content-diamond - без токена", () ->
                 orderSteps.getUpsaleContentDiamond("", orderNumber)
@@ -84,6 +88,7 @@ public class UpsaleContentDiamondTest {
     @Order(4)
     @DisplayName("Получение апсейла за алмазы с несуществующим orderNumber")
     @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentDiamondInvalidOrderNumber() {
         Response response = step("GET /user/orders/upsale-content-diamond - невалидный orderNumber", () ->
                 orderSteps.getUpsaleContentDiamond(token, "999999")
@@ -97,6 +102,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Успешное получение апсейла за деньги")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentMoneySuccess() {
         Response response = step("GET /user/orders/upsale-content-invoice/{productOrderNumber}", () ->
                 orderSteps.getUpsaleContentMoney(token, orderNumber)
@@ -110,6 +116,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Получение апсейла за деньги с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentMoneyInvalidToken() {
         Response response = step("GET /user/orders/upsale-content-invoice/{productOrderNumber} - невалдиный токен", () ->
                 orderSteps.getUpsaleContentMoney("invalid_token", orderNumber)
@@ -123,6 +130,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Получение апсейла за деньги с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentMoneyWithoutAuth() {
         Response response = step("GET /user/orders/upsale-content-invoice/{productOrderNumber} - без токена", () ->
                 orderSteps.getUpsaleContentMoney("", orderNumber)
@@ -135,6 +143,7 @@ public class UpsaleContentDiamondTest {
     @Order(8)
     @DisplayName("Получение апсейла за деньги с несуществующим orderNumber")
     @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.CONTRACT)
     void getUpsaleContentMoneyInvalidOrderNumber() {
         Response response = step("GET /user/orders/upsale-content-invoice/{productOrderNumber} - невалидный orderNumber", () ->
                 orderSteps.getUpsaleContentMoney(token, "999999")
@@ -148,6 +157,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Успешное получение варианта модального окна апсейлов")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleVariantSuccess() {
         Response response = step("GET /user/orders/{productOrderNumber}/upsell-variant", () ->
                 orderSteps.getUpsaleVariant(token, orderNumber)
@@ -161,6 +171,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Получение варианта модального окна апсейлов с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleVariantInvalidToken() {
         Response response = step("GET /user/orders/{productOrderNumber}/upsell-variant - невалидный токен", () ->
                 orderSteps.getUpsaleVariant("invalid_token", orderNumber)
@@ -174,6 +185,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Получение варианта модального окна апсейла с пустым токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleVariantWithoutAuth() {
         Response response = step("GET /user/orders/{productOrderNumber}/upsell-variant - без токена", () ->
                 orderSteps.getUpsaleVariant("", orderNumber)
@@ -186,6 +198,7 @@ public class UpsaleContentDiamondTest {
     @Order(12)
     @DisplayName("Получение варианта модального окна апсейла с несуществующим orderNumber")
     @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.CONTRACT)
     void getUpsaleVariantInvalidOrderNumber() {
         Response response = step("GET /user/orders/{productOrderNumber}/upsell-variant - невалидный orderNumber", () ->
                 orderSteps.getUpsaleVariant(token, "999999")
@@ -212,6 +225,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Открытие модального окна апсейлов с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleModalOpenedInvalidToken() {
         Response response = step("POST /user/orders/{productOrderNumber}/upsell-modal-opened - невалдиный токен", () ->
                 orderSteps.postUpsellModalOpened("invalid_token", orderNumber)
@@ -225,6 +239,7 @@ public class UpsaleContentDiamondTest {
     @DisplayName("Получение варианта модального окна апсейла с пустым токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getUpsaleModalOpenedWithoutAuth() {
         Response response = step("POST /user/orders/{productOrderNumber}/upsell-modal-opened - без токена", () ->
                 orderSteps.postUpsellModalOpened("", orderNumber)

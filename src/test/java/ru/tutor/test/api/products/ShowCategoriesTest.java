@@ -16,6 +16,8 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта '/user/show-categories'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class ShowCategoriesTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

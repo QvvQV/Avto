@@ -23,6 +23,8 @@ import ru.tutor.constants.Tags;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 public class ClubPaymentTest {
 
     // Общие константы
@@ -55,7 +57,6 @@ public class ClubPaymentTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.SMOKE)
     void getClubPaymentsSuccess() {
         Response response = step("GET /user/club/payments", () ->
                 clubSteps.getClubPayments(authToken)

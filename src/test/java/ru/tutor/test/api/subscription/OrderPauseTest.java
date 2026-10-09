@@ -5,10 +5,12 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import ru.tutor.config.TestConfig;
 import ru.tutor.steps.account.AuthSteps;
+import ru.tutor.steps.account.ProfileSteps;
 import ru.tutor.steps.orders.OrderSteps;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 import ru.tutor.constants.Tags;
 
 
@@ -16,14 +18,17 @@ import ru.tutor.constants.Tags;
 @Feature("Управление подпиской")
 @DisplayName("Тесты паузы подписки")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class OrderPauseTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
     private final OrderSteps orderSteps = new OrderSteps(TestConfig.getCurrentApiUrl());
+    private final ProfileSteps profileSteps = new ProfileSteps(TestConfig.getCurrentApiUrl());
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
+    private static String basePausedTill;
 
     @BeforeAll
     public static void setUp() {
@@ -43,11 +48,19 @@ public class OrderPauseTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void pauseOrderSuccess() {
+        basePausedTill = step("Профиль до паузы (pausedTill Ожидается null)", () ->
+                profileSteps.getProfile(token).jsonPath().getString("pausedTill"));
         Response response = step("PUT /user/orders/pause/7", () ->
                 orderSteps.pauseOrder(token, 7)
         );
-        step("Валдиация ответа", () ->
+        step("Валидация ответа", () ->
                 orderSteps.validateEmptyArrayResponse(response));
+        step("Пауза выставила pausedTill = now + days", () -> {
+            String pausedTill = profileSteps.getProfile(token).jsonPath().getString("pausedTill");
+            assertNotEquals(basePausedTill, pausedTill, "pausedTill должен измениться. Было: " +
+                    basePausedTill + " стало: " +  pausedTill + ")");
+            assertNotNull(pausedTill, "pausedTill не должен быть null после паузы");
+        });
     }
 
     @Test
@@ -61,6 +74,11 @@ public class OrderPauseTest {
         );
         step("Валидация ответа", () ->
                 orderSteps.validateEmptyArrayResponse(response));
+        step("После unpause состояние вернулось к исходному pausedTill=null", () -> {
+            String restored = profileSteps.getProfile(token).jsonPath().getString("pausedTill");
+            assertNull(restored, "Состояние pausedTill должно вернуться к исходному (было: " +
+                    basePausedTill + ", стало: " +  restored + ")");
+        });
     }
 
     @Test
@@ -68,6 +86,7 @@ public class OrderPauseTest {
     @DisplayName("PUT /user/orders/pause/7 - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void pauseOrderWithoutAuth() {
         Response response = step("PUT /user/orders/pause/7 без токена", () ->
                 orderSteps.pauseOrder("", 7)
@@ -82,6 +101,7 @@ public class OrderPauseTest {
     @DisplayName("PUT /user/orders/unpause - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void unpauseOrderWithoutAuth() {
         Response response = step("PUT /user/orders/unpause без токена", () ->
                 orderSteps.unpauseOrder("")
@@ -95,6 +115,7 @@ public class OrderPauseTest {
     @DisplayName("PUT /user/orders/pause/7 с инвалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void pauseOrderWithInvalidToken() {
         Response response = step("PUT /user/orders/pause/7 с невалидным токеном", () ->
                 orderSteps.pauseOrder("invalid_token", 7)
@@ -107,6 +128,7 @@ public class OrderPauseTest {
     @Test
     @Order(6)
     @DisplayName("PUT /user/orders/unpause с невалидным токеном")
+    @Tag(Tags.CONTRACT)
     void  unpauseOrderWithInvalidToken() {
         Response response = step ("POST /user/orders/unpause с инвалидным токеном", () ->
                 orderSteps.unpauseOrder("invalid")

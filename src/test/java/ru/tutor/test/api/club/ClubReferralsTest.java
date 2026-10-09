@@ -1,4 +1,4 @@
-package ru.tutor.test.Ui.club;
+package ru.tutor.test.api.club;
 
 import io.qameta.allure.*;
 import io.restassured.response.Response;
@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @Epic("API Тесты пользователя")
 @Feature("Рефералы клуба")
 @DisplayName("Тесты эндпоинта клуба: GET /user/club/v2/referrals")
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
+@Tag(Tags.CONTRACT)
 public class ClubReferralsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -46,9 +49,7 @@ public class ClubReferralsTest {
     @DisplayName("✅ Контракт ответа рефералов: 200, items, pagination, summary")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.API)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.SMOKE)
     void getClubReferrals_Contract() {
         ClubReferralsResponse referrals = step("GET /user/club/v2/referrals", () ->
                 clubSteps.getAndValidateClubReferrals(authToken, EXPECTED_LIMIT, EXPECTED_PAGE));
@@ -72,7 +73,6 @@ public class ClubReferralsTest {
     @DisplayName("🔒 Невалидный токен: 401")
     @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.API)
     @Tag(Tags.NEGATIVE)
     void getClubReferrals_InvalidToken_ShouldFail() {
         Response response = step("GET /user/club/v2/referrals невалидным токеном", () ->
@@ -85,7 +85,6 @@ public class ClubReferralsTest {
     @DisplayName("🔒 Пустой токен: 401")
     @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.API)
     @Tag(Tags.NEGATIVE)
     void getClubReferrals_WithoutToken_ShouldFail() {
         Response response = step("GET /user/club/v2/referrals без токена", () ->

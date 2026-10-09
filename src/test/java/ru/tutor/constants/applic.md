@@ -210,6 +210,21 @@ green-1
 * ~~`POST /user/club/sz-details`~~
 * `PUT user/club/v2/payouts/requisites` - реквизиты ИП
 
+Клуб v2 (подтверждено на api1, авторизация user):
+
+* `GET /user/club/v2/home/analytics` - аналитика главной клуба (totals + series по дням)
+* `GET /user/club/v2/home/banners` - баннеры клуба
+* `GET /user/club/v2/home/links` - ссылки участника клуба (+ фильтры dateFrom/dateTo)
+* `GET /user/club/v2/home/news` - новости клуба (items + pagination)
+* `GET /user/club/v2/home/news/{newsId}` - детальная новость (404 для отсутствующей)
+* `GET /user/club/v2/analytics/links` - аналитика ссылок (level1/level2/level3)
+* `GET /user/club/v2/analytics/monthly-income` - доход по уровням клуба
+* `GET /user/club/v2/links/summary` - сводка по ссылкам (totals + breakdown)
+* `GET /user/club/v2/referrals/{userId}` - детальная информация реферала (invitedBy + activity)
+* `GET /user/club/v2/referrals/{userId}/referrals` - дерево рефералов реферала (404 для несуществующего userId)
+* `GET /user/club/v2/payouts/summary` - сводка выплат (balance, canRequestWithdrawal)
+* `GET /user/club/v2/referrals` - рефералы текущего пользователя (pagination + summary)
+
 С userId в пути (тут мы начинаем понемножку уходить в рекурсию):
 
 * ~~`GET /user/{userId}/club/referrals` - рефералы пользователя (userId)~~

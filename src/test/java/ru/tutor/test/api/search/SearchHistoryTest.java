@@ -17,6 +17,7 @@ import ru.tutor.constants.Tags;
 @Feature("История поиска")
 @DisplayName("Тесты эндпоинта POST /user/search/history")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class SearchHistoryTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -40,12 +41,17 @@ public class SearchHistoryTest {
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void saveSearchHistorySingleQuery() {
+        List<String> queries = List.of("Питание");
         Response response = step("POST /user/search/history - один запрос", () ->
-                searchSteps.saveSearchHistory(token, List.of("Питание"))
+                searchSteps.saveSearchHistory(token, queries)
         );
 
         step("Валидация: статус 201, тело []", () ->
                 searchSteps.validateSearchHistoryResponse(response));
+        step("GET возвращает сохранённый запрос", () -> {
+            Response history = searchSteps.getSearchHistory(token);
+            searchSteps.validateSearchHistoryContains(history, queries);
+        });
     }
 
     @Test
@@ -54,12 +60,17 @@ public class SearchHistoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void saveSearchHistoryMultipleQueries() {
+        List<String> queries = List.of("Питание", "дневник питания", "ЗОЖ");
         Response response = step("POST /user/search/history - несколько запросов", () ->
-                searchSteps.saveSearchHistory(token, List.of("Питание", "дневник питания", "ЗОЖ"))
+                searchSteps.saveSearchHistory(token, queries)
         );
 
         step("Валидация: статус 201, тело []", ()->
                 searchSteps.validateSearchHistoryResponse(response));
+        step("GET возвращает сохранённые запросы", () -> {
+            Response history = searchSteps.getSearchHistory(token);
+            searchSteps.validateSearchHistoryContains(history, queries);
+        });
     }
 
     @Test
@@ -67,6 +78,7 @@ public class SearchHistoryTest {
     @DisplayName("Сохранение истории поиска без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void saveSearchHistoryWithoutAuth() {
         Response response = step("POST /user/search/history - без токена", () ->
                 searchSteps.saveSearchHistory("", List.of("Питание"))
@@ -82,6 +94,7 @@ public class SearchHistoryTest {
     @DisplayName("Сохранение истории поиска с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void saveSearchHistoryWithInvalidToken() {
         Response response = step("POST /user/search/history - без токена", () ->
                 searchSteps.saveSearchHistory("invalid_token", List.of("Питание"))
@@ -96,6 +109,7 @@ public class SearchHistoryTest {
     @Order(5)
     @DisplayName("Сохранение истории поиска с пустым queryList")
     @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.CONTRACT)
     void saveSearchHistoryEmptyQueryList() {
         Response response = step("POST /user/search/history - пустой список", () ->
                 searchSteps.saveSearchHistory(token, List.of())
@@ -110,6 +124,7 @@ public class SearchHistoryTest {
     @DisplayName("Сохранение истории поиска с несколькими пустыми queryList")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void saveSearchHistoryEmptyStrings() {
         Response response = step("POST /user/search/history - пустой список", () ->
                 searchSteps.saveSearchHistory(token, List.of("", "", ""))
@@ -126,6 +141,7 @@ public class SearchHistoryTest {
     @DisplayName("GET: успешное получение истории поиска")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getSearchHistorySuccess() {
         Response response = step("GET / user/search/history", () ->
                 searchSteps.getSearchHistory(token)
@@ -140,6 +156,7 @@ public class SearchHistoryTest {
     @DisplayName("GET: без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getSearchHistoryWithoutAuth() {
         Response response = step("GET /user/search/history - без токена", () ->
                 searchSteps.getSearchHistory("")
@@ -154,36 +171,13 @@ public class SearchHistoryTest {
     @DisplayName("GET: невалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getSearchHistoryInvalidToken() {
         Response response = step("GET /user/search/history - невалдиный токен", () ->
                 searchSteps.getSearchHistory("invalid_token")
         );
         step("Проверка статуса 401", () ->
                 assertEquals(401,  response.getStatusCode())
-        );
-    }
-
-    // ==================== INTEGRATION ====================
-
-    @Test
-    @Order(10)
-    @DisplayName("Интеграция: POST сохранение -> GET проверка содержимого")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.POSITIVE)
-    @Tag(Tags.INTEGRATION)
-    void postThenGetSearchHistory() {
-        List<String> queries = List.of("Питание", "дневник питания");
-
-        step("POST /user/search/history - сохранение", () ->
-                searchSteps.saveSearchHistory(token, queries)
-        );
-
-        Response response = step("GET /user/search/history - получение", () ->
-                searchSteps.getSearchHistory(token)
-        );
-
-        step("Проверка: GET возвращает сохранённые запросы", () ->
-                searchSteps.validateSearchHistoryContains(response, queries)
         );
     }
 }

@@ -12,7 +12,8 @@ import ru.tutor.utils.AllureAttachments;
 import ru.tutor.utils.ResponseAnalyzer;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import ru.tutor.constants.Tags;
 
 @Epic("Аутентификация")
 @Feature("Проверка корректности ответа")
@@ -20,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("📋 Проверки ответов API")
 @Execution(ExecutionMode.CONCURRENT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
+@Tag(Tags.CONTRACT)
 class LoginResponseTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());

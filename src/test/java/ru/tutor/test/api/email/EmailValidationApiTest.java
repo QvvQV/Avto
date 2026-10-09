@@ -6,6 +6,7 @@ import io.qameta.allure.Feature;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.api.orders.PaymentApi;
 import ru.tutor.config.TestConfig;
@@ -15,6 +16,8 @@ import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ru.tutor.constants.Tags;
+
 /**
  * Задача 7221 "Добавить строгую валидацию email при создании заказа на бэке"
  */
@@ -22,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("Email Validation")
 @Feature("Order Creation Email Validation")
 @DisplayName("Тесты валидации email при создании заказа")
+@Tag(Tags.INTEGRATION)
 public class EmailValidationApiTest {
 
     private final PaymentApi paymentApi = new PaymentApi(TestConfig.getCurrentApiUrl());

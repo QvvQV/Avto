@@ -20,6 +20,7 @@ import static com.codeborne.selenide.Selenide.refresh;
 import ru.tutor.constants.Tags;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.E2E)
 public class OrderRenewal extends BaseUiTest {
 
     private final TtPage ttPage = new TtPage();
@@ -44,7 +45,6 @@ public class OrderRenewal extends BaseUiTest {
     @Order(1)
     @Feature("Renewal в ЛК")
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @DisplayName("Renewal: логин в ЛК → модалка оплаты пожизненного → фиксация iframe")
     void paymentMethod_Renewal_PaymentModal_Life_Iframe() {
         renewalModalFlow.login();
@@ -66,7 +66,6 @@ public class OrderRenewal extends BaseUiTest {
     @Order(2)
     @Feature("Renewal в ЛК")
     @Tag(Tags.UI_API)
-    @Tag(Tags.E2E)
     @DisplayName("Renewal: логин -> модалка оплаты Реневал -> фиксация iframe")
     void paymentMethod_Renewal_PaymentModal_iframe() {
         renewalModalFlow.login();

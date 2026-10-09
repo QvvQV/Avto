@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @Feature("Заявки на возврат")
 @DisplayName("Тесты эндпоинта создания заявки на возврат")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Tag(Tags.INTEGRATION)
 public class RefundTicketTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -95,6 +96,7 @@ public class RefundTicketTest {
     @DisplayName("POST /user/refund-tickets/create - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void createRefundTicketWithoutAuth() {
         RefundTicketRequest request = createRefundRequest();
 
@@ -110,6 +112,7 @@ public class RefundTicketTest {
     @DisplayName("POST /user/refund-tickets/create - невалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void createRefundTicketWithInvalidToken() {
         RefundTicketRequest request = createRefundRequest();
 
@@ -125,6 +128,7 @@ public class RefundTicketTest {
     @DisplayName("POST /user/refund-tickets/create - пустое тело")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void createRefundTicketWithEmptyBody() {
         RefundTicketRequest request = createEmptyRefundRequest();
 
@@ -140,6 +144,7 @@ public class RefundTicketTest {
     @DisplayName("GET /user/refund-tickets - список заявок")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getRefundTicketsSuccess() {
         Response response = step("GET /user/refund-tickets", () ->
                 orderSteps.getRefundTickets(token)
@@ -154,6 +159,7 @@ public class RefundTicketTest {
     @DisplayName("GET /user/refund-tickets - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getRefundTicketsWithoutAuth() {
         Response response = step("GET /user/refund-tickets - без токена", () ->
                 orderSteps.getRefundTickets("")
@@ -168,6 +174,7 @@ public class RefundTicketTest {
     @DisplayName("GET /user/refund-tickets - невалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getRefundTicketsInvalidToken() {
         Response response = step("GET /user/refund-tickets - без токена", () ->
                 orderSteps.getRefundTickets("invalid")
