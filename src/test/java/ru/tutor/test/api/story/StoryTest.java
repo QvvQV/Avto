@@ -5,6 +5,7 @@ import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import ru.tutor.config.TestConfig;
+import ru.tutor.flow.account.FreshUserFixture;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.content.StoriesSteps;
 
@@ -288,6 +289,22 @@ public class StoryTest {
 
     @Test
     @Order(16)
+    @DisplayName("Интеграция: рандомный список тутсов → детали тутса")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.POSITIVE)
+    void getRandomTutAndDetailsSuccess() {
+        Response randomResponse = step("GET /user/tuts/random", () ->
+                storiesSteps.getRandomListTuts(token));
+        String slug = step("Извлечение slug тутса", () ->
+                storiesSteps.extractFirstTutSlug(randomResponse));
+        Response detailsResponse = step("GET /user/tuts/{slug}", () ->
+                storiesSteps.getTutDetails(token, slug));
+        step("Валидация деталей тутса", () ->
+                storiesSteps.validateTutDetailsResponse(detailsResponse));
+    }
+
+    @Test
+    @Order(17)
     @DisplayName("Получение категорий тутсов без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -309,7 +326,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(17)
+    @Order(18)
     @DisplayName("Получение категорий тутсов с инвалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -331,7 +348,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(18)
+    @Order(19)
     @DisplayName("Получение категорий тутсов с пустой категорией")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -347,7 +364,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(19)
+    @Order(20)
     @DisplayName("Успешное получение рандомного списка тутсов")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
@@ -362,7 +379,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(20)
+    @Order(21)
     @DisplayName("Получение списка без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -377,7 +394,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(21)
+    @Order(22)
     @DisplayName("Получение списка инвалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -392,7 +409,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(22)
+    @Order(23)
     @DisplayName("Валидация полей списка тутсов")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
@@ -402,12 +419,12 @@ public class StoryTest {
                 storiesSteps.getRandomListTutsList(token)
         );
         step("Валидация ответа", () ->
-                storiesSteps.validateRandomTutsItem(response)
+                storiesSteps.validateTutDetailsResponse(response)
         );
     }
 
     @Test
-    @Order(23)
+    @Order(24)
     @DisplayName("Получение списка без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -422,7 +439,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(24)
+    @Order(25)
     @DisplayName("Получение списка инвалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -437,36 +454,40 @@ public class StoryTest {
     }
 
     @Test
-    @Order(25)
-    @DisplayName("Успешная фиксация просмотра сторис с одним ULID")
+    @Order(26)
+    @DisplayName("Успешная фиксация просмотра сторис с одним ULID (read-back)")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void markStoriesViewSuccess() {
-        Response listResponse = step("GET /user/stories - получить список", () ->
-                storiesSteps.getStories(token)
-        );
+        String freshToken = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+
+        Response listResponse = step("GET /user/stories", () ->
+                storiesSteps.getStories(freshToken));
 
         String ulid = step("Извлечение первого ULID", () ->
-                storiesSteps.extractFirstUlid(listResponse)
-        );
+                storiesSteps.extractFirstUlid(listResponse));
 
-        Response response = step("POST /user/stories/view - фиксация просмотра", () ->
-                storiesSteps.markStoriesViewed(token, List.of(ulid))
-        );
+        Response response = step("POST /user/stories/view", () ->
+                storiesSteps.markStoriesViewed(freshToken, List.of(ulid)));
 
-        step("Валидация: статус 201 тело []", () ->
+        step("Валидация: статус 201, тело []", () ->
                 storiesSteps.validateStoriesViewResponse(response));
     }
 
     @Test
-    @Order(26)
-    @DisplayName("Фиксация просмотра сторис с несколькими ULID")
+    @Order(27)
+    @DisplayName("Фиксация просмотра сторис с несколькими ULID (read-back)")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void markStoriesViewMultipleUlids() {
-        Response listResponse = step("GET /user/stories - получить список", () ->
-                storiesSteps.getStories(token)
-        );
+        String freshToken = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+
+        Response listResponse = step("GET /user/stories", () ->
+                storiesSteps.getStories(freshToken));
 
         List<String> ulids = step("Извлечение первых 3 ULIDs", () -> {
             List<Map<String, Object>> stories = listResponse.jsonPath().getList("$");
@@ -483,16 +504,14 @@ public class StoryTest {
         });
 
         Response response = step("POST /user/stories/view - фиксация " + ulids.size() + " ULIDs", () ->
-                storiesSteps.markStoriesViewed(token, ulids)
-        );
+                storiesSteps.markStoriesViewed(freshToken, ulids));
 
-        step("Валидация: статус 201б тело []", () ->
-                storiesSteps.validateStoriesViewResponse(response)
-        );
+        step("Валидация: статус 201, тело []", () ->
+                storiesSteps.validateStoriesViewResponse(response));
     }
 
     @Test
-    @Order(27)
+    @Order(28)
     @DisplayName("Фиксация просмотра сторис без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -507,7 +526,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(28)
+    @Order(29)
     @DisplayName("Фиксация просмотра сторис с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -522,7 +541,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(29)
+    @Order(30)
     @DisplayName("Фиксация просмотра сторис c пустым массивом ULID")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -537,7 +556,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(30)
+    @Order(31)
     @DisplayName("Фиксация показа экрана сторис с произвольным ULID (сервер не валидирует)")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -552,10 +571,11 @@ public class StoryTest {
     }
 
     @Test
-    @Order(31)
+    @Order(32)
     @DisplayName("Успешная фиксация показа экрана с payload fortuna")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void markStoryScreenSuccess() {
         Response response = step("POST /user/stories/screen - с payload fortuna", () ->
                 storiesSteps.markStoryScreen(token, List.of("fortuna"))
@@ -567,10 +587,11 @@ public class StoryTest {
     }
 
     @Test
-    @Order(32)
+    @Order(33)
     @DisplayName("Фиксация показа экрана сторис с несколькими payload")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void markStoryScreenMultiplePayloads() {
         Response response = step("POST /user/stories/screen - с payload fortuna", () ->
                 storiesSteps.markStoryScreen(token, List.of("fortuna", "bonus", "promo"))
@@ -582,7 +603,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(33)
+    @Order(34)
     @DisplayName("Фиксация показа экрана сторис без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -596,7 +617,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(34)
+    @Order(35)
     @DisplayName("Фиксация показа экрана сторис с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -610,7 +631,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(35)
+    @Order(36)
     @DisplayName("Фиксация показа экрана сторис с пустым массивом payload")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
@@ -623,7 +644,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(36)
+    @Order(37)
     @DisplayName("Фиксация показа экрана сторис с произвольным payload (сервер не валидирует)")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
@@ -636,42 +657,28 @@ public class StoryTest {
     }
 
     @Test
-    @Order(37)
-    @DisplayName("Успешная фиксация просмотра тутса")
+    @Order(38)
+    @DisplayName("Успешная фиксация просмотра тутса (204)")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void markTutsViewSuccess() {
-        Response categoriesResponse = step("GET /user/tuts-categories", () ->
-                storiesSteps.getTutsCategories(token)
-        );
+        Response randomResponse = step("GET /user/tuts/random", () ->
+                storiesSteps.getRandomListTuts(token));
 
-        String categoryId = step("Извлечение id первой категории", () ->
-                storiesSteps.extractFirstCategoryId(categoriesResponse)
-        );
-
-        Response feedResponse = step ("GET /user/tuts/category/{id}/feed", () ->
-                storiesSteps.getCategoryFeed(token, categoryId)
-        );
-
-        String slug = step("Извлечение slug первого тутса", () -> {
-            List<Map<String, Object>> items = feedResponse.jsonPath().getList("items");
-            assertNotNull(items, "Список items не должен быть null");
-            assertFalse(items.isEmpty(), "Список items не должен быть пуст");
-            String s =(String) items.getFirst().get("slug");
-            assertNotNull(s, "slug не должен быть null");
-            return s;
-        });
+        String slug = step("Извлечение slug тутса", () ->
+                storiesSteps.extractFirstTutSlug(randomResponse));
 
         Response response = step("POST /user/tuts/{slug}/view - фиксация просмотра", () ->
                 storiesSteps.markTutsViewed(token, slug)
         );
 
-        step("проверка статуса 204", () ->
+        step("Проверка статуса 204", () ->
                 assertEquals(204, response.getStatusCode()));
     }
 
     @Test
-    @Order(38)
+    @Order(39)
     @DisplayName("Фиксация просмотра тутса без токена")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -687,7 +694,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(39)
+    @Order(40)
     @DisplayName("Фиксация просмотра тутса с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -703,7 +710,7 @@ public class StoryTest {
     }
 
     @Test
-    @Order(40)
+    @Order(41)
     @DisplayName("Фиксация просмотра тутса с несуществующим slug")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)

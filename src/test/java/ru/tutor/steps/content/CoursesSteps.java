@@ -60,7 +60,7 @@ public class CoursesSteps extends BaseApiSteps {
         return productId;
     }
 
-    @Step("Валидация ответа списка достижений")
+    @Step("Валидация ответа информации о курсе")
     public void validateCourses(Response response) {
         assertBasicResponse(response);
         JsonPath json = response.jsonPath();

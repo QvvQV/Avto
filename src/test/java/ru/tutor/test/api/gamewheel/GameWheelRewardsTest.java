@@ -20,7 +20,6 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта игрового колеса")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class GameWheelRewardsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -33,8 +32,6 @@ public class GameWheelRewardsTest {
     private static String token;
 
     private static List<GameWheelRewardResponse> rewards;
-//    TODO: сейчас таблица призов по ручке не появляется (может к ней вернутся)
-//    private static Map<String, GameWheelRewardsSteps.RewardValidationResult> validationResults;
 
     @BeforeAll
     public static void setUp() {
@@ -55,6 +52,8 @@ public class GameWheelRewardsTest {
     @DisplayName("Успешное получение списка наград игрового колеса (Проверка 200 OK)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getGameWheelRewardsSuccess() {
 
         Response response = step("GET /user/game-wheel/rewards", () ->
@@ -79,6 +78,7 @@ public class GameWheelRewardsTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailWithoutAuthorization() {
         Response response = step("Отправка Get запроса без токена", () ->
                 gameWheelRewardsSteps.getGameWheelRewards("")
@@ -95,6 +95,7 @@ public class GameWheelRewardsTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailWithInvalidToken() {
         Response response = step("Отправка GET запроса с невалидным токеном", () ->
                 gameWheelRewardsSteps.getGameWheelRewards("invalid_token_12345")

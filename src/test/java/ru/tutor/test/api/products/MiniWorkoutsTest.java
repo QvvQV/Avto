@@ -16,7 +16,6 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта '/user/mini-workouts'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class MiniWorkoutsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -45,6 +44,7 @@ public class MiniWorkoutsTest {
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void validateMiniWorkoutsItems() {
         Response response = step("GET /user/mini-workouts", () ->
                 productsSteps.getMiniWorkouts(token));
@@ -60,6 +60,7 @@ public class MiniWorkoutsTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getMiniWorkoutsWithoutAuth() {
         Response response = step("GET /user/mini-workouts без токена", () ->
                 productsSteps.getMiniWorkouts(""));
@@ -74,6 +75,7 @@ public class MiniWorkoutsTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getMiniWorkoutsInvalidToken() {
         Response response = step("GET /user/mini-workouts невалидный токен", () ->
                 productsSteps.getMiniWorkouts("invalid_token"));

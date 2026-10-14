@@ -1,6 +1,7 @@
 package ru.tutor.steps.content;
 
 import io.qameta.allure.Allure;
+import io.qameta.allure.Severity;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.function.Executable;
@@ -55,6 +56,14 @@ public class VideoSteps extends BaseApiSteps {
                 containsKey(item,"showCategoryId"),
                 containsKey(item,"showCategory")
         );
+    }
+
+    private List<Map<String, Object>> fetchWatchedLastItems(String authToken) {
+        Response response = getWatchedLast(authToken);
+        assertBasicResponse(response);
+        List<Map<String, Object>> items = response.jsonPath().getList("$");
+        return items == null ? List.of() : items;
+
     }
 
     @Step("Валидация ответа /user/videos/watched/last")

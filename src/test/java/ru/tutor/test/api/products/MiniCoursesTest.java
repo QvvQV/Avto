@@ -17,7 +17,6 @@ import ru.tutor.constants.Tags;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class MiniCoursesTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -46,6 +45,7 @@ public class MiniCoursesTest {
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void validateMiniCoursesItems() {
         Response response = step("GET /user/mini-courses", () ->
                 productsSteps.getMiniCourses(token));
@@ -61,13 +61,14 @@ public class MiniCoursesTest {
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void validateMiniCoursesPagination() {
         Response response = step("GET /user/mini-courses", () ->
                 productsSteps.getMiniCourses(token));
 
         step("Проверка пагинации", () ->
 
-            productsSteps.validateMiniCoursesPagination(response));
+            productsSteps.validatePagination(response));
 
     }
 
@@ -77,6 +78,7 @@ public class MiniCoursesTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getMiniCoursesWithoutAuth() {
         Response response = step("GET /user/mini-courses без токена", () ->
                 productsSteps.getMiniCourses(""));
@@ -91,52 +93,10 @@ public class MiniCoursesTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getMiniCoursesInvalidToken() {
         Response response = step("GET /user/mini-courses невалидный токен", () ->
                 productsSteps.getMiniCourses("invalid_token"));
-
-        step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
-    }
-
-    @Test
-    @Order(1)
-    @DisplayName("GET /user/mini-workouts - валидация элементов списка")
-    @Story("Валидация данных")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.POSITIVE)
-    void validateMiniWorkoutsItems() {
-        Response response = step("GET /user/mini-workouts", () ->
-                productsSteps.getMiniWorkouts(token));
-
-        step("Проверка обязательных полей каждого элемента", () ->
-                productsSteps.validateAllAreMiniCourses(response)
-        );
-    }
-
-    @Test
-    @Order(2)
-    @DisplayName("GET /user/mini-workouts - без авторизации")
-    @Story("Негативный сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.NEGATIVE)
-    void getMiniWorkoutsWithoutAuth() {
-        Response response = step("GET /user/mini-workouts без токена", () ->
-                productsSteps.getMiniWorkouts(""));
-
-        step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("GET /user/mini-workouts - невалидный токен")
-    @Story("Негативный сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.NEGATIVE)
-    void getMiniWorkoutsInvalidToken() {
-        Response response = step("GET /user/mini-workouts невалидный токен", () ->
-                productsSteps.getMiniWorkouts("invalid_token"));
 
         step("Проверка ошибки авторизации", () ->
                 assertEquals(401, response.getStatusCode()));

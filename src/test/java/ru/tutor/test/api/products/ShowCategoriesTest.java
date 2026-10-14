@@ -17,7 +17,6 @@ import ru.tutor.constants.Tags;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class ShowCategoriesTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -46,6 +45,7 @@ public class ShowCategoriesTest {
     @Story("Валидация данных")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void validateShowCategoriesItems() {
         Response response = step("GET /user/show-categories", () ->
                 productsSteps.getShowCategories(token));
@@ -60,6 +60,7 @@ public class ShowCategoriesTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getShowCategoriesWithoutAuth() {
         Response response = step("GET /user/show-categories без токена", () ->
                 productsSteps.getShowCategories(""));
@@ -74,6 +75,7 @@ public class ShowCategoriesTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getShowCategoriesInvalidToken() {
         Response response = step("GET /user/show-categories невалидный токен", () ->
                 productsSteps.getShowCategories("invalid"));
@@ -88,6 +90,7 @@ public class ShowCategoriesTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getShowsSuccess() {
         Response response = step("GET /user/shows", () ->
                 productsSteps.getShows(token));
@@ -102,6 +105,7 @@ public class ShowCategoriesTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getShowsWithoutAuth() {
         Response response = step("GET /user/shows без токена", () ->
                 productsSteps.getShows(""));
@@ -116,6 +120,7 @@ public class ShowCategoriesTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getShowsInvalidToken() {
         Response response = step("GET /user/show-categories невалидный токен", () ->
                 productsSteps.getShows("invalid"));
@@ -130,12 +135,13 @@ public class ShowCategoriesTest {
     @Story("Валидация данных")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void validateShowsPagination() {
         Response response = step("GET /user/shows", () ->
                 productsSteps.getShows(token));
 
         step("Проверка пагинации", () ->
 
-                productsSteps.validateMiniCoursesPagination(response));
+                productsSteps.validatePagination(response));
     }
 }

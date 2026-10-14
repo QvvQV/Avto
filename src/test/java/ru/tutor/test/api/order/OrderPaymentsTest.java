@@ -15,11 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
-@Feature("История платежей")
+@Feature("История платежей и подписка")
 @DisplayName("Тесты эндпоинта GET /user/orders/payments")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class OrderPaymentsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -43,6 +42,7 @@ public class OrderPaymentsTest {
     @DisplayName("Успешное получение истории платежей")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getOrderPaymentsSuccess() {
         Response response = step("GET /user/orders/payments", () ->
                 orderSteps.getOrdersPayments(token)
@@ -58,6 +58,7 @@ public class OrderPaymentsTest {
     @DisplayName("Получение истории платежей без авторизации")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getOrdersPaymentsWithoutAuth() {
         Response response = step("GET /user/orders/payments без токена", () ->
                 orderSteps.getOrdersPayments("")
@@ -72,8 +73,9 @@ public class OrderPaymentsTest {
     @DisplayName("Получение истории платежей с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getOrdersPaymentsWithInvalidToken() {
-        Response response = step("с невалидным токеном", () ->
+        Response response = step("GET /user/orders/payments с невалидным токеном", () ->
                 orderSteps.getOrdersPayments("invalid_token")
         );
 
@@ -87,6 +89,7 @@ public class OrderPaymentsTest {
     @DisplayName("Успешное получение информации по бонусному доступу")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getOrderBonusPaymentsSuccess() {
         Response response = step("GET /user/orders/bonus-access-info", () ->
                 orderSteps.getOrdersBonusAccessInfo(token)
@@ -102,7 +105,8 @@ public class OrderPaymentsTest {
     @DisplayName("Получение информации по бонусному доступу без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
-    void getOrdersBonusPaymentsWithoutAuth() {
+    @Tag(Tags.CONTRACT)
+    void getOrdersBonusAccessInfoWithoutAuth() {
         Response response = step("GET /user/orders/bonus-access-info без токена", () ->
                 orderSteps.getOrdersBonusAccessInfo("")
         );
@@ -113,11 +117,12 @@ public class OrderPaymentsTest {
 
     @Test
     @Order(6)
-    @DisplayName("Получение истории платежей с невалидным токеном")
+    @DisplayName("Получение бонусного доступа с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
-    void getOrdersBonusPaymentsWithInvalidToken() {
-        Response response = step("с невалидным токеном", () ->
+    @Tag(Tags.CONTRACT)
+    void getOrdersBonusAccessInfoWithInvalidToken() {
+        Response response = step("GET /user/orders/bonus-access-info с невалидным токеном", () ->
                 orderSteps.getOrdersBonusAccessInfo("invalid_token")
         );
 
@@ -131,6 +136,7 @@ public class OrderPaymentsTest {
     @DisplayName("Успешное получение информации по состоянию подписки")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getOrderSubscriptionStateSuccess() {
         Response response = step("GET /user/orders/subscription/state", () ->
                 orderSteps.getOrdersSubscriptionState(token)
@@ -143,9 +149,10 @@ public class OrderPaymentsTest {
 
     @Test
     @Order(8)
-    @DisplayName("Получение информации по бонусному доступу без авторизации")
+    @DisplayName("Получение информации по состоянию подписки без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getOrdersSubscriptionStateWithoutAuth() {
         Response response = step("GET /user/orders/subscription/state без токена", () ->
                 orderSteps.getOrdersSubscriptionState("")
@@ -157,11 +164,12 @@ public class OrderPaymentsTest {
 
     @Test
     @Order(9)
-    @DisplayName("Получение истории платежей с невалидным токеном")
+    @DisplayName("Состояние подписки с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getOrdersSubscriptionStateWithInvalidToken() {
-        Response response = step("с невалидным токеном", () ->
+        Response response = step("GET /user/orders/subscription/state с невалидным токеном", () ->
                 orderSteps.getOrdersSubscriptionState("invalid_token")
         );
 

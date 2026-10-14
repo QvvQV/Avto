@@ -14,15 +14,6 @@ public class StoriesApi extends BaseApi {
     }
 
     /**
-     * Ручка для колеса фортуны
-     */
-    @Step("POST /user/stories/screen - видимость колеса для пользователя сторис")
-    public Response storyScreen(String authToken) {
-
-        return postWithToken(EndpointsContent.USER_STORIES_SCREEN, authToken, "[fortuna]");
-    }
-
-    /**
      * GET /user/stories
      */
     @Step("GET /user/stories - истории на платформе")
@@ -76,6 +67,14 @@ public class StoriesApi extends BaseApi {
     @Step("GET /user/tuts/category/{id}/feed - список тутсов определённой категории")
     public Response showCategoryFeed(String authToken, String id) {
         return getWithToken(String.format(EndpointsContent.USER_TUTS_CATEGORY_FEED, id), authToken);
+    }
+
+    /**
+     * GET /user/tuts/{slug} - детали тутса
+     */
+    @Step("GET /user/tuts/{slug} - детали тутса")
+    public Response showTutDetails(String authToken, String slug) {
+        return getWithToken(String.format(EndpointsContent.USER_TUTS_DETAILS, slug), authToken);
     }
 
     /**

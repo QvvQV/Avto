@@ -88,6 +88,11 @@ public final class EndpointsContent {
     public static final String USER_TUTS = "/user/tuts";
 
     /**
+     * Детали конкретного тутса
+     */
+    public static final String USER_TUTS_DETAILS = "/user/tuts/%s";
+
+    /**
      * Рандомный список категорий тутсов
      */
     public static final String USER_TUTS_RANDOM_LIST = "/user/tuts/random";

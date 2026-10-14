@@ -4,7 +4,6 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.fortune.GameWheelStartGameSteps;
 import ru.tutor.steps.fortune.UserRewardSteps;
@@ -18,10 +17,9 @@ import ru.tutor.constants.Tags;
 @Tag(Tags.API)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
-@DisplayName("Тесты эндпоинта игрового колесаю Список неполученных призов")
+@DisplayName("Тесты эндпоинта игрового колеса, Список неполученных призов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class UserRewardListTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -33,10 +31,6 @@ public class UserRewardListTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
-
-    private static List<GameWheelRewardResponse> rewards;
-//    TODO: сейчас таблица призов по ручке не появляется (может к ней вернутся)
-//    private static Map<String, GameWheelRewardsSteps.RewardValidationResult> validationResults;
 
     @BeforeAll
     public static void setUp() {
@@ -58,6 +52,7 @@ public class UserRewardListTest {
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getUserRewardSuccess() {
 
         Response response = step("GET /user/reward/list", () ->
@@ -75,6 +70,7 @@ public class UserRewardListTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailWithoutAuthorizationList() {
         Response response = step("Отправка GET запроса без токена", () ->
                 userRewardSteps.getUserRewards("")
@@ -94,6 +90,7 @@ public class UserRewardListTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailWithInvalidTokenList() {
         Response response = step("Отправка GET запроса с невалидным токеном", () ->
                 userRewardSteps.getUserRewards("invalid_token_12345")

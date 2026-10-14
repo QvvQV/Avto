@@ -10,14 +10,14 @@ import ru.tutor.config.TestConfig;
 
 import static io.qameta.allure.Allure.step;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
 @Feature("Выход из системы")
 @DisplayName("Тесты эндпоинта /user/logout")
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class UserLogoutTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -38,6 +38,9 @@ public class UserLogoutTest {
     @Test
     @DisplayName("Успешный выход из системы")
     @Story("Основной сценарий")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void successfulLogout() {
 
         Response logoutResponse = step("POST /user/logout", () ->
@@ -55,8 +58,13 @@ public class UserLogoutTest {
     @Test
     @DisplayName("Попытка выхода без авторизации")
     @Story("Обработка ошибок")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void logoutWithoutToken() {
-        Response response = userSteps.logout("");
+        Response response = step("POST /user/logout без токена", () ->
+                userSteps.logout("")
+        );
 
         assertTrue(response.getStatusCode() == 401 || response.getStatusCode() == 403,
                 "Без токена должен быть 401 или 403. Получено: " + response.getStatusCode());
@@ -64,32 +72,33 @@ public class UserLogoutTest {
 
     @Test
     @DisplayName("Попытка выхода с невалидным токеном")
+    @Story("Обработка ошибок")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void logoutWithInvalidToken() {
-        Response response = userSteps.logout("invalid");
+        Response response = step("POST /user/logout с невалидным токеном", () ->
+                userSteps.logout("invalid")
+        );
 
-        assertEquals(401, response.getStatusCode(), "С невалидным токеном должен быть 401 или 403. Получено: " + response.getStatusCode());
+        assertEquals(401, response.getStatusCode(),
+                "С невалидным токеном должен быть 401. Получено: " + response.getStatusCode());
     }
 
     @Test
     @DisplayName("Выход и повторный логин")
     @Story("Жизненный цикл сессии")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void logoutAndLoginAgain() {
 
-       userSteps.logout(authToken);
+        step("POST /user/logout", () ->
+                userSteps.logout(authToken));
 
-        String secondToken = userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD);
+        String secondToken = step("Повторный логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
 
         assertNotEquals(authToken, secondToken, "После повторного логина должен быть новый токен");
-
-    }
-
-    @AfterEach
-    void tearDown() {
-        step("Завершение теста", () ->
-                Allure.addAttachment("Тест завершён", "text/plain",
-                        "тест " + this.getClass().getSimpleName() + " выполнен в " +
-                                java.time.LocalDateTime.now()
-                )
-        );
     }
 }

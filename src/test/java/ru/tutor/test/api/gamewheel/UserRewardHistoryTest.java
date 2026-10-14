@@ -4,7 +4,6 @@ import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
-import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.model.fortune.UserRewardResponse;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.fortune.GameWheelStartGameSteps;
@@ -19,10 +18,9 @@ import ru.tutor.constants.Tags;
 @Tag(Tags.API)
 @Epic("API Тесты пользователя")
 @Feature("Игровое колесо")
-@DisplayName("Тесты эндпоинта игрового колес. История получения призов")
+@DisplayName("Тесты эндпоинта игрового колеса. История получения призов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class UserRewardHistoryTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -34,10 +32,6 @@ public class UserRewardHistoryTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private static String token;
-
-    private static List<GameWheelRewardResponse> rewards;
-//    TODO: сейчас таблица призов по ручке не появляется (может к ней вернутся)
-//    private static Map<String, GameWheelRewardsSteps.RewardValidationResult> validationResults;
 
     @BeforeAll
     public static void setUp() {
@@ -59,6 +53,7 @@ public class UserRewardHistoryTest {
     @Story("История наград")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getRewardHistorySuccess() {
         Response response = step("GET /user/reward/history", () ->
                 userRewardSteps.getUserRewardsHistory(token)
@@ -76,6 +71,7 @@ public class UserRewardHistoryTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailToGetHistoryWithoutAuth() {
         Response response = step("Отправка GET запроса без токена", () ->
                 userRewardSteps.getUserRewardsHistory("")
@@ -95,6 +91,7 @@ public class UserRewardHistoryTest {
     @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void shouldFailWithInvalidTokenHistory() {
         Response response = step("Отправка GET запроса без токена", () ->
                 userRewardSteps.getUserRewardsHistory("invalid_token_12345")

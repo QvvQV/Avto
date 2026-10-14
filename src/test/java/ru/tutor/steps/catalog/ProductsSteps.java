@@ -583,7 +583,7 @@ public class ProductsSteps extends BaseApiSteps {
             );
         }
 
-        validateMiniCoursesPagination(response);
+        validatePagination(response);
     }
 
     @Step("Проверка обязательных полей шоу")
@@ -617,7 +617,7 @@ public class ProductsSteps extends BaseApiSteps {
     }
 
     @Step("Валидация пагинации мини-курсов")
-    public void validateMiniCoursesPagination(Response response) {
+    public void validatePagination(Response response) {
         assertBasicResponse(response);
         Map<String, Object> pagination = response.jsonPath().getMap("pagination");
         assertNotNull(pagination, "pagination не должен быть null");
@@ -689,5 +689,19 @@ public class ProductsSteps extends BaseApiSteps {
         List<ProductsResponse> products = getUserProductsList(authToken);
         assertFalse(products.stream().anyMatch(p -> productId.equals(p.getProductId())),
                 "Продукт (productId " + productId + ") не должен присутствовать в спике");
+    }
+
+    @Step("Read-back: lastModuleShowInfo продукта {orderNumber}")
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> fetchLastModuleShowInfo(String authToken, String
+            orderNumber) {
+        Response response = getUserProducts(authToken);
+        assertBasicResponse(response);
+        List<Map<String, Object>> products = response.jsonPath().getList("$");
+        return products.stream()
+                .filter(p -> orderNumber.equals(String.valueOf(p.get("id"))))
+                .findFirst()
+                .map(p -> (Map<String, Object>) p.get("lastModuleShowInfo"))
+                .orElseThrow(() -> new AssertionError("Продукт " + orderNumber + " не найден в /user/products"));
     }
 }

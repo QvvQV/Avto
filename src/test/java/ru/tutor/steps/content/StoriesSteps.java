@@ -2,11 +2,9 @@ package ru.tutor.steps.content;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import ru.tutor.api.content.StoriesApi;
 import ru.tutor.base.BaseApiSteps;
-import ru.tutor.model.content.StoryScreenResponse;
 import ru.tutor.utils.AllureAttachments;
 
 import java.util.*;
@@ -24,30 +22,6 @@ public class StoriesSteps extends BaseApiSteps {
         super(baseUrl);
         this.storiesApi = new StoriesApi(baseUrl);
     }
-
-    @Step("Видимость сторис")
-    public Response showStories(String authToken) {
-        Response response = storiesApi.storyScreen(authToken);
-        AllureAttachments.attachJson("Story Screen Response", response.getBody().asString());
-        return response;
-    }
-
-    @Step("Валидация успешного ответа при запуске игры")
-    public StoryScreenResponse validateSuccessResponse(Response response) {
-        // Базовая валидация ответа
-        response.then()
-                .statusCode(201)
-                .contentType(ContentType.JSON);
-
-        // Валидация структуры JSON
-        StoryScreenResponse responseBody = response.as(StoryScreenResponse.class);
-        assertNotNull(responseBody, "Пустое тело ответа");
-        return responseBody;
-
-
-        // Преобразуем в модель
-    }
-
 
     @Step("GET /user/stories - список историй")
     public Response getStories(String authToken) {
@@ -278,5 +252,35 @@ public class StoriesSteps extends BaseApiSteps {
         Response response = storiesApi.markTutsViewed(authToken, slug);
         AllureAttachments.attachJson("Tuts View Response", response.getBody().asString());
         return response;
+    }
+
+    @Step("GET /user/tuts/{slug} - детали тутса")
+    public Response getTutDetails(String slug, String authToken) {
+        Response response = storiesApi.showTutDetails(authToken, slug);
+        AllureAttachments.attachJson("Tuts Details Response", response.getBody().asString());
+        return response;
+    }
+
+    @Step("Извлечение первого slug из /user/tuts/random")
+    public String extractFirstTutSlug(Response randomResponse) {
+        List<String> slugs = randomResponse.jsonPath().getList("$", String.class);
+        assertNotNull(slugs, "Список тутсов не должен быть null");
+        assertFalse(slugs.isEmpty(), "Список тутсов не должен быть пуст");
+        Allure.addAttachment("Extracted tut slug", slugs.getFirst());
+        return slugs.getFirst();
+    }
+
+    @Step("Валидация деталей тутса /user/tuts/{slug}")
+    public void validateTutDetailsResponse(Response response) {
+        assertBasicResponse(response);
+        Map<String, Object> tut = response.jsonPath().getMap("$");
+        assertAll("Детали тутса",
+                nonEmptyString(tut, "slug"),
+                positiveInt(tut, "productId"),
+                nonEmptyString(tut, "title"),
+                nonEmptyString(tut, "link"),
+                nonNegative(tut,"countLikes"),
+                nonEmptyString(tut, "authorName"),
+                () -> assertJsonFieldExists(response, "poster.original"));
     }
 }

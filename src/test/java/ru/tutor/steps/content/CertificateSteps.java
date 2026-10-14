@@ -36,4 +36,17 @@ public class CertificateSteps extends BaseApiSteps {
                 positiveInt(root, "number")
     );
     }
+
+    @Step("GET {path} - файл сертификата")
+    public Response getCertificateFile(String authToken, String path) {
+        return certApi.getCertificateFile(authToken, path);
+    }
+
+    @Step("Файл сертификата доступен")
+    public void assertCertificateFileAvailable(Response response) {
+        assertEquals(200, response.getStatusCode());
+        assertNotNull(response.getBody(), "Тело ответа не должно быть null");
+        assertTrue(response.getBody().asByteArray().length > 0,
+                "Файл сертификата не должен быть пустым");
+    }
 }

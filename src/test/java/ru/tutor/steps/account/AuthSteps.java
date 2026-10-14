@@ -16,8 +16,7 @@ import java.util.Base64;
 
 import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthSteps extends BaseApiSteps {
 
@@ -162,5 +161,39 @@ public class AuthSteps extends BaseApiSteps {
     public void validateAuthCheckResponse(Response response) {
         assertBasicResponse(response);
         assertJsonFieldEquals(response, "$", "OK");
+    }
+
+    @Step("Валидация ошибки аутентификации (401)")
+    public void validateAuthError(Response response) {
+        assertErrorStatusCode(response, 401);
+        assertContentTypeJson(response);
+        assertJsonFieldEquals(response, "code", 401);
+        assertJsonFieldEquals(response, "message", "Недействительные аутентификационные данные.");
+        assertFieldNotExists(response, "token");
+    }
+
+    @Step("Валдиация успешного логина")
+    public LoginResponse validateSuccessfulLogin(Response response) {
+        assertBasicResponse(response);
+
+        long responseTime = response.getTime();
+        assertTrue(responseTime > 0 && responseTime < 10000, "Время ответа вне допустимого диапазона");
+
+        LoginResponse loginResponse = response.as(LoginResponse.class);
+        validateLoginResponse(loginResponse);
+
+        assertNotNull(loginResponse.token(), "Токен должен присутствовать в ответе");
+        String[] parts = loginResponse.token().split("\\.");
+        assertEquals(3, parts.length, "JWT токен должен содержать 3 части");
+        assertTrue(parts[0].length() > 10 && parts[1].length() > 10, "Части JWT должны быть валидными");
+
+        return loginResponse;
+    }
+
+    @Step("Проверка токена через GET /user")
+    public void validateTokenReadBack(String token) {
+        Response check = checkAuth(token);
+        assertEquals(200, check.getStatusCode());
+        validateAuthCheckResponse(check);
     }
 }

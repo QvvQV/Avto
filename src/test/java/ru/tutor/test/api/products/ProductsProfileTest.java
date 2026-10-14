@@ -49,6 +49,7 @@ public class ProductsProfileTest {
     @DisplayName("Успешное получение списка продуктов - 200 ОК")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getProductsSuccess() {
         ensureProductsLoaded();
 

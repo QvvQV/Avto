@@ -19,7 +19,6 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта dashboard/info")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class DashboardInfoTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -46,6 +45,7 @@ public class DashboardInfoTest {
     @DisplayName("GET /user/dashboard/info - успешное получение")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getDashboardInfoSuccess() {
         Response response = step("GET /user/dashboard/info", () ->
                 dashboardSteps.getDashboardInfo(token)
@@ -60,6 +60,7 @@ public class DashboardInfoTest {
     @DisplayName("GET /user/dashboard/info без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getDashboardInfoWithoutAuth() {
         Response response = step("GET /user/dashboard/info без токена", () ->
                 dashboardSteps.getDashboardInfo("")
@@ -74,6 +75,7 @@ public class DashboardInfoTest {
     @DisplayName("GET /user/dashboard/info с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getDashboardInfoInvalidToken() {
         Response response = step("GET /user/dashboard/info без токена", () ->
                 dashboardSteps.getDashboardInfo("invalid")
@@ -87,16 +89,21 @@ public class DashboardInfoTest {
     @Order(4)
     @DisplayName("Проверка известных дашбордов")
     @Severity(SeverityLevel.MINOR)
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void verifyKnownDashboardsExist() {
         Response response = dashboardSteps.getDashboardInfo(token);
-        List<String> dashboards = response.jsonPath().getList("$");
-        assertTrue(dashboards.contains("tutorDiet"), "Должен быть tutorDiet");
-        assertTrue(dashboards.contains("game"), "Должен быть game");
-        assertTrue(dashboards.contains("telegram"), "Должен быть telegram");
-        assertTrue(dashboards.contains("avitorg"), "Должен быть avitorg");
-        assertTrue(dashboards.contains("astrology"), "Должен быть astrology");
-        assertTrue(dashboards.contains("matrix"), "Должен быть matrix");
-        assertTrue(dashboards.contains("taro"), "Должен быть taro");
-        assertTrue(dashboards.contains("hiromant"), "Должен быть hiromant");
+        step("Проверка информации об известных бордах", () -> {
+            List<String> dashboards = response.jsonPath().getList("$");
+            assertTrue(dashboards.contains("tutorDiet"), "Должен быть tutorDiet");
+            assertTrue(dashboards.contains("iq"), "Должен быть iq");
+            assertTrue(dashboards.contains("beauty"), "Должен быть beauty");
+            assertTrue(dashboards.contains("telegram"), "Должен быть telegram");
+            assertTrue(dashboards.contains("avitorg"), "Должен быть avitorg");
+            assertTrue(dashboards.contains("astrology"), "Должен быть astrology");
+            assertTrue(dashboards.contains("matrix"), "Должен быть matrix");
+            assertTrue(dashboards.contains("taro"), "Должен быть taro");
+            assertTrue(dashboards.contains("hiromant"), "Должен быть hiromant");
+        });
     }
 }

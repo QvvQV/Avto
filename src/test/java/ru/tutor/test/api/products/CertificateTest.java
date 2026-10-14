@@ -19,7 +19,6 @@ import ru.tutor.constants.Tags;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class CertificateTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -64,6 +63,12 @@ public class CertificateTest {
         step("Валидация ответа", () ->
                 certificateSteps.validateCertificateGenerateResponse(response)
         );
+
+        String pdfPath = response.jsonPath().getString("pdf");
+        Response pdf = step("GET " + pdfPath, () ->
+                certificateSteps.getCertificateFile(token, pdfPath));
+        step("Проверка файла PDF сертификата", () ->
+                certificateSteps.assertCertificateFileAvailable(pdf));
     }
 
     @Test
@@ -71,6 +76,7 @@ public class CertificateTest {
     @DisplayName("Генерация сертификата без авторизации")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void generateCertificateWithoutAuth() {
         ensureOrderNumber();
         String name = faker.name().firstName();
@@ -88,6 +94,7 @@ public class CertificateTest {
     @DisplayName("Генерация сертификата с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void generateCertificateInvalidToken() {
         ensureOrderNumber();
         String name = faker.name().firstName();
@@ -105,6 +112,7 @@ public class CertificateTest {
     @DisplayName("Генерация сертификата с invalid_order")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void generateCertificateInvalidOrder() {
         ensureOrderNumber();
         String name = faker.name().firstName();
@@ -126,6 +134,7 @@ public class CertificateTest {
     @DisplayName("Генерация сертификата пустое значение заказа")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void generateCertificateWithouthOrder() {
         ensureOrderNumber();
         String name = faker.name().firstName();

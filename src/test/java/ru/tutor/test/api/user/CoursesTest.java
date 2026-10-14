@@ -17,7 +17,6 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинтов курсов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class CoursesTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -42,9 +41,10 @@ public class CoursesTest {
 
     @Test
     @Order(1)
-    @DisplayName("GET /user/courses/{productId} - информаия о курсе")
+    @DisplayName("GET /user/courses/{productId} - информация о курсе")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getCoursesByIdSuccess() {
         Response allProducts = step("GET /user/products/all", () ->
                 coursesSteps.getAllProducts(token)
@@ -70,6 +70,7 @@ public class CoursesTest {
     @DisplayName("GET /user/courses/{productId}/reviews - отзывы курса")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getCourseReviewsSuccess() {
         Response allProducts = step("GET /user/products/all", () ->
                 coursesSteps.getAllProducts(token)
@@ -91,6 +92,7 @@ public class CoursesTest {
     @DisplayName("GET /user/courses/{productId}/recommendations - рекомендации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getCourseRecommendationsSuccess() {
         Response allProducts = step("GET /user/products/all", () ->
                 coursesSteps.getAllProducts(token)
@@ -112,6 +114,7 @@ public class CoursesTest {
     @DisplayName("GET /user/courses/{productId} - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getCoursesByIdWithoutAuth() {
         Response response = step ("GET /user/courses/666", () ->
                 coursesSteps.getCourseById("", 666)
@@ -125,6 +128,7 @@ public class CoursesTest {
     @DisplayName("GET /user/courses/{productId}/reviews - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getCourseReviewsWithoutAuth() {
         Response response = step("GET /user/courses/666/reviews без токена", () ->
                 coursesSteps.getCourseReviews("", 666)
@@ -138,8 +142,9 @@ public class CoursesTest {
     @DisplayName("GET /user/courses/{productId}/recommendations - без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getCourseRecommendationsWithoutAuth() {
-        Response response = step("Get / user/courses/666/recommendations без токена", () ->
+        Response response = step("GET /user/courses/666/recommendations без токена", () ->
                 coursesSteps.getCourseRecommendations("", 666)
         );
         step("Проверка статуса 401", () ->
@@ -151,6 +156,7 @@ public class CoursesTest {
     @DisplayName("GET /user/courses/{productId} - с инвалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void getCoursesByIdWithInvalidToken() {
         Response response = step ("GET /user/courses/666", () ->
                 coursesSteps.getCourseById("invalid_token", 666)

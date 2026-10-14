@@ -7,23 +7,23 @@ import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.config.TestConfig;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import ru.tutor.constants.Tags;
 
 
 @Epic("API Тесты пользователя")
 @Feature("Аутентификация и профиль")
-@DisplayName("Тесты: ")
+@DisplayName("Тесты эндпоинта GET /user")
 
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class UserCheckTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
-    private static String token;
+    private String token;
 
     @BeforeEach
     void setUp() {
@@ -35,6 +35,9 @@ public class UserCheckTest {
 
     @Test
     @DisplayName("Проверка авторизации")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void checkAuthorization() {
         Response response = step("GET /user с валидным токеном", () ->
                 userSteps.checkAuth(token)
@@ -48,6 +51,8 @@ public class UserCheckTest {
     @Test
     @DisplayName("Проверка авторизации без токена (401)")
     @Severity(SeverityLevel.CRITICAL)
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void checkAuthWithoutToken() {
         Response response = step("GET /user без токена", () ->
                 userSteps.checkAuth("")
@@ -60,6 +65,8 @@ public class UserCheckTest {
     @Test
     @DisplayName("Проверка авторизации с невалидным токеном (401)")
     @Severity(SeverityLevel.CRITICAL)
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
     void checkAuthWithInvalidToken() {
         Response response = step ("GET /user с невалидным токеном", () ->
                 userSteps.checkAuth("invalid_token")

@@ -4,50 +4,63 @@ import io.qameta.allure.*;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.tutor.config.TestConfig;
 import ru.tutor.steps.account.ResetSteps;
-import ru.tutor.utils.AllureAttachments;
 
 import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import ru.tutor.constants.Tags;
 
 @Epic("Восстановить Пароль")
-@Feature("Функция сброса пароля")
-@Story("Запрос на сброс пароля и его подтверждение")
-@DisplayName("🔐 Тесты сброса пароля")
-@Execution(ExecutionMode.CONCURRENT)
+@Feature("Сброс пароля")
+@DisplayName("Тесты эндпоинта POST /reset")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class ResetTest {
     private final ResetSteps resetSteps = new ResetSteps(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
+    private static final String RESET_ENDPOINT = "POST /reset";
+    private static final String EXISTING_EMAIL = "lip@test.ru";
+
     @Test
+    @Order(1)
+    @DisplayName("Сброс пароля с валидным email")
+    @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("🚫 Сброс пароля с несуществующим email")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
+    void resetWithValidEmail() {
+        Response response = step(RESET_ENDPOINT + " с валидным email", () ->
+                resetSteps.requestPasswordReset(EXISTING_EMAIL)
+        );
+
+        step("Проверка статуса 200", () ->
+            assertEquals(200, response.getStatusCode())
+        );
+    }
+
+    @Test
     @Order(2)
-    void resetWithUnknownEmail_UserNotFound() {
-        Response response = step("Отправить запрос с несуществующим email", () ->
+    @DisplayName("Сброс пароля с несуществующим email")
+    @Story("Негативный сценарий")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
+    void resetWithUnknownEmail() {
+        Response response = step(RESET_ENDPOINT + " с несуществующим email", () ->
                 resetSteps.requestPasswordReset(faker.internet().emailAddress())
         );
 
-        step("Проверить ошибку 'User not found'", () -> {
-            response.then()
-                    .statusCode(400)
-                    .contentType("application/json");
-
-            String message = response.jsonPath().getString("message");
-            assertEquals("User not found", message, "Ожидалось сообщение 'User not found'");
-            assertNotNull(message, "Ответ должен содержать ключ 'message'");
+        step("Проверка статуса 400 и сообщения", () -> {
+            assertEquals(400, response.getStatusCode());
+            assertEquals("ERR_RESET_PASSWORD", response.jsonPath().getString("error"));
+            assertEquals("User not found", response.jsonPath().getString("message"));
         });
 
         step("Проверить отсутствие чувствительных данных", () -> {
@@ -58,59 +71,21 @@ public class ResetTest {
     }
 
     @Test
-    @Severity(SeverityLevel.NORMAL)
-    @DisplayName("🚫 Сброс пароля с пустым email")
     @Order(3)
-    void resetWithEmptyEmail_ValidationError() {
-        Response response = step("Отправить запрос с пустым email", () ->
+    @DisplayName("Сброс пароля с пустым email")
+    @Story("Валидация")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
+    void resetWithEmptyEmail() {
+        Response response = step(RESET_ENDPOINT + " с пустым email", () ->
                 resetSteps.requestPasswordReset("")
         );
 
-        step("Проверить ошибку валидации", () -> {
-            response.then()
-                    .statusCode(422)
-                    .contentType("application/json");
-
-            // Анализируем реальную структуру ошибки
-            String responseBody = response.getBody().asString();
-            AllureAttachments.attachText("Тело ответа при пустом email", responseBody);
+        step("Проверка статуса 422", () -> {
+            assertEquals(422, response.getStatusCode());
+            assertEquals("Значение не должно быть пустым.", response.jsonPath().getString("error.messages.email"));
         });
-    }
-
-    @Test
-    @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("✅ Сброс пароля с валидным email")
-    @Order(1)
-    void resetWithValidEmail_Success() {
-        Response response = step("Отправить запрос сброса пароля для валидного email", () ->
-                resetSteps.requestPasswordReset("anika.torphy@yahoo.com")
-        );
-
-        step("Проверить успешный ответ", () -> {
-            response.then()
-                    .statusCode(200)
-                    .contentType("application/json");
-
-            // Гибкая проверка тела ответа
-            String responseBody = response.getBody().asString();
-            if (!responseBody.trim().isEmpty() &&
-                    !responseBody.equals("[]") &&
-                    response.getContentType().contains("json")) {
-                assertFalse(responseBody.contains("\"error\""), "Ответ не должен содержать ключ 'error'");
-            }
-        });
-    }
-
-    @Test
-    @DisplayName("🔴 Базовая проверка неуспешного сброса")
-    void basicUnsuccessfulResetCheck() {
-        Response response = resetSteps.requestPasswordReset("nonexistent@example.com");
-
-            response.then()
-                    .statusCode(400)
-                    .contentType("application/json");
-            String message = response.jsonPath().getString("message");
-            assertEquals("User not found", message, "Ожидалось сообщение 'User not found'");
     }
 
     @ParameterizedTest
@@ -121,117 +96,75 @@ public class ResetTest {
             "test@domain",
             "test@domain."
     })
+    @Order(4)
+    @DisplayName("Сброс пароля с невалидными email форматами")
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("📧 Сброс пароля с невалидными email форматами")
-    @Order(5)
-    void resetWithInvalidEmailFormats_ValidationErrors(String invalidEmail) {
-        Response response = step("Отправить запрос с невалидным email: " + invalidEmail, () ->
+    @Story("Валидация")
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
+    void resetWithInvalidEmailFormats(String invalidEmail) {
+        Response response = step( RESET_ENDPOINT + " с невалидным email: " + invalidEmail, () ->
                 resetSteps.requestPasswordReset(invalidEmail)
         );
 
         step("Проверить ошибку валидации для: " + invalidEmail, () -> {
-            response.then()
-                    .statusCode(422)
-                    .contentType("application/json");
+            assertEquals(422, response.getStatusCode());
+            assertEquals("Значение адреса электронной почты недопустимо.", response.jsonPath().getString("error.messages.email"));
         });
     }
 
     @Test
+    @Order(5)
+    @DisplayName("Сброс пароля с email в верхнем регистре")
+    @Story("Нормализация")
     @Severity(SeverityLevel.MINOR)
-    @DisplayName("🔠 Сброс пароля с email в верхнем регистре")
-    @Order(6)
-    void resetWithUppercaseEmail_NormalizationCheck() {
-        Response response = step("Отправить запрос с email в верхнем регистре", () ->
-                resetSteps.requestPasswordReset("ANIKA.TORPHY@YAHOO.COM")
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
+    void resetWithUppercaseEmail() {
+        Response response = step(RESET_ENDPOINT + " с email в верхнем регистре", () ->
+                resetSteps.requestPasswordReset(EXISTING_EMAIL.toUpperCase(Locale.ROOT))
         );
 
-        step("Проверить обработку регистра", () -> {
-            int statusCode = response.getStatusCode();
-            assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 404,
-                    "Ожидался статус 200, 400 или 404, но получен: " + statusCode);
-
-            AllureAttachments.attachText("Статус ответа для email в верхнем регистре",
-                    String.valueOf(statusCode));
+        step("Проверка статуса 200 (нормализация регистра)", () -> {
+            assertEquals(200, response.getStatusCode());
         });
     }
 
     @Test
+    @Order(6)
+    @DisplayName("Сброс пароля с email содержащим спецсимволы")
+    @Story("Негативный сценарий")
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("🔣 Сброс пароля с email содержащим спецсимволы")
-    @Order(7)
-    void resetWithEmailWithSpecialChars_BehaviorCheck() {
-        Response response = step("Отправить запрос с email содержащим спецсимволы", () ->
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
+    void resetWithSpecialCharsEmail() {
+        Response response = step( RESET_ENDPOINT + " с email содержащим спецсимволы", () ->
                 resetSteps.requestPasswordReset("test+tag@domain.com")
         );
 
-        step("Проверить обработку спецсимволов", () -> {
-            int statusCode = response.getStatusCode();
-            assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 422,
-                    "Ожидался статус 200, 400 или 422, но получен: " + statusCode);
-
-            // Логируем результат для анализа
-            AllureAttachments.attachText("Обработка спецсимволов",
-                    "Email: test+tag@domain.com\nStatus: " + statusCode);
+        step("Проверка статуса 400 и сообщения", () -> {
+            assertEquals(400, response.getStatusCode());
+            assertEquals("ERR_RESET_PASSWORD", response.jsonPath().getString("error"));
+            assertEquals("User not found", response.jsonPath().getString("message"));
         });
     }
 
     @Test
+    @Order(7)
+    @DisplayName("Повторный сброс пароля")
+    @Story("Основной сценарий")
     @Severity(SeverityLevel.MINOR)
-    @DisplayName("🔄 Повторный запрос сброса пароля")
-    @Order(8)
-    void resetPasswordTwice_RateLimitCheck() {
-        String email = "anika.torphy@yahoo.com";
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
+    void resetPasswordTwice() {
+        Response first = step("Первый " + RESET_ENDPOINT, () -> resetSteps.requestPasswordReset(EXISTING_EMAIL));
 
-        step("Первый запрос сброса пароля", () ->
-                resetSteps.requestPasswordReset(email)
-        );
+        step("Проверка статуса первого запроса", () ->
+                assertEquals(200, first.getStatusCode()));
 
-        Response secondResponse = step("Второй запрос сброса пароля", () ->
-                resetSteps.requestPasswordReset(email)
-        );
+        Response second = step("Второй " + RESET_ENDPOINT, () -> resetSteps.requestPasswordReset(EXISTING_EMAIL));
 
-        step("Проверить обработку повторного запроса", () -> {
-            int statusCode = secondResponse.getStatusCode();
-            assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 429,
-                    "Ожидался статус 200, 400 или 429, но получен: " + statusCode);
- 
-            if (statusCode == 429) {
-                String message = secondResponse.jsonPath().getString("message");
-                assertEquals("Too many requests", message, "Ожидалось сообщение 'Too many requests'");
-            }
-        });
-    }
-
-    @Nested
-    @DisplayName("🔍 Детальные проверки различных email форматов")
-    class EmailFormatValidation {
-
-        @Test
-        @DisplayName("📝 Проверка различных спецсимволов в email")
-        void variousSpecialCharactersInEmail() {
-            String[] testEmails = {
-                    "test+tag@domain.com",     // плюс в локальной части
-                    "test.tag@domain.com",     // точка в локальной части
-                    "test-tag@domain.com",     // дефис в локальной части
-                    "test_tag@domain.com",     // подчеркивание в локальной части
-                    "test@sub.domain.com"      // точка в доменной части
-            };
-
-            for (String email : testEmails) {
-                Response response = step("Тестирование email: " + email, () ->
-                        resetSteps.requestPasswordReset(email)
-                );
-
-                step("Проверить ответ для: " + email, () -> {
-                    int statusCode = response.getStatusCode();
-                    assertTrue(statusCode == 200 || statusCode == 400 || statusCode == 422,
-                            "Для email " + email + " ожидался статус 200, 400 или 422, но получен: " + statusCode);
-
-                    // Логируем результат
-                    AllureAttachments.attachText("Результат для " + email,
-                            "Status: " + statusCode);
-                });
-            }
-        }
+        step("Проверка статуса второго запроса 200", () ->
+                assertEquals(200, second.getStatusCode()));
     }
 }
