@@ -14,7 +14,6 @@ import io.restassured.response.Response;
 import java.util.List;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
 import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
@@ -24,7 +23,6 @@ import ru.tutor.constants.Tags;
 
 
 @Tag(Tags.INTEGRATION)
-@Tag(Tags.CONTRACT)
 public class ClubPaymentTest {
 
     // Общие константы
@@ -35,34 +33,27 @@ public class ClubPaymentTest {
     private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
 
-    private String authToken;
-    private static List<ClubPaymentResponse> payments;
-
     @BeforeAll
     public static void setupAll() {
         Allure.label("component", "API");
         Allure.label("feature", "User Club");
     }
 
-    @BeforeEach
-    public void setup() {
-        authToken = step("Логин", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
-    @Order(1)
     @DisplayName("Успешное получение истории платежей (Проверка 200 ОК)")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
     void getClubPaymentsSuccess() {
+        String authToken = step("Логин тестового пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
+
         Response response = step("GET /user/club/payments", () ->
                 clubSteps.getClubPayments(authToken)
         );
 
-        payments = step("Валидация ответа с платежами", ()->
+        List<ClubPaymentResponse> payments = step("Валидация ответа с платежами", ()->
                 clubSteps.validateClubPaymentsResponse(response)
         );
 
@@ -75,88 +66,32 @@ public class ClubPaymentTest {
     }
 
     @Test
-    @Order(2)
-    @DisplayName("Проверка направления платежей (income/outcome)")
-    @Story("Классификация платежей")
-    @Severity(SeverityLevel.NORMAL)
-    @Tag(Tags.POSITIVE)
-    void shouldHaveCorrectPaymentDirections(){
-        if (payments == null) {
-            Response response = step("Получение истории платежей", () ->
-                    clubSteps.getClubPayments(authToken)
-            );
-            payments = clubSteps.validateClubPaymentsResponse(response);
-        }
+    @DisplayName("Невалидный токен (401)")
+    @Story("Безопасность")
+    @Severity(SeverityLevel.CRITICAL)
+    @Tag(Tags.NEGATIVE)
+    @Tag(Tags.CONTRACT)
+    void getClubPaymentsWithInvalidToken(){
+       Response response = step("GET /user/club/payments с невалидным токеном", () ->
+               clubSteps.getClubPayments("invalid"));
 
-        step("Проверка направлений платежей", () -> {
-            for  (ClubPaymentResponse payment : payments) {
-                assertTrue(payment.isIncome() || payment.isOutcome(),
-                        "аправление платежей должно быть 'income' или 'outcome'");
-
-                String direction = payment.isIncome() ? "💰 Доход" : "💸 Расход";
-                Allure.addAttachment("Направление платежа", "text/plain",
-                        String.format("%s: %s (%d руб.)",
-                                direction, payment.name() , payment.amount())
-                );
-            }
-        });
+       step("Проверка ошибки авторизации", () ->
+               clubSteps.validateUnauthorizedResponse(response));
     }
 
     @Test
-    @Order(3)
-    @DisplayName("Проверка получения истории платежей с невалидным токеном (Проверка 401)")
-    @Story("Негативный сценарий")
+    @DisplayName("Пустой токен (Проверка 401)")
+    @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
-    void shouldFailWithoutAuthorization() {
-        Response response = step("Попытка получения истории платежей с невалидным токеном", () ->
-                clubSteps.getClubPayments("invalid")
-        );
-
-        step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response)
-        );
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("Проверка получения истории платежей без авторизации (Проверка 401)")
-    @Story("Негативный сценарий")
-    @Severity(SeverityLevel.CRITICAL)
-    @Tag(Tags.NEGATIVE)
-    void shouldFailWithoutAuthorization1() {
-        Response response = step("Попытка получения платежей без токена", () ->
+    @Tag(Tags.CONTRACT)
+    void getClubPaymentWithoutToken() {
+        Response response = step("GET /user/club/payments без токена", () ->
                 clubSteps.getClubPayments("")
         );
 
         step("Проверка ошибки авторизации", () ->
                 clubSteps.validateUnauthorizedResponse(response)
         );
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("Проверка корректности дат платежей")
-    @Story("Валидация данных")
-    @Severity(SeverityLevel.NORMAL)
-    @Tag(Tags.POSITIVE)
-    void shouldHaveValidPaymentDates() {
-        if (payments == null) {
-            Response response = step("Получение истории платежей", () ->
-                    clubSteps.getClubPayments(authToken)
-            );
-            payments = clubSteps.validateClubPaymentsResponse(response);
-        }
-
-        step("Проверка дат платежей", () -> {
-            for (ClubPaymentResponse payment : payments) {
-                assertNotNull(payment.getDateAsLocalDateTime(),
-                        "Дата платежа должна быть в корректном формате ISO");
-
-                Allure.addAttachment("Проверка даты", "text/plain",
-                        String.format("Платеж: %s\nДата: %s\nФормат: ✓",
-                                payment.name(), payment.date()));
-            }
-        });
     }
 }

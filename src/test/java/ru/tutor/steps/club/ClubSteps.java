@@ -450,6 +450,46 @@ public class ClubSteps extends BaseApiSteps {
         return withdrawal;
     }
 
+    @Step("GET /user/club/v2/payouts - список заявок на вывод")
+    public Response getPayouts(String authToken) {
+        Response response = clubApi.getClubPayouts(authToken);
+        AllureAttachments.attachJson("Club Payout Response", response.getBody().asString());
+        AllureAttachments.attachJson("Club Payout Headers", response.getHeaders().toString());
+        return response;
+    }
+
+    @Step("Валидация ответа списка заявок на вывод")
+    public ClubPayoutsResponse validatePayoutsResponse(Response response) {
+        assertBasicResponse(response);
+
+        ClubPayoutsResponse payouts = response.as(ClubPayoutsResponse.class);
+        assertNotNull(payouts, "Ответ списка заявок не должен быть null");
+        assertNotNull(payouts.items(), "Поле 'items' должно присутствовать в ответе");
+
+        Allure.addAttachment("Количество заявок",  "text/plain",
+                String.valueOf(payouts.safeItems().size()));
+        return payouts;
+    }
+
+    @Step("Наличие заявки в списке (GET /user/club/v2/payouts)")
+    public void validatePayoutPresent(ClubPayoutsResponse payouts, ClubWithdrawalResponse created) {
+        assertNotNull(created, "Созданная заявка не должна быть null");
+        assertNotNull(payouts, "Ответ списка заявок не должен быть null");
+
+        List<ClubWithdrawalResponse> items = payouts.safeItems();
+        Allure.addAttachment("Заявок в списке", "text/plain", String.valueOf(items.size()));
+
+        ClubWithdrawalResponse found = items.stream().filter(item -> created.id() != null && created.id().equals(item.id())).findFirst().orElseThrow(() -> new AssertionError(
+                "Созданная заявка id=" + created.id() + " не найдена в GET /user/club/v2/payouts (page=1, per_page=20)"
+        ));
+
+        assertAll("Сверка созданной заявки со списком",
+                () -> assertEquals(created.number(), found.number(), "number должен совпадать"),
+                () -> assertEquals(created.amount(), found.amount(), "amount должен совпадать"),
+                () -> assertEquals(created.status().code(), found.status().code(), "status.code должен совпадать"),
+                () -> assertEquals(created.method().code(), found.method().code(), "method.code должен совпадать"));
+    }
+
     // ==================== GET /user/club/v2/referrals ====================
 
     private static final Set<String> REFERRAL_STATUS_CODES = Set.of("trial", "lite", "premium", "lifetime");
@@ -737,6 +777,18 @@ public class ClubSteps extends BaseApiSteps {
         return response;
     }
 
+    @Step("Валидация структуры home/news/{slug}")
+    public void validateClubNewsDetail(Response response, String expectedSlug) {
+        assertBasicResponse(response);
+        assertAll("news detail - ключи",
+                () -> assertJsonFieldExists(response, "id"),
+                () -> assertEquals(expectedSlug, response.jsonPath().getString("slug"),
+                        "slug должен совпадать с запрошенным"),
+                () -> assertJsonFieldNotEmpty(response, "title"),
+                () -> assertJsonFieldNotEmpty(response, "publishedAt"),
+                () -> assertJsonFieldNotEmpty(response, "content"));
+    }
+
     @Step("GET /user/club/v2/analytics/links - аналитика по ссылкам")
     public Response getClubAnalyticsLinks(String authToken) {
         Response response = clubApi.getClubAnalyticsLinks(authToken);
@@ -882,7 +934,22 @@ public class ClubSteps extends BaseApiSteps {
 
     @Step("Проверка 404 для {path}")
     public void validateNotFound(Response response, String path) {
-        assertEquals(404, response.getStatusCode(),
-                "Ожидался 404 для " + path + ", получен: " + response.getStatusCode());
+        AllureAttachments.attachJson("404 Response [" +  path + "]", response.getBody().asString());
+
+        assertAll("Ошибка 404 для " + path,
+
+                () -> assertEquals(404, response.getStatusCode(),
+                "Ожидался 404 для " + path + ", получен: " + response.getStatusCode()),
+                () -> assertContentTypeJson(response),
+                () -> {
+            String body = response.getBody().asString();
+            if (body.contains("\"message\"")) {
+                assertJsonFieldNotEmpty(response, "message");
+            } else if (body.contains("\"detail\"")) {
+                assertJsonFieldNotEmpty(response, "detail");
+            } else {
+                fail("Тело 404 не содержит 'message' или 'detail'");
+            }
+                });
     }
 }

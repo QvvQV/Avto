@@ -12,6 +12,7 @@ import ru.tutor.model.admin.PaymentType;
 import ru.tutor.model.club.ClubLinkResponse;
 import ru.tutor.model.club.ClubPayoutRequisitesRequest;
 import ru.tutor.model.club.ClubReferralsResponse;
+import ru.tutor.model.club.ClubWithdrawalResponse;
 import ru.tutor.page.orders.CloudPage;
 import ru.tutor.steps.account.AccountSteps;
 import ru.tutor.steps.admin.AdminSteps;
@@ -148,8 +149,16 @@ public class ReferralChainFlow {
     private ApprovedWithdrawal createApprovedWithdrawal() {
         PremiumPurchase purchase = createPremiumPurchase();
         String token = prepareMemberWithLife(purchase, true);
-        Integer withdrawalId = step("Создание заявки на вывод 3000 (POST /user/club/v2/payouts)", () ->
-                clubSteps.validatePayoutCreated(clubSteps.createPayout(token, AFTER_LIFE)).id());
+//        Integer withdrawalId = step("Создание заявки на вывод 3000 (POST /user/club/v2/payouts)", () ->
+//                clubSteps.validatePayoutCreated(clubSteps.createPayout(token, AFTER_LIFE)).id());
+
+        ClubWithdrawalResponse created = step("Создание заявки на вывод 3000 (POST /user/club/v2/payouts)", () ->
+                clubSteps.validatePayoutCreated(clubSteps.createPayout(token,AFTER_LIFE)));
+        step("Read-back: заявка присутствует в списке (GET /user/club/v2/ payouts)", () ->
+        clubSteps.validatePayoutPresent(clubSteps.validatePayoutsResponse(clubSteps.getPayouts(token)),
+                created));
+
+        Integer withdrawalId = created.id();
 
         step("Проверка статуса заявки в админке: new/Новая", () -> {
             adminSteps.login();

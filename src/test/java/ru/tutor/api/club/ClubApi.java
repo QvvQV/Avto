@@ -16,6 +16,10 @@ public class ClubApi extends BaseApi {
             "limit", 10, "page", 1, "sort", "incomePerMonth", "direction", "desc"
     );
 
+    private static final Map<String, Object> DEFAULT_PAYOUTS_QUERY = Map.of(
+            "page", 1, "per_page", 20
+    );
+
     /**
      * GET /user/club/statistics - получение статистики клуба
      */
@@ -77,6 +81,13 @@ public class ClubApi extends BaseApi {
      */
     public Response getPayoutSummary(String authToken) {
         return getWithToken(EndpointsClub.CLUB_V2_PAYOUTS_SUMMARY, authToken);
+    }
+
+    /**
+     * GET /user/club/v2/payouts - список заявок на вывод (page=1, per_page=20)
+     */
+    public Response getClubPayouts(String authToken) {
+        return getWithQuery(EndpointsClub.USER_CLUB_V2_PAYOUTS, authToken, DEFAULT_PAYOUTS_QUERY);
     }
 
     /**

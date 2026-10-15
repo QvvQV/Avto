@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @DisplayName("Тесты эндпоинта клуба: GET /user/club/v2/referrals")
 @Tag(Tags.INTEGRATION)
 @Tag(Tags.API)
-@Tag(Tags.CONTRACT)
 public class ClubReferralsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -31,26 +30,22 @@ public class ClubReferralsTest {
     private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
 
-    private String authToken;
-
     @BeforeAll
     public static void setupAll() {
         Allure.label("component", "API");
         Allure.label("feature", "User Club Referrals");
     }
 
-    @BeforeEach
-    public void setup() {
-        authToken = step("Логин тестового пользователя", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
-    }
-
     @Test
-    @DisplayName("✅ Контракт ответа рефералов: 200, items, pagination, summary")
+    @DisplayName("Контракт ответа рефералов: 200, items, pagination, summary")
     @Story("Основной сценарий")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
-    void getClubReferrals_Contract() {
+    @Tag(Tags.CONTRACT)
+    void getClubReferrals() {
+        String authToken = step("Логин тестового пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD));
+
         ClubReferralsResponse referrals = step("GET /user/club/v2/referrals", () ->
                 clubSteps.getAndValidateClubReferrals(authToken, EXPECTED_LIMIT, EXPECTED_PAGE));
         step("Проверка структуры элементов списка", () ->
@@ -70,11 +65,12 @@ public class ClubReferralsTest {
     }
 
     @Test
-    @DisplayName("🔒 Невалидный токен: 401")
+    @DisplayName("Невалидный токен: 401")
     @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
-    void getClubReferrals_InvalidToken_ShouldFail() {
+    @Tag(Tags.CONTRACT)
+    void getClubReferralsWithInvalidToken() {
         Response response = step("GET /user/club/v2/referrals невалидным токеном", () ->
                 clubSteps.getClubReferrals("invalid_token"));
         step("Проверка ошибки авторизации", () ->
@@ -82,11 +78,12 @@ public class ClubReferralsTest {
     }
 
     @Test
-    @DisplayName("🔒 Пустой токен: 401")
+    @DisplayName("Пустой токен: 401")
     @Story("Безопасность")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.NEGATIVE)
-    void getClubReferrals_WithoutToken_ShouldFail() {
+    @Tag(Tags.CONTRACT)
+    void getClubReferralsWithoutToken() {
         Response response = step("GET /user/club/v2/referrals без токена", () ->
                 clubSteps.getClubReferrals(""));
         step("Проверка ошибки авторизации", () ->
