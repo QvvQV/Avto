@@ -56,11 +56,11 @@ public class StoriesSteps extends BaseApiSteps {
         for (int i = 0; i < categories.size(); i++) {
             Map<String, Object> category = categories.get(i);
             assertAll("Категория [" + i + "]",
-                    positiveInt(category,"id"),
-                    notNull(category,"name"),
-                    notNull(category,"slug"),
-                    nonNegative(category,"totalCount"),
-                    nonNegative(category,"unwatchedCount")
+                    positiveInt(category, "id"),
+                    notNull(category, "name"),
+                    notNull(category, "slug"),
+                    nonNegative(category, "totalCount"),
+                    nonNegative(category, "unwatchedCount")
             );
         }
     }
@@ -76,9 +76,9 @@ public class StoriesSteps extends BaseApiSteps {
 
         for (int i = 0; i < items.size(); i++) {
             Map<String, Object> item = items.get(i);
-            assertAll("Элемент ленты [" +i + "]",
-                    notNull(item,"slug"),
-                    notNull(item,"watched")
+            assertAll("Элемент ленты [" + i + "]",
+                    notNull(item, "slug"),
+                    notNull(item, "watched")
             );
         }
     }
@@ -94,11 +94,11 @@ public class StoriesSteps extends BaseApiSteps {
         for (int i = 0; i < stories.size(); i++) {
             Map<String, Object> story = stories.get(i);
             assertAll("Сторис [" + i + "]",
-                    notNull(story,"ulid"),
-                    notNull(story,"title"),
-                    notNull(story,"imageUri"),
-                    containsKey(story,"imageWideUri"),
-                    containsKey(story,"link")
+                    notNull(story, "ulid"),
+                    notNull(story, "title"),
+                    notNull(story, "imageUri"),
+                    containsKey(story, "imageWideUri"),
+                    containsKey(story, "link")
             );
         }
     }
@@ -110,13 +110,13 @@ public class StoriesSteps extends BaseApiSteps {
         Map<String, Object> story = response.jsonPath().getMap("$");
         assertNotNull(story, "Список сторис не должен быть null");
 
-            assertAll("Детали истории",
-                    notNull(story,"ulid"),
-                    notNull(story,"title"),
-                    notNull(story,"imageUri"),
-                    containsKey(story,"imageWideUri"),
-                    containsKey(story,"link")
-            );
+        assertAll("Детали истории",
+                notNull(story, "ulid"),
+                notNull(story, "title"),
+                notNull(story, "imageUri"),
+                containsKey(story, "imageWideUri"),
+                containsKey(story, "link")
+        );
 
         // Проверяем слайды
         List<Map<String, Object>> slides = response.jsonPath().getList("slides");
@@ -126,13 +126,13 @@ public class StoriesSteps extends BaseApiSteps {
         for (int i = 0; i < slides.size(); i++) {
             Map<String, Object> slide = slides.get(i);
             assertAll("Слайд [" + i + "]",
-                    notNull(slide,"ulid"),
-                    notNull(slide,"imageUri"),
-                    containsKey(slide,"imageWideUri"),
-                    containsKey(slide,"kinescopeId"),
-                    containsKey(slide,"link"),
-                    notNull(slide,"customSort")
-                    );
+                    notNull(slide, "ulid"),
+                    notNull(slide, "imageUri"),
+                    containsKey(slide, "imageWideUri"),
+                    containsKey(slide, "kinescopeId"),
+                    containsKey(slide, "link"),
+                    notNull(slide, "customSort")
+            );
         }
     }
 
@@ -182,12 +182,12 @@ public class StoriesSteps extends BaseApiSteps {
     public void validateRandomTutsItem(Response response) {
         assertBasicResponse(response);
         assertAll("Проверка полей тутса",
-                () -> assertJsonFieldExists(response,"slug"),
-                () -> assertJsonFieldExists(response,"title"),
-                () -> assertJsonFieldExists(response,"link"),
-                () -> assertJsonFieldExists(response,"authorName"),
-                () -> assertJsonFieldExists(response,"authorImage"),
-                () -> assertJsonFieldExists(response,"poster.original")
+                () -> assertJsonFieldExists(response, "slug"),
+                () -> assertJsonFieldExists(response, "title"),
+                () -> assertJsonFieldExists(response, "link"),
+                () -> assertJsonFieldExists(response, "authorName"),
+                () -> assertJsonFieldExists(response, "authorImage"),
+                () -> assertJsonFieldExists(response, "poster.original")
         );
     }
 
@@ -197,7 +197,7 @@ public class StoriesSteps extends BaseApiSteps {
         List<String> slugs = response.jsonPath().getList("$", String.class);
         assertNotNull(slugs, "Список тутсов не должен быть null");
         assertFalse(slugs.isEmpty(), "Список тутсов не должен быть пустым");
-        for (int i =0; i < slugs.size(); i++) {
+        for (int i = 0; i < slugs.size(); i++) {
             assertNotNull(slugs.get(i), "slug [" + i + "] не должен быть null");
             assertFalse(slugs.get(i).isBlank(), "slug [" + i + "] не должен быть пустым");
         }
@@ -279,8 +279,33 @@ public class StoriesSteps extends BaseApiSteps {
                 positiveInt(tut, "productId"),
                 nonEmptyString(tut, "title"),
                 nonEmptyString(tut, "link"),
-                nonNegative(tut,"countLikes"),
+                nonNegative(tut, "countLikes"),
                 nonEmptyString(tut, "authorName"),
                 () -> assertJsonFieldExists(response, "poster.original"));
+    }
+
+    @Step("Валидация деталей тутса /user/tuts/{slug}")
+    public void validateTutsListResponse(Response response) {
+        assertBasicResponse(response);
+        List<Map<String, Object>> tuts = response.jsonPath().getList("$");
+        assertNotNull(tuts, "Список тутсов не должен быть null");
+        assertFalse(tuts.isEmpty(), "Список тутсов не должен быть пуст");
+
+        for (int i = 0; i < tuts.size(); i++) {
+            Map<String, Object> tut = tuts.get(i);
+            int index = i;
+            assertAll("Тутс [" + index + "]",
+                    nonEmptyString(tut, "slug"),
+                    positiveInt(tut, "productId"),
+                    nonEmptyString(tut, "title"),
+                    nonEmptyString(tut, "link"),
+                    nonEmptyString(tut, "authorName"),
+                    () -> assertFalse(
+                            response.jsonPath().getString("[" + index + "].poster.original").isBlank(),
+                            "poster.original не должен быть пустым для тутса [" + index + "]"
+                    )
+            );
+        }
+
     }
 }

@@ -16,8 +16,8 @@ import ru.tutor.constants.Tags;
 @Epic("API Тесты пользователя")
 @Feature("История поиска")
 @DisplayName("Тесты эндпоинта POST /user/search/history")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class SearchHistoryTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -28,19 +28,14 @@ public class SearchHistoryTest {
 
     private static String token;
 
-    @BeforeEach
-    void setUpAuth() {
-        token = step("Логин пользователя", () ->
-                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
-    @Order(1)
     @DisplayName("Успешное сохранение истории поиска с одним запросом")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void saveSearchHistorySingleQuery() {
+        token = step("Логин пользователя", () ->
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
         List<String> queries = List.of("Питание");
         Response response = step("POST /user/search/history - один запрос", () ->
                 searchSteps.saveSearchHistory(token, queries)
@@ -55,11 +50,13 @@ public class SearchHistoryTest {
     }
 
     @Test
-    @Order(2)
     @DisplayName("Успешное сохранение поиска с несколькими запросами")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void saveSearchHistoryMultipleQueries() {
+        token = step("Логин пользователя", () ->
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
         List<String> queries = List.of("Питание", "дневник питания", "ЗОЖ");
         Response response = step("POST /user/search/history - несколько запросов", () ->
                 searchSteps.saveSearchHistory(token, queries)
@@ -74,7 +71,6 @@ public class SearchHistoryTest {
     }
 
     @Test
-    @Order(3)
     @DisplayName("Сохранение истории поиска без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -85,12 +81,10 @@ public class SearchHistoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401,  response.getStatusCode())
-        );
+                searchSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
-    @Order(4)
     @DisplayName("Сохранение истории поиска с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -101,16 +95,17 @@ public class SearchHistoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401,  response.getStatusCode())
-        );
+                searchSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
-    @Order(5)
     @DisplayName("Сохранение истории поиска с пустым queryList")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
     void saveSearchHistoryEmptyQueryList() {
+        token = step("Логин пользователя", () ->
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
         Response response = step("POST /user/search/history - пустой список", () ->
                 searchSteps.saveSearchHistory(token, List.of())
         );
@@ -120,12 +115,14 @@ public class SearchHistoryTest {
     }
 
     @Test
-    @Order(6)
     @DisplayName("Сохранение истории поиска с несколькими пустыми queryList")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void saveSearchHistoryEmptyStrings() {
+        token = step("Логин пользователя", () ->
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
         Response response = step("POST /user/search/history - пустой список", () ->
                 searchSteps.saveSearchHistory(token, List.of("", "", ""))
         );
@@ -137,13 +134,15 @@ public class SearchHistoryTest {
     // ==================== GET TESTS ====================
 
     @Test
-    @Order(7)
     @DisplayName("GET: успешное получение истории поиска")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getSearchHistorySuccess() {
-        Response response = step("GET / user/search/history", () ->
+        token = step("Логин пользователя", () ->
+                authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+        Response response = step("GET /user/search/history", () ->
                 searchSteps.getSearchHistory(token)
         );
         step("Валидация ответа", () ->
@@ -152,7 +151,6 @@ public class SearchHistoryTest {
     }
 
     @Test
-    @Order(8)
     @DisplayName("GET: без токена авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -162,12 +160,11 @@ public class SearchHistoryTest {
                 searchSteps.getSearchHistory("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401,  response.getStatusCode())
+                searchSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
     @Test
-    @Order(9)
     @DisplayName("GET: невалидный токен")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
@@ -177,7 +174,7 @@ public class SearchHistoryTest {
                 searchSteps.getSearchHistory("invalid_token")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401,  response.getStatusCode())
+                searchSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 @DisplayName("Тесты эндпоинтов видео")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class VideosTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -74,7 +75,7 @@ public class VideosTest {
                 videoSteps.getVideos("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                videoSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
     @Test
     @Order(3)
@@ -86,7 +87,7 @@ public class VideosTest {
                 videoSteps.getVideos("invalid token")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                videoSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -122,7 +123,7 @@ public class VideosTest {
                 videoSteps.getVideosDetails("","16")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                videoSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -150,7 +151,7 @@ public class VideosTest {
                 videoSteps.getWatchedLast("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                videoSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test

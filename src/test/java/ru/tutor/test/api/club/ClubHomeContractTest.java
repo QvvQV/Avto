@@ -7,7 +7,9 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.constants.Tags;
 import ru.tutor.model.club.ClubReferralsResponse;
 import ru.tutor.steps.account.AuthSteps;
-import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubAnalyticsSteps;
+import ru.tutor.steps.club.ClubHomeSteps;
+import ru.tutor.steps.club.ClubReferralsSteps;
 
 import java.util.List;
 import java.util.Map;
@@ -29,15 +31,17 @@ public class ClubHomeContractTest {
     private static final String NONEXISTENT_USER_ID = "999999999";
     private static final String NONEXISTENT_NEWS_ID = "999999";
 
-    private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
+    private final ClubHomeSteps clubHomeSteps = new ClubHomeSteps(BASE_URL);
+    private final ClubAnalyticsSteps clubAnalyticsSteps = new ClubAnalyticsSteps(BASE_URL);
+    private final ClubReferralsSteps clubReferralsSteps = new ClubReferralsSteps(BASE_URL);
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
 
     private String authToken;
 
     private String firstReferralUserId() {
         return step("Получение userId первого реферала", () -> {
-            ClubReferralsResponse referrals = clubSteps.validateClubReferralsResponse(
-                    clubSteps.getClubReferrals(authToken)
+            ClubReferralsResponse referrals = clubReferralsSteps.validateClubReferralsResponse(
+                    clubReferralsSteps.getClubReferrals(authToken)
             );
             return referrals.safeItems().isEmpty() ? null : String.valueOf(referrals.safeItems().getFirst().userId());
         });
@@ -45,7 +49,7 @@ public class ClubHomeContractTest {
 
     private String firstNewsSlug() {
         return step("Получение slug первой новости", () -> {
-            Response news = clubSteps.getClubHomeNews(authToken);
+            Response news = clubHomeSteps.getClubHomeNews(authToken);
             List<Map<String, Object>> items = news.jsonPath().getList("items");
             return items.isEmpty() ? null : String.valueOf(items.getFirst().get("slug"));
         });
@@ -71,9 +75,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeAnalytics() {
         Response response = step("GET /user/club/v2/home/analytics", () ->
-                clubSteps.getClubHomeAnalytics(authToken));
+                clubHomeSteps.getClubHomeAnalytics(authToken));
         step("Проверка структуры аналитики", () ->
-                clubSteps.validateHomeAnalytics(response));
+                clubHomeSteps.validateHomeAnalytics(response));
     }
 
     @Test
@@ -84,9 +88,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeBanners() {
         Response response = step("GET /user/club/v2/home/banners", () ->
-                clubSteps.getClubHomeBanners(authToken));
+                clubHomeSteps.getClubHomeBanners(authToken));
         step("Проверка структуры баннеров", () ->
-                clubSteps.validateHomeBanners(response));
+                clubHomeSteps.validateHomeBanners(response));
     }
 
     @Test
@@ -97,9 +101,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeLinks() {
         Response response = step("GET /user/club/v2/home/links", () ->
-                clubSteps.getClubHomeLinks(authToken));
+                clubHomeSteps.getClubHomeLinks(authToken));
         step("Проверка структуры ссылок", () ->
-                clubSteps.validateHomeLinks(response));
+                clubHomeSteps.validateHomeLinks(response));
     }
 
     @Test
@@ -110,9 +114,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeNews() {
         Response response = step("GET /user/club/v2/home/news", () ->
-                clubSteps.getClubHomeNews(authToken));
+                clubHomeSteps.getClubHomeNews(authToken));
         step("Проверка структуры новостей", () ->
-                clubSteps.validateHomeNews(response));
+                clubHomeSteps.validateHomeNews(response));
     }
 
     @Test
@@ -123,9 +127,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeNewsDetailWhenNotFound() {
         Response response = step("GET /user/club/v2/home/news/" + NONEXISTENT_NEWS_ID, () ->
-                clubSteps.getClubNewsDetail(authToken, NONEXISTENT_NEWS_ID));
+                clubHomeSteps.getClubNewsDetail(authToken, NONEXISTENT_NEWS_ID));
         step("Проверка 404", () ->
-                clubSteps.validateNotFound(response, "/user/club/v2/home/news/{id}"));
+                clubHomeSteps.validateNotFound(response, "/user/club/v2/home/news/{id}"));
     }
 
     @Test
@@ -136,9 +140,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void analyticsLinks() {
         Response response = step("GET /user/club/v2/analytics/links", () ->
-                clubSteps.getClubAnalyticsLinks(authToken));
+                clubAnalyticsSteps.getClubAnalyticsLinks(authToken));
         step("Проверка структуры аналитики ссылок", () ->
-                clubSteps.validateAnalyticsLinks(response));
+                clubAnalyticsSteps.validateAnalyticsLinks(response));
     }
 
     @Test
@@ -149,9 +153,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void analyticsMonthlyIncome() {
         Response response = step("GET /user/club/v2/analytics/monthly-income", () ->
-                clubSteps.getClubAnalyticsMonthlyIncome(authToken));
+                clubAnalyticsSteps.getClubAnalyticsMonthlyIncome(authToken));
         step("Проверка структуры дохода по уровням", () ->
-                clubSteps.validateAnalyticsMonthlyIncome(response));
+                clubAnalyticsSteps.validateAnalyticsMonthlyIncome(response));
     }
 
     @Test
@@ -162,9 +166,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void linksSummary() {
         Response response = step("GET /user/club/v2/links/summary", () ->
-                clubSteps.getClubLinksSummary(authToken));
+                clubAnalyticsSteps.getClubLinksSummary(authToken));
         step("Проверка структуры сводки", () ->
-                clubSteps.validateLinksSummary(response));
+                clubAnalyticsSteps.validateLinksSummary(response));
     }
 
     @Test
@@ -177,9 +181,9 @@ public class ClubHomeContractTest {
         assumeTrue(userId != null, "Нет рефералов у пользователя — пропуск детальной ручки");
 
         Response response = step("GET /user/club/v2/referrals/{userId}", () ->
-                clubSteps.getClubReferralDetail(authToken, userId));
+                clubReferralsSteps.getClubReferralDetail(authToken, userId));
         step("Проверка структуры реферала", () ->
-                clubSteps.validateReferralDetail(response));
+                clubReferralsSteps.validateReferralDetail(response));
     }
 
     @Test
@@ -192,9 +196,9 @@ public class ClubHomeContractTest {
         assumeTrue(userId != null, "Нет рефералов у пользователя — пропуск дерева рефералов");
 
         Response response = step("GET /user/club/v2/referrals/{userId}/referrals", () ->
-                clubSteps.getClubReferralReferrals(authToken, userId));
+                clubReferralsSteps.getClubReferralReferrals(authToken, userId));
         step("Проверка структуры дерева рефералов", () ->
-                clubSteps.validateReferralReferrals(response));
+                clubReferralsSteps.validateReferralReferrals(response));
     }
 
     @Test
@@ -205,9 +209,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void referralDetailWhenNotFound() {
         Response response = step("GET /user/club/v2/referrals/" + NONEXISTENT_USER_ID, () ->
-                clubSteps.getClubReferralDetail(authToken, NONEXISTENT_USER_ID));
+                clubReferralsSteps.getClubReferralDetail(authToken, NONEXISTENT_USER_ID));
         step("Проверка 404", () ->
-                clubSteps.validateNotFound(response, "/user/club/v2/referrals/{userId}"));
+                clubReferralsSteps.validateNotFound(response, "/user/club/v2/referrals/{userId}"));
     }
 
     @Test
@@ -218,9 +222,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeAnalyticsWithoutToken() {
         Response response = step("GET /user/club/v2/home/analytics без токена", () ->
-                clubSteps.getClubHomeAnalytics(""));
+                clubHomeSteps.getClubHomeAnalytics(""));
         step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response));
+                clubHomeSteps.assertUnauthorizedWithMessage(response, "JWT Token not found") );
     }
 
     @Test
@@ -231,9 +235,9 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeBannersWithoutToken() {
         Response response = step("GET /user/club/v2/home/banners без токена", () ->
-                clubSteps.getClubHomeBanners(""));
+                clubHomeSteps.getClubHomeBanners(""));
         step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response));
+                clubHomeSteps.assertUnauthorizedWithMessage(response, "JWT Token not found") );
     }
 
     @Test
@@ -244,8 +248,8 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeLinksWithoutToken() {
         Response response = step("GET /user/club/v2/home/links без токена", () ->
-                clubSteps.getClubHomeLinks(""));
-        step("Проверка ошибки авторизации", () -> clubSteps.validateUnauthorizedResponse(response));
+                clubHomeSteps.getClubHomeLinks(""));
+        step("Проверка ошибки авторизации", () -> clubHomeSteps.assertUnauthorizedWithMessage(response, "JWT Token not found") );
     }
 
     @Test
@@ -256,8 +260,8 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void homeNewsWithoutToken() {
         Response response = step("GET /user/club/v2/home/news без токена", () ->
-                clubSteps.getClubHomeNews(""));
-        step("Проверка ошибки авторизации", () -> clubSteps.validateUnauthorizedResponse(response));
+                clubHomeSteps.getClubHomeNews(""));
+        step("Проверка ошибки авторизации", () -> clubHomeSteps.assertUnauthorizedWithMessage(response,  "JWT Token not found") );
     }
 
     @Test
@@ -268,8 +272,8 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void analyticsLinksWithoutToken() {
         Response response = step("GET /user/club/v2/analytics/links без токена", () ->
-                clubSteps.getClubAnalyticsLinks(""));
-        step("Проверка ошибки авторизации", () -> clubSteps.validateUnauthorizedResponse(response));
+                clubAnalyticsSteps.getClubAnalyticsLinks(""));
+        step("Проверка ошибки авторизации", () -> clubAnalyticsSteps.assertUnauthorizedWithMessage(response,  "JWT Token not found") );
     }
 
     @Test
@@ -280,8 +284,8 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void analyticsMonthlyIncomeWithoutToken() {
         Response response = step("GET /user/club/v2/analytics/monthly-income без токена", () ->
-                clubSteps.getClubAnalyticsMonthlyIncome("") );
-        step("Проверка ошибки авторизации", () -> clubSteps.validateUnauthorizedResponse(response));
+                clubAnalyticsSteps.getClubAnalyticsMonthlyIncome("") );
+        step("Проверка ошибки авторизации", () -> clubAnalyticsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found") );
     }
 
     @Test
@@ -292,8 +296,8 @@ public class ClubHomeContractTest {
     @Tag(Tags.CONTRACT)
     void linksSummaryWithoutToken() {
         Response response = step("GET /user/club/v2/links/summary без токена", () ->
-                clubSteps.getClubLinksSummary(""));
-        step("Проверка ошибки авторизации", () -> clubSteps.validateUnauthorizedResponse(response));
+                clubAnalyticsSteps.getClubLinksSummary(""));
+        step("Проверка ошибки авторизации", () -> clubAnalyticsSteps.assertUnauthorizedWithMessage(response,   "JWT Token not found") );
     }
 
     @Test
@@ -305,8 +309,8 @@ public class ClubHomeContractTest {
         String slug = firstNewsSlug();
         assumeTrue(slug != null, "Список новостей пуст - пропуск детальной ручки");
         Response response = step("GET /user/club/v2/home/news/" + slug, () ->
-                clubSteps.getClubNewsDetail(authToken, slug));
+                clubHomeSteps.getClubNewsDetail(authToken, slug));
         step("Проверка структуры новостей", () ->
-                clubSteps.validateClubNewsDetail(response, slug));
+                clubHomeSteps.validateClubNewsDetail(response, slug));
     }
 }

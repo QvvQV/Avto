@@ -16,6 +16,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта '/user/mini-workouts'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class MiniWorkoutsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -66,7 +67,7 @@ public class MiniWorkoutsTest {
                 productsSteps.getMiniWorkouts(""));
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -81,6 +82,6 @@ public class MiniWorkoutsTest {
                 productsSteps.getMiniWorkouts("invalid_token"));
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 }

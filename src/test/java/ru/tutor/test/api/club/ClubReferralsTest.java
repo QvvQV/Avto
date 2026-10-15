@@ -6,7 +6,7 @@ import org.junit.jupiter.api.*;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.club.ClubReferralsResponse;
 import ru.tutor.steps.account.AuthSteps;
-import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubReferralsSteps;
 import ru.tutor.constants.Tags;
 
 import static io.qameta.allure.Allure.step;
@@ -27,7 +27,7 @@ public class ClubReferralsTest {
     private static final int EXPECTED_PAGE = 1;
     private static final int SMALLEST_REFERALS_COUNT = 2;
 
-    private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
+    private final ClubReferralsSteps clubSteps = new ClubReferralsSteps(BASE_URL);
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
 
     @BeforeAll
@@ -74,7 +74,7 @@ public class ClubReferralsTest {
         Response response = step("GET /user/club/v2/referrals невалидным токеном", () ->
                 clubSteps.getClubReferrals("invalid_token"));
         step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response));
+                clubSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token") );
     }
 
     @Test
@@ -87,6 +87,6 @@ public class ClubReferralsTest {
         Response response = step("GET /user/club/v2/referrals без токена", () ->
                 clubSteps.getClubReferrals(""));
         step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response));
+                clubSteps.assertUnauthorizedWithMessage(response, "JWT Token not found") );
     }
 }

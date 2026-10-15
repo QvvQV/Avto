@@ -26,6 +26,7 @@ import ru.tutor.constants.Tags;
 @Feature("Order Creation Email Validation")
 @DisplayName("Тесты валидации email при создании заказа")
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class EmailValidationApiTest {
 
     private final PaymentApi paymentApi = new PaymentApi(TestConfig.getCurrentApiUrl());

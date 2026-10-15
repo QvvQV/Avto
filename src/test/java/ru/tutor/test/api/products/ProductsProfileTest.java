@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта '/user/products'")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class ProductsProfileTest {
 
 
@@ -38,7 +39,6 @@ public class ProductsProfileTest {
 
     @BeforeEach
     void setUpAuth() {
-        // Логин перед каждым тестом
         token = step("Логин пользователя", () ->
                 userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
@@ -236,7 +236,7 @@ public class ProductsProfileTest {
         Response response = step("Получение информации о продукте", () ->
                 productsSteps.getProductDetailsById("", savedOrderNumber));
         step("Валидация деталей продукта", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -252,7 +252,7 @@ public class ProductsProfileTest {
                 productsSteps.getProductModuleById("", savedProductValue, MODULE_NUMBER));
 
         step("Валидация модуля продукта", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -267,7 +267,7 @@ public class ProductsProfileTest {
                 productsSteps.markModuleWatched("", savedOrderNumber, MODULE_NUMBER, TIMELINE));
 
         step("Валидация отметки тайминга продукта", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -282,7 +282,7 @@ public class ProductsProfileTest {
                 productsSteps.completeModule("", savedOrderNumber, MODULE_NUMBER));
 
         step("Валидация отметка о завершении", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -296,7 +296,7 @@ public class ProductsProfileTest {
         Response response = step("Получение списка достижений продукта", () ->
                 productsSteps.getAchievementsProductsId("", savedOrderNumber));
         step("Валидация деталей списка достижений продукта", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -309,7 +309,7 @@ public class ProductsProfileTest {
                 productsSteps.getUserAchievements(""));
 
         step("Валидация страницы достижений", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -365,7 +365,7 @@ public class ProductsProfileTest {
     void getAllProductsWithoutAuth() {
         Response response = productsSteps.getAllProducts("");
         step("Валидация ответа", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -376,7 +376,7 @@ public class ProductsProfileTest {
     void getPremiersWithoutAuth() {
         Response response = productsSteps.getPremiersProducts("");
         step("Проверка код ответа", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -387,7 +387,7 @@ public class ProductsProfileTest {
     void getTop10WithoutAuth() {
         Response response = productsSteps.getProductTop10("");
         step("Валидация ответа", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -398,7 +398,7 @@ public class ProductsProfileTest {
     void getWatchingNowWithoutAuth() {
         Response response = productsSteps.getProductWatchingNow("");
         step("Валидация ответа", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -409,7 +409,7 @@ public class ProductsProfileTest {
     void getFavoriteProductsWithoutAuth() {
         Response response = productsSteps.favoriteProduct("");
         step("Валидация продукта", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -420,7 +420,7 @@ public class ProductsProfileTest {
     void getUserProductsWithoutAuth() {
         Response response = productsSteps.getUserProducts("");
         step("Валидация ответа", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -519,7 +519,7 @@ public class ProductsProfileTest {
                 productsSteps.getAchievementsLast("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -532,7 +532,7 @@ public class ProductsProfileTest {
                 productsSteps.getAchievementsLast("invalidToken")
         );
         step("Проверка 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -543,10 +543,9 @@ public class ProductsProfileTest {
     void deleteProductsWithoutAuth() {
         ensureProductsLoaded();
         Response response = productsSteps.deleteFavoriteProducts("", savedProductValue);
-        step("Валидация ответа", () -> {
-            assertEquals(401, response.getStatusCode());
-            assertNotNull(response.getBody().asString());
-        });
+        step("Валидация ответа", () ->
+            productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
+
     }
 
     @Test

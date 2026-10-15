@@ -20,6 +20,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта создания заявки на возврат")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class RefundTicketTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -104,7 +105,7 @@ public class RefundTicketTest {
                 orderSteps.createRefundTicket("", request)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -120,7 +121,7 @@ public class RefundTicketTest {
                 orderSteps.createRefundTicket("invalid", request)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -165,7 +166,7 @@ public class RefundTicketTest {
                 orderSteps.getRefundTickets("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -180,7 +181,7 @@ public class RefundTicketTest {
                 orderSteps.getRefundTickets("invalid")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 }

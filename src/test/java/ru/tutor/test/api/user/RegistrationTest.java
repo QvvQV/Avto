@@ -24,6 +24,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("тесты эндпоинта /register")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class RegistrationTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

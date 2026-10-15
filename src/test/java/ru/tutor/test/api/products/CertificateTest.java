@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class CertificateTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -86,7 +87,7 @@ public class CertificateTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                certificateSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -104,7 +105,7 @@ public class CertificateTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                certificateSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test

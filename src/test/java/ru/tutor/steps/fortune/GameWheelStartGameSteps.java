@@ -175,25 +175,6 @@ public class GameWheelStartGameSteps extends BaseApiSteps {
         return result;
     }
 
-    // ================ ВАЛИДАЦИЯ ОШИБОК ================
-
-    @Step("Проверка ответа без авторизации")
-    public void validateUnauthorizedResponse(Response response) {
-        int statusCode = response.getStatusCode();
-        String responseBody = response.getBody().asString();
-
-        Allure.addAttachment("Ответ без авторизации", "text/plain",
-                String.format("Статус код: %d\nОжидается: 401\nТело ответа: %s",
-                        statusCode, responseBody));
-
-        assertAll("Проверка ответа без авторизации",
-                () -> assertEquals(401, statusCode,
-                        String.format("Должен возвращать 401 при отсутствии/невалидном токене. Получено: %d", statusCode)),
-                () -> assertNotNull(responseBody, "Тело ответа не должно быть null"),
-                () -> assertFalse(responseBody.isEmpty(), "Тело ответа не должно быть пустым")
-        );
-    }
-
     // ================ ОТЧЕТНОСТЬ ================
 
     @Step("Генерация детального отчета о выигранном призе")

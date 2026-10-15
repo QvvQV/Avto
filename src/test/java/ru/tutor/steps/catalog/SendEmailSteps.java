@@ -38,7 +38,7 @@ public class SendEmailSteps extends BaseApiSteps {
     @Step("Отправка письма с невалидным email")
     public Response sendEmailWithInvalidEmail() {
         Response response = sendEmailApi.sendEmailWithInvalidEmail();
-        assertEquals(400, response.statusCode());
+        assertEquals(400, response.statusCode(), "БАГ: POST /send-email не валидирует формат email");
         return response;
     }
 

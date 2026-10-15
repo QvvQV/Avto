@@ -11,7 +11,8 @@ import ru.tutor.config.TestConfig;
 import java.util.List;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import ru.tutor.constants.Tags;
 
 
@@ -20,6 +21,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты: Логин → Получение профиля → Проверка данных")
 @Story("Полный сценарий аутентификации")
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class UserLoginProfileTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -36,6 +38,7 @@ public class UserLoginProfileTest {
 
     @Test
     @DisplayName("Полный сценарий: Логин → Профиль → Проверка флагов")
+    @Tag(Tags.POSITIVE)
     void fullLoginProfileScenario() {
 
         getProfile();
@@ -46,26 +49,28 @@ public class UserLoginProfileTest {
     @Test
     @DisplayName("Без токена -> 401")
     @Tag(Tags.CONTRACT)
+    @Tag(Tags.NEGATIVE)
     void getProfileWithoutToken() {
         Response response = step("GET /user/profile без токена", () ->
                 userSteps.getProfile("")
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
     @Test
     @DisplayName("Невалидный токен -> 401")
     @Tag(Tags.CONTRACT)
+    @Tag(Tags.NEGATIVE)
     void getProfileWithoutInvalidToken() {
         Response response = step("GET /user/profile невалидный токен", () ->
                 userSteps.getProfile("invalid_token")
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                userSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -74,6 +79,7 @@ public class UserLoginProfileTest {
     @Test
     @DisplayName("id должен быть положительным числом")
     @Tag(Tags.CONTRACT)
+    @Tag(Tags.POSITIVE)
     void profileIdPositive() {
         UserProfile profile = getProfile();
         assertTrue(profile.getId() > 0, "id должен быть > 0, получено: " + profile.getId());
@@ -82,6 +88,7 @@ public class UserLoginProfileTest {
     @Test
     @DisplayName("email должен содержать @")
     @Tag(Tags.CONTRACT)
+    @Tag(Tags.POSITIVE)
     void profileEmailFormat() {
         UserProfile profile = getProfile();
         assertTrue(profile.getEmail().contains("@"), "email должен содержать '@', получено: " + profile.getEmail());
@@ -90,6 +97,7 @@ public class UserLoginProfileTest {
     @Test
     @DisplayName("clubMembership должен быть одним из: full, light, none")
     @Tag(Tags.CONTRACT)
+    @Tag(Tags.POSITIVE)
     void clubMembershipValid() {
         UserProfile profile = getProfile();
         assertNotNull(profile.getClubMemberShip(), "clubMemberShip не должен быть null");

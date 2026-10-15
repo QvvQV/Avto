@@ -16,6 +16,7 @@ import ru.tutor.constants.Tags;
 @Feature("Игровая статистика")
 @DisplayName("Тесты эндпоинта /user/game-stats")
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class UserGameStatsTest {
 
     private final GameSteps userSteps = new GameSteps(TestConfig.getCurrentApiUrl());
@@ -37,6 +38,7 @@ public class UserGameStatsTest {
     @DisplayName("Детальная проверка данных игровой статистики")
     @Story("Валидация данных")
     @Tag(Tags.CONTRACT)
+    @Tag(Tags.POSITIVE)
     void verifyGameStatsDetails() {
         Response response = userSteps.getGameStats(token);
 
@@ -48,6 +50,7 @@ public class UserGameStatsTest {
     @Test
     @DisplayName("Проверка связи с профилем пользователя")
     @Story("Интеграционный тест")
+    @Tag(Tags.POSITIVE)
     void verifyConnectionWithUserProfile() {
         // 1. Получаем профиль
 
@@ -99,7 +102,7 @@ public class UserGameStatsTest {
                 userSteps.getLeaderRating("")
         );
         step("Валидация ответа", () ->
-                assertEquals(401, response.getStatusCode())
+                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 }

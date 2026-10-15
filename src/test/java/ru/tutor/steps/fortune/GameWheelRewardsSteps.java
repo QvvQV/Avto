@@ -1,11 +1,9 @@
 package ru.tutor.steps.fortune;
 
-import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import ru.tutor.api.fortune.GameWheelApi;
 import io.restassured.response.Response;
 import ru.tutor.base.BaseApiSteps;
-import ru.tutor.constants.GameWheelRewardsConstants;
 import ru.tutor.model.fortune.GameWheelRewardResponse;
 import ru.tutor.utils.AllureAttachments;
 
@@ -79,87 +77,6 @@ public class GameWheelRewardsSteps extends BaseApiSteps {
             assertTrue(reward.getRewardValue() >= 0,
                     rewardInfo + " - rewardValue должен быть >= 0");
         }
-    }
-
-    @Step("Сравнение с эталонными значениями наград")
-    public Map<Long, RewardValidationResult> validateAgainstExpectedValues(List<GameWheelRewardResponse> actualRewards) {
-        Map<Long, RewardValidationResult> validationResults = new HashMap<>();
-
-        // Проверяем каждую актуальную награду
-        for (GameWheelRewardResponse actualReward : actualRewards) {
-            Long rewardId = actualReward.getId();
-            String rewardName = actualReward.getName();
-
-            RewardValidationResult result = new RewardValidationResult(rewardId, rewardName);
-
-            // Получаем эталонную награду по ID из констант
-            GameWheelRewardsConstants.ExpectedReward expectedReward =
-                    GameWheelRewardsConstants.getExpectedRewardById(rewardId);
-
-            if (expectedReward == null) {
-                result.setFound(false);
-                result.setMessage("Награда с ID " + rewardId + " не найдена в эталонных данных");
-            } else {
-                result.setFound(true);
-                result.setActualChance(actualReward.getChance());
-
-                // Проверяем название
-                if (expectedReward.name().equals(actualReward.getName())) {
-                    result.setNameMatches(true);
-                } else {
-                    result.setNameMatches(false);
-                    result.setMessage(String.format("Название не совпадает: ожидалось '%s', получено '%s'",
-                            expectedReward.name(), actualReward.getName()));
-                }
-
-                // Проверяем шанс
-                if (GameWheelRewardsConstants.isChanceMatches(rewardId, actualReward.getChance())) {
-                    result.setChanceMatches(true);
-                } else {
-                    result.setChanceMatches(false);
-                    if (!result.hasMessage()) {
-                        result.setMessage(String.format("Шанс не совпадает: ожидалось %.4f%%, получено %.4f%%",
-                                expectedReward.chance(), actualReward.getChance()));
-                    }
-                }
-
-                // Проверяем тип награды
-                if (expectedReward.rewardType().equals(actualReward.getRewardType())) {
-                    result.setTypeMatches(true);
-                } else {
-                    result.setTypeMatches(false);
-                    if (!result.hasMessage()) {
-                        result.setMessage(String.format("Тип не совпадает: ожидался '%s', получен '%s'",
-                                expectedReward.rewardType(), actualReward.getRewardType()));
-                    }
-                }
-
-                // Проверяем значение награды
-                if (expectedReward.rewardValue().equals(actualReward.getRewardValue())) {
-                    result.setValueMatches(true);
-                } else {
-                    result.setValueMatches(false);
-                    if (!result.hasMessage()) {
-                        result.setMessage(String.format("Значение не совпадает: ожидалось %d, получено %d",
-                                expectedReward.rewardValue(), actualReward.getRewardValue()));
-                    }
-                }
-            }
-
-            validationResults.put(rewardId, result);
-        }
-
-        return validationResults;
-    }
-
-    @Step("Проверка ответа без авторизации")
-    public void validateUnauthorizedResponse(Response response) {
-        int statusCode = response.getStatusCode();
-        Allure.addAttachment("Ответ без авторизации", "text/plain",
-                "Статус код: " + statusCode + "\n" +
-                        "Ожидается: 401");
-
-        assertEquals(401, statusCode, "Должен вернуть 401 для отсутствующего/невалидного токена. Получен: " + statusCode);
     }
 
     // Обновленный RewardValidationResult

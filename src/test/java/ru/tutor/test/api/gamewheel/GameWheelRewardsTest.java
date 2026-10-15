@@ -41,7 +41,6 @@ public class GameWheelRewardsTest {
 
     @BeforeEach
     void setUpAuth() {
-        // Логин перед каждым тестом
         token = step("Логин", () ->
                 userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
@@ -85,7 +84,7 @@ public class GameWheelRewardsTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                gameWheelRewardsSteps.validateUnauthorizedResponse(response)
+                gameWheelRewardsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -102,7 +101,7 @@ public class GameWheelRewardsTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                gameWheelRewardsSteps.validateUnauthorizedResponse(response)
+                gameWheelRewardsSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 }

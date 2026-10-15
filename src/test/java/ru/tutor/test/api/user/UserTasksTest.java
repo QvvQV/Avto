@@ -18,6 +18,7 @@ import java.util.Set;
 @Feature("Система заданий")
 @DisplayName("Тесты эндпоинтов заданий")
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class UserTasksTest {
 
     private final TasksSteps userSteps = new TasksSteps(TestConfig.getCurrentApiUrl());
@@ -59,7 +60,7 @@ public class UserTasksTest {
                 userSteps.getTasks("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class UserTasksTest {
                 userSteps.getTasks("invalid")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test

@@ -14,7 +14,8 @@ import ru.tutor.model.account.RegistrationResponse;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.account.ProfileSteps;
 import ru.tutor.steps.account.RegistrationSteps;
-import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubHomeSteps;
+import ru.tutor.steps.club.ClubPayoutsSteps;
 import ru.tutor.steps.fortune.GameWheelMiscSteps;
 import ru.tutor.steps.orders.OrderSteps;
 
@@ -35,7 +36,8 @@ public class SmokeSuite {
     private final AuthSteps authSteps = new AuthSteps(BASE_URL);
     private final ProfileSteps profileSteps = new ProfileSteps(BASE_URL);
     private final RegistrationSteps registrationSteps = new RegistrationSteps(BASE_URL);
-    private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
+    private final ClubHomeSteps clubHomeSteps = new ClubHomeSteps(BASE_URL);
+    private final ClubPayoutsSteps clubPayoutsSteps = new ClubPayoutsSteps(BASE_URL);
     private final GameWheelMiscSteps gameWheelMiscSteps = new GameWheelMiscSteps(BASE_URL);
     private final OrderSteps orderSteps = new OrderSteps(BASE_URL);
 
@@ -93,9 +95,9 @@ public class SmokeSuite {
     @Tag(Tags.POSITIVE)
     void clubHomeAnalyticsSmoke() {
         Response response = step("GET /user/club/v2/home/analytics", () ->
-                clubSteps.getClubHomeAnalytics(authToken));
+                clubHomeSteps.getClubHomeAnalytics(authToken));
         step("Валидация аналитики", () ->
-                clubSteps.validateHomeAnalytics(response));
+                clubHomeSteps.validateHomeAnalytics(response));
     }
 
     @Test
@@ -105,9 +107,9 @@ public class SmokeSuite {
     @Tag(Tags.POSITIVE)
     void clubPayoutSummarySmoke() {
         Response response = step("GET /user/club/v2/payouts/summary", () ->
-                clubSteps.getPayoutSummary(authToken));
+                clubPayoutsSteps.getPayoutSummary(authToken));
         step("Валидация сводки выплат", () ->
-                clubSteps.validateClubPayoutSummaryResponse(response));
+                clubPayoutsSteps.validateClubPayoutSummaryResponse(response));
     }
 
     @Test

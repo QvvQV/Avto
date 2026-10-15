@@ -7,7 +7,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.constants.Tags;
 import ru.tutor.model.club.ClubPayoutsResponse;
 import ru.tutor.steps.account.AuthSteps;
-import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubPayoutsSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -23,7 +23,7 @@ public class ClubPayoutsTest {
     private static final String TEST_EMAIL = TestConfig.getTestEmail();
     private static final String TEST_PASSWORD = TestConfig.getTestPassword();
 
-    private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
+    private final ClubPayoutsSteps clubSteps = new ClubPayoutsSteps(BASE_URL);
     private final AuthSteps authSteps = new AuthSteps(BASE_URL);
 
     @BeforeAll
@@ -63,7 +63,7 @@ public class ClubPayoutsTest {
         Response response = step("GET /user/club/v2/payouts с невалидным токеном", () ->
                 clubSteps.getPayouts("invalid_token"));
         step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response));
+                clubSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token") );
     }
 
     @Test
@@ -76,6 +76,6 @@ public class ClubPayoutsTest {
         Response response = step("GET /user/club/v2/payouts без токена", () ->
                 clubSteps.getPayouts(""));
         step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response));
+                clubSteps.assertUnauthorizedWithMessage(response, "JWT Token not found") );
     }
 }

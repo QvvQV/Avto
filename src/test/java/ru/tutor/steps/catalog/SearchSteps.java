@@ -56,7 +56,7 @@ public class SearchSteps extends BaseApiSteps {
         return response;
     }
 
-    @Step("Валидация успешного ответа получения итосрии (200)")
+    @Step("Валидация успешного ответа получения истории (200)")
     public void validateGetSearchHistoryResponse(Response response) {
         assertBasicResponse(response);
     }

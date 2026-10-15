@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты POST /user/orders/store-feedback-unsubscribe/{orderNumber}")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class StoreFeedbackUnsubscribeTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -71,7 +72,7 @@ public class StoreFeedbackUnsubscribeTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -86,7 +87,7 @@ public class StoreFeedbackUnsubscribeTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test

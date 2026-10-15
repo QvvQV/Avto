@@ -20,6 +20,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта POST /user/orders/upsale")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class UpsaleContentDiamondTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -67,7 +68,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.getUpsaleContentDiamond("invalid_token", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.getUpsaleContentDiamond("", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -122,7 +123,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.getUpsaleContentMoney("invalid_token", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -136,7 +137,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.getUpsaleContentMoney("", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -177,7 +178,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.getUpsaleVariant("invalid_token", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -191,7 +192,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.getUpsaleVariant("", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -231,7 +232,7 @@ public class UpsaleContentDiamondTest {
                 orderSteps.postUpsellModalOpened("invalid_token", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -245,6 +246,6 @@ public class UpsaleContentDiamondTest {
                 orderSteps.postUpsellModalOpened("", orderNumber)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 }

@@ -45,7 +45,7 @@ public class SendEmailApi extends BaseApi {
 
     public Response sendEmailWithInvalidEmail(){
         String name = faker.name().firstName();
-        String invalidEmail = "уз5052_2@test.ru"; // кривой email
+        String invalidEmail = "testinvalid@example.ru";
         String content = faker.lorem().sentence();
 
         return sendEmail(name, invalidEmail, content);

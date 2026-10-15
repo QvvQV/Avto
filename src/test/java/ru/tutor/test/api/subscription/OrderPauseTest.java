@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты паузы подписки")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class OrderPauseTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -92,7 +93,7 @@ public class OrderPauseTest {
                 orderSteps.pauseOrder("", 7)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -107,7 +108,7 @@ public class OrderPauseTest {
                 orderSteps.unpauseOrder("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -121,7 +122,7 @@ public class OrderPauseTest {
                 orderSteps.pauseOrder("invalid_token", 7)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -134,7 +135,7 @@ public class OrderPauseTest {
                 orderSteps.unpauseOrder("invalid")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 }

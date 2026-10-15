@@ -19,7 +19,10 @@ import ru.tutor.steps.admin.AdminSteps;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.orders.OrderSteps;
 import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
-import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubLinksSteps;
+import ru.tutor.steps.club.ClubPayoutsSteps;
+import ru.tutor.steps.club.ClubReferralsSteps;
+import ru.tutor.steps.club.ClubRequisitesSteps;
 
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -55,7 +58,10 @@ public class Referrals extends BaseUiTest {
                 new AdminSteps(BASE_URL),
                 new AuthSteps(BASE_URL),
                 new AccountSteps(BASE_URL),
-                new ClubSteps(BASE_URL)
+                new ClubRequisitesSteps(BASE_URL),
+                new ClubPayoutsSteps(BASE_URL),
+                new ClubLinksSteps(BASE_URL),
+                new ClubReferralsSteps(BASE_URL)
         );
     }
 

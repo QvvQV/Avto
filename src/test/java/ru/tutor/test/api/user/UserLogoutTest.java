@@ -18,6 +18,7 @@ import ru.tutor.constants.Tags;
 @Feature("Выход из системы")
 @DisplayName("Тесты эндпоинта /user/logout")
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class UserLogoutTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -81,8 +82,8 @@ public class UserLogoutTest {
                 userSteps.logout("invalid")
         );
 
-        assertEquals(401, response.getStatusCode(),
-                "С невалидным токеном должен быть 401. Получено: " + response.getStatusCode());
+        step("Проверка статуса 401", () ->
+                userSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test

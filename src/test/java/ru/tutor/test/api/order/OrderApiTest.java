@@ -28,6 +28,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты для эндпоинта создания заказа")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class OrderApiTest {
 
     private static final String CREATE_ORDER_ENDPOINT = "/order";

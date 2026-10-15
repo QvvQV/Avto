@@ -17,6 +17,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта POST /user/login")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class LoginResponseTest {
 
     private static final String LOGIN_ENDPOINT = "POST /user/login";

@@ -48,6 +48,29 @@ public abstract class BaseApiSteps {
         fail("Получен неожиданный статус: " + actual);
     }
 
+    @Step("Проверка 401 (code + message)")
+    protected void assertUnauthorized(Response response) {
+        assertEquals(401, response.getStatusCode(),
+                "Ожидался статус 401, но получен: " +  response.getStatusCode());
+        String body = response.getBody().asString();
+        assertFalse(body == null || body.isBlank(), "Тело 401 не должно быть пустым");
+        if (body.contains("\"code\"")) {
+            assertEquals(401, response.jsonPath().getInt("code"), "Поле code должно быть 401");
+        }
+        if (body.contains("\"message\"")) {
+            String message = response.jsonPath().getString("message");
+            assertNotNull(message, "Поле message должно присутствовать");
+            assertFalse(message.isBlank(), "Поле message не должно быть пустым");
+        }
+    }
+
+    @Step("Проверить 401 с сообщением '{expectedMessage}'")
+    public void assertUnauthorizedWithMessage(Response response, String expectedMessage) {
+        assertUnauthorized(response);
+        assertEquals(expectedMessage, response.jsonPath().getString("message"),
+                "Неверное сообщение в теле 401");
+    }
+
     // ==================== ПРОВЕРКИ CONTENT-TYPE ====================
 
     @Step("Проверить Content-Type = application/json")
@@ -124,28 +147,6 @@ public abstract class BaseApiSteps {
                 "Access-Control-Allow-Credentials должен быть 'true'");
     }
 
-    @Step("Проверить заголовок '{headerName}' = '{expectedValue}'")
-    protected void assertHeader(Response response, String headerName, String expectedValue) {
-        String actualValue = response.getHeader(headerName);
-        assertEquals(expectedValue, actualValue,
-                "Заголовок '" + headerName + "' имеет неверное значение");
-    }
-
-    @Step("Проверить что заголовок '{headerName}' существует")
-    protected void assertHeaderExists(Response response, String headerName) {
-        String value = response.getHeader(headerName);
-        assertNotNull(value, "Заголовок '" + headerName + "' должен существовать");
-    }
-
-    @Step("Проверить что заголовок '{headerName}' содержит '{expectedPart}'")
-    protected void assertHeaderContains(Response response, String headerName, String expectedPart) {
-        String value = response.getHeader(headerName);
-        assertNotNull(value, "Заголовок '" + headerName + "' должен существовать");
-        assertTrue(value.contains(expectedPart),
-                "Заголовок '" + headerName + "' должен содержать '" + expectedPart + "', но содержит:"
-        + value);
-    }
-
     // ==================== ПРОВЕРКИ БЕЗОПАСНОСТИ ====================
     @Step("Проверить отсутствие чувствительных данных")
     protected void assertNoSensitiveData(Response response) {
@@ -153,13 +154,6 @@ public abstract class BaseApiSteps {
         assertFalse(responseBody.contains("password"), "Ответ не должен содержать пароли");
         assertFalse(responseBody.contains("sql"), "Ответ не должен содержать SQL информацию");
         assertFalse(responseBody.contains("exception"), "Ответ не должен содержать исключения");
-    }
-
-    // ==================== ЛОГИРОВАНИЕ ====================
-    @Step("Прикрепить ответ к отчету: {description}")
-    protected void attachResponseToAllure(Response response, String description) {
-        AllureAttachments.attachJson(description, response.getBody().asString());
-        AllureAttachments.attachJson(description + " Headers", response.getHeaders().toString());
     }
 
     // ==================== ХЕЛПЕРЫ ВАЛИДАЦИИ ПОЛЕЙ (МАР) ====================

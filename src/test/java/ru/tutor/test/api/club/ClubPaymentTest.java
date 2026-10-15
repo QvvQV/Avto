@@ -7,7 +7,7 @@ import ru.tutor.config.TestConfig;
 import ru.tutor.model.club.ClubPaymentResponse;
 
 import ru.tutor.steps.account.AuthSteps;
-import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubPaymentsSteps;
 import io.restassured.response.Response;
 
 
@@ -20,9 +20,8 @@ import ru.tutor.constants.Tags;
 @Feature("Клуб пользователя")
 @DisplayName("Тесты эндпоинтов клуба")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
-
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class ClubPaymentTest {
 
     // Общие константы
@@ -30,7 +29,7 @@ public class ClubPaymentTest {
     private final String TEST_EMAIL = TestConfig.getTestEmail();
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
-    private final ClubSteps clubSteps = new ClubSteps(BASE_URL);
+    private final ClubPaymentsSteps clubSteps = new ClubPaymentsSteps(BASE_URL);
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
 
     @BeforeAll
@@ -76,7 +75,7 @@ public class ClubPaymentTest {
                clubSteps.getClubPayments("invalid"));
 
        step("Проверка ошибки авторизации", () ->
-               clubSteps.validateUnauthorizedResponse(response));
+               clubSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token") );
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ClubPaymentTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                clubSteps.validateUnauthorizedResponse(response)
+                clubSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 }

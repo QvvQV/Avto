@@ -17,6 +17,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинтов курсов")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class CoursesTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -120,7 +121,7 @@ public class CoursesTest {
                 coursesSteps.getCourseById("", 666)
         );
         step("Проверка статуса 401", ()->
-                assertEquals(401, response.getStatusCode()));
+                coursesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -134,7 +135,7 @@ public class CoursesTest {
                 coursesSteps.getCourseReviews("", 666)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                coursesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -148,7 +149,7 @@ public class CoursesTest {
                 coursesSteps.getCourseRecommendations("", 666)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                coursesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -162,7 +163,7 @@ public class CoursesTest {
                 coursesSteps.getCourseById("invalid_token", 666)
         );
         step("Проверка статуса 401", ()->
-                assertEquals(401, response.getStatusCode()));
+                coursesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
 }

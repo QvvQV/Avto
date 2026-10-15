@@ -41,7 +41,6 @@ public class GameWheelStartGameTest {
 
     @BeforeEach
     void setUpAuth() {
-        // Логин перед каждым тестом
         token = step("Логин", () ->
                 userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
@@ -120,10 +119,7 @@ public class GameWheelStartGameTest {
         );
 
         step("Проверка ошибки авторизации", () -> {
-            gameWheelStartGameSteps.validateUnauthorizedResponse(response);
-
-            Allure.addAttachment("Проверка безопасности", "text/plain",
-                    "✅ Доступ без авторизации запрещен (401)");
+            gameWheelStartGameSteps.assertUnauthorizedWithMessage(response, "JWT Token not found");
         });
     }
 
@@ -140,7 +136,7 @@ public class GameWheelStartGameTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                gameWheelStartGameSteps.validateUnauthorizedResponse(response)
+                gameWheelStartGameSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 }

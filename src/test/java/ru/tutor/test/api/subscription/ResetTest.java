@@ -21,6 +21,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта POST /reset")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class ResetTest {
     private final ResetSteps resetSteps = new ResetSteps(TestConfig.getCurrentApiUrl());
     private static final Faker faker = new Faker(Locale.ENGLISH);

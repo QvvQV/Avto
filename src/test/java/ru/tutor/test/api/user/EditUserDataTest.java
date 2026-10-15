@@ -21,6 +21,7 @@ import ru.tutor.steps.account.ProfileSteps;
 @Feature("Редактирование профилем")
 @DisplayName("Редактирование данных пользователя")
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class EditUserDataTest {
 
     private final AccountSteps userSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
@@ -126,7 +127,7 @@ public class EditUserDataTest {
                 userSteps.editUserData("", validRequest())
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -139,7 +140,7 @@ public class EditUserDataTest {
                 userSteps.editUserData("invalid", validRequest())
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test

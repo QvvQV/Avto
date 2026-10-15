@@ -42,7 +42,6 @@ public class GameWheelMiscTest {
 
     @BeforeEach
     void setUpAuth() {
-        // Логин перед каждым тестом
         token = step("Логин", () ->
                 userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
@@ -148,7 +147,7 @@ public class GameWheelMiscTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                gameWheelMiscSteps.assertUnauthorizedWithMessage(response,   "JWT Token not found") );
     }
 
     @Test
@@ -159,12 +158,12 @@ public class GameWheelMiscTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void getRewardsGroupsInvalidToken() {
-        Response response = step("GET /user/game-wheel/rewards_groups с невалидным токена", () ->
+        Response response = step("GET /user/game-wheel/rewards_groups с невалидным токеном", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsGroups("invalid_token")
         );
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                gameWheelMiscSteps.assertUnauthorizedWithMessage(response,   "Invalid JWT Token") );
     }
 
     @Test
@@ -197,7 +196,7 @@ public class GameWheelMiscTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                gameWheelMiscSteps.assertUnauthorizedWithMessage(response,   "JWT Token not found") );
     }
 
     @Test
@@ -208,12 +207,12 @@ public class GameWheelMiscTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void getTimerLeftInvalidToken() {
-        Response response = step("GET /user/game-wheel/timer-left-seconds с невалидным токена", () ->
+        Response response = step("GET /user/game-wheel/timer-left-seconds с невалидным токеном", () ->
                 gameWheelMiscSteps.getUserGameWheelTimerLeft("invalid_token")
         );
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                gameWheelMiscSteps.assertUnauthorizedWithMessage(response,   "Invalid JWT Token") );
     }
 
     @Test
@@ -246,7 +245,7 @@ public class GameWheelMiscTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                gameWheelMiscSteps.assertUnauthorizedWithMessage(response,   "JWT Token not found") );
     }
 
     @Test
@@ -257,11 +256,11 @@ public class GameWheelMiscTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void getGameWheelWonAllInvalidToken() {
-        Response response = step("GET /user/game-wheel/rewards-recently-won-all с невалидным токена", () ->
+        Response response = step("GET /user/game-wheel/rewards-recently-won-all с невалидным токеном", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsRecentlyWonAll("invalid_token")
         );
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                gameWheelMiscSteps.assertUnauthorizedWithMessage(response,   "Invalid JWT Token") );
     }
 }

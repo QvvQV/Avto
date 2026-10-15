@@ -19,6 +19,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта GET /user/orders/payments")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class OrderPaymentsTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -64,8 +65,7 @@ public class OrderPaymentsTest {
                 orderSteps.getOrdersPayments("")
         );
         step("Проверка статуса 401", () ->
-            assertEquals(401, response.getStatusCode())
-        );
+            orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class OrderPaymentsTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -111,8 +111,7 @@ public class OrderPaymentsTest {
                 orderSteps.getOrdersBonusAccessInfo("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
-        );
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -127,7 +126,7 @@ public class OrderPaymentsTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -158,7 +157,7 @@ public class OrderPaymentsTest {
                 orderSteps.getOrdersSubscriptionState("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -174,7 +173,7 @@ public class OrderPaymentsTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 

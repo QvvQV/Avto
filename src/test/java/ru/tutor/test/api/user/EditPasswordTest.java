@@ -18,6 +18,7 @@ import ru.tutor.steps.account.AuthSteps;
 @Feature("Управление профилем")
 @DisplayName("Тесты смены пароля")
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class EditPasswordTest {
 
     private final AccountSteps userSteps = new AccountSteps(TestConfig.getCurrentApiUrl());
@@ -92,7 +93,7 @@ public class EditPasswordTest {
                 userSteps.editPassword("", TEST_PASSWORD, TEST_PASSWORD)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -106,7 +107,7 @@ public class EditPasswordTest {
                 userSteps.editPassword("invalid", TEST_PASSWORD, TEST_PASSWORD)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test

@@ -5,13 +5,13 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.model.club.SzDetailsRequest;
 import ru.tutor.model.club.SzDetailsResponse;
-import ru.tutor.steps.club.ClubSteps;
+import ru.tutor.steps.club.ClubRequisitesSteps;
 
 import java.util.Map;
 
 public class ClubDetailsFlow {
 
-    private final ClubSteps clubSteps;
+    private final ClubRequisitesSteps clubSteps;
     private final String authToken;
 
     // Константы статусов
@@ -25,7 +25,7 @@ public class ClubDetailsFlow {
 
     public ClubDetailsFlow(String authToken, String baseUrl) {
         this.authToken = authToken;
-        this.clubSteps = new ClubSteps(baseUrl);
+        this.clubSteps = new ClubRequisitesSteps(baseUrl);
     }
 
     @Step("Создание/сохранение данных самозанятого")

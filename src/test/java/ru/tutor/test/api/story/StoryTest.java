@@ -22,6 +22,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта Сторис/Баннер/Тутс")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class StoryTest {
 
     private final AuthSteps userSteps = new AuthSteps(TestConfig.getCurrentApiUrl());
@@ -39,7 +40,6 @@ public class StoryTest {
 
     @BeforeEach
     void setUpAuth() {
-        // Логин перед каждым тестом
         token = step("Логин пользователя", () ->
                 userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
@@ -68,7 +68,7 @@ public class StoryTest {
                 storiesSteps.getStories("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -81,8 +81,7 @@ public class StoryTest {
                 storiesSteps.getStories("invalidToken")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
-        );
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -124,7 +123,7 @@ public class StoryTest {
                 storiesSteps.getStoriesUlid("", ulid)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -145,7 +144,7 @@ public class StoryTest {
                 storiesSteps.getStoriesUlid("invalid_token", ulid)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -246,7 +245,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -261,7 +260,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -298,7 +297,7 @@ public class StoryTest {
         String slug = step("Извлечение slug тутса", () ->
                 storiesSteps.extractFirstTutSlug(randomResponse));
         Response detailsResponse = step("GET /user/tuts/{slug}", () ->
-                storiesSteps.getTutDetails(token, slug));
+                storiesSteps.getTutDetails(slug, token));
         step("Валидация деталей тутса", () ->
                 storiesSteps.validateTutDetailsResponse(detailsResponse));
     }
@@ -389,7 +388,7 @@ public class StoryTest {
                 storiesSteps.getRandomListTuts("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -404,7 +403,7 @@ public class StoryTest {
                 storiesSteps.getRandomListTuts("invalid_token")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -419,7 +418,7 @@ public class StoryTest {
                 storiesSteps.getRandomListTutsList(token)
         );
         step("Валидация ответа", () ->
-                storiesSteps.validateTutDetailsResponse(response)
+                storiesSteps.validateTutsListResponse(response)
         );
     }
 
@@ -434,7 +433,7 @@ public class StoryTest {
                 storiesSteps.getRandomListTutsList("")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -449,7 +448,7 @@ public class StoryTest {
                 storiesSteps.getRandomListTutsList("invalid_token")
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 
@@ -522,7 +521,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -537,7 +536,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -613,7 +612,7 @@ public class StoryTest {
                 storiesSteps.markStoryScreen("", List.of("fortuna")));
 
         step("Проверка статуса 401", ()->
-                assertEquals(401, response.getStatusCode()));
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -627,7 +626,7 @@ public class StoryTest {
                 storiesSteps.markStoryScreen("invalid_token", List.of("fortuna")));
 
         step("Проверка статуса 401", ()->
-                assertEquals(401, response.getStatusCode()));
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -689,7 +688,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -705,7 +704,7 @@ public class StoryTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token")
         );
     }
 

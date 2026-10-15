@@ -21,6 +21,7 @@ import ru.tutor.constants.Tags;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class OrderToggleSubscriptionTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -97,7 +98,7 @@ public class OrderToggleSubscriptionTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                gameWheelRewardsSteps.validateUnauthorizedResponse(response)
+                gameWheelRewardsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 
@@ -113,7 +114,7 @@ public class OrderToggleSubscriptionTest {
                 orderSteps.restorePremium("")
         );
         step("Валидация ответа", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -128,6 +129,6 @@ public class OrderToggleSubscriptionTest {
                 orderSteps.restorePremium("invalid")
         );
         step("Валидация ответа", () ->
-                assertEquals(401, response.getStatusCode()));
+                orderSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 }

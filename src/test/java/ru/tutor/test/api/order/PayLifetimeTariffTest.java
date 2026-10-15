@@ -15,6 +15,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты оплата lifetime-тарифа")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class PayLifetimeTariffTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();

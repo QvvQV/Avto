@@ -17,6 +17,7 @@ import ru.tutor.constants.Tags;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class ShowCategoriesTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -66,7 +67,7 @@ public class ShowCategoriesTest {
                 productsSteps.getShowCategories(""));
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class ShowCategoriesTest {
                 productsSteps.getShowCategories("invalid"));
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
@@ -111,7 +112,7 @@ public class ShowCategoriesTest {
                 productsSteps.getShows(""));
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -126,7 +127,7 @@ public class ShowCategoriesTest {
                 productsSteps.getShows("invalid"));
 
         step("Проверка ошибки авторизации", () ->
-                assertEquals(401, response.getStatusCode()));
+                productsSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test

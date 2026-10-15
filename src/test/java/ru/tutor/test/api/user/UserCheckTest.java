@@ -17,6 +17,7 @@ import ru.tutor.constants.Tags;
 @DisplayName("Тесты эндпоинта GET /user")
 
 @Tag(Tags.INTEGRATION)
+@Tag(Tags.API)
 public class UserCheckTest {
 
     private static final String BASE_URL = TestConfig.getCurrentApiUrl();
@@ -27,7 +28,6 @@ public class UserCheckTest {
 
     @BeforeEach
     void setUp() {
-        // Логин перед каждым тестом
         token = step("Логин", () ->
                 userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
@@ -59,7 +59,7 @@ public class UserCheckTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
     }
 
     @Test
@@ -73,6 +73,6 @@ public class UserCheckTest {
         );
 
         step("Проверка статуса 401", () ->
-                assertEquals(401, response.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 }
