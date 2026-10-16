@@ -61,10 +61,6 @@ public final class EndpointsContent {
      */
     public static final String USER_STORIES_VIEW = "/user/stories/view";
 
-    /**
-     * Экран колеса
-     */
-    public static final String USER_STORIES_SCREEN = "/user/stories-screen";
 
     // ==================== ENDPOINTS ГЛАВНОЙ СТРАНИЦЫ ====================
     /**

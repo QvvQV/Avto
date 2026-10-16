@@ -39,13 +39,6 @@ public class GameWheelRewardsTest {
         Allure.label("feature", "Game Wheel");
     }
 
-    @BeforeEach
-    void setUpAuth() {
-        token = step("Логин", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
     @Order(1)
     @DisplayName("Успешное получение списка наград игрового колеса (Проверка 200 OK)")
@@ -54,6 +47,10 @@ public class GameWheelRewardsTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getGameWheelRewardsSuccess() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
 
         Response response = step("GET /user/game-wheel/rewards", () ->
                 gameWheelRewardsSteps.getGameWheelRewards(token)

@@ -29,9 +29,6 @@ public class DashboardSteps extends BaseApiSteps  {
     @Step("Валидация ответа списка дашбордов")
     public void validateDashboardInfoResponse(Response response) {
         assertBasicResponse(response);
-        String body = response.getBody().asString();
-        assertNotNull(body, "Тело ответа не должно быть null");
-        assertFalse(body.isEmpty(), "Тело ответа не должно быть пустым");
         List<String> dashboards = response.jsonPath().getList("$", String.class);
         assertNotNull(dashboards, "Список дашбордов не должен быть null");
         assertFalse(dashboards.isEmpty(), "Список дашбордов не должен быть пустым");

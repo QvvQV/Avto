@@ -15,7 +15,7 @@ import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
 @Feature("История поиска")
-@DisplayName("Тесты эндпоинта POST /user/search/history")
+@DisplayName("Тесты эндпоинта POST/GET /user/search/history")
 @Tag(Tags.INTEGRATION)
 @Tag(Tags.API)
 public class SearchHistoryTest {
@@ -90,7 +90,7 @@ public class SearchHistoryTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void saveSearchHistoryWithInvalidToken() {
-        Response response = step("POST /user/search/history - без токена", () ->
+        Response response = step("POST /user/search/history - с невалидным токеном", () ->
                 searchSteps.saveSearchHistory("invalid_token", List.of("Питание"))
         );
 
@@ -101,6 +101,7 @@ public class SearchHistoryTest {
     @Test
     @DisplayName("Сохранение истории поиска с пустым queryList")
     @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void saveSearchHistoryEmptyQueryList() {
         token = step("Логин пользователя", () ->
@@ -123,7 +124,7 @@ public class SearchHistoryTest {
         token = step("Логин пользователя", () ->
                 authSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
         );
-        Response response = step("POST /user/search/history - пустой список", () ->
+        Response response = step("POST /user/search/history - несколько пустых строк", () ->
                 searchSteps.saveSearchHistory(token, List.of("", "", ""))
         );
 
@@ -170,7 +171,7 @@ public class SearchHistoryTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void getSearchHistoryInvalidToken() {
-        Response response = step("GET /user/search/history - невалдиный токен", () ->
+        Response response = step("GET /user/search/history - невалидный токен", () ->
                 searchSteps.getSearchHistory("invalid_token")
         );
         step("Проверка статуса 401", () ->

@@ -39,13 +39,6 @@ public class GameWheelStartGameTest {
         Allure.label("feature", "Game Wheel");
     }
 
-    @BeforeEach
-    void setUpAuth() {
-        token = step("Логин", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
     @Order(1)
     @DisplayName("Успешный 'Запуск игры' на колесе (Проверка 200 OK)")
@@ -53,6 +46,10 @@ public class GameWheelStartGameTest {
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void startGameSuccess() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
 
         Response response = step("POST /user/game-wheel/start-game", () ->
                 gameWheelStartGameSteps.startGame(token)
@@ -89,6 +86,10 @@ public class GameWheelStartGameTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void shouldGenerateUniqueUserRewardId() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
 
         List<GameWheelStartGameResponse> multiplePrizes = step("Множественный запуск игры (10 раза)",
                 () ->

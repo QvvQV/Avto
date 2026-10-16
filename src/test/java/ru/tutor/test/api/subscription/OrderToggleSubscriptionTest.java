@@ -8,10 +8,8 @@ import ru.tutor.flow.account.RenewalModalFlow;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.catalog.ProductsSteps;
 import ru.tutor.steps.orders.OrderToggleSubscriptionSteps;
-import ru.tutor.steps.fortune.GameWheelRewardsSteps;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.*;
 
 import ru.tutor.constants.Tags;
 
@@ -29,7 +27,6 @@ public class OrderToggleSubscriptionTest {
     private final String TEST_PASSWORD = TestConfig.getTestPassword();
 
     private final AuthSteps userSteps = new AuthSteps(BASE_URL);
-    private final GameWheelRewardsSteps gameWheelRewardsSteps = new GameWheelRewardsSteps(BASE_URL);
     private final OrderToggleSubscriptionSteps orderSteps = new OrderToggleSubscriptionSteps(BASE_URL);
     private final ProductsSteps productsSteps = new ProductsSteps(BASE_URL);
     private static final String LITE_PRODUCT_ID = String.valueOf(RenewalModalFlow.LITE_PRODUCT_ID);
@@ -98,7 +95,7 @@ public class OrderToggleSubscriptionTest {
         );
 
         step("Проверка ошибки авторизации", () ->
-                gameWheelRewardsSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
+                orderSteps.assertUnauthorizedWithMessage(response, "JWT Token not found")
         );
     }
 

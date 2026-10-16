@@ -369,22 +369,6 @@ public class UserRewardSteps extends BaseApiSteps {
         }
     }
 
-    private boolean isRewardExpired(UserRewardResponse reward) {
-        String expiredAt = reward.expiresAt();
-
-        if (expiredAt == null || expiredAt.isEmpty()) {
-            return false;
-        }
-
-        try {
-            LocalDateTime expiryDate = LocalDateTime.parse(expiredAt, ISO_FORMATTER);
-            LocalDateTime now = LocalDateTime.now();
-            return expiryDate.isBefore(now);
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-    }
-
     @Step("Валидация ошибки `valuation`")
     public void validateOpenRewardRejected(Response response, long rewardId) {
         int statusCode = response.statusCode();

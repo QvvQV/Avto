@@ -59,6 +59,8 @@ public class SearchSteps extends BaseApiSteps {
     @Step("Валидация успешного ответа получения истории (200)")
     public void validateGetSearchHistoryResponse(Response response) {
         assertBasicResponse(response);
+        List<String> actual = response.jsonPath().getList("$",  String.class);
+        assertNotNull(actual, "Список истории поиска не должен быть null");
     }
 
     @Step("Валидация что GET возвращает сохранённые запросы")

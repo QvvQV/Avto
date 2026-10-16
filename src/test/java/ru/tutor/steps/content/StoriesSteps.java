@@ -306,6 +306,34 @@ public class StoriesSteps extends BaseApiSteps {
                     )
             );
         }
+    }
 
+    @Step("Извлечение slug первого непросмотренного тутса из ленты")
+    public String extractFirstUnwatchedTutSlug(Response feed) {
+        List<Map<String, Object>> items = feed.jsonPath().getList("items");
+        assertNotNull(items, "items не должен быть null");
+        assertFalse(items.isEmpty(), "В ленте должен быть хотя бы один тутс");
+        for (Map<String, Object> item : items) {
+            if (Boolean.FALSE.equals(item.get("watched"))) {
+                Allure.addAttachment("Unwatched slug", (String) item.get("slug"));
+                return (String) item.get("slug");
+            }
+        }
+        fail("В ленте нет непросмотренного тутса (watched=false)");
+        return null;
+    }
+
+    @Step("watched={expected} для slug={slug}")
+    public void validateTutWatched(Response feed, String slug, boolean expected) {
+        List<Map<String, Object>> items = feed.jsonPath().getList("items");
+        assertNotNull(items, "items не должен быть null");
+        for (Map<String, Object> item : items) {
+            if (slug.equals(item.get("slug"))) {
+                assertEquals(expected, item.get("watched"),
+                        "watched для " + slug + " должен быть " + expected);
+                return;
+            }
+        }
+        fail("Тутс " + slug + " отсутсвует в ленте");
     }
 }

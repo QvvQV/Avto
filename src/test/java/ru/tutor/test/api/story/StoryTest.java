@@ -38,18 +38,15 @@ public class StoryTest {
         Allure.label("feature", "Stories/banners");
     }
 
-    @BeforeEach
-    void setUpAuth() {
-        token = step("Логин пользователя", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
     @Order(1)
     @DisplayName("Успешное получение списка доступных сторис/историй")
     @Tag(Tags.CONTRACT)
     void getStoriesSuccess() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("GET /user/stories", () ->
                 storiesSteps.getStories(token)
         );
@@ -64,6 +61,10 @@ public class StoryTest {
     @DisplayName("Список доступных сторис без токена")
     @Tag(Tags.CONTRACT)
     void getStoriesWithoutAuth() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("GET /user/stories", () ->
                 storiesSteps.getStories("")
         );
@@ -77,6 +78,10 @@ public class StoryTest {
     @DisplayName("Список достпуных сторис с невалидным токеном")
     @Tag(Tags.CONTRACT)
     void getStoriesWithInvalidToken() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("GET /user/stories", () ->
                 storiesSteps.getStories("invalidToken")
         );
@@ -89,11 +94,15 @@ public class StoryTest {
     @DisplayName("Интеграционный тест: список сторис → детали истории")
     @Severity(SeverityLevel.CRITICAL)
     void getStoriesAndDetailsSuccess() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response listResponse = step("GET /user/stories", () ->
                 storiesSteps.getStories(token)
         );
 
-        String ulid = step("Извлечение ulid из списка", () ->
+        String ulid = step("Извлечение ulId из списка", () ->
                 storiesSteps.extractFirstUlid(listResponse)
         );
 
@@ -111,15 +120,19 @@ public class StoryTest {
     @DisplayName("Список сторис без авторизации")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
-    void getStoriesUlidWithoutAuth() {
+    void getStoriesUlIdWithoutAuth() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response listResponse = step("GET /user/stories", () ->
                 storiesSteps.getStories(token)
         );
 
-        String ulid = step("Извлечение ulid из списка", () ->
+        String ulid = step("Извлечение ulId из списка", () ->
                 storiesSteps.extractFirstUlid(listResponse)
         );
-        Response response = step("GET /user/stories/{ulid} без токена", () ->
+        Response response = step("GET /user/stories/{ulId} без токена", () ->
                 storiesSteps.getStoriesUlid("", ulid)
         );
         step("Проверка статуса 401", () ->
@@ -132,12 +145,16 @@ public class StoryTest {
     @DisplayName("Список сторис с невалидным токеном")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
-    void getStoriesUlidInvalidToken() {
+    void getStoriesUlIdInvalidToken() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response listResponse = step("GET /user/stories", () ->
                 storiesSteps.getStories(token)
         );
 
-        String ulid = step("Извлечение ulid из списка", () ->
+        String ulid = step("Извлечение ulId из списка", () ->
                 storiesSteps.extractFirstUlid(listResponse)
         );
         Response response = step("GET /user/stories/{ulid} инвалидного токена", () ->
@@ -150,12 +167,16 @@ public class StoryTest {
 
     @Test
     @Order(7)
-    @DisplayName("Список сторис с невалидным Ulid")
+    @DisplayName("Список сторис с невалидным UlId")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
-    void getStoriesInvalidUlid() {
+    void getStoriesInvalidUlId() {
 
-        Response response = step("GET /user/stories/{ulid} без токена", () ->
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
+        Response response = step("GET /user/stories/{ulId} без токена", () ->
                 storiesSteps.getStoriesUlid(token, "invalid")
         );
         step("Проверка статуса 404", () ->
@@ -169,6 +190,10 @@ public class StoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
     void getBannersSuccess() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response bannerResponse = step("GET /user/banners/{slug} — детали баннера", () ->
                 storiesSteps.getBannerDetails(token, "youtube")
         );
@@ -183,6 +208,10 @@ public class StoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
     void getBannersInvalidToken() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response bannerResponse = step("GET /user/banners/{slug} - невалидным токеном", () ->
                 storiesSteps.getBannerDetails("invalid_token", "test")
         );
@@ -196,6 +225,7 @@ public class StoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
     void getBannersWithoutAuth() {
+
         Response bannerResponse = step("GET /user/banners - без авторизации", () ->
                 storiesSteps.getBannerDetails("", "test")
         );
@@ -210,6 +240,10 @@ public class StoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
     void getBannersWithInvalidSlug() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response bannerResponse = step("GET /user/banners - невалидный slug", () ->
                 storiesSteps.getBannerDetails(token, "invalid_slug")
         );
@@ -225,6 +259,9 @@ public class StoryTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getTutsCategoriesSuccess() {
+        String token = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+
         Response response = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
@@ -268,7 +305,11 @@ public class StoryTest {
     @Order(15)
     @DisplayName("Интеграция: категории тутсов → feed по первой категории")
     @Severity(SeverityLevel.CRITICAL)
+    @Tag(Tags.POSITIVE)
     void getTutsCategoriesAndFeedSuccess() {
+        String token = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+
         Response categoriesResponse = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
@@ -292,6 +333,9 @@ public class StoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void getRandomTutAndDetailsSuccess() {
+        String token = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+
         Response randomResponse = step("GET /user/tuts/random", () ->
                 storiesSteps.getRandomListTuts(token));
         String slug = step("Извлечение slug тутса", () ->
@@ -309,6 +353,10 @@ public class StoryTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void getTutsCategoriesWithoutAuthAndFeed() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response categoriesResponse = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
@@ -320,7 +368,7 @@ public class StoryTest {
                 storiesSteps.getCategoryFeed("", categoryId)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, feedResponse.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(feedResponse, "JWT Token not found")
         );
     }
 
@@ -331,6 +379,10 @@ public class StoryTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void getTutsCategoriesInvalidTokenAndFeed() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response categoriesResponse = step("GET /user/tuts-categories", () ->
                 storiesSteps.getTutsCategories(token)
         );
@@ -342,7 +394,7 @@ public class StoryTest {
                 storiesSteps.getCategoryFeed("invalid_token", categoryId)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, feedResponse.getStatusCode())
+                storiesSteps.assertUnauthorizedWithMessage(feedResponse, "Invalid JWT Token")
         );
     }
 
@@ -353,6 +405,10 @@ public class StoryTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void getTutsEmptyCategoriesAndFeed() {
+
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
 
         Response feedResponse = step("GET /user/tuts/category/{id}/feed - с пустой категорией", () ->
                 storiesSteps.getCategoryFeed(token, "")
@@ -369,6 +425,9 @@ public class StoryTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getRandomListTutsSuccess() {
+        String token = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+
         Response response = step("GET /user/tuts/random - успешное получени списка", () ->
                 storiesSteps.getRandomListTuts(token)
         );
@@ -414,6 +473,9 @@ public class StoryTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getValidationListTutsSuccess() {
+        String token = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+
         Response response = step("GET /user/tuts/random-list", () ->
                 storiesSteps.getRandomListTutsList(token)
         );
@@ -454,7 +516,7 @@ public class StoryTest {
 
     @Test
     @Order(26)
-    @DisplayName("Успешная фиксация просмотра сторис с одним ULID (read-back)")
+    @DisplayName("Успешная фиксация просмотра сторис с одним ULID")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
@@ -477,11 +539,11 @@ public class StoryTest {
 
     @Test
     @Order(27)
-    @DisplayName("Фиксация просмотра сторис с несколькими ULID (read-back)")
+    @DisplayName("Фиксация просмотра сторис с несколькими ULID")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
-    void markStoriesViewMultipleUlids() {
+    void markStoriesViewMultipleUlIds() {
         String freshToken = step("Регистрация нового пользователя", () ->
                 new FreshUserFixture().register().token());
 
@@ -495,7 +557,7 @@ public class StoryTest {
             List<String> result = new ArrayList<>(count);
             for (int i = 0; i < count; i++) {
                 String u = (String) stories.get(i).get("ulid");
-                assertNotNull(u, "ulid не должен быть null");
+                assertNotNull(u, "ulId не должен быть null");
                 result.add(u);
             }
             assertFalse(result.isEmpty(), "Хотя бы один ULID должен быть извлечён");
@@ -546,6 +608,10 @@ public class StoryTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void markStoriesViewEmptyArray() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("POST /user/stories/view - пустой массив", () ->
                 storiesSteps.markStoriesViewed(token, List.of())
         );
@@ -560,7 +626,11 @@ public class StoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
-    void markStoriesViewInvalidUlids() {
+    void markStoriesViewInvalidUlIds() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("POST /user/stories/view - невалидный Ulid", () ->
                 storiesSteps.markStoriesViewed(token, List.of("not-a-valid-ulid"))
         );
@@ -576,6 +646,10 @@ public class StoryTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void markStoryScreenSuccess() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("POST /user/stories/screen - с payload fortuna", () ->
                 storiesSteps.markStoryScreen(token, List.of("fortuna"))
         );
@@ -592,6 +666,10 @@ public class StoryTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void markStoryScreenMultiplePayloads() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("POST /user/stories/screen - с payload fortuna", () ->
                 storiesSteps.markStoryScreen(token, List.of("fortuna", "bonus", "promo"))
         );
@@ -635,6 +713,10 @@ public class StoryTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.CONTRACT)
     void markStoryScreenEmptyArray() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("POST /user/stories/screen - пустой массив", () ->
                 storiesSteps.markStoryScreen(token, List.of()));
 
@@ -660,20 +742,27 @@ public class StoryTest {
     @DisplayName("Успешная фиксация просмотра тутса (204)")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
-    @Tag(Tags.CONTRACT)
     void markTutsViewSuccess() {
-        Response randomResponse = step("GET /user/tuts/random", () ->
-                storiesSteps.getRandomListTuts(token));
+        String token = step("Регистрация нового пользователя", () ->
+                new FreshUserFixture().register().token());
+        Response categories = step("GET /user/tuts-categories", () ->
+                storiesSteps.getTutsCategories(token));
+        String categoryId = step("Извлечение id первой категории", () ->
+                storiesSteps.extractFirstCategoryId(categories));
 
-        String slug = step("Извлечение slug тутса", () ->
-                storiesSteps.extractFirstTutSlug(randomResponse));
+        Response feedBefore = step("GET /user/tuts/category/{id}/feed (до)", () ->
+                storiesSteps.getCategoryFeed(token, categoryId));
+        String slug = step("Извлечение непросмотренного тутса", () ->
+                storiesSteps.extractFirstUnwatchedTutSlug(feedBefore));
 
-        Response response = step("POST /user/tuts/{slug}/view - фиксация просмотра", () ->
-                storiesSteps.markTutsViewed(token, slug)
-        );
+        Response response = step("POST /user/tuts/{slug}/view", () ->
+                storiesSteps.markTutsViewed(token, slug));
+        step("Проверка статуса 204", () -> assertEquals(204, response.getStatusCode()));
 
-        step("Проверка статуса 204", () ->
-                assertEquals(204, response.getStatusCode()));
+        Response feedAfter = step("GET /user/tuts/cetegory/{id}/feed (после)", () ->
+                storiesSteps.getCategoryFeed(token, categoryId));
+        step("watched=true", () ->
+                storiesSteps.validateTutWatched(feedAfter, slug, true));
     }
 
     @Test
@@ -715,6 +804,10 @@ public class StoryTest {
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
     void markTutsViewWithInvalidSlug() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("POST /user/tuts/{slug}/view - несуществующий slug", () ->
                 storiesSteps.markTutsViewed(token, "test-slug-125")
         );

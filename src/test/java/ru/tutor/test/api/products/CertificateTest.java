@@ -136,7 +136,7 @@ public class CertificateTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
-    void generateCertificateWithouthOrder() {
+    void generateCertificateWithoutOrder() {
         ensureOrderNumber();
         String name = faker.name().firstName();
 

@@ -40,13 +40,6 @@ public class GameWheelMiscTest {
         Allure.label("feature", "Game Wheel");
     }
 
-    @BeforeEach
-    void setUpAuth() {
-        token = step("Логин", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
     @Order(1)
     @DisplayName("Интеграционный тест: 'Запуск игры' и проверка 'Добавления награды'")
@@ -54,6 +47,10 @@ public class GameWheelMiscTest {
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void integrationTestWithGameWheel() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
 
         UserRewardSteps.IntegrationTestResult result = step("Выполнение интеграционного теста", () ->
                 userRewardSteps.performIntegrationTest(token, gameWheelStartGameSteps)
@@ -70,6 +67,11 @@ public class GameWheelMiscTest {
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void fullRewardFlowIntegrationTest() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         List<UserRewardResponse> initialRewards = step("Получаем начальный список наград", () ->
                 userRewardSteps.validateUserRewardsListComplete(userRewardSteps.getUserRewards(token))
         );
@@ -125,6 +127,11 @@ public class GameWheelMiscTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getRewardsGroupsSuccess() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("GET /user/game-wheel/rewards_groups", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsGroups(token)
         );
@@ -174,6 +181,11 @@ public class GameWheelMiscTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getTimerLeftSuccess() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("GET /user/game-wheel/timer-left-seconds", () ->
                 gameWheelMiscSteps.getUserGameWheelTimerLeft(token)
         );
@@ -223,6 +235,11 @@ public class GameWheelMiscTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getGameWheelWonAllSuccess() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response response = step("GET /user/game-wheel/rewards-recently-won-all", () ->
                 gameWheelMiscSteps.getUserGameWheelRewardsRecentlyWonAll(token)
         );

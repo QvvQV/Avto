@@ -38,13 +38,6 @@ public class UserRewardListTest {
         Allure.label("feature", "Game Wheel");
     }
 
-    @BeforeEach
-    void setUpAuth() {
-        token = step("Логин", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
     @Order(1)
     @DisplayName("Успешное получение 'Списка наград' пользователя (Проверка 200 OK)")
@@ -53,6 +46,10 @@ public class UserRewardListTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getUserRewardSuccess() {
+
+        token = step("Логин", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
 
         Response response = step("GET /user/reward/list", () ->
                 userRewardSteps.getUserRewards(token)

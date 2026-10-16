@@ -78,43 +78,4 @@ public class GameWheelRewardsSteps extends BaseApiSteps {
                     rewardInfo + " - rewardValue должен быть >= 0");
         }
     }
-
-    // Обновленный RewardValidationResult
-    public static class RewardValidationResult {
-        private final Long rewardId;
-        private final String rewardName;
-        private boolean found;
-        private boolean nameMatches;
-        private boolean chanceMatches;
-        private boolean typeMatches;
-        private boolean valueMatches;
-        private double actualChance;
-        private String message;
-
-        public RewardValidationResult(Long rewardId, String rewardName) {
-            this.rewardId = rewardId;
-            this.rewardName = rewardName;
-        }
-
-        // Геттеры и сеттеры
-        public Long getRewardId() { return rewardId; }
-        public String getRewardName() { return rewardName; }
-        public boolean isNotFound() { return found; }
-        public boolean isNameMatches() { return nameMatches; }
-        public boolean isChanceMatches() { return chanceMatches; }
-        public boolean isTypeMatches() { return typeMatches; }
-        public boolean isValueMatches() { return valueMatches; }
-        public double getActualChance() { return actualChance; }
-        public String getMessage() { return message; }
-
-        public void setFound(boolean found) { this.found = found; }
-        public void setNameMatches(boolean nameMatches) { this.nameMatches = nameMatches; }
-        public void setChanceMatches(boolean chanceMatches) { this.chanceMatches = chanceMatches; }
-        public void setTypeMatches(boolean typeMatches) { this.typeMatches = typeMatches; }
-        public void setValueMatches(boolean valueMatches) { this.valueMatches = valueMatches; }
-        public void setActualChance(double actualChance) { this.actualChance = actualChance; }
-        public void setMessage(String message) { this.message = message; }
-
-        public boolean hasMessage() { return message != null && !message.isEmpty(); }
-    }
 }
