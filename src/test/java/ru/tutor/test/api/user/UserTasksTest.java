@@ -118,7 +118,7 @@ public class UserTasksTest {
                 userSteps.changeTask("", taskId)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, changeResponse.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(changeResponse, "JWT Token not found"));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class UserTasksTest {
                 userSteps.changeTask("invalid_token", taskId)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, changeResponse.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(changeResponse, "Invalid JWT Token"));
     }
 
     @Test
@@ -207,7 +207,7 @@ public class UserTasksTest {
                 userSteps.finishTask("", taskId)
         );
         step("Проверка статуса 401", () ->
-                assertEquals(401, changeResponse.getStatusCode()));
+                userSteps.assertUnauthorizedWithMessage(changeResponse, "JWT Token not found"));
     }
 
     @Test
