@@ -13,6 +13,7 @@ import ru.tutor.utils.AllureAttachments;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -456,6 +457,51 @@ public class OrderSteps extends BaseApiSteps {
         String password = extractQueryParam(href, "password");
 
         return new PaymentCredentials(loginToken, password, orderNumber);
+    }
+
+    @Step("Получить максимальный id заявки на возврат")
+    public long maxRefundTicketId(Response response) {
+        List<Map<String, Object>> tickets = response.jsonPath().getList("$");
+        if(tickets == null || tickets.isEmpty()) return 0L;
+        return tickets.stream()
+                .mapToLong(t -> ((Number) t.get("id")).longValue())
+                .max().orElse(0L);
+    }
+
+    @Step("Валидация: заявки на возврат создана (GET /user/refund-tickets)")
+    public void validateRefundTicketCreated(Response after, long previousMaxId, RefundTicketRequest request) {
+        List<Map<String, Object>> tickets = assertJsonArray(after, "Список заявок на возврат");
+        Map<String, Object> created = tickets.stream()
+                .filter(t -> ((Number) t.get("id")).longValue() > previousMaxId)
+                .max(Comparator.comparingLong(t -> ((Number) t.get("id")).longValue())).orElse(null);
+        assertNotNull(created, "В списке должна появиться новая заявка (id > " + previousMaxId + ")");
+        assertTrue(String.valueOf(created.get("paymentAmount")).contains(String.valueOf(request.getPaymentAmount())),
+                "paymentAmount должен соответствовать запросу (5000)");
+        assertNotNull(created.get("paymentDate"), "paymentDate должен присутствовать");
+        assertNotNull(created.get("createdAt"), "createdAt должен присутствовать");
+
+        @SuppressWarnings("unchecked")
+                Map<String, Object> status = (Map<String, Object>) created.get("status");
+        assertNotNull(status, "status должен присутствовать");
+        assertEquals("В обработке", status.get("name"), "Статус новой заявки");
+    }
+
+    @Step("Валидация списка заявок на возврат (GET /user/refund-tickets)")
+    public void validateRefundTicketsList(Response response) {
+        assertBasicResponse(response);
+        List<Map<String, Object>> tickets = response.jsonPath().getList("$");
+        assertNotNull(tickets, "Тело должно быть JSON-массивом");
+        for (Map<String, Object> ticket : tickets) {
+            assertTrue(((Number) ticket.get("id")).longValue() > 0, "id заявки > 0");
+            assertNotNull(ticket.get("paymentAmount"), "paymentAmount");
+            assertNotNull(ticket.get("paymentDate"), "paymentDate");
+            assertNotNull(ticket.get("createdAt"), "createdAt");
+            @SuppressWarnings("unchecked")
+                    Map<String, Object> status = (Map<String, Object>) ticket.get("status");
+            assertNotNull(status, "status");
+            assertNotNull(status.get("id"), "id");
+            assertNotNull(String.valueOf(status.get("name")).isBlank(), "status.name");
+        }
     }
 
 }

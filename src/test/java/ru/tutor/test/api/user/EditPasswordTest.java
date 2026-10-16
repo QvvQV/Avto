@@ -62,7 +62,7 @@ public class EditPasswordTest {
                 authSteps.loginAndGetTokens(freshEmail, newPassword));
         step("Вход со старым паролем -> 401", () -> {
             Response oldLogin = authSteps.login(freshEmail, TEST_PASSWORD);
-            assertEquals(401, oldLogin.getStatusCode());
+            userSteps.assertUnauthorizedWithMessage(oldLogin, "Недействительные аутентификационные данные.");
             oldLogin.then().contentType(ContentType.JSON);
         });
     }

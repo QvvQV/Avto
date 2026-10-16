@@ -12,7 +12,6 @@ import ru.tutor.steps.orders.OrderSteps;
 import java.util.Locale;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
@@ -82,6 +81,9 @@ public class RefundTicketTest {
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void createRefundTicketSuccess() {
+        long beforeMaxId = step("GET /user/refund-tickets (до создания)", () ->
+                orderSteps.maxRefundTicketId(orderSteps.getRefundTickets(token)));
+
         RefundTicketRequest request =step("Подготовка тела запроса", this::createRefundRequest
         );
 
@@ -90,6 +92,8 @@ public class RefundTicketTest {
         );
         step("Валидация ответа", () ->
                 orderSteps.validateRefundTicketResponse(response));
+        step("GET /user/refund-tickets -> заявка создана", () ->
+                orderSteps.validateRefundTicketCreated(orderSteps.getRefundTickets(token), beforeMaxId, request));
     }
 
     @Test
@@ -151,7 +155,7 @@ public class RefundTicketTest {
                 orderSteps.getRefundTickets(token)
         );
         step("Валидация ответа", () ->
-                orderSteps.validateRefundTicketResponse(response) // эндпоинт после создания /user/refund-tickets/create POST
+                orderSteps.validateRefundTicketsList(response) // эндпоинт после создания /user/refund-tickets/create POST
         );
     }
 

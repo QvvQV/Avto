@@ -9,7 +9,6 @@ import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.content.CoursesSteps;
 
 import static io.qameta.allure.Allure.step;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import ru.tutor.constants.Tags;
 
 @Epic("API Тесты пользователя")
@@ -33,13 +32,6 @@ public class CoursesTest {
         Allure.label("feature", "Courses");
     }
 
-    @BeforeEach
-    void setUpAuth() {
-        token = step("Логин пользователя", () ->
-                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
-        );
-    }
-
     @Test
     @Order(1)
     @DisplayName("GET /user/courses/{productId} - информация о курсе")
@@ -47,6 +39,10 @@ public class CoursesTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getCoursesByIdSuccess() {
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response allProducts = step("GET /user/products/all", () ->
                 coursesSteps.getAllProducts(token)
         );
@@ -73,6 +69,11 @@ public class CoursesTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getCourseReviewsSuccess() {
+
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response allProducts = step("GET /user/products/all", () ->
                 coursesSteps.getAllProducts(token)
         );
@@ -95,6 +96,11 @@ public class CoursesTest {
     @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getCourseRecommendationsSuccess() {
+
+        token = step("Логин пользователя", () ->
+                userSteps.loginAndGetToken(TEST_EMAIL, TEST_PASSWORD)
+        );
+
         Response allProducts = step("GET /user/products/all", () ->
                 coursesSteps.getAllProducts(token)
         );

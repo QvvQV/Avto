@@ -39,7 +39,7 @@ public class RegistrationTest {
 
     @Test
     @Order(1)
-    @DisplayName("✅ Успешная регистрация нового пользователя")
+    @DisplayName("Успешная регистрация нового пользователя")
     @Severity(SeverityLevel.CRITICAL)
     @Tag(Tags.POSITIVE)
     void registerNewUser_Success() {
@@ -77,7 +77,7 @@ public class RegistrationTest {
 
     @Test
     @Order(2)
-    @DisplayName("✅ Регистарция с минимальным набором данных")
+    @DisplayName("Регистарция с минимальным набором данных")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void registerMinimalUser_Success() {
@@ -94,7 +94,7 @@ public class RegistrationTest {
 
     @Test
     @Order(3)
-    @DisplayName("✅ Регистрация и автоматический вход")
+    @DisplayName("Регистрация и автоматический вход")
     @Severity(SeverityLevel.CRITICAL)
     void registerAndLogin_Success() {
         RegistrationRequest request = RegistrationRequest.generateRandom();
@@ -117,7 +117,7 @@ public class RegistrationTest {
 
     @Test
     @Order(4)
-    @DisplayName("❌ Регистрация без согласия с политикой")
+    @DisplayName("Регистрация без согласия с политикой")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
@@ -135,7 +135,7 @@ public class RegistrationTest {
 
     @Test
     @Order(5)
-    @DisplayName("❌ Регистрация с невалидным email")
+    @DisplayName("Регистрация с невалидным email")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
@@ -153,7 +153,7 @@ public class RegistrationTest {
 
     @Test
     @Order(6)
-    @DisplayName("❌ Регистрация с пустым именем")
+    @DisplayName("Регистрация с пустым именем")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
@@ -171,7 +171,7 @@ public class RegistrationTest {
 
     @Test
     @Order(7)
-    @DisplayName("❌ Регистрация с коротким паролем")
+    @DisplayName("Регистрация с коротким паролем")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
     @Tag(Tags.CONTRACT)
@@ -190,7 +190,7 @@ public class RegistrationTest {
 
     @Test
     @Order(8)
-    @DisplayName("✅ Регистрация с длинным паролем")
+    @DisplayName("Регистрация с длинным паролем")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void registerWithLongPassword_Success() {
@@ -205,10 +205,10 @@ public class RegistrationTest {
 
     @Test
     @Order(9)
-    @DisplayName("📊 Массовая регистрация пользователей")
+    @DisplayName("Массовая регистрация пользователей")
     @Severity(SeverityLevel.MINOR)
     void massRegistration() {
-        int count = 3;
+        int count = 7;
 
         step("Регистрация " + count + " пользователей", () -> {
             for (int i = 1; i <= count; i++) {
@@ -226,7 +226,7 @@ public class RegistrationTest {
 
     @Test
     @Order(10)
-    @DisplayName("🔄 Регистрация с разными gender значениями")
+    @DisplayName("Регистрация с разными gender значениями")
     @Severity(SeverityLevel.MINOR)
     @Tag(Tags.POSITIVE)
     void registerWithDifferentGenders() {
@@ -261,7 +261,7 @@ public class RegistrationTest {
 
     @Test
     @Order(11)
-    @DisplayName("✅ Регистрация с пустым номером телефона")
+    @DisplayName(" Регистрация с пустым номером телефона")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.POSITIVE)
     void registerWithEmptyPhone() {
@@ -276,7 +276,7 @@ public class RegistrationTest {
 
     @Test
     @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("🚫 Регистрация с существующим email")
+    @DisplayName(" Регистрация с существующим email")
     @Order(12)
     @Tag(Tags.CONTRACT)
     void registrationWithExistingEmail_ConflictCheck() {
@@ -291,7 +291,7 @@ public class RegistrationTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("🚫 Регистрация с пустым email")
+    @DisplayName(" Регистрация с пустым email")
     @Order(13)
     @Tag(Tags.CONTRACT)
     void registrationWithEmptyEmail_ValidationError() {
@@ -314,7 +314,7 @@ public class RegistrationTest {
             "test@ domain.com"
     })
     @Order(14)
-    @DisplayName("📧 Регистрация с невалидными email форматами")
+    @DisplayName(" Регистрация с невалидными email форматами")
     @Severity(SeverityLevel.NORMAL)
     @Tag(Tags.NEGATIVE)
 
@@ -332,16 +332,16 @@ public class RegistrationTest {
     }
 
     @Nested
-    @DisplayName("🔍 Детальные проверки валидации")
+    @DisplayName(" Детальные проверки валидации")
     class DetailValidationCheks {
 
         @Test
         @Order(15)
-        @DisplayName("📏 Очень длинное имя пользователя")
+        @DisplayName("Очень длинное имя пользователя")
         @Severity(SeverityLevel.MINOR)
         void veryLongUserName_ShouldHandleGracefully() {
             RegistrationRequest request = RegistrationRequest.generateRandom();
-            String longName = faker.name().firstName().repeat(10);
+            String longName = faker.name().firstName().repeat(36);
             RegistrationRequest  customRequest = new RegistrationRequest(
                     request.getEmail(), longName, request.getPhone(), request.getPassword(),
                     request.getTelegram(), true, request.getGender()
@@ -351,14 +351,13 @@ public class RegistrationTest {
                     userSteps.register(customRequest));
             step("Проверить обработку длинного имени", () -> {
                 int statusCode = response.getStatusCode();
-                assertTrue(statusCode == 200 || statusCode == 422,
-                        "Ожидался статус 200 или 422, но получили: " + statusCode);
+                assertEquals(200, statusCode, "Ожидался статус 200, но получили: " + statusCode);
             });
         }
 
         @Test
         @Order(16)
-        @DisplayName("🔣 Спецсимволы в имени")
+        @DisplayName(" Спецсимволы в имени")
         @Severity(SeverityLevel.MINOR)
         void specialCharactersInName_BehaviorCheck() {
             RegistrationRequest request = RegistrationRequest.generateRandom();
@@ -380,7 +379,7 @@ public class RegistrationTest {
 
     @Test
     @Order(17)
-    @DisplayName("📝 Проверка что ответ всегда JSON")
+    @DisplayName(" Проверка что ответ всегда JSON")
     @Severity(SeverityLevel.MINOR)
     void responseAlwaysJson() {
         RegistrationRequest successReq = RegistrationRequest.generateRandom();
@@ -401,7 +400,7 @@ public class RegistrationTest {
 
         @Test
         @Order(18)
-        @DisplayName("⏱️ Проверка времени ответа для разных сценариев")
+        @DisplayName(" Проверка времени ответа для разных сценариев")
         @Severity(SeverityLevel.MINOR)
         void responseTimeForDifferentScenarios() {
             step("Проверка времени ответа для успешной регистрации", () -> {
@@ -413,7 +412,7 @@ public class RegistrationTest {
 
         @Test
         @Order(19)
-        @DisplayName("🔐 Проверка безопасности паролей")
+        @DisplayName(" Проверка безопасности паролей")
         @Severity(SeverityLevel.MINOR)
         @Tag(Tags.NEGATIVE)
         void TEST_PASSWORDSecurityValidation() {
