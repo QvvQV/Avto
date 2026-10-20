@@ -177,4 +177,11 @@ public class UserProductsApi extends BaseApi {
     public Response getShows(String authToken) {
         return getWithToken(EndpointsContent.USER_SHOWS, authToken);
     }
+
+    /**
+     * GET /total-courses
+     */
+    public Response getTotalCourses() {
+        return getWithoutToken(EndpointsCatalog.TOTAL_COURSES);
+    }
 }

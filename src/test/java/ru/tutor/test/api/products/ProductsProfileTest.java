@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
 import ru.tutor.model.catalog.ProductsResponse;
+import ru.tutor.model.catalog.TotalCoursesResponse;
 import ru.tutor.steps.account.AuthSteps;
 import ru.tutor.steps.catalog.ProductsSteps;
 
@@ -33,7 +34,7 @@ public class ProductsProfileTest {
     private String savedOrderNumber;
     private String savedProductValue;
     private final int TIMELINE = 9999;
-    private final int MODULE_NUMBER = 5;
+    private final int MODULE_NUMBER = 4;
     private final int INVALID_MODULE_NUMBER = -1;
     private final String INVALID_PRODUCT_VALUE = "999999";
 
@@ -201,6 +202,7 @@ public class ProductsProfileTest {
     @Test
     @Order(9)
     @DisplayName("Эндпоинт категории платформы")
+    @Tag(Tags.POSITIVE)
     @Tag(Tags.CONTRACT)
     void getCategories() {
         Response response = productsSteps.getCategories(token);
@@ -560,6 +562,22 @@ public class ProductsProfileTest {
             assertEquals(404, response.getStatusCode());
             assertNotNull(response.getBody().asString());
         });
+    }
+
+    @Test
+    @DisplayName("Контракт счётчиков: 4 неотрицательных поля")
+    @Story("Валидация данных")
+    @Severity(SeverityLevel.NORMAL)
+    @Tag(Tags.POSITIVE)
+    @Tag(Tags.CONTRACT)
+    void getTotalCourses() {
+        Response response = step("GET /total-courses", productsSteps::getTotalCourses);
+
+        TotalCoursesResponse totals = step("Валидация ответа", () ->
+                productsSteps.validateTotalCoursesResponse(response));
+
+        step("Проверка неотрицательности счётчиков", () ->
+                assertTrue(totals.allNonNegative(), "Все счётчики должны быть >= 0"));
     }
 
     private void ensureProductsLoaded() {

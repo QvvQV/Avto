@@ -195,4 +195,9 @@ public final class EndpointsCatalog {
      * Активация автора
      */
     public static final String USER_AUTHOR_ACTIVATE = "/user/author/activate";
+
+    /**
+     * Общее кол-во курсов в каталоге
+     */
+    public static final String TOTAL_COURSES = "/total-courses";
 }

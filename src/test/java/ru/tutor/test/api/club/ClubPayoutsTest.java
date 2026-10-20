@@ -12,7 +12,7 @@ import ru.tutor.steps.club.ClubPayoutsSteps;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-@Epic("API Тесты пользователя")
+@Epic("API Тесты пользователя клуба")
 @Feature("Выплаты клуба")
 @DisplayName("Тесты эндпоинта клуба: GET /user/club/v2/payouts")
 @Tag(Tags.INTEGRATION)

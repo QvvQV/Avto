@@ -284,27 +284,38 @@ public class StoriesSteps extends BaseApiSteps {
                 () -> assertJsonFieldExists(response, "poster.original"));
     }
 
-    @Step("Валидация деталей тутса /user/tuts/{slug}")
+    @Step("Валидация списка тутсов /user/tuts/random-list")
+    @SuppressWarnings("unchecked")
     public void validateTutsListResponse(Response response) {
         assertBasicResponse(response);
-        List<Map<String, Object>> tuts = response.jsonPath().getList("$");
-        assertNotNull(tuts, "Список тутсов не должен быть null");
-        assertFalse(tuts.isEmpty(), "Список тутсов не должен быть пуст");
+        List<Map<String, Object>> tuts = assertJsonArray(response, "Список тутсов");
 
         for (int i = 0; i < tuts.size(); i++) {
             Map<String, Object> tut = tuts.get(i);
-            int index = i;
-            assertAll("Тутс [" + index + "]",
+            String info = "тутс [" + i + "]: ";
+            assertAll(info,
                     nonEmptyString(tut, "slug"),
                     positiveInt(tut, "productId"),
                     nonEmptyString(tut, "title"),
+                    notNull(tut, "description"),
                     nonEmptyString(tut, "link"),
+                    optionalNonNegative(tut, "countLikes"),
                     nonEmptyString(tut, "authorName"),
-                    () -> assertFalse(
-                            response.jsonPath().getString("[" + index + "].poster.original").isBlank(),
-                            "poster.original не должен быть пустым для тутса [" + index + "]"
-                    )
-            );
+                    url(tut.get("authorImage"), "authorImage"),
+                    containsKey(tut, "poster")
+                    );
+            Map<String, Object> poster = (Map<String, Object>) tut.get("poster");
+            assertNotNull(poster, info + ": poster не null");
+            assertAll(info + " - poster",
+                    url(poster.get("original"), "poster.original"),
+                    url(poster.get("md"), "poster.md"),
+                    url(poster.get("sm"), "poster.sm"),
+                    url(poster.get("xs"), "poster.xs")
+                    );
+
+            assertEquals(tuts.size(),
+                    tuts.stream().map(m -> m.get("slug")).distinct().count(),
+                    "slug тутсов не должны повторяться");
         }
     }
 

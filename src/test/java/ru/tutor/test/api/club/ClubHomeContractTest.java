@@ -17,7 +17,7 @@ import java.util.Map;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-@Epic("API Тесты пользователя")
+@Epic("API Тесты пользователя клуба")
 @Feature("Клуб: главная и аналитика v2")
 @DisplayName("Контрактные тесты клуба v2: home / analytics / links / referrals")
 @Tag(Tags.INTEGRATION)

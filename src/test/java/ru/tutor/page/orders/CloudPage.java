@@ -168,6 +168,7 @@ public class CloudPage {
             WaitHelper.waitForPageLoad();
             WaitHelper.waitForAnimationComplete();
             String currentUrl = WebDriverRunner.getWebDriver().getCurrentUrl();
+            assert currentUrl != null;
             if (currentUrl.contains("/form-demo")) {
                 String name = "Бернард Шоу";
                 String birthday = "01-01-1990";
@@ -213,7 +214,6 @@ public class CloudPage {
     @Step("Выбор опции 'Полная оплата' в модальном окне")
     public String setDateModal() {
         currentEmail = fillEmailAndChooseOption(FULL_OPTION, "Оплатить", "Email");
-        System.out.println(FULL_OPTION.getText().trim());
         return currentEmail;
     }
 

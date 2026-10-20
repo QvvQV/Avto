@@ -16,7 +16,7 @@ import java.util.List;
 import static io.qameta.allure.Allure.step;
 import ru.tutor.constants.Tags;
 
-@Epic("API Тесты пользователя")
+@Epic("API Тесты пользователя клуба")
 @Feature("Клуб пользователя")
 @DisplayName("Тесты эндпоинтов клуба")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

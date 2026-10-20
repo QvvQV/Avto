@@ -3,11 +3,9 @@ package ru.tutor.base;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.tutor.config.TestConfig;
-import ru.tutor.utils.AllureAttachments;
 
 import org.junit.jupiter.api.function.Executable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -172,12 +170,31 @@ public abstract class BaseApiSteps {
         return () -> assertTrue(((Number) item.get(field)).intValue() > 0, field + " > 0");
     }
 
+    protected Executable optionalPositiveInt(Map<String, Object> item, String field){
+        return () -> {
+            Object value = item.get(field);
+            if (value != null) {
+                assertTrue(value instanceof Number && ((Number) value).intValue() > 0, field + " должен быть положительным числом или null");
+            }
+        };
+    }
+
+    protected Executable optionalNonNegative(Map<String, Object> item, String field){
+        return () -> {
+            Object value = item.get(field);
+            if (value != null) {
+                assertTrue(value instanceof Number && ((Number) value).doubleValue() >= 0,
+                        field + " должен быть неотрицательным числом или null");
+            }
+        };
+    }
+
     protected Executable nonNegative(Map<String, Object> item, String field){
         return () -> assertTrue(((Number) item.get(field)).doubleValue() >= 0, field + " >= 0");
     }
 
     protected Executable numberField(Map<String, Object> item, String field){
-        return () -> assertTrue(item.get(field) instanceof Number, field + " должен быть числом");
+        return () -> assertInstanceOf(Number.class, item.get(field), field + " должен быть числом");
     }
 
     protected Executable containsKey(Map<String, Object> item, String field){

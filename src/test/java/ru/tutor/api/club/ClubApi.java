@@ -20,19 +20,9 @@ public class ClubApi extends BaseApi {
             "page", 1, "per_page", 20
     );
 
-    /**
-     * GET /user/club/statistics - получение статистики клуба
-     */
-    public Response getClubStatistics(String authToken) {
-        return getWithToken(EndpointsClub.CLUB_STATISTICS, authToken);
-    }
-
-    /**
-     * GET /user/club/member - получение списка участников клуба
-     */
-    public Response getClubMembers(String authToken) {
-        return getWithToken(EndpointsClub.CLUB_MEMBER, authToken);
-    }
+    private static final Map<String, Object> DEFAULT_LINKS_QUERY = Map.of(
+            "limit", 10, "page", 1
+    );
 
     /**
      * GET /user/club/payments
@@ -60,13 +50,6 @@ public class ClubApi extends BaseApi {
      */
     public Response saveIpDetails(String authToken, Map<String, Object> payload) {
         return postWithToken(EndpointsClub.CLUB_IP_DETAILS, authToken, payload);
-    }
-
-    /**
-     * GET /user/club/ip-details - получение деталей ИП
-     */
-    public Response getIpDetails(String authToken) {
-        return getWithToken(EndpointsClub.CLUB_IP_DETAILS, authToken);
     }
 
     /**
@@ -113,6 +96,18 @@ public class ClubApi extends BaseApi {
     public Response getPayoutRequisites(String authToken) {
         return getWithToken(EndpointsClub.CLUB_V2_PAYOUTS_REQUISITES, authToken);
     }
+
+    /** GET /user/club/v2/links - список реферальных ссылок клуба (limit=10,
+     page=1) */
+    public Response getClubLinks(String authToken) {
+        return getWithQuery(EndpointsClub.USER_CLUB_V2_LINKS, authToken, DEFAULT_LINKS_QUERY);
+    }
+
+    /** GET /user/club/v2/links - список ссылок с заданными query-параметрами */
+    public Response getClubLinks(String authToken, Map<String, Object> queryParams) {
+        return getWithQuery(EndpointsClub.USER_CLUB_V2_LINKS, authToken, queryParams);
+    }
+
     public Response deletePayoutRequisites(String authToken) {
         return deleteWithToken(EndpointsClub.CLUB_V2_PAYOUTS_REQUISITES, authToken);
     }
