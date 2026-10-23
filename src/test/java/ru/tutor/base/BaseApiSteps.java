@@ -166,6 +166,16 @@ public abstract class BaseApiSteps {
         };
     }
 
+    protected Executable optionalNonEmptyString(Map<String, Object> item, String field){
+        return () -> {
+            Object value = item.get(field);
+            if (value != null) {
+                assertTrue(value instanceof String && !((String) value).trim().isEmpty(),
+                        field + " должен быть непустой строкой или null");
+            }
+        };
+    }
+
     protected Executable positiveInt(Map<String, Object> item, String field){
         return () -> assertTrue(((Number) item.get(field)).intValue() > 0, field + " > 0");
     }

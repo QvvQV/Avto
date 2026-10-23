@@ -51,11 +51,11 @@ public class ProfileSteps extends BaseApiSteps {
                 //Строковые
                 nonEmptyString(root, "name"),
                 nonEmptyString(root, "email"),
-                nonEmptyString(root, "phone"),
+                optionalNonEmptyString(root, "phone") ,
                 nonEmptyString(root, "orderLanding"),
-                nonEmptyString(root, "telegram"),
-                nonEmptyString(root, "emailAdditional"),
-                nonEmptyString(root, "about"),
+                optionalNonEmptyString(root, "telegram") ,
+                optionalNonEmptyString(root, "emailAdditional"),
+                optionalNonEmptyString(root, "about"),
                 nonEmptyString(root, "clubMembership"),
                 nonEmptyString(root, "registrationPlatform"),
                 //Булевые

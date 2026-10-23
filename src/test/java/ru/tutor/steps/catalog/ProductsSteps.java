@@ -13,8 +13,6 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.stream.Collectors;
-
 public class ProductsSteps extends BaseApiSteps {
     private final UserProductsApi productsApi;
 

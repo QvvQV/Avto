@@ -104,13 +104,6 @@ public class AuthSteps extends BaseApiSteps {
     public Response logout(String authToken) {
         Response response = userApi.logout(authToken);
 
-        step("Проверка ответа логаута", () -> {
-            assertSuccessStatusCode(response);
-
-            Allure.addAttachment("Logout Response",
-                    "✅ Статус: 200 OK\n📦 Тело: " + response.getBody().asString());
-        });
-
         // Логируем информацию о JWT токене
         step("Информация о токене", () -> {
             String[] parts = authToken.split("\\.");

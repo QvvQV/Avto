@@ -73,7 +73,7 @@ public class UserTasksTest {
                 userSteps.getTasks("invalid")
         );
         step("Проверка статуса 401", () ->
-                userSteps.assertUnauthorizedWithMessage(response, "JWT Token not found"));
+                userSteps.assertUnauthorizedWithMessage(response, "Invalid JWT Token"));
     }
 
     @Test
